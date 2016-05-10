@@ -328,8 +328,12 @@ if __name__ == '__main__':
   # imports for tests
   from basins import exps_rc
   
-#   test = 'simple_climatology'
-  test = 'advanced_climatology'
+  #   from projects.WesternCanada.WRF_experiments import Exp, WRF_exps, ensembles
+  from projects.GreatLakes.WRF_experiments import Exp, WRF_exps, ensembles
+  # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
+
+  test = 'simple_climatology'
+#   test = 'advanced_climatology'
   
   
   # test load function for basin ensemble time-series

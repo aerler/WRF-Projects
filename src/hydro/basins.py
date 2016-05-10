@@ -161,7 +161,8 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, varli
 # define new load fct. for experiments (not intended for observations)
 @BatchLoad
 def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, varlist=None, aggregation='mean', slices=None,
-                      shapefile=None, filetypes=None, period=None, **kwargs):
+                      shapefile=None, filetypes=None, period=None, WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, 
+                      **kwargs):
   ''' convenience function to load basin & province ensembles '''
   # prepare arguments
   if shapefile is None: shapefile = 'shpavg' # really only one in use  
@@ -189,15 +190,20 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, varlist
     slices['years'] = period
   # load ensemble (no iteration here)
   shpens = loadEnsembleTS(names=names, season=seasons, aggregation=aggregation, slices=slices,
-                          varlist=variables, shape=shapefile, filetypes=filetypes, **kwargs)
+                          varlist=variables, shape=shapefile, filetypes=filetypes, 
+                          WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
   # return ensembles (will be wrapped in a list, if BatchLoad is used)
   return shpens
 
 ## abuse main section for testing
 if __name__ == '__main__':
   
-  test = 'obs_timeseries'
-#   test = 'basin_timeseries'
+  #   from projects.WesternCanada.WRF_experiments import Exp, WRF_exps, ensembles
+  from projects.GreatLakes.WRF_experiments import Exp, WRF_exps, ensembles
+  # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
+
+#   test = 'obs_timeseries'
+  test = 'basin_timeseries'
 #   test = 'province_climatology'
   
   
@@ -223,13 +229,14 @@ if __name__ == '__main__':
   elif test == 'basin_timeseries':
     
     # some settings for tests
-    exp = 'val'; exps = exps_rc[exp].exps; exps = ['Unity']
+    exp = 'g-ens'; exps = exps_rc[exp].exps; #exps = ['Unity']
     basins = ['FRB','ARB']; seasons = ['summer','winter']
     varlist = ['wetfrq_010']; aggregation = 'mean'; red = dict(s='mean')
 
-    shpens = loadShapeEnsemble(names=exps, basin=basins, season=seasons, varlist=varlist, 
-                               aggregation=aggregation, filetypes=['lsm'], reduction=red, 
-                               load_list=['basin','season',], lproduct='outer')
+    shpens = loadShapeEnsemble(names=exps, basins=basins, seasons=seasons, varlist=varlist, 
+                               aggregation=aggregation, filetypes=['hydro'], reduction=red, 
+                               load_list=['basins','seasons',], lproduct='outer',
+                               WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None)
     # print diagnostics
     print shpens[0]; print ''
     assert len(shpens) == len(basins)*len(seasons)
@@ -243,12 +250,13 @@ if __name__ == '__main__':
   if test == 'province_climatology':
     
     # some settings for tests
-    exp = 'prj'; exps = exps_rc[exp].exps
+    exp = 'g-ens'; exps = exps_rc[exp].exps
     basins = ['FRB','ARB'] 
-    varlists = ['precip','runoff']; aggregation = 'std'
+    varlists = ['precip','runoff']; aggregation = 'mean'
 
-    shpens = loadShapeEnsemble(names=exps, basin=basins, varlist=varlists, aggregation=aggregation, 
-                               load_list=['basin','varlist'], lproduct='outer')
+    shpens = loadShapeEnsemble(names=exps, basins=basins, varlist=varlists, aggregation=aggregation, 
+                               load_list=['basins','varlist'], lproduct='outer',
+                               WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None)
     # print diagnostics
     print shpens[0]; print ''
     assert len(shpens) == len(basins)*len(varlists)
