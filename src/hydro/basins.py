@@ -191,7 +191,8 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, varlist
   # load ensemble (no iteration here)
   shpens = loadEnsembleTS(names=names, season=seasons, aggregation=aggregation, slices=slices,
                           varlist=variables, shape=shapefile, filetypes=filetypes, 
-                          WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+                          WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
+                          **kwargs)
   # return ensembles (will be wrapped in a list, if BatchLoad is used)
   return shpens
 
@@ -203,8 +204,8 @@ if __name__ == '__main__':
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #   test = 'obs_timeseries'
-  test = 'basin_timeseries'
-#   test = 'province_climatology'
+#   test = 'basin_timeseries'
+  test = 'province_climatology'
   
   
   # test load function for basin ensemble time-series
@@ -230,12 +231,12 @@ if __name__ == '__main__':
     
     # some settings for tests
     exp = 'g-ens'; exps = exps_rc[exp].exps; #exps = ['Unity']
-    basins = ['FRB','ARB']; seasons = ['summer','winter']
-    varlist = ['wetfrq_010']; aggregation = 'mean'; red = dict(s='mean')
+    basins = ['GLB','GRW']; seasons = ['summer','winter']
+    varlist = ['precip']; aggregation = 'mean'; red = dict(s='mean')
 
     shpens = loadShapeEnsemble(names=exps, basins=basins, seasons=seasons, varlist=varlist, 
-                               aggregation=aggregation, filetypes=['hydro'], reduction=red, 
-                               load_list=['basins','seasons',], lproduct='outer',
+                               aggregation=aggregation, filetypes=['srfc'], reduction=red, 
+                               load_list=['basins','seasons',], lproduct='outer', domain=2,
                                WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None)
     # print diagnostics
     print shpens[0]; print ''
@@ -251,11 +252,12 @@ if __name__ == '__main__':
     
     # some settings for tests
     exp = 'g-ens'; exps = exps_rc[exp].exps
-    basins = ['FRB','ARB'] 
+    basins = ['GLB','GRW'] 
     varlists = ['precip','runoff']; aggregation = 'mean'
 
-    shpens = loadShapeEnsemble(names=exps, basins=basins, varlist=varlists, aggregation=aggregation, 
-                               load_list=['basins','varlist'], lproduct='outer',
+    shpens = loadShapeEnsemble(names=exps, basins=basins, varlist=varlists, aggregation=aggregation,
+                               period=15, 
+                               load_list=['basins','varlist'], lproduct='outer', filetypes=['srfc','lsm'],
                                WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None)
     # print diagnostics
     print shpens[0]; print ''
