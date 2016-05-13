@@ -204,8 +204,8 @@ if __name__ == '__main__':
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #   test = 'obs_timeseries'
-#   test = 'basin_timeseries'
-  test = 'province_climatology'
+  test = 'basin_timeseries'
+#   test = 'province_climatology'
   
   
   # test load function for basin ensemble time-series
