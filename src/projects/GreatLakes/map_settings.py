@@ -76,8 +76,8 @@ projection_dict = dict()
 projection_dict['lcc-glb'] = dict(projection='lcc', lat_0=46, lon_0=-83, lat_1=45, rsphere=rsphere,
               width=180*10e3, height=160*10e3, area_thresh = 1e3, resolution='l')
 ## Lambert Conic Conformal - Grand River Watershed
-projection_dict['lcc-grw'] = dict(projection='lcc', lat_0=43.5, lon_0=-80.25, lat_1=43.5, rsphere=rsphere,
-              width=15*10e3, height=20*10e3, area_thresh = 1e3, resolution='i')
+projection_dict['lcc-grw'] = dict(projection='lcc', lat_0=43.5, lon_0=-80., lat_1=43.5, rsphere=rsphere,
+              width=20*10e3, height=20*10e3, area_thresh = 1e3, resolution='i')
 ## Lambert Conic Conformal - Canada
 projection_dict['lcc-can'] = dict(projection='lcc', lat_0=52.5, lon_0=-105, lat_1=52.5, rsphere=rsphere,
               width=5000e3, height=4500e3, area_thresh = 10e3, resolution='l')

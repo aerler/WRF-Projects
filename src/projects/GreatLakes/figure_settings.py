@@ -132,9 +132,9 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(-4,4,25); clbl = '%02.1f'
       cmap = mpl.cm.PuOr
     elif var == 'pet': # potential evaporation
-      clevs = np.linspace(0,6,26); clbl = '%02.1f' # mm/day
-      if season == 'winter': clevs -= 2
-      elif season == 'summer': clevs += 2    
+      clevs = np.linspace(0,5,26); clbl = '%02.1f' # mm/day
+      #if season == 'winter': clevs -= 2
+      #elif season == 'summer': clevs += 2    
     elif var in ('aSM',): # (absolute) soil moisture
       # clevs = np.linspace(-3,22,51); clbl = '%02.1f'
       clevs = np.linspace(0.05,0.45,21); cmap = cm.avhrr_r; cmap.set_over('blue'); clbl = '%03.2f' # mpl.cm.PuOr
@@ -159,10 +159,10 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('snwmlt', 'runoff', 'ugroff', 'sfroff'): # moisture fluxes (kg /(m^2 s))
       # clevs = np.linspace(-3,22,51); clbl = '%02.1f'
       clevs = np.linspace(0,5,25); clbl = '%02.1f'; cmap = mpl.cm.YlGnBu
-    elif var in ('precip','precipnc'): # total precipitation
+    elif var in ('precip','precipnc') or var[:7] in ('dryprec','wetprec'): # total precipitation
 #       if season in ('winter','fall'): clevs = np.linspace(0,20,41); clbl = '%2.1f' # mm/day
 #       elif season in ('summer','spring'): clevs = np.linspace(0,8,17); clbl = '%2.0f' # mm/day
-      clevs = np.linspace(0,16,33); clbl = '%2.0f' # mm/day
+      clevs = np.linspace(0,5,26); clbl = '%2.0f' # mm/day
     elif var in ('precip_hist'): # total precipitation for north america
       clevs = np.linspace(0,8,25); clbl = '%2.0f' # mm/day
     elif var in ('MaxPrecip_1d'): # total precipitation for north america
@@ -171,13 +171,13 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('precipc',): # convective precipitation 
       clevs = np.linspace(0,5,26); clbl = '%02.1f' # mm/day
     elif var == 'Q2':
-      clevs = np.linspace(0,15,31); clbl = '%02.1f' # mm/day
+      clevs = np.linspace(0,20,21); clbl = '%02.1f' # mm/day
     elif var=='SST' or var=='Ts': # skin temperature (SST)
       clevs = np.linspace(240,305,66); clbl = '%03.0f' # K
       cmap = mpl.cm.gist_ncar; cmap.set_over('white'); cmap.set_under('blue') # different from T2
       if var=='SST': lmsklnd = True # mask land for SST      
     elif var=='T2' or var=='Tmin' or var=='Tmax' or var=='Tmean': # 2m or skin temperature (SST)
-      clevs = np.linspace(255,290,36); clbl = '%03.0f' # K
+      clevs = np.linspace(260,300,41); clbl = '%03.0f' # K
       if season == 'winter': clevs -= 10
       elif season == 'summer': clevs += 10
       if var=='Tmin': clevs -= 5
