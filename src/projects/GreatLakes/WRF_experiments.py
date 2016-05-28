@@ -127,7 +127,7 @@ ensembles['marc-ens'] = ('g-ctrl','gg-ctrl', 'm-ctrl','mm-ctrl', 't-ctrl')
 ensembles['g-ens'] = ('g-ctrl', 'g-ens-A', 'g-ens-B', 'g-ens-C')
 ensembles['t-ens'] = ('t-ctrl', 't-ens-A', 't-ens-B', 't-ens-C')
 ensembles['g3-ens'] = ('g3-ctrl', 'g3-ens-A', 'g3-ens-B', 'g3-ens-C')
-ensembles['t3-ens'] = ('t3-ctrl', 't3-ens-A', 't3-ens-B', 't3-ens-C')
+#ensembles['t3-ens'] = ('t3-ctrl', 't3-ens-A', 't3-ens-B', 't3-ens-C')
 # N.B.: static & meta data for the ensemble is copied from the first-listed member;
 #       this includes station attributes, such as the elevation error 
 # add future versions
