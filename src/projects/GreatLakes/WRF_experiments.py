@@ -97,6 +97,7 @@ experiments['g3-ensemble-2100'] = Exp(shortname='g3-ens-2100', name='g3-ensemble
 experiments['gg-ctrl'] = Exp(shortname='gg-ctrl', name='gg-ctrl', title='G-Ctrl (N-MP)')
 experiments['gg-ctrl-2050'] = Exp(shortname='gg-ctrl-2050', name='gg-ctrl-2050', title='G-Ctrl (2050, N-MP)', begindate='2045-01-01')
 experiments['gg-ctrl-2100'] = Exp(shortname='gg-ctrl-2100', name='gg-ctrl-2100', title='G-Ctrl (2100, N-MP)', begindate='2085-01-01')
+experiments['gg2-ctrl-2100'] = Exp(shortname='gg2-ctrl-2100', name='gg2-ctrl-2100', title='G-Ctrl (2100, N-MP, 2nd)', begindate='2085-01-01')
 experiments['m-ctrl'] = Exp(shortname='m-ctrl', name='m-ctrl', title='M-Ctrl')
 experiments['m-ctrl-2050'] = Exp(shortname='m-ctrl-2050', name='m-ctrl-2050', title='M-Ctrl (2050)', begindate='2045-01-01')
 experiments['m-ctrl-2100'] = Exp(shortname='m-ctrl-2100', name='m-ctrl-2100', title='M-Ctrl (2100)', begindate='2085-01-01')
