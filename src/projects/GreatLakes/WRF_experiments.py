@@ -105,9 +105,9 @@ experiments['mm-ctrl'] = Exp(shortname='mm-ctrl', name='mm-ctrl', title='M-Ctrl 
 experiments['mm-ctrl-2050'] = Exp(shortname='mm-ctrl-2050', name='mm-ctrl-2050', title='M-Ctrl (2050, N-MP)', begindate='2045-01-01')
 experiments['mm-ctrl-2100'] = Exp(shortname='mm-ctrl-2100', name='mm-ctrl-2100', title='M-Ctrl (2100, N-MP)', begindate='2085-01-01')
 # Marc's Physics Ensemble
-experiments['physics-ensemble'] = Exp(shortname='physics-ens', name='physics-ensemble', title="Physics Ensemble", parent='Ctrl-1')
-experiments['physics-ensemble-2050'] = Exp(shortname='physics-ens-2050', name='physics-ensemble-2050', title="Phys. Ens. (2050)", begindate='2045-01-01', parent='Ctrl-1-2050')
-experiments['physics-ensemble-2100'] = Exp(shortname='physics-ens-2100', name='physics-ensemble-2100', title="Phys. Ens. (2100)", begindate='2085-01-01', parent='Ctrl-1-2100')
+experiments['physics-ensemble'] = Exp(shortname='phys-ens', name='physics-ensemble', title="Physics Ensemble", parent='Ctrl-1')
+experiments['physics-ensemble-2050'] = Exp(shortname='phys-ens-2050', name='physics-ensemble-2050', title="Phys. Ens. (2050)", begindate='2045-01-01', parent='Ctrl-1-2050')
+experiments['physics-ensemble-2100'] = Exp(shortname='phys-ens-2100', name='physics-ensemble-2100', title="Phys. Ens. (2100)", begindate='2085-01-01', parent='Ctrl-1-2100')
 
 ## an alternate dictionary using short names and aliases for referencing
 exps = OrderedDict()
@@ -124,7 +124,7 @@ WRF_experiments = experiments # alias for dict with proper names
 ## dict of ensembles
 ensembles = OrderedDict()
 # Great Lakes ensembles
-ensembles['marc-ens'] = ('g-ctrl','gg-ctrl', 'm-ctrl','mm-ctrl', 't-ctrl')
+ensembles['phys-ens'] = ('g-ctrl','gg-ctrl', 'm-ctrl','mm-ctrl', 't-ctrl')
 ensembles['g-ens'] = ('g-ctrl', 'g-ens-A', 'g-ens-B', 'g-ens-C')
 ensembles['t-ens'] = ('t-ctrl', 't-ens-A', 't-ens-B', 't-ens-C')
 ensembles['g3-ens'] = ('g3-ctrl', 'g3-ens-A', 'g3-ens-B', 'g3-ens-C')
