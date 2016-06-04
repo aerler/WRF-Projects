@@ -44,7 +44,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
 #     cmap = mpl.cm.Oranges
 #     cmap = mpl.cm.PuOr
     if var in ('T2_prj','Ts_prj','Tmin_prj','Tmax_prj','Tmean_prj'):
-      clevs = np.linspace(0,8,41); clbl = '%3.1f'; cmap = mpl.cm.Oranges # K
+      clevs = np.linspace(0,5,31); clbl = '%3.1f'; cmap = mpl.cm.Oranges # K
     elif var in ('evap_prj','pet_prj','precip_prj','precipc_prj','precipnc_prj'):
       clevs = np.linspace(-1.5,1.5,31); clbl = '%2.1f'; cmap = mpl.cm.PuOr # mm/day    
     elif var in ('T2','Ts','Tmin','Tmax','Tmean'):
@@ -76,14 +76,14 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     if var in ('T2_prj','Ts_prj','Tmin_prj','Tmax_prj','Tmean_prj'):
       clevs = np.linspace(0,3,41); clbl = '%2.1f'; cmap = mpl.cm.Oranges # K
     elif var in ('evap_prj','pet_prj','precip_prj','precipc_prj','precipnc_prj'):
-      clevs = np.linspace(-90.,90,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr # mm/day    
+      clevs = np.linspace(-45.,45,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr # mm/day    
     elif var in ('T2','Ts','Tmin','Tmax','Tmean'):
       clevs = np.linspace(-3,3,21); clbl = '%2.1f'
     elif var in ('Z',):
       clevs = np.linspace(-15,15,31); clbl = '%2.1f'  
     elif var in ('evap','pet','p-et','precip','precipc','precipnc','waterflx',):
 #       clevs = np.linspace(-100,100,41); clbl = '%2.0f'  
-      clevs = np.linspace(-50,50,41); clbl = '%2.0f'; cmap = mpl.cm.PuOr
+      clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr
     elif var in ('WaterTransport_U','WaterTransport_V','ColumnWater','cqwu','cqwv','cqw'):
       clevs = np.linspace(-50,50,41); clbl = '%2.0f'
     elif var in ('aSM',):
@@ -193,13 +193,14 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('T',): # moisture fluxes (kg /(m^2 s))
       clevs = np.linspace(200,300,26); clbl = '%02.1f' # mpl.cm.PuOr
     elif var == 'zs': # surface elevation / topography
+      zsmax = 1.5 # or 2.5
       if season == 'topo':
-        lmskocn = True; clim = (-1.,2.5); # nice geographic map feel
-        clevs = np.hstack((np.array((-1.5,-1,-0.5)), np.linspace(-0,2.5,51))); clbl = '%02.1f' # km
+        lmskocn = True; clim = (-1.,zsmax); # nice geographic map feel
+        clevs = np.hstack((np.array((-1.5,-1,-0.5)), np.linspace(-0,zsmax,31))); clbl = '%02.1f' # km
         cmap = mpl.cm.gist_earth; cmap.set_over('white'); cmap.set_under('blue') # topography
       elif season == 'hidef': 
-        lmskocn = True; clim = (-0.5,2.5); # good contrast for high elevation
-        clevs = np.hstack((np.array((-.5,)), np.linspace(0,2.5,26))); clbl = '%02.1f' # km
+        lmskocn = True; clim = (-0.5,zsmax); # good contrast for high elevation
+        clevs = np.hstack((np.array((-.5,)), np.linspace(0,zsmax,31))); clbl = '%02.1f' # km
         cmap = mpl.cm.gist_ncar; cmap.set_over('white'); cmap.set_under('blue')
       else: 
         raise ValueError, 'No map color scheme defined (use \'season\' to select color scheme).'
@@ -317,7 +318,7 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
       # 4 panel    
       figsize = (6.25,6.25)
       if cbar:
-        cbo = cbo or 'vertical'
+        cbo = cbo or 'horizontal'
         if cbo == 'vertical': 
           margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05)
           caxpos = [0.91, 0.05, 0.03, 0.9]

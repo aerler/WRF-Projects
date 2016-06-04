@@ -62,8 +62,9 @@ if __name__ == '__main__':
   shading = 'gouraud' # shading for pixel plot: 'flat' | 'gouraud'
   laddContour = False # add black contour lines
   lframe = True # draw domain boundary
+  framewidths = 1.5; framecolor = 'k' # line width for domain outline
   loutline = True # draw boundaries around valid (non-masked) data
-  framewidths = 2.5
+  outlinewidth = 1.; outlinecolor = 'k'
   cbn = None # colorbar levels
   figuretype = None
   lsamesize = True
@@ -73,6 +74,7 @@ if __name__ == '__main__':
   lstations = False; stations = 'EC'; cluster_symbols = {2:'o',5:'^',8:'s'}; cluster_name = 'cluster_projection'
   cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.iteritems()}
   lbasins = False; basinlist = ('ARB','FRB','GLB'); primary_basins = []; subbasins = {} #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
+  basin_args = dict(linewidth = 1., color='k'); subbasin_args = dict(linewidth = 0.5, color='k')
   lprovinces = True; provlist = ('BC','AB','ON')
   cbo = None # default based on figure type
   resolution = None # only for GPCC (None = default/highest)
@@ -91,25 +93,25 @@ if __name__ == '__main__':
     
   # WRF file types
   WRFfiletypes = [] # WRF data source
-  WRFfiletypes += ['aux']
-  WRFfiletypes += ['hydro']
+#   WRFfiletypes += ['aux']
+#   WRFfiletypes += ['hydro']
 #   WRFfiletypes += ['lsm']
   WRFfiletypes += ['srfc']
-#  WRFfiletypes += ['xtrm']
+#   WRFfiletypes += ['xtrm']
 #   WRFfiletypes += ['plev3d']
   ## select variables and seasons
   variables = [] # variables
 #   variables += ['Ts']
-#  variables += ['T2']
-#  variables += ['Tmean']
+#   variables += ['T2']
+#   variables += ['Tmean']
 #  variables += ['Tmin', 'Tmax']
 #   variables += ['MaxPrecip_1d']; aggregation = 'mean'
 #   variables += ['MaxPrecip_1d']; aggregation = 'max'
 #   variables += ['MaxPreccu_1d']; aggregation = 'max'
 #   variables += ['MaxPrecnc_1d']; aggregation = 'max'
-  variables += ['dryprec_010']
-  variables += ['precip'] 
-#  variables += ['precip','pet'] 
+#   variables += ['dryprec_010']
+#   variables += ['precip'] 
+#   variables += ['precip','pet'] 
 #   variables += ['preccu']
 #   variables += ['precnc']
 #   variables += ['wetfrq']
@@ -163,81 +165,95 @@ if __name__ == '__main__':
   folder = figure_folder
   lpickle = True # load projection from file or recompute
   lprint = True # write plots to disk using case as a name tag
-  maptype = 'lcc-grw'; lstations = False; lbasins = True; domain = 2
+#   maptype = 'lcc-grw'; lstations = False; lbasins = True; domain = 2
+#   maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = 2
+  maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = None
 #   maptype = 'lcc-can'; lstations = False; domain = 1
 #   lbasins = True; basinlist = ('ARB','FRB','CRB','NRB','PSB'); lprovinces = False; provlist = ['BC','AB','ON']
 #   lbasins = False; basinlist = ('ARB','FRB','GLB'); lprovinces = False; provlist = ['BC','AB','ON']
-  lbasins = True; basinlist = ('GLB','GRW'); lprovinces = False; provlist = ['ON']
+#   lbasins = True; basinlist = ('GLB','GRW'); lprovinces = False; provlist = ['ON']
+  lbasins = True; basinlist = ('GLB',); lprovinces = False; provlist = ['ON']
+
 
 ## PET validation for GRW
-  lprint = True; lpickle = False
-  explist = ['g-ens']*3+['GPCC']*3
-  seasons = [['annual','summer','winter']*2]
-  period  = [H15]*3+[H15]*3; grid = 'grw2'; case = 'grw'
-  variables = [['dryprec_010']*3+['precip']*3, 'precip']
-# # 2-panel map with CESM and Obs: precip and topo
-#   lprint = True; lpickle = True; lbackground = True
-# #   explist = ['Ens','PRISM']
-# #   exptitles = ['CESM ~80 km','Observations']; case = 'resobs'
-# #   seasons = ['winter']; variables = ['precip']
-#   explist = ['Ens','max-ens']; domain = (1,2); case = 'reswrf'
-#   exptitles = ['CESM ~80 km','Topography ~10 km']
-#   seasons = ['hidef']; variables = ['zs']; lcontour = True # static
-# #   exptitles = ['CESM ~80 km','WRF 10km']
-# #   seasons = ['annual']; variables = ['precip']; lcontour = True # static
-#   maptype = 'lcc-fine'; period = H15
-#   lframe = False; loutline = False; lbasins = False; lprovinces = False
+#   lprint = True; lpickle = False
+#   explist = ['g-ens']*3+['GPCC']*3
+#   seasons = [['annual','summer','winter']*2]
+#   period  = [H15]*3+[H15]*3; grid = 'grw2'; case = 'grw'
+#   variables = [['dryprec_010']*3+['precip']*3, 'precip']
 
-# Precip Extremes in Ensemble Members (PanAm, progrssion)
-#   seasons = [('summer',)*3+('winter',)*3]; period = [H15,A15,B15]*2
-#   period = [H15,A15,B15]*2; domain = 1
-#   explist = ['max-ctrl','max-ctrl-2050','max-ctrl-2100','max-ens','max-ens-2050','max-ens-2100']
-#   expstrs = ('WRF-1','Ensemble Mean'); case = 'panam_ens_10'
-# #   explist = ['max-ctrl','max-ctrl-2050','max-ctrl-2100','max-ens-A','max-ens-A-2050','max-ens-A-2100']
-# #   expstrs = ('WRF-1','WRF-2'); case = 'panam_ens_12'
-# #   explist = ['max-ens-B','max-ens-B-2050','max-ens-B-2100','max-ens-C','max-ens-C-2050','max-ens-C-2100']
-# #   expstrs = ('WRF-3','WRF-4'); case = 'panam_ens_34'
-#   periodstrs = ('Historical','Mid-Century','End-Century'); 
-#   exptitles = ['{:s}, {:s}'.format(expstr,prdstr) for expstr in expstrs for prdstr in periodstrs]
-#   maptype = 'lcc-can'; lstations = False; lsamesize = False
-#   lprovinces = False; provlist = ['BC','AB']
-#   lbasins = False; basinlist = ['FRB','ARB']
-# #   variables = ['precip']
-#   variables = ['MaxPrecip_1d']; aggregation = 'max'; seasons = ['summer']
-#   figtitles = ['Maxima of Daily Precipitation Totals in Summer [mm/day]']
+
+# validation and projection for the Great Lakes region
+  explist = ['g-ens','Ens','g-ens','Ens']; seasons = [['summer']*2+['winter']*2]
+  exptitles = [ '{}, {}'.format(e,s.title()) for e,s in zip(['WRF Ensemble (30km)','CESM Ensemble']*2,seasons[0]) ]
+  grid = ['glb1_d01','cesm1x1']*2; domain = 1
+#   variables = ['T2']; ldiff = True; variable_settings = ['T2_prj']; reflist = 'CRU' # T2
+  variables = ['precip']; lfrac = True; variable_settings = ['precip_prj']; reflist = 'GPCC' # precip
+  period = A15; refprd = H15; reflist = explist; case = 'prj' # projection 
+#   period = H15; refprd = H15; case = 'val'; variable_settings = None # validation 
+
+# # validation over Great Lakes region
+#   explist = ['g-ctrl','GPCC','g-ens-A','g-ens-B','NARR','g-ens-C']
+#   seasons = ['annual','summer','winter']; variables = ['precip']
+#   period  = H15; domain = 2; case = 'ens_d0{:d}'.format(domain)
+# #   variables = ['precip'];  reflist = 'GPCC'; lfrac = True
+# #   variables = ['T2']; reflist = 'CRU'; refprd = H15; ldiff = True
+
+# # validation over Great Lakes region
+#   explist = ['Ens','GPCC','g-ens','NARR']; seasons = ['annual','summer','winter']
+#   exptitles = [None, None, 'WRF Ensemble Mean (30km)', None]
+#   period  = H15; grid = None; case = 'val'; lframe = False
+#   variables = ['precip']; WRFfiletypes = ['srfc']; domain = 1
+# #   variables = ['T2']; explist[1] = 'CRU'
+
+# # multi-panel map with river basins
+# #   lpickle = False; lprint = False
+#   case = 'glb'; figtitles = 'Basin Outline and Topography [km]'
+#   variables = ['zs']; seasons = ['topo']; lcontour = True 
+#   maptype = 'lcc-glb'; lstations = False; lprovinces = False; lbasins = True
+#   period = H15; lWRFnative = True; loutline = False; lframe = False
+# #   lframe = True; case = 'glb_wrf2'
+#   explist = ['g-ctrl']; exptitles = ' '; domain = (1,2)
   
+# # larger map with river basins
+# #   lpickle = False; lprint = False
+#   case = 'ongl'; lbasins = False; figtitles = 'Basin Outline and Topography [km]'
+#   variables = ['zs']; seasons = ['topo']; lcontour = True
+#   maptype = 'lcc-ongl'; lstations = False; stations = 'EC'
+#   period = H15; lWRFnative = True; loutline = False; lframe = True 
+#   explist = ['g-ctrl']; exptitles = ' '; domain = (1,2)
+#   basinlist = ('GLB',); primary_basins = basinlist; subbasins = {} #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
+# #   lbasins = True; basin_args = dict(linewidth = 1.5, color='k'); case = 'ongl_glb'
+# #   lbasins = True; basin_args = dict(linewidth = 1.5, color='m'); case = 'ongl_glb_m'
+#   lprovinces = False; provlist = ('ON',); lsamesize = True
+  
+# # continental-scale map with domains
+# #   lpickle = False; lprint = False
+#   case = 'can_wrf2'; figtitles = 'Topography and Domain Outline [km]'
+#   variables = ['zs']; seasons = ['topo']; lcontour = True; 
+#   lframe = True; framewidths = 2.; framecolor = 'w'
+#   loutline = True; outlinewidth = 1.; outlinecolor = 'k'
+#   maptype = 'lcc-can'; lstations = False; stations = 'EC'
+#   period = H15; lWRFnative = True
+#   explist = ['g-ctrl']; exptitles = ' '; domain = (0,1,2)
+#   lbasins = False; basinlist = ('GLB',); primary_basins = basinlist; subbasins = {} #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
+#   lprovinces = False; provlist = ('ON',)
 
-# map with river basins
-#   variables = ['zs']; seasons = ['topo']; lcontour = True; lframe = False 
-#   maptype = 'lcc-prairies'; lstations = False; stations = 'EC'
-#   period = H15; lWRFnative = True; loutline = True
-#   explist = ['max-ctrl']; exptitles = ' '; domain = (1,2)
-#   case = 'SSR'; figtitles = 'Basin Outlines and Topography [km]'
-#   lbasins = True; basinlist = ('ARB','FRB','SSR')[:]; primary_basins = basinlist; subbasins = {} #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
-#   lprovinces = True; provlist = ('BC','AB','SK')
-
-# high resolution map
-#   maptype = 'lcc-new'; lstations = True; stations = 'EC'; lbasins = True
-#   period = H01; lWRFnative = True; lframe = False; loutline = False
-#   explist = ['col1-ctrl']; exptitles = ' '; domain = (2,3)
-#   case = 'BCAB_stns'; figtitles = 'EC Stations (BC & Alberta) and Terrain Height [km]'
-# map with most of Canada
-#   maptype = 'lcc-can'; lstations = False; lbasins = True
-#   period = H05; lWRFnative = True; lframe = False; loutline = False
-#   explist = ['max-ctrl']; exptitles = ' '; domain = (1,2)
-#   case = 'topo_can'
-
-# observations
-#   explist = ['PRISM']; maptype = 'lcc-new'; period = H15
-#   ldiff = True; reflist = ['Unity']; maptype = 'lcc-small'
-#   exptitles = ['Merged Observations (10 km)']
-#   case = 'prism'; lsamesize = True; grid = 'arb2_d02'
+# # larger map with river basins
+# #   lpickle = False; lprint = False
+#   case = 'obs'; #lbasins = False; figtitles = 'Basin Outline and Topography [km]'
+#   variables = ['precip']; seasons = ['annual','summer','winter']; lcontour = True
+#   maptype = 'lcc-ongl'; lstations = False; lprovinces = False
+#   period = H15; lWRFnative = True; loutline = False; lframe = False 
+#   explist = ['GPCC']; exptitles = ' '; grid = None
+#   lbasins = True; basinlist = ('GLB',); primary_basins = basinlist; subbasins = {} 
 
 # # CESM + WRF domain, global
-# #   explist = ['Ens']; case = 'cesm'
-# #   explist = ['max-ens']; domain = (0,1,); case = 'wrf1'; lbackground = False
-#   explist = ['max-ens']; domain = (0,1,2); case = 'wrf2'; lbackground = False
-#   exptitles = ''; maptype = 'ortho-NA'; period = H15; lbasins = False; lprovinces = False   
+# #   lpickle = False; lprint = False
+#   explist = ['Ens']; case = 'cesm'
+# #   explist = ['g-ens']; domain = (0,1,); case = 'wrf1'; lbackground = False
+# #   explist = ['g-ens']; domain = (0,1,2); case = 'wrf2'; lbackground = False
+#   exptitles = ''; maptype = 'ortho-can'; period = H15; lbasins = False; lprovinces = False   
 #   lsamesize = True; lcontour = True; lframe = True; loutline = False
 # #   exptitles = ['Merged Observations (10 km)']
 #   variables = ['Ts']; seasons = ['annual']; WRFfiletypes = ['srfc'] 
@@ -491,106 +507,6 @@ if __name__ == '__main__':
 #   ldiff = True; variables = ['T2']; variable_settings = ['T2_prj'] # parallel execution
 #   lfrac = True; variables = ['precip']; variable_settings = ['precip_prj']
 #   ldiff = True; variables = ['precip']; variable_settings = ['precip_prj']
-
-# Fig. 2 Annual Precip: as it is
-#   explist = ['Ens']; period = H15; lcontour = True
-#   explist = ['Ens', 'Unity', 'max-ens', 'max-ens']; period = H15; domain = [None, None, 1, 2]
-#   exptitles = ['CESM (80 km)','Merged Observations (10 km)', 'Outer WRF Domain (30 km)', 'Inner WRF Domain (10 km)']
-#   case = 'valobs'; lsamesize = False # grid = [None,'arb2_d02',None,None]
-
-# Fig. 3/4 Validation: differences to obs (T2, precip, annual, summer, winter)
-#   explist = ['Ens']; period = H15; grid = ['cesm1x1']
-#   explist = ['max-ens']*3+['Ens']*3; grid = ['arb2_d02']*3+['cesm1x1']*3
-#   seasons = ['annual', 'summer', 'winter']*2; period = H15
-#   exptitles = ['WRF, 10 km ({:s} Average)']*3+['CESM ({:s} Average)']*3
-#   exptitles = [model.format(season.title()) for model,season in zip(exptitles,seasons)]
-#   case = 'val'; lsamesize = True; cbo = 'horizontal'
-#   ldiff = True; reflist = ['Unity']*6; refprd = H15
-#   variables = ['T2','precip']; seasons = [seasons] # only make one plot with all seasons!
-#   lfrac = True; reflist = ['Unity']*6; refprd = H15
-#   variables = ['precip']; seasons = [seasons] # only make one plot with all seasons!
-
-# # Fig. 3/4 Validation: differences to obs (T2, precip, annual, summer, winter)
-#   explist = ['Ens']; period = H15; grid = ['cesm1x1']
-#   explist = ['max-ens-A']*3+['Ens']*3; grid = ['arb2_d02']*3+['cesm1x1']*3
-#   seasons = ['annual', 'summer', 'winter']*2; period = H15
-#   exptitles = ['WRF, 10 km ({:s} Average)']*3+['CESM ({:s} Average)']*3
-#   exptitles = [model.format(season.title()) for model,season in zip(exptitles,seasons)]
-#   case = 'val'; lsamesize = True; cbo = 'horizontal'
-# #   ldiff = True; reflist = ['Unity']*6; refprd = H15
-# #   variables = ['T2','precip']; seasons = [seasons] # only make one plot with all seasons!
-# #   lfrac = True; reflist = ['Unity']*6; refprd = H15
-# #   variables = ['precip']; seasons = [seasons] # only make one plot with all seasons!
-#   variables = ['MaxPrecip_1d']; seasons = [seasons] # only make one plot with all seasons!
-
-# Fig. 5 Summer Ensemble
-# #   explist = ['Unity']; period = H15
-#   explist = ['max', 'max-A', 'Unity', 'max-B', 'max-C', 'NARR']; period = H15
-#   exptitles = ['WRF-1', 'WRF-2','Merged Observations', 'WRF-3', 'WRF-4', 'NARR (Reanalysis)']
-#   case = 'val-ens'; lsamesize = False; #grid = 'arb2_d02'
-#   variables = ['precip']; seasons = ['annual','summer','winter']
-
-## ensemble differences
-#   explist = ['Unity']; period = H15
-#   explist = ['max-2100', 'max-A-2100', 'max-B-2100', 'max-C-2100']
-#   reflist = ['max', 'max-A', 'max-B', 'max-C']; case = 'val-ens'
-#   exptitles = ['WRF-1', 'WRF-2', 'WRF-3', 'WRF-4']
-#   explist = ['Ctrl-1-2100', 'Ctrl-A-2100', 'Ctrl-B-2100', 'Ctrl-C-2100']
-#   reflist = ['Ctrl-1', 'Ctrl-A', 'Ctrl-B', 'Ctrl-C']; case = 'val-Ens'
-#   period = B15; refprd = H15; lfrac = True; lsamesize = False; grid = 'arb2_d02'
-#   variables = ['precip']; seasons = ['annual','summer','winter'][:] 
- 
-
-# Fig. 6/7 Climate Change: T2 and pecip diffs
-#   explist = ['max-ens-2100']*3+['Ens-2100']*3; period = B15
-# #   explist = ['max-ens-2050']*3+['Ens-2050']*3; period = A15
-# #   explist = ['max-1deg-2100']*3+['Ens-2100']*3; period = B15
-#   seasons = ['annual', 'summer', 'winter']*2; #grid = ['arb2_d02']*3+['cesm1x1']*3
-# # #   seasons = ['annual', 'spring', 'fall']*2; period = B15
-#   exptitles = ['WRF, 10 km ({:s} Average)']*3+['CESM ({:s} Average)']*3
-#   exptitles = [model.format(season.title()) for model,season in zip(exptitles,seasons)]
-#   case = 'prj'; lbasins = True; lsamesize = False; cbo = 'horizontal'
-#   ldiff = True; reflist = ['max-ens']*3+['Ens']*3; refprd = H15
-# #   ldiff = True; reflist = ['max-1deg']*3+['Ens']*3; refprd = H15  
-#   seasons = [seasons] # only make one plot with all seasons!
-# #   grid = 'arb2_d02' # necessary for properly area averaged stats
-# #   variables = ['SST']; locean = True; variable_settings = ['T2_prj'] # parallel execution
-# # #   variables = ['T2']; variable_settings = ['T2_prj'] # parallel execution
-#   variables = ['precip']; variable_settings = ['precip_prj']
-#   ldiff = False; lfrac = True 
-
-# Fig. 8 Net Precip: the hydro plot
-#   case = 'hydro'; lsamesize = False; cbo = 'vertical'; ltitle = True
-#   variables = ['p-et']; seasons = [['annual', 'summer']]
-#   exptitles = [r'Annual Average', r'Summer Average']
-# top row
-#   figtitles = r'WRF Ensemble Mean Net Precipitation $(P - ET)$' 
-#   explist = ['max-ens']*2; period = H15  
-# bottom row
-#   figtitles = r'Change in Net Precipitation $\Delta(P - ET)$' 
-#   explist = ['max-ens-2100']*2; period = B15
-#   ldiff = True; reflist = ['max-ens']; refprd = H15
-
-# Fig. 13 (PDO, and now also AMO, because it is wrong)
-#   maptype = 'robinson'; lstations = False; lbasins = False; lprovinces=False; lminor = False; locean = True  
-#   case = 'cvdp'; lsamesize = False; cbo = 'horizontal'; ltitle = True; seasons = [None]  
-#   exptitles = [r'HadISST', r'CESM Ensemble']; subplot = (2,1)
-#   variables = ['PDO_eof','AMO_eof',]; explist = ['SST_CVDP','Ctrl-1_CVDP']; period = H15
-#   figtitles = ['Pacific Decadal Oscillation SST Pattern', 'Atlantic Multi-Decadal Oscillation Pattern']   
-#   exptitles = [r'20th Cent. Reanalysis V2', r'CESM Ensemble']
-#   explist = ['PSL_CVDP','Ctrl-1_CVDP']; period = H15
-#   variables = ['NAM_eof','NAO_eof','NPO_eof','PNA_eof',]
-#   figtitles = ['Northern Annular Mode Pattern', 'North Atlantic Oscillation Pattern',
-#                'North Pacific Oscillation Pattern', 'Pacific North America Pattern']
-
-#   case = '3km'; stations = 'cities'
-#   maptype = 'lcc-col'; lstations = True; lbasins = True # 'lcc-new'  
-#   period = [H01]*4; period[1] = H15 
-#   domain = [3,2,1,2]; lbackground = False
-#   ldiff = True; reflist = ['Unity']; refprd = H30
-#   grid = ['col2_d03','arb2_d02','col2_d01','col2_d02'] 
-#   explist = ['max-3km','max-ctrl','max-3km','max-3km'] 
-#   exptitles = ['WRF 3km','WRF 10km (15 yrs)','WRF 30km','WRF 10km']
 
 ## large map for all domains
 #   maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
@@ -850,13 +766,13 @@ if __name__ == '__main__':
               # N.B.: for some reason, using np.ones_like() causes a masked data array to fill with zeros  
               #print bdy.mean(), data[n][m].__class__.__name__, data[n][m].fill_value 
               bdy[0,:]=0; bdy[-1,:]=0; bdy[:,0]=0; bdy[:,-1]=0 # demarcate domain boundaries        
-              maps[n].contour(x[n][m],y[n][m],bdy,[-1,0,1],ax=ax[n], colors='k', 
-                              linewidths=framewidths, fill=False) # draw boundary of data
+              maps[n].contour(x[n][m],y[n][m],bdy,[-1,0,1],ax=ax[n], colors=outlinecolor,
+                              linewidths=outlinewidth, fill=False) # draw boundary of data
             if lframe:
               if isinstance(domain,(tuple,list)) and not ( domain[0] == 0 and m == 0):
                 bdy = ma.ones(x[n][m].shape)   
                 bdy[0,:]=0; bdy[-1,:]=0; bdy[:,0]=0; bdy[:,-1]=0 # demarcate domain boundaries        
-                maps[n].contour(x[n][m],y[n][m],bdy,[-1,0,1],ax=ax[n], colors='k', 
+                maps[n].contour(x[n][m],y[n][m],bdy,[-1,0,1],ax=ax[n], colors=framecolor, 
                                 linewidths=framewidths, fill=False) # draw boundary of domain
       # draw data
       norm = mpl.colors.Normalize(vmin=min(clevs),vmax=max(clevs),clip=True) # for colormap
@@ -961,13 +877,13 @@ if __name__ == '__main__':
                 if basin in subbasins:
                   for subbasin in subbasins[basin]:		  
                     bmap.readshapefile(basininfo.shapefiles[subbasin][:-4], subbasin, ax=axn, 
-                                       drawbounds=True, linewidth = 0.5, color='k')          
+                                       drawbounds=True, **subbasin_args)          
                 elif basin in primary_basins:
                   bmap.readshapefile(basininfo.shapefiles['Whole'+basin][:-4], basin, ax=axn, 
-                                     drawbounds=True, linewidth = 1., color='k')            
+                                     drawbounds=True, **basin_args)            
                 else:
                   bmap.readshapefile(basininfo.shapefiles['Whole'+basin][:-4], basin, ax=axn, 
-                                     drawbounds=True, linewidth = 0.5, color='k')
+                                     drawbounds=True, linewidth = 1., color='k')
               except:
                 print(basin)
                 raise # raise previous exception           
@@ -976,7 +892,7 @@ if __name__ == '__main__':
             for province in provlist:    
               provinfo = province_info[province]
               bmap.readshapefile(provinfo.shapefiles[provinfo.long_name][:-4], province, 
-                                 drawbounds=True, linewidth = 0.5, color='k')            
+                                 drawbounds=True, linewidth = 1., color='k')            
 
       # save figure to disk
       if lprint:
