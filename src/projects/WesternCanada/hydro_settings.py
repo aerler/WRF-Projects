@@ -233,6 +233,7 @@ def getFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels
   if plot_labels is None: plot_labels = plot_labels_rc
   return pltfig.getFigAx(subplot, dataset_plotargs=dataset_plotargs, variable_plotargs=variable_plotargs,
                          plot_labels=plot_labels, xtop=xtop, yright=yright, **kwargs)
+hydroFigAx = getFigAx # alias for direct project import
 
 # basin annotation
 # defaults

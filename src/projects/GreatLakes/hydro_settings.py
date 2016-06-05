@@ -12,7 +12,7 @@ import matplotlib as mpl
 from geodata.misc import AttrDict
 import plotting.figure as pltfig
 import hydro.plots as plots
-from hydro import basins
+import hydro.basins as basins
 from WRF_experiments import WRF_ens, WRF_exps
 from projects.CESM_experiments import CESM_ens, CESM_exps
 
@@ -29,16 +29,16 @@ variables_rc['precip_xtrm']     = VL(vars=('MaxPrecip_1d', 'MaxPrecip_5d', 'MaxP
 variables_rc['precip_cesm']     = VL(vars=('MaxPrecip_1d', 'MaxPreccu_1d', ), files=('hydro',), label='Precipitation')
 variables_rc['precip_alt']      = VL(vars=('MaxPrecip_1d', 'MaxPrecnc_1d', 'MaxSolprec_1d'), files=('hydro',), label='Precipitation')
 variables_rc['precip_types']    = VL(vars=('precip','preccu','precnc'), files=('hydro',), label='Water Flux')
-variables_rc['flux']            = VL(vars=('precip','snwmlt','p-et'), files=('hydro',), label='Water Flux')
-variables_rc['flux_alt']        = VL(vars=('precip','snwmlt','solprec'), files=('hydro',), label='Water Flux')
+variables_rc['precip_net']      = VL(vars=('precip','solprec','p-et'), files=('hydro',), label='Water Flux')
+variables_rc['flux_snow']       = VL(vars=('precip','snwmlt','solprec'), files=('hydro',), label='Water Flux')
 variables_rc['flux_days']       = VL(vars=('wetfrq_010','snwmlt','p-et'), files=('hydro',), label='Water Flux')
 variables_rc['wetprec']         = VL(vars=['wetprec'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Precip.')
 variables_rc['wetdays']         = VL(vars=['wetfrq'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Ratio')
 variables_rc['CWD']             = VL(vars=['CWD'+ext for ext in wetday_extensions]+['CNWD'], files=('hydro',), label='Continuous Wet-days')
 variables_rc['CDD']             = VL(vars=['CDD'+ext for ext in wetday_extensions[:-1]]+['CNDD'], files=('hydro',), label='Continuous Dry-days')
 variables_rc['sfcflx']          = VL(vars=('p-et','snwmlt','waterflx',), files=('hydro',), label='Surface Flux')
-variables_rc['roffflx']         = VL(vars=('runoff','snwmlt','p-et'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['runoff']          = VL(vars=('waterflx','sfroff','runoff'), files=('lsm','hydro'), label='Runoff')
+variables_rc['runoff_flux']     = VL(vars=('runoff','snwmlt','p-et'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['heat']            = VL(vars=('hfx','lhfx','rSM'),files=('srfc','lsm'), label='Energy Flux')
 variables_rc['evap']            = VL(vars=('p-et','evap','pet',), files=('hydro',), label='Water Flux')
 variables_rc['spei']            = VL(vars=('precip','evap','pet',), files=('hydro',), label='Water Flux')
@@ -135,9 +135,12 @@ plot_labels_rc['grell-ens-2100']  = 'G3 2100'
 plot_labels_rc['kf-ens']          = 'KF Ens.' 
 plot_labels_rc['kf-ens-2050']     = 'KF 2050' 
 plot_labels_rc['kf-ens-2100']     = 'KF 2100' 
-plot_labels_rc['g-ens']           = 'G Ens.'  
-plot_labels_rc['g-ens-2050']      = 'G 2050' 
-plot_labels_rc['g-ens-2100']      = 'G 2100' 
+# plot_labels_rc['g-ens']           = 'G Ens.'  
+# plot_labels_rc['g-ens-2050']      = 'G 2050' 
+# plot_labels_rc['g-ens-2100']      = 'G 2100' 
+plot_labels_rc['g-ens']           = 'WRF Ens.'  
+plot_labels_rc['g-ens-2050']      = 'WRF 2050' 
+plot_labels_rc['g-ens-2100']      = 'WRF 2100' 
 plot_labels_rc['erai-g']          = 'ERA-I'  
 plot_labels_rc['t-ens']           = 'T Ens.'
 plot_labels_rc['t-ens-2050']      = 'T 2050'
@@ -233,12 +236,17 @@ def getFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels
   if plot_labels is None: plot_labels = plot_labels_rc
   return pltfig.getFigAx(subplot, dataset_plotargs=dataset_plotargs, variable_plotargs=variable_plotargs,
                          plot_labels=plot_labels, xtop=xtop, yright=yright, **kwargs)
+hydroFigAx = getFigAx # alias for direct project import
 
 # basin annotation
 # defaults
 basin_defaults_rc = AttrDict(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100))
 # specific settings
 basin_specifics = dict()
+basin_specifics['GLB'] = AttrDict(temp=(245,300), water=(-1.,3.), precip_net=(-0.5,5.5), precip_types=(-0.5,5.5), 
+                                  precip_xtrm=(-1.,29.),
+                                  runoff=(-0.5,2.5), runoff_flux=(-0.5,3.5), flux=(-0.5,3.5), flux_snow=(-0.5,3.5), 
+                                  spei=(-1.5,5.5), evap=(-1.5,5.5))
 basin_specifics['ARB'] = AttrDict(temp=(245,300), water=(-1.5,2.5), precip=(-0.5,3.5), precip_types=(-0.5,3.5), spei=(-1.5,5.5),
                                   runoff=(-1.2,2), flux=(-1.5,3.5), flux_alt=(-0.5,3.5), evap=(-1.5,5.5))
 basin_specifics['CRB'] = AttrDict(temp=(255,305), water=(-3,6), precip=(-0.5,7.))
@@ -264,7 +272,7 @@ def hydroPlot(basin_annotation=None, basin_defaults=None, variable_atts=None, **
   if basin_annotation is None: basin_annotation = basin_annotation_rc 
   if basin_defaults is None: basin_defaults = basin_defaults_rc
   if variable_atts is None: variable_atts = variables_rc
-  return plots.getFigAx(basin_annotation=basin_annotation, basin_defaults=basin_defaults, 
+  return plots.hydroPlot(basin_annotation=basin_annotation, basin_defaults=basin_defaults, 
                         variable_atts=variable_atts, **kwargs)
 
 

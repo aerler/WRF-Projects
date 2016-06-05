@@ -134,24 +134,24 @@ if __name__ == '__main__':
   
   #   from projects.WesternCanada.WRF_experiments import Exp, WRF_exps, ensembles
   from projects.GreatLakes.WRF_experiments import WRF_exps, ensembles
-  from projects.GreatLakes.hydro_settings import exps_rc, variables_rc
+  from projects.GreatLakes.hydro_settings import exps_rc, variables_rc, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
-#   test = 'obs_timeseries'
+  test = 'obs_timeseries'
 #   test = 'basin_timeseries'
-  test = 'province_climatology'
+#   test = 'province_climatology'
   
   
   # test load function for basin ensemble time-series
   if test == 'obs_timeseries':
     
     # some settings for tests
-    basins = ['FRB','ARB'] #; period = (1979,1994)
-    varlist = ['precip']; aggregation = 'std'
+    basins = ['GLB'] #; period = (1979,1994)
+    varlist = ['precip',]; aggregation = 'mean'
 
-    shpens = loadShapeObservations(obs=None, seasons=None, basins=basins, varlist=varlist, period=None, 
-                                   aggregation=aggregation, load_list=['basins',], lproduct='outer',
-                                   variable_atts=variables_rc)
+    shpens = loadShapeObservations(obs='GPCC', basins=basins, varlist=varlist,
+                                   aggregation=aggregation, load_list=['basins','varlist'],)
+#                                    variable_atts=variables_rc)
     # print diagnostics
     print shpens[0]; print ''
     assert len(shpens) == len(basins) # len(seasons)
@@ -166,11 +166,11 @@ if __name__ == '__main__':
     
     # some settings for tests
     exp = 'g-ens'; exps = exps_rc[exp].exps; #exps = ['Unity']
-    basins = ['GLB','GRW']; seasons = ['summer','winter']
+    basins = ['GLB']; seasons = ['summer','winter']
     varlist = ['precip']; aggregation = 'mean'; red = dict(s='mean')
 
     shpens = loadShapeEnsemble(names=exps, basins=basins, seasons=seasons, varlist=varlist, 
-                               aggregation=aggregation, filetypes=['srfc'], reduction=red, 
+                               aggregation=aggregation, filetypes=None, reduction=red, 
                                load_list=['basins','seasons',], lproduct='outer', domain=2,
                                WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
                                variable_atts=variables_rc)
