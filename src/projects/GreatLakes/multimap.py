@@ -183,15 +183,33 @@ if __name__ == '__main__':
 #   variables = [['dryprec_010']*3+['precip']*3, 'precip']
 
 
-# validation and projection for the Great Lakes region
-  explist = ['g-ens','Ens','g-ens','Ens']; seasons = [['summer']*2+['winter']*2]
-  exptitles = [ '{}, {}'.format(e,s.title()) for e,s in zip(['WRF Ensemble (30km)','CESM Ensemble']*2,seasons[0]) ]
-  grid = ['glb1_d01','cesm1x1']*2; domain = 1
-#   variables = ['T2']; ldiff = True; variable_settings = ['T2_prj']; reflist = 'CRU' # T2
-  variables = ['precip']; lfrac = True; variable_settings = ['precip_prj']; reflist = 'GPCC' # precip
-  period = A15; refprd = H15; reflist = explist; case = 'prj' # projection 
-#   period = H15; refprd = H15; case = 'val'; variable_settings = None # validation 
+# # validation and projection for the Great Lakes region
+#   explist = ['g-ens','Ens','g-ens','Ens']; seasons = [['summer']*2+['winter']*2]; tag = 'd02'
+#   exptitles = ['WRF Ensemble (30km)','CESM Ensemble']*2; grid = ['glb1_d02','glb1_d02']*2
+# #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
+# #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
+#   exptitles = [ '{}, {}'.format(e,s.title()) for e,s in zip(exptitles,seasons[0]) ]; domain = 1
+# #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj']; reflist = 'CRU' # T2
+#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj']; reflist = 'GPCC' # precip
+# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
+# #   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+#   period = H15; refprd = H15; case = tag+'val'; variable_settings = None # validation 
 
+# single-panel validation with larger map
+#   case = 'ongl'; maptype = 'lcc-ongl'; lstations = False; lbasins = False; lprovinces = False
+  variables = ['aSM']; WRFfiletypes = ['lsm']; seasons = ['jas']; figtitles = ['Summer Soil Moisture Change [%]']
+#   variables = ['MaxPrecip_1d']; WRFfiletypes = ['srfc']; seasons = ['annual']; aggregation = 'max'
+#   figtitles = ['Annual Max. Daily Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
+#   variables = ['MaxPrecip_5d']; WRFfiletypes = ['hydro']; seasons = ['annual']; aggregation = 'max'
+#   figtitles = ['Annual Max. Pendat Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
+  lWRFnative = True; loutline = False; lframe = True; lcontour = True; period = H15
+#   explist = ['erai-t']; case = 'tval'; figtitles = None; domain = (1,2)
+  explist = [('g3-ens','g-ens',)]; exptitles = 'WRF Ensemble (10km)'; case = 'prj'; domain = (1,2)
+#   explist = [('g-ens','g-ens',)]; exptitles = 'WRF Ensemble (10km)'; case = 'prj12'; domain = (1,2)
+#   explist = ['g-ens']; exptitles = 'WRF Ensemble (30km)'; case = 'prj'; domain = 1
+#   explist = ['g3-ens']; exptitles = 'WRF Ensemble (90km)'; case = 'g3prj'; domain = 1
+  lfrac = True; refprd = H15; period = B15; reflist = explist
+  
 # # validation over Great Lakes region
 #   explist = ['g-ctrl','GPCC','g-ens-A','g-ens-B','NARR','g-ens-C']
 #   seasons = ['annual','summer','winter']; variables = ['precip']
@@ -225,6 +243,7 @@ if __name__ == '__main__':
 #   basinlist = ('GLB',); primary_basins = basinlist; subbasins = {} #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
 # #   lbasins = True; basin_args = dict(linewidth = 1.5, color='k'); case = 'ongl_glb'
 # #   lbasins = True; basin_args = dict(linewidth = 1.5, color='m'); case = 'ongl_glb_m'
+#   lbasins = True; basin_args = dict(linewidth = 1.5, color='w'); case = 'ongl_glb_w'
 #   lprovinces = False; provlist = ('ON',); lsamesize = True
   
 # # continental-scale map with domains
@@ -812,7 +831,7 @@ if __name__ == '__main__':
         if cbn is None:
           if ( cbo == 'horizontal' and subplot[1] == 1 ): cbn = 5
           elif ( cbo == 'vertical' and subplot[0] == 1 ): cbn = 7
-          elif ( cbo == 'horizontal' and subplot[1] == 2 ): cbn = 7
+          elif ( cbo == 'horizontal' and subplot[1] == 2 ): cbn = 5
           elif ( cbo == 'vertical' and subplot[0] == 2 ): cbn = 9
           else: cbn = 9
         cbl = np.linspace(min(clevs),max(clevs),cbn)

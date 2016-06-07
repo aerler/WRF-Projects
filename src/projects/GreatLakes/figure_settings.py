@@ -44,7 +44,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
 #     cmap = mpl.cm.Oranges
 #     cmap = mpl.cm.PuOr
     if var in ('T2_prj','Ts_prj','Tmin_prj','Tmax_prj','Tmean_prj'):
-      clevs = np.linspace(0,5,31); clbl = '%3.1f'; cmap = mpl.cm.Oranges # K
+      clevs = np.linspace(0,8,31); clbl = '%3.1f'; cmap = mpl.cm.Oranges # K
     elif var in ('evap_prj','pet_prj','precip_prj','precipc_prj','precipnc_prj'):
       clevs = np.linspace(-1.5,1.5,31); clbl = '%2.1f'; cmap = mpl.cm.PuOr # mm/day    
     elif var in ('T2','Ts','Tmin','Tmax','Tmean'):
@@ -74,9 +74,11 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
   elif lfrac:
     cmap = mycmap; cmap.set_over('red'); cmap.set_under('blue')
     if var in ('T2_prj','Ts_prj','Tmin_prj','Tmax_prj','Tmean_prj'):
-      clevs = np.linspace(0,3,41); clbl = '%2.1f'; cmap = mpl.cm.Oranges # K
+      clevs = np.linspace(0,3,41); clbl = '%2.1f'; cmap = mpl.cm.Oranges
     elif var in ('evap_prj','pet_prj','precip_prj','precipc_prj','precipnc_prj'):
-      clevs = np.linspace(-45.,45,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr # mm/day    
+      clevs = np.linspace(-60.,60,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr
+    elif var in ('MaxPrecip_prj',):
+      clevs = np.linspace(-60.,60,46); clbl = '%2.0f'
     elif var in ('T2','Ts','Tmin','Tmax','Tmean'):
       clevs = np.linspace(-3,3,21); clbl = '%2.1f'
     elif var in ('Z',):
@@ -87,7 +89,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('WaterTransport_U','WaterTransport_V','ColumnWater','cqwu','cqwv','cqw'):
       clevs = np.linspace(-50,50,41); clbl = '%2.0f'
     elif var in ('aSM',):
-      clevs = np.linspace(-21,21,43); clbl = '%2.0f'; cmap = mpl.cm.PuOr
+      clevs = np.linspace(-20,20,41); clbl = '%2.0f'; cmap = mpl.cm.PuOr
     elif var in ('asm_red',):
       clevs = np.linspace(-20,20,41); clbl = '%2.0f';
       cmap = cm.redblue_light; #cmap.set_over('blue'); cmap.set_under('red')

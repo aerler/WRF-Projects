@@ -41,7 +41,7 @@ variables_rc['runoff']          = VL(vars=('waterflx','sfroff','runoff'), files=
 variables_rc['runoff_flux']     = VL(vars=('runoff','snwmlt','p-et'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['heat']            = VL(vars=('hfx','lhfx','rSM'),files=('srfc','lsm'), label='Energy Flux')
 variables_rc['evap']            = VL(vars=('p-et','evap','pet',), files=('hydro',), label='Water Flux')
-variables_rc['spei']            = VL(vars=('precip','evap','pet',), files=('hydro',), label='Water Flux')
+variables_rc['spei']            = VL(vars=('precip','evap','pet',), files=('aux','hydro',), label='Water Flux')
 variables_rc['Q2']              = VL(vars=('Q2',),files=('srfc',), label='2m Humidity')
 variables_rc['aSM']             = VL(vars=('aSM',),files=('lsm',), label='Soil Moisture') 
 variables_rc['rSM']             = VL(vars=('rSM',),files=('lsm',), label='Relative Soil Moisture')
@@ -50,42 +50,30 @@ variables_rc['rSM']             = VL(vars=('rSM',),files=('lsm',), label='Relati
 # dataset collections
 exps_rc = dict(); EX = basins.EX
 exps_rc['obs']     = EX(name='obs',exps=['CRU','WSC'], styles=['-','-.'], master='CRU', title='Observations')
-exps_rc['val']     = EX(name='val',exps=['max-ens','erai-max','max-ens_d01'], master='max-ens',
-                        styles=['-','--','-.'], title='WRF (IC Ens. Avg., ERA-I, 30km)')
-exps_rc['prj']     = EX(name='prj',exps=['max-ens','max-ens-2050','max-ens-2100'], master='max-ens',
-                        styles=['-','-.','--'], title='IC Ensemble Average (Hist., Mid-, End-Century)')
-exps_rc['max']     = EX(name='max',exps=['max-ens','max-ens-2050','max-ens-2100'], master='max-ens',
-                        styles=['-','-.','--'], title='IC Ensemble Average (Hist., Mid-, End-Century)')
-exps_rc['ctrl']    = EX(name='ctrl',exps=['ctrl-ens','ctrl-ens-2050','ctrl-ens-2100'], master='ctrl-ens',
-                        styles=['-','-.','--'], title='Alt. IC Ens. Average (Hist., Mid-, End-Century)')
+exps_rc['erai']   = EX(name='erai',exps=['erai-g','erai-t'], master='erai-g',
+                        styles=['--','-'], title='G & T, ERA-I')
 exps_rc['g-ens']   = EX(name='g-ens',exps=['g-ens','g-ens-2050','g-ens-2100'], master='g-ens',
                         styles=['-','-.','--'], title='G Ensemble Average (Hist., Mid-, End-Century)')
 exps_rc['t-ens']   = EX(name='t-ens',exps=['t-ens','t-ens-2050','t-ens-2100'], master='t-ens',
                         styles=['-','-.','--'], title='G Ensemble Average (Hist., Mid-, End-Century)')
-exps_rc['mex']     = EX(name='mex',exps=['mex-ens','mex-ens-2050','mex-ens-2100'], master='mex-ens',
-                        styles=['-','-.','--'], title='WRF Ext. Ens. (Hist., Mid-, End-Century)')
 exps_rc['phys']    = EX(name='phys',exps=['phys-ens','phys-ens-2050','phys-ens-2100'], master='phys-ens',
                         styles=['-','-.','--'], title='WRF Phys. Ens. (Hist., Mid-, End-Century)')
-exps_rc['nmp']     = EX(name='nmp',exps=['max-ens','max-ens-2050','max-nmp','max-nmp-2050'], master='max-nmp',
-                        styles=['-.','.','--','-'], title='IC Ensemble Average & Noah-MP (Hist., Mid-Century)')
 exps_rc['test']    = EX(name='test',exps=['max-ens','max-ctrl','max-hilev'], master='max-ens',
                         styles=['-','--','-.'], title='WRF (Ens. Avg., Ctrl-1, Hi-lev)')
-exps_rc['1deg']    = EX(name='1deg',exps=['max-ens','max-ens_d01','max-1deg'], master='max-ens',
-                        styles=['--','-.','-'], title='WRF (Ens. Avg., 30km, 1deg)')
-exps_rc['seaice']  = EX(name='seaice',exps=['max-ens','max-ens-2050','max-seaice-2050','max-ens-2100','max-seaice-2100'],
-                        styles=['-.','--','-','.--','.-'], master='max-ens', 
+exps_rc['seaice']  = EX(name='seaice',exps=['g-ens','g-ens-2050','g-seaice-2050','g-ens-2100','g-seaice-2100'],
+                        styles=['-.','--','-','.--','.-'], master='g-ens', 
                         title='WRF (Hist., Mid-, End-Century; Ens. Avg., Sea-ice)')
-exps_rc['max-Z']   = EX(name='max-Z',exps=['max-ctrl','max-ctrl-2050','max-ctrl-2100'], master='max-ctrl',
+exps_rc['g-Z']   = EX(name='g-Z',exps=['g-ctrl','g-ctrl-2050','g-ctrl-2100'], master='g-ctrl',
                         styles=['-','-.','--'], title='WRF-Z (Hist., Mid-, End-Century)')
-exps_rc['max-A']   = EX(name='max-A',exps=['max-ens-A','max-ens-A-2050','max-ens-A-2100'], master='max-ens-A',
+exps_rc['g-A']   = EX(name='g-A',exps=['g-ens-A','g-ens-A-2050','g-ens-A-2100'], master='g-ens-A',
                         styles=['-','-.','--'], title='WRF-A (Hist., Mid-, End-Century)')
-exps_rc['max-B']   = EX(name='max-B',exps=['max-ens-B','max-ens-B-2050','max-ens-B-2100'], master='max-ens-B',
+exps_rc['g-B']   = EX(name='g-B',exps=['g-ens-B','g-ens-B-2050','g-ens-B-2100'], master='g-ens-B',
                         styles=['-','-.','--'], title='WRF-B (Hist., Mid-, End-Century)')
-exps_rc['max-C']   = EX(name='max-C',exps=['max-ens-C','max-ens-C-2050','max-ens-C-2100'], master='max-ens-C',
+exps_rc['g-C']   = EX(name='g-C',exps=['g-ens-C','g-ens-C-2050','g-ens-C-2100'], master='g-ens-C',
                         styles=['-','-.','--'], title='WRF-C (Hist., Mid-, End-Century)')
-exps_rc['si25']  = EX(name='si25',exps=['max-ens','max-ens-2050','max-seaice-2050'], master='max-ens-2050',
+exps_rc['si25']  = EX(name='si25',exps=['g-ens','g-ens-2050','g-seaice-2050'], master='g-ens-2050',
                         styles=[':','--','-'], title='WRF (Hist., Mid-Century; Ens. Avg., Sea-ice)')
-exps_rc['si21']  = EX(name='si21',exps=['max-ens','max-ens-2100','max-seaice-2100'], master='max-ens-2100',
+exps_rc['si21']  = EX(name='si21',exps=['g-ens','g-ens-2100','g-seaice-2100'], master='g-ens-2100',
                         styles=[':','--','-'], title='WRF (Hist., End-Century; Ens. Avg., Sea-ice)')
 
 # set default variable atts for load functions from basins
@@ -114,38 +102,21 @@ plot_labels_rc['Ens-2100']        = 'CESM 2100'
 plot_labels_rc['MEns']             = 'CESM*'  
 plot_labels_rc['MEns-2050']        = 'CESM* 2050' 
 plot_labels_rc['MEns-2100']        = 'CESM* 2100' 
-plot_labels_rc['max-ens']         = 'IC Ens.'  
-plot_labels_rc['max-ens-2050']    = 'IC 2050' 
-plot_labels_rc['max-ens-2100']    = 'IC 2100' 
-plot_labels_rc['max-ens_d01']     = 'IC (D1)'
-plot_labels_rc['erai-max']        = 'ERA-I'  
-plot_labels_rc['ctrl-ens']        = 'Alt. Ens.'  
-plot_labels_rc['ctrl-ens-2050']   = 'AE 2050' 
-plot_labels_rc['ctrl-ens-2100']   = 'AE 2100' 
-plot_labels_rc['ctrl-ens_d01']    = 'AE (D1)'
-plot_labels_rc['max-seaice-2050'] = 'SI 2050' 
-plot_labels_rc['max-seaice-2100'] = 'SI 2100' 
 plot_labels_rc['phys-ens']        = 'Phy Ens.' 
 plot_labels_rc['phys-ens-2050']   = 'Phy 2050' 
 plot_labels_rc['phys-ens-2100']   = 'Phy 2100' 
 plot_labels_rc['phys-ens_d01']    = 'Phy (D1)'
-plot_labels_rc['grell-ens']       = 'G3 Ens.' 
-plot_labels_rc['grell-ens-2050']  = 'G3 2050' 
-plot_labels_rc['grell-ens-2100']  = 'G3 2100' 
-plot_labels_rc['kf-ens']          = 'KF Ens.' 
-plot_labels_rc['kf-ens-2050']     = 'KF 2050' 
-plot_labels_rc['kf-ens-2100']     = 'KF 2100' 
 # plot_labels_rc['g-ens']           = 'G Ens.'  
 # plot_labels_rc['g-ens-2050']      = 'G 2050' 
 # plot_labels_rc['g-ens-2100']      = 'G 2100' 
 plot_labels_rc['g-ens']           = 'WRF Ens.'  
 plot_labels_rc['g-ens-2050']      = 'WRF 2050' 
 plot_labels_rc['g-ens-2100']      = 'WRF 2100' 
-plot_labels_rc['erai-g']          = 'ERA-I'  
+plot_labels_rc['erai-g']          = 'ERA-I G'  
 plot_labels_rc['t-ens']           = 'T Ens.'
 plot_labels_rc['t-ens-2050']      = 'T 2050'
 plot_labels_rc['t-ens-2100']      = 'T 2100'
-plot_labels_rc['erai-t']          = 'ERA-I'   
+plot_labels_rc['erai-t']          = 'ERA-I T'   
 # variables
 plot_labels_rc['MaxPrecip_1d']   = 'Max Precip. (1d)'
 plot_labels_rc['MaxPrecip_5d']   = 'Max Precip. (5d)'
