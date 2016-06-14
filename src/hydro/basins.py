@@ -10,13 +10,14 @@ Utility functions related to loading basin-averaged data to support hydrological
 from collections import namedtuple
 # internal imports
 from geodata.base import Ensemble, Dataset
+from utils.misc import defaultNamedtuple
 from datasets.common import loadEnsembleTS, BatchLoad, loadDataset, shp_params
 from geodata.misc import ArgumentError, EmptyDatasetError
 from datasets.WSC import GageStationError, loadGageStation
 
 # some definitions
-VL = namedtuple('VarList', ('vars','files','label'))   
-EX = namedtuple('Experiments', ('name','exps','styles','master','title'))  
+VL = defaultNamedtuple('VarList', ('vars','files','label'))   
+EX = defaultNamedtuple('Experiments', ('name','exps','styles','master','title','reference','target'))  
 
 # wet-day thresholds
 wetday_thresholds = [0.2,1,10,20]
@@ -93,9 +94,9 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, varli
 
 # define new load fct. for experiments (not intended for observations)
 @BatchLoad
-def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, varlist=None, aggregation='mean', 
-                      slices=None, shapefile=None, filetypes=None, period=None, variable_atts=None, 
-                      WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, **kwargs):
+def loadShapeSimulations(names=None, seasons=None, basins=None, provs=None, varlist=None, aggregation='mean', 
+                         slices=None, shapefile=None, filetypes=None, period=None, variable_atts=None, 
+                         WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, **kwargs):
   ''' convenience function to load basin & province ensembles '''
   # prepare arguments
   if shapefile is None: shapefile = 'shpavg' # really only one in use  
@@ -132,9 +133,10 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, varlist
 ## abuse main section for testing
 if __name__ == '__main__':
   
-  #   from projects.WesternCanada.WRF_experiments import Exp, WRF_exps, ensembles
+  #from projects.WesternCanada.WRF_experiments import Exp, WRF_exps, ensembles
+  #from projects.WesternCanada.settings import exps_rc
   from projects.GreatLakes.WRF_experiments import WRF_exps, ensembles
-  from projects.GreatLakes.hydro_settings import exps_rc, variables_rc, loadShapeObservations
+  from projects.GreatLakes.settings import exps_rc, variables_rc, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
   test = 'obs_timeseries'
@@ -169,11 +171,11 @@ if __name__ == '__main__':
     basins = ['GLB']; seasons = ['summer','winter']
     varlist = ['precip']; aggregation = 'mean'; red = dict(s='mean')
 
-    shpens = loadShapeEnsemble(names=exps, basins=basins, seasons=seasons, varlist=varlist, 
-                               aggregation=aggregation, filetypes=None, reduction=red, 
-                               load_list=['basins','seasons',], lproduct='outer', domain=2,
-                               WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
-                               variable_atts=variables_rc)
+    shpens = loadShapeSimulations(names=exps, basins=basins, seasons=seasons, varlist=varlist, 
+                                  aggregation=aggregation, filetypes=None, reduction=red, 
+                                  load_list=['basins','seasons',], lproduct='outer', domain=2,
+                                  WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
+                                  variable_atts=variables_rc)
     # print diagnostics
     print shpens[0]; print ''
     assert len(shpens) == len(basins)*len(seasons)
@@ -191,11 +193,11 @@ if __name__ == '__main__':
     basins = ['GLB','GRW'] 
     varlists = ['precip','T2']; aggregation = 'mean'
 
-    shpens = loadShapeEnsemble(names=exps, basins=basins, varlist=varlists, aggregation=aggregation,
-                               period=(1979,1994), # this does not work properly with just a number...
-                               load_list=['basins','varlist'], lproduct='outer', filetypes=['srfc'],
-                               WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
-                               variable_atts=variables_rc)
+    shpens = loadShapeSimulations(names=exps, basins=basins, varlist=varlists, aggregation=aggregation,
+                                  period=(1979,1994), # this does not work properly with just a number...
+                                  load_list=['basins','varlist'], lproduct='outer', filetypes=['srfc'],
+                                  WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
+                                  variable_atts=variables_rc)
     # print diagnostics
     print shpens[0]; print ''
     assert len(shpens) == len(basins)*len(varlists)

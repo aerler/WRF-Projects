@@ -9,6 +9,10 @@ A package that contains settings for the WesternCanada region projects for use w
 # import figure settings
 from figure_settings import getVariableSettings, getFigureSettings, figure_folder
 
+# import figure with hydro settings
+from settings import loadShapeSimulations, loadShapeObservations, exps_rc # load datasets
+from settings import hydroFigAx, hydroPlot, variables_rc # plotting
+
 # import map projection settings (basemap)
 try: 
   from map_settings import getSetup, map_folder

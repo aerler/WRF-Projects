@@ -10,8 +10,8 @@ A package that contains settings for the GreatLakes region projects for use with
 from figure_settings import getVariableSettings, getFigureSettings, figure_folder
 
 # import figure with hydro settings
-from hydro_settings import loadShapeEnsemble, loadShapeObservations, exps_rc # load datasets
-from hydro_settings import hydroFigAx, hydroPlot, variables_rc # plotting
+from settings import loadShapeSimulations, loadShapeObservations, exps_rc # load datasets
+from settings import hydroFigAx, hydroPlot, variables_rc # plotting
 
 # import map projection settings (basemap)
 try: 
