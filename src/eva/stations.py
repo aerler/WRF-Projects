@@ -13,7 +13,7 @@ from geodata.misc import ArgumentError, AxisError
 from geodata.stats import VarRV
 from datasets.common import loadEnsembleTS, expandArgumentList
 # imports from hydro
-from hydro.basins import loadShapeSimulations
+from hydro.basins import loadShapeEnsemble, loadStationEnsemble
 from geodata.netcdf import DatasetNetCDF
 
 
@@ -141,7 +141,7 @@ def rescaleDistributions(datasets, reference=None, target=None, lscale=False, su
 
 # function to load basin-averaged time-series and compute distribution
 # define new load fct. (batch args: load_list=['season','prov',], lproduct='outer')
-def loadShapeEnsemble(names=None, seasons=None, varlist=None, basins=None, provs=None,
+def loadShapeFit(names=None, seasons=None, varlist=None, basins=None, provs=None,
                       lfit=True, dist=None, dist_args=None, reference=None, target=None,
                       lrescale=False, lflatten=True, sample_axis=None,
                       shapefile=None, lglobalScale=False, lcrossval=False, ncv=0.2, lshort=True,
@@ -149,39 +149,14 @@ def loadShapeEnsemble(names=None, seasons=None, varlist=None, basins=None, provs
                       WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, 
                       load_list=None, lproduct='outer', variable_atts=None, **kwargs):
   ''' convenience function to load basin-averaged ensemble '''
-  if load_list is None: load_list = []  
-  # use varlist from here or hydro-module
-  if isinstance(varlist,basestring) and varlist in variable_atts: 
-    if filetypes is None: filetypes = variable_atts[varlist].files    
-    varlist = variable_atts[varlist].vars
+  if lrescale and not lfit: raise ArgumentError
+  load_list = [] if load_list is None else load_list[:] # use a copy, since the list may be modified
+
   # load shape ensemble
-  bsnens = loadShapeSimulations(names=names, seasons=seasons, basins=basins, provs=provs, shapefile=shapefile, 
-                                varlist=varlist, aggregation=aggregation, filetypes=filetypes, domain=domain, 
-                                WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens,
-                                load_list=load_list, lproduct=lproduct, **kwargs)
-#   # generate argument list
-#   args_list = expandArgumentList(names=names, seasons=seasons, aggregation=aggregation, basin=basins, 
-#                                  varlist=varlist, filetypes=filetypes, domain=domain, 
-#                                  expand_list=load_list, lproduct=lproduct, **kwargs)
-#   # loop over argument pairs
-#   bsnens = []
-#   for args in args_list:
-#     print args
-#     # load ensemble (no iteration here)
-#     tmpens = loadShapeEnsemble(load_list=None, lproduct=lproduct, **args)
-#     bsnens.append(tmpens)
-#     # generate matching datasets with fitted distributions
-#     dist = args.pop('dist',None)
-#     if lfit:
-#       if dist is None: 
-#         season = args.get('season',None)
-#         aggregation = args.get('aggregation',None)
-#         if ( ( season is not None and season.lower() == 'annual' ) and 
-#              ( aggregation is not None and aggregation.lower() == 'mean' ) ): 
-#           # N.B.: annual averages are usually normally distributed
-#           dist = 'norm'
-#       # compute fit
-#       fitens.append(tmpens.fitDist(dist=dist, axis='time', lbootstrap=lbootstrap, nbs=nbs))
+  bsnens = loadShapeEnsemble(names=names, seasons=seasons, basins=basins, provs=provs, shapefile=shapefile, 
+                             varlist=varlist, aggregation=aggregation, filetypes=filetypes, domain=domain, 
+                             WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens,
+                             load_list=load_list, lproduct=lproduct, variable_atts=variable_atts, **kwargs)
 
   # generate matching datasets with fitted distributions
   fitens, sclens = addDistFit(ensemble=bsnens, provs=provs, seasons=seasons, varlist=varlist, 
@@ -190,6 +165,7 @@ def loadShapeEnsemble(names=None, seasons=None, varlist=None, basins=None, provs
                               lbootstrap=lbootstrap, nbs=nbs, sample_axis=sample_axis, lglobalScale=lglobalScale,
                               lcrossval=lcrossval, ncv=ncv, dist=dist, dist_args=dist_args, filetypes=filetypes, 
                               domain=domain, load_list=load_list, lproduct=lproduct)
+  
   # return ensembles (will be wrapped in a list, if BatchLoad is used)
   if lshort:
     if lfit and lrescale: return bsnens, fitens, sclens
@@ -198,79 +174,41 @@ def loadShapeEnsemble(names=None, seasons=None, varlist=None, basins=None, provs
   else:
     return bsnens, fitens, sclens
 
+
 # define new load fct. (batch args: load_list=['season','prov',], lproduct='outer')
-def loadStationEnsemble(names=None, provs=None, seasons=None, clusters=None, basins=None, varlist=None,
-                        station=None, constraints=None, lfit=True, lflatten=None, master=None, lall=True, 
-                        lrescale=False, reference=None, target=None, aggregation='max', lminmax=False,
-                        lbootstrap=False, nbs=30, sample_axis=None, slices=None, obsslices=None, 
-                        lglobalScale=False, ensemble_axis='ensemble', lensembleAxis=False, 
-                        lcrossval=False, ncv=0.2, dist=None, dist_args=None, lshort=True, reduction=None,
-                        filetypes=None, domain=None, name_tags=None, cluster_name=None, years=None,
-                        ensemble_list=None, ensemble_product='inner', load_list=None, lproduct='outer',
-                        WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, 
-                        variable_atts=None, default_constraints=None):
+def loadStationFit(names=None, provs=None, seasons=None, clusters=None, varlist=None,
+                   station=None, constraints=None, lfit=True, lflatten=None, master=None, lall=True, 
+                   lrescale=False, reference=None, target=None, aggregation='max', lminmax=False,
+                   lbootstrap=False, nbs=30, sample_axis=None, slices=None, obsslices=None, 
+                   lglobalScale=False, lensembleAxis=False, 
+                   lcrossval=False, ncv=0.2, dist=None, dist_args=None, lshort=True, reduction=None,
+                   filetypes=None, domain=None, name_tags=None, cluster_name=None, years=None,
+                   ensemble_list=None, ensemble_product='inner', load_list=None, lproduct='outer',
+                   WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, 
+                   variable_atts=None, default_constraints=None):
   ''' convenience function to load station and basin data from ensembles (concatenated) '''
   if lrescale and not lfit: raise ArgumentError
   load_list = [] if load_list is None else load_list[:] # use a copy, since the list may be modified
   
-  # figure out varlist
-  if isinstance(varlist,basestring):
-    if station is None:
-      if varlist.lower().find('precip') >= 0: 
-        station = 'ecprecip'
-      elif varlist.lower().find('temp') >= 0: 
-        station = 'ectemp'
-    if filetypes is None: filetypes = variable_atts[varlist].files[:]
-    varlist = variable_atts[varlist].vars[:]
-  if cluster_name: varlist = varlist[:] + [cluster_name] # need to load this variable!
-    
-  # prepare arguments
-  if provs or clusters:
-    if constraints is None: constraints = default_constraints.copy()
-    constraint_list = []
-    if 'provs' in load_list and 'clusters' in load_list: 
-      raise ArgumentError, "Cannot expand 'provs' and 'clusters' at the same time."
-    # figure out proper handling of provinces
-    if provs:
-      if 'prov' not in load_list: 
-        constraints['prov'] = provs; provs = None
-      else:  
-        if len(constraint_list) > 0: raise ArgumentError, "Cannot expand multiple keyword-constraints at once."
-        for prov in provs:
-          tmp = constraints.copy()
-          tmp['prov'] = prov
-          constraint_list.append(tmp)
-        load_list[load_list.index('prov')] = 'constraints'
-        constraints = constraint_list; provs = None
-    # and analogously, handling of clusters!
-    if clusters:
-      if 'cluster' not in load_list: 
-        constraints['cluster'] = clusters; clusters = None
-      else:  
-        if len(constraint_list) > 0: raise ArgumentError, "Cannot expand multiple keyword-constraints at once."
-        for cluster in clusters:
-          tmp = constraints.copy()
-          tmp['cluster'] = cluster
-          if cluster_name: tmp['cluster_name'] = cluster_name # will be expanded next to cluster index
-          constraint_list.append(tmp)
-        load_list[load_list.index('cluster')] = 'constraints'
-        constraints = constraint_list; clusters = None  
-  # load ensemble (no iteration here)
-  stnens = loadEnsembleTS(names=names, season=seasons, prov=provs, aggregation=aggregation, lminmax=lminmax, 
-                          years=years, station=station, slices=slices, obsslices=obsslices, lall=lall,
-                          constraints=constraints, varlist=varlist, filetypes=filetypes, domain=domain,
-                          ensemble_list=ensemble_list, ensemble_product=ensemble_product, master=master, 
-                          load_list=load_list, lproduct=lproduct, name_tags=name_tags, lcheckVar=False,
-                          WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens,
-                          lensembleAxis=lensembleAxis, reduction=reduction)
+  # load station ensemble
+  stnens = loadStationEnsemble(names=names, seasons=seasons, provs=provs, station=station, clusters=clusters,
+                               constraints=constraints, master=master, lall=lall, aggregation=aggregation,
+                               lminmax=lminmax, slices=slices, obsslices=obsslices, lensembleAxis=lensembleAxis,
+                               years=years, reduction=reduction, varlist=varlist, filetypes=filetypes, 
+                               domain=domain, name_tags=name_tags, cluster_name=cluster_name, 
+                               WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens,
+                               ensemble_list=ensemble_list, ensemble_product=ensemble_product, load_list=load_list, 
+                               lproduct=lproduct, variable_atts=variable_atts, default_constraints=default_constraints)
+
   # generate matching datasets with fitted distributions
   fitens, sclens = addDistFit(ensemble=stnens, provs=provs, seasons=seasons, varlist=varlist, station=station, 
-                              constraints=constraints, basins=basins, lfit=lfit, lflatten=lflatten, 
+                              constraints=constraints, lfit=lfit, lflatten=lflatten, 
                               lrescale=lrescale, reference=reference, target=target, aggregation=aggregation,   
                               lbootstrap=lbootstrap, nbs=nbs, sample_axis=sample_axis, lglobalScale=lglobalScale,
                               lcrossval=lcrossval, ncv=ncv, dist=dist, dist_args=dist_args, filetypes=filetypes, 
                               domain=domain, load_list=load_list, lproduct=lproduct)
-  # return ensembles (will be wrapped in a list, if BatchLoad is used)
+  
+# return ensembles (will be wrapped in a list, if BatchLoad is used)
   if lshort:
     if lfit and lrescale: return stnens, fitens, sclens
     elif lfit: return stnens, fitens
@@ -278,7 +216,7 @@ def loadStationEnsemble(names=None, provs=None, seasons=None, clusters=None, bas
   else:
     return stnens, fitens, sclens
   
-def addDistFit(ensemble=None, provs=None, seasons=None, varlist=None, station=None, constraints=None, basins=None, 
+def addDistFit(ensemble=None, provs=None, seasons=None, varlist=None, station=None, constraints=None, shape=None, 
                lfit=True, lflatten=None, lrescale=False, reference=None, target=None, aggregation='max',   
                lbootstrap=False, nbs=30, sample_axis=None, lglobalScale=False, lcrossval=False, ncv=0.2, 
                dist=None, dist_args=None, filetypes=None, domain=None, load_list=None, lproduct='outer'): 
@@ -319,7 +257,7 @@ def addDistFit(ensemble=None, provs=None, seasons=None, varlist=None, station=No
       expand_list = load_list[:]
       if 'names' in expand_list: expand_list[expand_list.index('names')] = 'target' 
       kwarg_list = expandArgumentList(target=target, season=seasons, prov=provs, aggregation=aggregation, 
-                                      basins=basins, station=station, constraints=constraints, 
+                                      shape=shape, station=station, constraints=constraints, 
                                       varlist=varlist, filetypes=filetypes, domain=domain,
                                       expand_list=expand_list, lproduct=lproduct)
       targets = [kwarg['target'] for kwarg in kwarg_list]
@@ -372,7 +310,7 @@ if __name__ == '__main__':
                                        filetypes=['lsm'], lfit=True, aggregation='mean', dist='norm',
                                        load_list=load_list, lproduct='outer',
                                        WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
-                                       variable_atts=variables_rc, default_constraints=constraints_rc)
+                                       variable_atts=variables_rc,)
     # print diagnostics
     print bsnens[0]; print ''
     print fitens[0][0]
@@ -393,15 +331,15 @@ if __name__ == '__main__':
     seasons = ['summer']; lfit = True; lrescale = True; lbootstrap = False
     lflatten = False; lensembleAxis = True; sample_axis = ('station','year')
     varlist = ['MaxPrecip_1d', 'MaxPrecip_5d','MaxPreccu_1d'][:1]; filetypes = ['hydro']
-    stnens, fitens, sclens = loadStationEnsemble(names=exps.exps, provs=provs, clusters=clusters, 
-                                         seasons=seasons, lfit=lfit, master=None, station='ecprecip',
-                                         lrescale=lrescale, reference=exps.reference, target=exps.target,
-                                         lflatten=lflatten, domain=2, lbootstrap=lbootstrap, nbs=10,
-                                         lensembleAxis=lensembleAxis, sample_axis=sample_axis,
-                                         varlist=varlist, filetypes=filetypes,
-                                         variable_atts=variables_rc, default_constraints=constraints_rc,
-                                         WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
-                                         load_list=['season',], lproduct='outer', lcrossval=None,)
+    stnens, fitens, sclens  = loadStationFit(names=exps.exps, provs=provs, clusters=clusters, 
+                                             seasons=seasons, lfit=lfit, master=None, station='ecprecip',
+                                             lrescale=lrescale, reference=exps.reference, target=exps.target,
+                                             lflatten=lflatten, domain=2, lbootstrap=lbootstrap, nbs=10,
+                                             lensembleAxis=lensembleAxis, sample_axis=sample_axis,
+                                             varlist=varlist, filetypes=filetypes,
+                                             variable_atts=variables_rc, default_constraints=constraints_rc,
+                                             WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
+                                             load_list=['season',], lproduct='outer', lcrossval=None,)
     # print diagnostics
     print stnens[0][0]; print ''
     print fitens[0][0].MaxPrecip_1d.atts.sample_axis; print ''
