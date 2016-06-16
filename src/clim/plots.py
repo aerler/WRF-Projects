@@ -169,15 +169,15 @@ if __name__ == '__main__':
   from projects.GreatLakes.clim_settings import getFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
-  test = 'simple_climatology'
-#   test = 'advanced_climatology'
+#   test = 'simple_climatology'
+  test = 'advanced_climatology'
   
   
   # test load function for basin ensemble time-series
   if test == 'simple_climatology':
     
-    varlist = 'temp'; basin = 'GLB';
-    exp = 'g-ens'; exps = exps_rc[exp]; obs = 'CRU'
+    varlist = 'precip'; basin = 'GLB';
+    exp = 'g-ens'; exps = exps_rc[exp]; obs = 'GPCC'
     period = 1979,1994
 #     period = 1979,2009
     # some settings for tests
@@ -190,13 +190,13 @@ if __name__ == '__main__':
     print expens[0] if expens else obsens[0]; print ''
     
     # set up plot    
-    fig,ax = getFigAx((1,1), title=test, sharex=True, sharey=False, stylesheet='default', lpresentation=False)    
+    fig,ax = getFigAx((1,1), title=test, sharex=True, sharey=False, stylesheet='myggplot', lpresentation=False)    
     
     # make plots
     climPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
               legend=2, dataset_legend=4, lprint=True, variable_atts=variables_rc, 
               shape_annotation=shape_annotation_rc, shape_defaults=shape_defaults_rc,
-              lperi=True, lparasiteMeans=True, master='g-ens', lineformats=exps.styles)
+              lperi=True, lparasiteMeans=True, master=exps.master, lineformats=exps.styles)
     # adjust margins
     fig.updateSubplots(left=0.02, right=0.015, top=0.0, bottom=-0.0)
     

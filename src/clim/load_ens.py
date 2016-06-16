@@ -44,6 +44,19 @@ def _configSlices(slices=None, basins=None, provs=None, shapes=None, period=None
     slices['years'] = period
   return slices
 
+def _resolveVarlist(varlist=None, filetypes=None, shp_params=None, variable_atts=None):
+  raise NotImplementedError
+  # resolve variable list and filetype (no need to maintain order)
+  if isinstance(varlist,basestring): varlist = [varlist]
+  variables = set(shp_params)
+  filetypes = set() if filetypes is None else set(filetypes)
+  for name in varlist: 
+    if name in variable_atts: 
+      variables.update(variable_atts[name].vars)
+      filetypes.update(variable_atts[name].files)
+    else: variables.add(name) 
+  variables = list(variables); filetypes = list(filetypes)
+  
 
 # define new load fct. for observations
 @BatchLoad
@@ -111,19 +124,7 @@ def loadShapeEnsemble(seasons=None, basins=None, provs=None, shapes=None, varlis
   ''' convenience function to load shape ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
   # prepare arguments
   if shapetype is None: shapetype = 'shpavg' # really only one in use  
-  # resolve variable list (no need to maintain order)
-  if isinstance(varlist,basestring): varlist = [varlist]
-  variables = set(shp_params)
-  for name in varlist: 
-    if name in variable_atts: variables.update(variable_atts[name].vars)
-    else: variables.add(name) 
-  variables = list(variables)
-  # resolve filetypes (and maintain order)
-  if filetypes is None and name in variable_atts:
-    filetypes = []
-    for name in varlist: 
-      for ft in variable_atts[name].files: 
-        if ft not in filetypes: filetypes.append(ft)   
+  variables, filetypes =  _resolveVarlist(varlist=None, filetypes=None, shp_params=None, variable_atts=None)
   # configure slicing (extract basin/province/shape and period)
   slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, period=period)
   # load ensemble (no iteration here)
@@ -199,12 +200,12 @@ if __name__ == '__main__':
   #from projects.WesternCanada.WRF_experiments import Exp, WRF_exps, ensembles
   #from projects.WesternCanada.settings import exps_rc
   from projects.GreatLakes.WRF_experiments import WRF_exps, ensembles
-  from projects.GreatLakes.settings import exps_rc, variables_rc, loadShapeObservations
+  from projects.GreatLakes.clim_settings import exps_rc, variables_rc, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #  test = 'obs_timeseries'
-#   test = 'basin_timeseries'
-  test = 'station_timeseries'
+  test = 'basin_timeseries'
+#   test = 'station_timeseries'
 #   test = 'province_climatology'
   
   

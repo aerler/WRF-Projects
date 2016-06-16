@@ -264,7 +264,7 @@ climFigAx = getFigAx # alias for direct project import
 shape_defaults_rc = AttrDict(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100))
 # specific settings
 shape_specifics = dict()
-shape_specifics['GLB']         = AttrDict(temp=(245,300), water=(-1.,3.), precip_net=(-0.5,5.5), precip_types=(-0.5,5.5), 
+shape_specifics['GLB']         = AttrDict(temp=(245,300), water=(-1.,5.), precip_net=(-0.5,5.5), precip_types=(-0.5,5.5), 
                                           precip_xtrm=(-1.,29.),
                                           runoff=(-0.5,2.5), runoff_flux=(-0.5,3.5), flux=(-0.5,3.5), flux_snow=(-0.5,3.5), 
                                           spei=(-1.5,5.5), evap=(-1.5,5.5))
