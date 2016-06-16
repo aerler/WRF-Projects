@@ -10,17 +10,16 @@ A module that provides various project specific definitions, mainly related to e
 import matplotlib as mpl
 # internal imports
 from geodata.misc import AttrDict
-import plotting.figure as pltfig
-import hydro.plots as plots
-from hydro import basins
-from eva import stations
+from plotting import figure
+from clim import load_ens, plots
+from eva import eva
 from WRF_experiments import WRF_ens, WRF_exps
 from projects.CESM_experiments import CESM_ens, CESM_exps
 
 
 # variable collections
-wetday_extensions = basins.wetday_extensions[:3]
-variables_rc = dict(); VL = basins.VL
+wetday_extensions = load_ens.wetday_extensions[:3]
+variables_rc = dict(); VL = load_ens.VL
 # mostly for hydrological analysis
 variables_rc['temp']            = VL(vars=('T2', 'Tmax', 'Tmin'), files=('srfc','xtrm',), label='2m Temperature')
 # variables_rc['temp']          = VL(vars=('T2',), files=('srfc',), label='2m Temperature')
@@ -72,7 +71,7 @@ constraints_rc['prov'] = ('BC','AB')
 constraints_rc['end_after'] = 1980
                         
 # dataset collections
-exps_rc = dict(); EX = basins.EX
+exps_rc = dict(); EX = load_ens.EX
 exps_rc['obs']     = EX(name='obs',exps=['CRU','WSC'], styles=['-','-.'], master='CRU', title='Observations')
 exps_rc['val']     = EX(name='val',exps=['max-ens','erai-max','max-ens_d01'], master='max-ens',
                         styles=['-','--','-.'], title='WRF (IC Ens. Avg., ERA-I, 30km)')
@@ -107,10 +106,10 @@ exps_rc['max-B']   = EX(name='max-B',exps=['max-ens-B','max-ens-B-2050','max-ens
                         styles=['-','-.','--'], title='WRF-B (Hist., Mid-, End-Century)')
 exps_rc['max-C']   = EX(name='max-C',exps=['max-ens-C','max-ens-C-2050','max-ens-C-2100'], master='max-ens-C',
                         styles=['-','-.','--'], title='WRF-C (Hist., Mid-, End-Century)')
-exps_rc['si25']  = EX(name='si25',exps=['max-ens','max-ens-2050','max-seaice-2050'], master='max-ens-2050',
-                        styles=[':','--','-'], title='WRF (Hist., Mid-Century; Ens. Avg., Sea-ice)')
-exps_rc['si21']  = EX(name='si21',exps=['max-ens','max-ens-2100','max-seaice-2100'], master='max-ens-2100',
-                        styles=[':','--','-'], title='WRF (Hist., End-Century; Ens. Avg., Sea-ice)')
+exps_rc['si25']    = EX(name='si25',exps=['max-ens','max-ens-2050','max-seaice-2050'], master='max-ens-2050',
+                          styles=[':','--','-'], title='WRF (Hist., Mid-Century; Ens. Avg., Sea-ice)')
+exps_rc['si21']    = EX(name='si21',exps=['max-ens','max-ens-2100','max-seaice-2100'], master='max-ens-2100',
+                          styles=[':','--','-'], title='WRF (Hist., End-Century; Ens. Avg., Sea-ice)')
 # dataset collections for EVA
 exps_rc['val-res'] = EX(name='val-res', exps=['Observations', 'max-ens_d01', 'max-ens', 'Ens'], # ,'erai-max','ctrl-1','max-1deg' 
                         master='max-ens', reference='Observations', target=None, title='Resolution')
@@ -190,28 +189,21 @@ exps_rc['ens-2100']  = EX(name='ens-2100', exps=['max-ens-2100','max-ctrl-2100',
                           master='max-ens-2100', reference=None, target=None, title='Ensembles 2100')
 
 
-# set default variable atts for load functions from basins
+# set default variable atts for load functions from load_ens
 def loadShapeObservations(variable_atts=None, **kwargs):
-  ''' wrapper for hydro.basins.loadShapeObservations that sets variable lists '''
+  ''' wrapper for clim.load_ens.loadShapeObservations that sets variable lists '''
   if variable_atts is None: variable_atts = variables_rc
-  return basins.loadShapeObservations(variable_atts=variable_atts, **kwargs)
-def loadShapeSimulations(variable_atts=None, **kwargs):
-  ''' wrapper for hydro.basins.loadShapeSimulations that sets experiment and variable lists '''
-  if variable_atts is None: variable_atts = variables_rc  
-  return basins.loadShapeSimulations(variable_atts=variable_atts, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
-                                     WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+  return load_ens.loadShapeObservations(variable_atts=variable_atts, **kwargs)
 def loadShapeEnsemble(variable_atts=None, **kwargs):
-  ''' wrapper for eva.stations.loadShapeEnsemble that sets experiment and variable lists '''
+  ''' wrapper for clim.load_ens.loadShapeEnsemble that sets experiment and variable lists '''
   if variable_atts is None: variable_atts = variables_rc  
-  return stations.loadShapeEnsemble(variable_atts=variable_atts, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
-                                  WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
-def loadStationEnsemble(variable_atts=None, default_constraints=None, **kwargs):
-  ''' wrapper for eva.stations.loadStationEnsemble that sets experiment and variable lists etc. '''
+  return load_ens.loadShapeEnsemble(variable_atts=variable_atts, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
+                                    WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+def loadStationEnsemble(variable_atts=None, **kwargs):
+  ''' wrapper for clim.load_ens.loadStationEnsemble that sets experiment and variable lists '''
   if variable_atts is None: variable_atts = variables_rc  
-  if default_constraints is None: default_constraints = constraints_rc    
-  return stations.loadShapeEnsemble(variable_atts=variable_atts, default_constraints=default_constraints,
-                                  WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
-                                  WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+  return load_ens.loadStationEnsemble(variable_atts=variable_atts, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
+                                      WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
 
 
 # plot labels: translate internal names to something more presentable
@@ -225,9 +217,9 @@ plot_labels_rc['EC_1995']         = 'EC (1995)'
 plot_labels_rc['Ens']             = 'CESM'  
 plot_labels_rc['Ens-2050']        = 'CESM 2050' 
 plot_labels_rc['Ens-2100']        = 'CESM 2100' 
-plot_labels_rc['MEns']             = 'CESM*'  
-plot_labels_rc['MEns-2050']        = 'CESM* 2050' 
-plot_labels_rc['MEns-2100']        = 'CESM* 2100' 
+plot_labels_rc['MEns']            = 'CESM*'  
+plot_labels_rc['MEns-2050']       = 'CESM* 2050' 
+plot_labels_rc['MEns-2100']       = 'CESM* 2100' 
 plot_labels_rc['max-ens']         = 'IC Ens.'  
 plot_labels_rc['max-ens-2050']    = 'IC 2050' 
 plot_labels_rc['max-ens-2100']    = 'IC 2100' 
@@ -258,35 +250,35 @@ plot_labels_rc['t-ens-2050']      = 'T 2050'
 plot_labels_rc['t-ens-2100']      = 'T 2100'
 plot_labels_rc['erai-t']          = 'ERA-I'   
 # variables
-plot_labels_rc['MaxPrecip_1d']   = 'Max Precip. (1d)'
-plot_labels_rc['MaxPrecip_5d']   = 'Max Precip. (5d)'
-plot_labels_rc['MaxPreccu_1d']   = 'Max Conv. (1d)'
-plot_labels_rc['MaxSolprec_1d']  = 'Max Snow (1d)'
-plot_labels_rc['MaxWaterFlx_1d'] = 'Max Flux (1d)'
-plot_labels_rc['wetfrq_010']     = 'Wet-days'
-plot_labels_rc['wetprec_010']    = 'Precip. Intensity'
-plot_labels_rc['T2']       = 'T (2m)'   
-plot_labels_rc['precip']   = 'Precip.'  
-plot_labels_rc['liqprec']  = 'Liquid' 
-plot_labels_rc['solprec']  = 'Snow' 
-plot_labels_rc['dryprec']  = 'dryprec' 
-plot_labels_rc['preccu']   = 'Conv.'  
-plot_labels_rc['precnc']   = 'NC'  
-plot_labels_rc['evap']     = 'ET'    
-plot_labels_rc['p-et']     = 'Net Precip.'    
-plot_labels_rc['pet']      = 'PET' 
-plot_labels_rc['waterflx'] = 'Water Flux'
-plot_labels_rc['snwmlt']   = 'Snow Melt' 
-plot_labels_rc['runoff']   = 'Total Runoff' 
-plot_labels_rc['ugroff']   = 'Undergr. R\'off' 
-plot_labels_rc['sfroff']   = 'Surface Runoff' 
-plot_labels_rc['Tmax']     = 'T (max)'    
-plot_labels_rc['Tmin']     = 'T (min)'    
-plot_labels_rc['hfx']      = 'Sens. Heat'     
-plot_labels_rc['lhfx']     = 'Latent Heat'    
-plot_labels_rc['Q2']       = 'Q (2m)'      
-plot_labels_rc['aSM']      = 'aSM'     
-plot_labels_rc['rSM']      = 'Soil Moist.'       
+plot_labels_rc['MaxPrecip_1d']    = 'Max Precip. (1d)'
+plot_labels_rc['MaxPrecip_5d']    = 'Max Precip. (5d)'
+plot_labels_rc['MaxPreccu_1d']    = 'Max Conv. (1d)'
+plot_labels_rc['MaxSolprec_1d']   = 'Max Snow (1d)'
+plot_labels_rc['MaxWaterFlx_1d']  = 'Max Flux (1d)'
+plot_labels_rc['wetfrq_010']      = 'Wet-days'
+plot_labels_rc['wetprec_010']     = 'Precip. Intensity'
+plot_labels_rc['T2']              = 'T (2m)'   
+plot_labels_rc['precip']          = 'Precip.'  
+plot_labels_rc['liqprec']         = 'Liquid' 
+plot_labels_rc['solprec']         = 'Snow' 
+plot_labels_rc['dryprec']         = 'dryprec' 
+plot_labels_rc['preccu']          = 'Conv.'  
+plot_labels_rc['precnc']          = 'NC'  
+plot_labels_rc['evap']            = 'ET'    
+plot_labels_rc['p-et']            = 'Net Precip.'    
+plot_labels_rc['pet']             = 'PET' 
+plot_labels_rc['waterflx']        = 'Water Flux'
+plot_labels_rc['snwmlt']          = 'Snow Melt' 
+plot_labels_rc['runoff']          = 'Total Runoff' 
+plot_labels_rc['ugroff']          = 'Undergr. R\'off' 
+plot_labels_rc['sfroff']          = 'Surface Runoff' 
+plot_labels_rc['Tmax']            = 'T (max)'    
+plot_labels_rc['Tmin']            = 'T (min)'    
+plot_labels_rc['hfx']             = 'Sens. Heat'     
+plot_labels_rc['lhfx']            = 'Latent Heat'    
+plot_labels_rc['Q2']              = 'Q (2m)'      
+plot_labels_rc['aSM']             = 'aSM'     
+plot_labels_rc['rSM']             = 'Soil Moist.'       
 
 ## custom default plot styles
 obs_args = AttrDict(marker='o', linestyle=' ') # 5*mpl.rcParams['lines.linewidth']
@@ -302,39 +294,39 @@ dataset_plotargs_rc['CFSR']         =  rea_args
 dataset_plotargs_rc['NARR']         =  rea_args
 # variable settings
 variable_plotargs_rc = dict()
-variable_plotargs_rc['MaxPrecip_1d'] = AttrDict(color = 'green')
-variable_plotargs_rc['MaxPrecip_5d'] = AttrDict(color = 'sienna')
-variable_plotargs_rc['MaxPreccu_1d'] = AttrDict(color = 'magenta')
-variable_plotargs_rc['MaxPrecnc_1d'] = AttrDict(color = 'grey')
+variable_plotargs_rc['MaxPrecip_1d']   = AttrDict(color = 'green')
+variable_plotargs_rc['MaxPrecip_5d']   = AttrDict(color = 'sienna')
+variable_plotargs_rc['MaxPreccu_1d']   = AttrDict(color = 'magenta')
+variable_plotargs_rc['MaxPrecnc_1d']   = AttrDict(color = 'grey')
 variable_plotargs_rc['MaxSolprec_1d']  = AttrDict(color = 'blue')
 variable_plotargs_rc['MaxWaterFlx_1d'] = AttrDict(color = 'blue')
-variable_plotargs_rc['T2']       = AttrDict(color = 'green')
-variable_plotargs_rc['precip']   = AttrDict(color = 'green')
-variable_plotargs_rc['liqprec']  = AttrDict(color = 'cyan')
-variable_plotargs_rc['solprec']  = AttrDict(color = 'blue')
-variable_plotargs_rc['dryprec']  = AttrDict(color = 'green')
-variable_plotargs_rc['preccu']   = AttrDict(color = 'magenta')
-variable_plotargs_rc['precnc']   = AttrDict(color = 'coral')
-variable_plotargs_rc['evap']     = AttrDict(color = 'red')
-variable_plotargs_rc['p-et']     = AttrDict(color = 'red')
-variable_plotargs_rc['pet']      = AttrDict(color = 'purple')
-variable_plotargs_rc['waterflx'] = AttrDict(color = 'dodgerblue') # 'dodgerblue'
-variable_plotargs_rc['snwmlt']   = AttrDict(color = 'orange')
-variable_plotargs_rc['runoff']   = AttrDict(color = 'purple')
-variable_plotargs_rc['ugroff']   = AttrDict(color = 'coral')
-variable_plotargs_rc['sfroff']   = AttrDict(color = 'green')
-variable_plotargs_rc['Tmax']     = AttrDict(color = 'red')
-variable_plotargs_rc['Tmin']     = AttrDict(color = 'blue')
-variable_plotargs_rc['hfx']      = AttrDict(color = 'red')
-variable_plotargs_rc['lhfx']     = AttrDict(color = 'purple')
-variable_plotargs_rc['Q2']       = AttrDict(color = 'blue')
-variable_plotargs_rc['aSM']      = AttrDict(color = 'coral')
-variable_plotargs_rc['rSM']      = AttrDict(color = 'green')
-variable_plotargs_rc['CNWD']     = AttrDict(color = 'green')
-variable_plotargs_rc['CNDD']     = AttrDict(color = 'green')
+variable_plotargs_rc['T2']             = AttrDict(color = 'green')
+variable_plotargs_rc['precip']         = AttrDict(color = 'green')
+variable_plotargs_rc['liqprec']        = AttrDict(color = 'cyan')
+variable_plotargs_rc['solprec']        = AttrDict(color = 'blue')
+variable_plotargs_rc['dryprec']        = AttrDict(color = 'green')
+variable_plotargs_rc['preccu']         = AttrDict(color = 'magenta')
+variable_plotargs_rc['precnc']         = AttrDict(color = 'coral')
+variable_plotargs_rc['evap']           = AttrDict(color = 'red')
+variable_plotargs_rc['p-et']           = AttrDict(color = 'red')
+variable_plotargs_rc['pet']            = AttrDict(color = 'purple')
+variable_plotargs_rc['waterflx']       = AttrDict(color = 'dodgerblue') # 'dodgerblue'
+variable_plotargs_rc['snwmlt']         = AttrDict(color = 'orange')
+variable_plotargs_rc['runoff']         = AttrDict(color = 'purple')
+variable_plotargs_rc['ugroff']         = AttrDict(color = 'coral')
+variable_plotargs_rc['sfroff']         = AttrDict(color = 'green')
+variable_plotargs_rc['Tmax']           = AttrDict(color = 'red')
+variable_plotargs_rc['Tmin']           = AttrDict(color = 'blue')
+variable_plotargs_rc['hfx']            = AttrDict(color = 'red')
+variable_plotargs_rc['lhfx']           = AttrDict(color = 'purple')
+variable_plotargs_rc['Q2']             = AttrDict(color = 'blue')
+variable_plotargs_rc['aSM']            = AttrDict(color = 'coral')
+variable_plotargs_rc['rSM']            = AttrDict(color = 'green')
+variable_plotargs_rc['CNWD']           = AttrDict(color = 'green')
+variable_plotargs_rc['CNDD']           = AttrDict(color = 'green')
 # add wet-day threshold dependent variables    
 wetday_colors = ['steelblue', 'purple', 'crimson', 'orange']   
-for wdext,color in zip(basins.wetday_extensions,wetday_colors):
+for wdext,color in zip(load_ens.wetday_extensions,wetday_colors):
   variable_plotargs_rc['wetprec'+wdext] = AttrDict(color = color)
   variable_plotargs_rc['wetfrq' +wdext] = AttrDict(color = color)
   variable_plotargs_rc['CWD'+wdext]     = AttrDict(color = color)
@@ -345,41 +337,41 @@ def getFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels
   if dataset_plotargs is None: dataset_plotargs = dataset_plotargs_rc 
   if variable_plotargs is None: variable_plotargs = variable_plotargs_rc
   if plot_labels is None: plot_labels = plot_labels_rc
-  return pltfig.getFigAx(subplot, dataset_plotargs=dataset_plotargs, variable_plotargs=variable_plotargs,
+  return figure.getFigAx(subplot, dataset_plotargs=dataset_plotargs, variable_plotargs=variable_plotargs,
                          plot_labels=plot_labels, xtop=xtop, yright=yright, **kwargs)
-hydroFigAx = getFigAx # alias for direct project import
+climFigAx = getFigAx # alias for direct project import
 
-# basin annotation
+## climatology plot and shape annotation
 # defaults
-basin_defaults_rc = AttrDict(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100))
+shape_defaults_rc = AttrDict(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100))
 # specific settings
-basin_specifics = dict()
-basin_specifics['ARB'] = AttrDict(temp=(245,300), water=(-1.5,2.5), precip=(-0.5,3.5), precip_types=(-0.5,3.5), spei=(-1.5,5.5),
-                                  runoff=(-1.2,2), flux=(-1.5,3.5), flux_alt=(-0.5,3.5), evap=(-1.5,5.5))
-basin_specifics['CRB'] = AttrDict(temp=(255,305), water=(-3,6), precip=(-0.5,7.))
-basin_specifics['FRB'] = AttrDict(temp=(255,300), water=(-2,7.), precip=(-1,7.), precip_types=(-1,7.), runoff=(-2,7), flux_alt=(-1,7.), spei=(-1,7.))
-basin_specifics['NRB'] = AttrDict(temp=(245,305), water=(-1.4,2.2), precip=(-0.4,3.4), runoff=(-2.,2.), flux=(-2,5.5))
-basin_specifics['PSB'] = AttrDict(temp=(255,295), water=(-2.,16.))
-basin_specifics['NorthernPSB'] = AttrDict(temp=(255,295), water=(-2.,14.), precip=(-2,14))
-basin_specifics['SouthernPSB'] = AttrDict(temp=(255,295), water=(-2.,16.), precip=(-2,16))
-basin_specifics['Pacific']  = AttrDict(temp=(265,300), water=(-2,10)   , precip=(0,12)    , precip_xtrm=(0,60), precip_cesm=(0,60), precip_alt=(0,40), wetprec=(0,30), wetdays=(0,80), CWD=(0,25), CDD=(0,25))
-basin_specifics['Coast']    = AttrDict(temp=(265,300), water=(-4,6)    , precip=(-1,8)    , precip_xtrm=(0,40), precip_cesm=(0,40), precip_alt=(0,40), wetprec=(0,30), wetdays=(0,80), CWD=(0,20), CDD=(0,31))
-basin_specifics['Plateau']  = AttrDict(temp=(255,305), water=(-2.,2.)  , precip=(-0.5,2.5), precip_xtrm=(0,20), precip_cesm=(0,20), precip_alt=(0,20), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
-basin_specifics['Prairies'] = AttrDict(temp=(250,305), water=(-1.5,1.5), precip=(-0.5,3.5), precip_xtrm=(0,30), precip_cesm=(0,30), precip_alt=(0,30), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
+shape_specifics = dict()
+shape_specifics['ARB']         = AttrDict(temp=(245,300), water=(-1.5,2.5), precip=(-0.5,3.5), precip_types=(-0.5,3.5), spei=(-1.5,5.5),
+                                          runoff=(-1.2,2), flux=(-1.5,3.5), flux_alt=(-0.5,3.5), evap=(-1.5,5.5))
+shape_specifics['CRB']         = AttrDict(temp=(255,305), water=(-3,6), precip=(-0.5,7.))
+shape_specifics['FRB']         = AttrDict(temp=(255,300), water=(-2,7.), precip=(-1,7.), precip_types=(-1,7.), runoff=(-2,7), flux_alt=(-1,7.), spei=(-1,7.))
+shape_specifics['NRB']         = AttrDict(temp=(245,305), water=(-1.4,2.2), precip=(-0.4,3.4), runoff=(-2.,2.), flux=(-2,5.5))
+shape_specifics['PSB']         = AttrDict(temp=(255,295), water=(-2.,16.))
+shape_specifics['NorthernPSB'] = AttrDict(temp=(255,295), water=(-2.,14.), precip=(-2,14))
+shape_specifics['SouthernPSB'] = AttrDict(temp=(255,295), water=(-2.,16.), precip=(-2,16))
+shape_specifics['Pacific']     = AttrDict(temp=(265,300), water=(-2,10)   , precip=(0,12)    , precip_xtrm=(0,60), precip_cesm=(0,60), precip_alt=(0,40), wetprec=(0,30), wetdays=(0,80), CWD=(0,25), CDD=(0,25))
+shape_specifics['Coast']       = AttrDict(temp=(265,300), water=(-4,6)    , precip=(-1,8)    , precip_xtrm=(0,40), precip_cesm=(0,40), precip_alt=(0,40), wetprec=(0,30), wetdays=(0,80), CWD=(0,20), CDD=(0,31))
+shape_specifics['Plateau']     = AttrDict(temp=(255,305), water=(-2.,2.)  , precip=(-0.5,2.5), precip_xtrm=(0,20), precip_cesm=(0,20), precip_alt=(0,20), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
+shape_specifics['Prairies']    = AttrDict(temp=(250,305), water=(-1.5,1.5), precip=(-0.5,3.5), precip_xtrm=(0,30), precip_cesm=(0,30), precip_alt=(0,30), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
 # add defaults to specifics
-basin_annotation_rc = dict()
-for basin,specs in basin_specifics.iteritems():
-  atts = basin_defaults_rc.copy()
+shape_annotation_rc = dict()
+for basin,specs in shape_specifics.iteritems():
+  atts = shape_defaults_rc.copy()
   atts.update(specs)
   atts.update(zip([key+'_obs' for key in atts.iterkeys()],atts.itervalues())) # add obs-only versions
-  basin_annotation_rc[basin] = atts
+  shape_annotation_rc[basin] = atts
   
-# wrapper with custom defaults to figure creator (plotargs and label positions)
-def hydroPlot(basin_annotation=None, basin_defaults=None, variable_atts=None, **kwargs):
-  if basin_annotation is None: basin_annotation = basin_annotation_rc 
-  if basin_defaults is None: basin_defaults = basin_defaults_rc
+# wrapper with custom basin/sape/etc. defaults for climPlot
+def climPlot(shape_annotation=None, shape_defaults=None, variable_atts=None, **kwargs):
+  if shape_annotation is None: shape_annotation = shape_annotation_rc 
+  if shape_defaults is None: shape_defaults = shape_defaults_rc
   if variable_atts is None: variable_atts = variables_rc
-  return plots.getFigAx(basin_annotation=basin_annotation, basin_defaults=basin_defaults, 
+  return plots.climPlot(shape_annotation=shape_annotation, shape_defaults=shape_defaults, 
                         variable_atts=variable_atts, **kwargs)
 
 

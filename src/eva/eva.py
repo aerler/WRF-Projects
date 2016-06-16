@@ -11,9 +11,9 @@ import numpy as np
 from geodata.base import Dataset, Ensemble
 from geodata.misc import ArgumentError, AxisError
 from geodata.stats import VarRV
-from datasets.common import loadEnsembleTS, expandArgumentList
-# imports from hydro
-from hydro.basins import loadShapeEnsemble, loadStationEnsemble
+from datasets.common import expandArgumentList
+# imports from clim
+from clim.load_ens import loadShapeEnsemble, loadStationEnsemble
 from geodata.netcdf import DatasetNetCDF
 
 

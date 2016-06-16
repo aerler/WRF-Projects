@@ -16,7 +16,7 @@ from geodata.stats import ks_2samp, VarRV
 import plotting.figure as pltfig
 from plotting.figure import show # don't import getFigAx directly, to avoid recursion
 from plotting.axes import checkVarlist
-from hydro.plots import plot_labels_rc
+from clim.plots import plot_labels_rc
 
 def stationInfo(stnds, varname, name, titlestr=None, alttitle=None, lflatten=False, lmon=False,):
   ''' helper to generate an axes title with station info '''
@@ -294,7 +294,7 @@ def mergeAnnotation(specifics, defaults):
 # defaults
 shape_defaults = AttrDict(heat=(-30,120), Q2=(0,20), aSM=(0.15,0.35), waterflx=(-2,12), 
                           T2=(245,305), Tmax=(250,310), Tmin=(240,300), precip=(0,10), 
-                          MaxPrecip_1d=(0,80), MaxPrecip_6h  =(0,150), MaxPrecip_7d=(0,25), 
+                          MaxPrecip_1d=(0,80), MaxPrecip_6h=(0,150), MaxPrecip_7d=(0,25), 
                           MaxWaterflx_5d=(5,35), CWD=(0,70), CDD=(0,40))    
 
 # specific settings

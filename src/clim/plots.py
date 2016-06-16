@@ -19,11 +19,11 @@ from geodata.base import Dataset
 
 ## custom plotting functions
 @BatchLoad
-def hydroPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varlist=None, master=None, 
+def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varlist=None, master=None, 
               scalevars='auto', legend=0, shape_name=None, stnset_name=None, ylim=None,
               lperi=True, lparasiteMeans=True, axtitle=None, ylabel=True, xlabel=True, lyint=True,
               lprint=True, dataset_legend=False, dataset_labels=None, variable_atts=None,
-              basin_annotation=None, basin_defaults=None, **plotargs):
+              shape_annotation=None, shape_defaults=None, **plotargs):
   ''' plot the seasonal cycle over a basin ''' # linestyles=None, lineformats=None, colors=None, markers=None
   if axes is None: raise ArgumentError
   # define some meta data
@@ -46,26 +46,26 @@ def hydroPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, var
   xlim = 0.5,12.5
   # basin info
   if shape_name or stnset_name or 'shape_name' in refds.atts:
-    if not (shape_name or stnset_name): basin_name = refds.atts.shape_name
-    else: basin_name = shape_name or stnset_name
-    basin_info = basin_annotation[basin_name] if basin_name in basin_annotation else basin_defaults 
+    if not (shape_name or stnset_name): shape_name = refds.atts.shape_name
+    else: shape_name = shape_name or stnset_name
+    shape_info = shape_annotation[shape_name] if shape_name in shape_annotation else shape_defaults 
     # some annotation
     axes.xpad += 3
     if axtitle is not None and axtitle.lower() == 'basin': 
-      axtitle = basin_info.get('title',refds.atts.shp_long_name) # basin name
-    #basin_area = meands.atts.shp_area # scale by area
+      axtitle = shape_info.get('title',refds.atts.shp_long_name) # basin name
+    #shape_area = meands.atts.shp_area # scale by area
     # y-axis labeling
     if varlist_name.lower() == 'temp': 
-      if not ylim: ylim = basin_info['temp'] if 'temp' in basin_info else None
+      if not ylim: ylim = shape_info['temp'] if 'temp' in shape_info else None
       if ylabel is True: ylabel = '2m Temperature [{1:s}]'
-    elif varlist_name in basin_info: 
-      if not ylim: ylim = basin_info[varlist_name]
+    elif varlist_name in shape_info: 
+      if not ylim: ylim = shape_info[varlist_name]
       if ylabel is True and varlist_name in variable_atts: 
         ylabel = variable_atts[varlist_name].label + ' [{1:s}]'
       if varlist_name in ('precip',): axes.ypad += 3
       else: axes.ypad -= 2
     else: # fallback 
-      if not ylim: ylim = basin_info.get('water',None) if basin_info else None
+      if not ylim: ylim = shape_info.get('water',None) if shape_info else None
       if ylabel is True: ylabel = 'Water Flux [{1:s}]'
       axes.ypad -= 3 
   else: ylim = ylim or None
@@ -165,8 +165,8 @@ def hydroPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, var
 if __name__ == '__main__':
   
   #   from projects.WesternCanada.WRF_experiments import Exp, WRF_exps, ensembles
-  from projects.GreatLakes.hydro_settings import variables_rc, basin_annotation_rc, basin_defaults_rc
-  from projects.GreatLakes.hydro_settings import getFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
+  from projects.GreatLakes.clim_settings import variables_rc, shape_annotation_rc, shape_defaults_rc
+  from projects.GreatLakes.clim_settings import getFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
   test = 'simple_climatology'
@@ -193,9 +193,9 @@ if __name__ == '__main__':
     fig,ax = getFigAx((1,1), title=test, sharex=True, sharey=False, stylesheet='default', lpresentation=False)    
     
     # make plots
-    hydroPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
+    climPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
               legend=2, dataset_legend=4, lprint=True, variable_atts=variables_rc, 
-              basin_annotation=basin_annotation_rc, basin_defaults=basin_defaults_rc,
+              shape_annotation=shape_annotation_rc, shape_defaults=shape_defaults_rc,
               lperi=True, lparasiteMeans=True, master='g-ens', lineformats=exps.styles)
     # adjust margins
     fig.updateSubplots(left=0.02, right=0.015, top=0.0, bottom=-0.0)
@@ -224,9 +224,9 @@ if __name__ == '__main__':
     # make plots
     axes = axes.ravel()
     for n,ax,expens,experr,obsens,obserr,varlist in zip(xrange(len(axes)),axes,expenses,experres,obsenses,obserres,varlists*len(basins)):
-      hydroPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
+      climPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
                 master=exps.master, variable_atts=variables_rc, 
-                basin_annotation=basin_annotation_rc, basin_defaults=basin_defaults_rc,
+                shape_annotation=shape_annotation_rc, shape_defaults=shape_defaults_rc,
                 legend=0 if n>1 else None, linestyles=('--','-.','-'), lparasiteMeans=True, axtitle=None)
     
     # adjust margins
