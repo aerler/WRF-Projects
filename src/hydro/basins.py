@@ -25,14 +25,34 @@ wetday_extensions = ['_{:03.0f}'.format(threshold*10) for threshold in wetday_th
 CRU_vars = ('T2','Tmin','Tmax','dTd','Q2','pet','precip','cldfrc','wetfrq','frzfrq')
 WSC_vars = ('runoff','sfroff','ugroff')
 
+
+# internal method for do slicing for Ensembles and Obs
+def _configSlices(slices=None, basins=None, provs=None, shapes=None, period=None):
+  ''' configure slicing based on basin/province/shape and period arguments '''
+  if slices is None: slices = dict()
+  if shapes is not None:
+    if not ( basins is None and provs  is None ): raise ArgumentError
+    slices['shape_name'] = shapes
+  if basins is not None: 
+    if not ( shapes is None and provs  is None ): raise ArgumentError
+    slices['shape_name'] = basins  
+  if provs  is not None: 
+    if not ( basins is None and shapes is None ): raise ArgumentError
+    slices['shape_name'] = provs
+  if period is not None:
+    if slices is None: slices = dict()
+    slices['years'] = period
+  return slices
+
+
 # define new load fct. for observations
 @BatchLoad
-def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, varlist=None, slices=None,
-                          aggregation='mean', shapefile=None, period=None, variable_atts=None, **kwargs):
-  ''' convenience function to load basin & province observations; if no 'obs' are specified,
-      sensible defaults are selected, based on 'varlist' '''
+def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shapes=None, varlist=None, slices=None,
+                          aggregation='mean', shapetype=None, period=None, variable_atts=None, **kwargs):
+  ''' convenience function to load shape observations; the main function is to select sensible defaults 
+      based on 'varlist', if no 'obs' are specified '''
   # prepare arguments
-  if shapefile is None: shapefile = 'shpavg' # really only one in use  
+  if shapetype is None: shapetype = 'shpavg' # really only one in use  
   # resolve variable list (no need to maintain order)
   if isinstance(varlist,basestring): varlist = [varlist]
   variables = set(shp_params)
@@ -51,15 +71,8 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, varli
       if aggregation.lower() in ('mean','std','sem','min','max') and seasons is None: 
         lWSC = True; obs = []
   if not isinstance(obs,(list,tuple)): obs = (obs,)
-  # configure slicing (extract basin)
-  if basins is not None and provs is not None: raise ArgumentError
-  elif provs is not None or basins is not None:
-    if slices is None: slices = dict()
-    if provs is not None: slices['shape_name'] = provs
-    if basins is not None: slices['shape_name'] = basins  
-  if period is not None:
-    if slices is None: slices = dict()
-    slices['years'] = period
+  # configure slicing (extract basin/province/shape and period)
+  slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, period=period)
   if slices is not None:
     noyears = slices.copy(); noyears.pop('years',None) # slices for climatologies
   # prepare and load ensemble of observations
@@ -67,17 +80,17 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, varli
   if len(obs) > 0: # regular operations with user-defined dataset
     try:
       ensemble = loadEnsembleTS(names=obs, season=seasons, aggregation=aggregation, slices=slices, 
-                                varlist=variables, shape=shapefile, ldataset=False, **kwargs)
+                                varlist=variables, shape=shapetype, ldataset=False, **kwargs)
       for ens in ensemble: obsens += ens
     except EmptyDatasetError: pass 
   if lUnity: # load Unity data instead of averaging CRU data
     if period is None: period = (1979,1994)
-    dataset = loadDataset(name='Unity', varlist=variables, mode='climatology', period=period, shape=shapefile)
+    dataset = loadDataset(name='Unity', varlist=variables, mode='climatology', period=period, shape=shapetype)
     if slices is not None: dataset = dataset(**noyears) # slice immediately
     obsens += dataset.load() 
   if lCRU: # this is basically regular operations with CRU as default
     obsens += loadEnsembleTS(names='CRU', season=seasons, aggregation=aggregation, slices=slices, 
-                             varlist=variables, shape=shapefile, ldataset=True, **kwargs)    
+                             varlist=variables, shape=shapetype, ldataset=True, **kwargs)    
   if lWSC: # another special case: river hydrographs
 #     from datasets.WSC import loadGageStation, GageStationError
     try:
@@ -92,12 +105,12 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, varli
 
 # define new load fct. for experiments (not intended for observations)
 @BatchLoad
-def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, varlist=None, aggregation='mean', 
-                         slices=None, shapefile=None, filetypes=None, period=None, variable_atts=None, 
-                         WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, **kwargs):
-  ''' convenience function to load basin & province ensembles '''
+def loadShapeEnsemble(seasons=None, basins=None, provs=None, shapes=None, varlist=None, aggregation='mean', 
+                      slices=None, shapetype=None, filetypes=None, period=None, variable_atts=None, 
+                      WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, **kwargs):
+  ''' convenience function to load shape ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
   # prepare arguments
-  if shapefile is None: shapefile = 'shpavg' # really only one in use  
+  if shapetype is None: shapetype = 'shpavg' # really only one in use  
   # resolve variable list (no need to maintain order)
   if isinstance(varlist,basestring): varlist = [varlist]
   variables = set(shp_params)
@@ -111,43 +124,31 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, varlist
     for name in varlist: 
       for ft in variable_atts[name].files: 
         if ft not in filetypes: filetypes.append(ft)   
-  # configure slicing (extract basin/province)
-  if basins is not None and provs is not None: raise ArgumentError
-  elif provs is not None or basins is not None:
-    if slices is None: slices = dict()
-    if provs is not None: slices['shape_name'] = provs
-    if basins is not None: slices['shape_name'] = basins  
-  if period is not None:
-    if slices is None: slices = dict()
-    slices['years'] = period
+  # configure slicing (extract basin/province/shape and period)
+  slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, period=period)
   # load ensemble (no iteration here)
-  shpens = loadEnsembleTS(names=names, season=seasons, aggregation=aggregation, slices=slices,
-                          varlist=variables, shape=shapefile, filetypes=filetypes, 
-                          WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
-                          **kwargs)
+  shpens = loadEnsembleTS(season=seasons, slices=slices, varlist=variables, shape=shapetype, 
+                          aggregation=aggregation, filetypes=filetypes, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
+                          WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
   # return ensembles (will be wrapped in a list, if BatchLoad is used)
   return shpens
 
 
 # define new load fct. (batch args: load_list=['season','prov',], lproduct='outer')
-def loadStationEnsemble(names=None, provs=None, seasons=None, clusters=None, varlist=None, 
-                        station=None, constraints=None, master=None, lall=True, 
-                        aggregation='max', lminmax=False, slices=None, obsslices=None, 
-                        lensembleAxis=False, years=None, reduction=None,
-                        filetypes=None, domain=None, name_tags=None, cluster_name=None,
-                        ensemble_list=None, ensemble_product='inner', load_list=None, lproduct='outer',
+def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, aggregation='mean', constraints=None, 
+                        filetypes=None, cluster_name=None, stationtype=None, load_list=None, lproduct='outer',
                         WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, 
-                        variable_atts=None, default_constraints=None):
-  ''' convenience function to load station data for ensembles (in Ensemble container) '''
+                        variable_atts=None, default_constraints=None, **kwargs):
+  ''' convenience function to load station data for ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
   load_list = [] if load_list is None else load_list[:] # use a copy, since the list may be modified
   
   # figure out varlist
   if isinstance(varlist,basestring):
-    if station is None:
+    if stationtype is None:
       if varlist.lower().find('precip') >= 0: 
-        station = 'ecprecip'
+        stationtype = 'ecprecip'
       elif varlist.lower().find('temp') >= 0: 
-        station = 'ectemp'
+        stationtype = 'ectemp'
     if filetypes is None: filetypes = variable_atts[varlist].files[:]
     varlist = variable_atts[varlist].vars[:]
   if cluster_name: varlist = varlist[:] + [cluster_name] # need to load this variable!
@@ -184,13 +185,10 @@ def loadStationEnsemble(names=None, provs=None, seasons=None, clusters=None, var
         load_list[load_list.index('cluster')] = 'constraints'
         constraints = constraint_list; clusters = None  
   # load ensemble (no iteration here)
-  stnens = loadEnsembleTS(names=names, season=seasons, prov=provs, aggregation=aggregation, lminmax=lminmax, 
-                          years=years, station=station, slices=slices, obsslices=obsslices, lall=lall,
-                          constraints=constraints, varlist=varlist, filetypes=filetypes, domain=domain,
-                          ensemble_list=ensemble_list, ensemble_product=ensemble_product, master=master, 
-                          load_list=load_list, lproduct=lproduct, name_tags=name_tags, lcheckVar=False,
-                          WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens,
-                          lensembleAxis=lensembleAxis, reduction=reduction)
+  stnens = loadEnsembleTS(season=seasons, prov=provs, station=stationtype, varlist=varlist, 
+                          aggregation=aggregation, constraints=constraints, filetypes=filetypes, 
+                          WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
+                          load_list=load_list, lproduct=lproduct, lcheckVar=False, **kwargs)
   # return ensembles (will be wrapped in a list, if BatchLoad is used)
   return stnens
 
@@ -270,10 +268,10 @@ if __name__ == '__main__':
     provs = None; clusters = None; lensembleAxis = False; sample_axis = None; lflatten = False
     exp = 'g-ens'; exps = exps_rc[exp]; provs = None; clusters = [1,3]
     seasons = ['summer']; lfit = True; lrescale = True; lbootstrap = False
-    lflatten = False; lensembleAxis = True; sample_axis = ('station','year')
+    lflatten = False; lensembleAxis = True; sample_axis = ('stationtype','year')
     varlist = ['MaxPrecip_1d', 'MaxPrecip_5d','MaxPreccu_1d'][:1]; filetypes = ['hydro']
     stnens = loadStationEnsemble(names=exps.exps, provs=provs, clusters=clusters, varlist=varlist,  
-                                 seasons=seasons, master=None, station='ecprecip',
+                                 seasons=seasons, master=None, stationtype='ecprecip',
                                  domain=2, lensembleAxis=lensembleAxis, filetypes=filetypes,                                 
                                  variable_atts=variables_rc, default_constraints=constraints_rc,
                                  WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
