@@ -22,14 +22,14 @@ from geodata.base import Dataset
 def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varlist=None, master=None, 
               scalevars='auto', legend=0, shape_name=None, stnset_name=None, ylim=None,
               lperi=True, lparasiteMeans=True, axtitle=None, ylabel=True, xlabel=True, lyint=True,
-              lprint=True, dataset_legend=False, dataset_labels=None, variable_atts=None,
-              shape_annotation=None, shape_defaults=None, **plotargs):
+              lprint=True, dataset_legend=False, dataset_labels=None, variable_list=None,
+              annotation=None, defaults=None, **plotargs):
   ''' plot the seasonal cycle over a basin ''' # linestyles=None, lineformats=None, colors=None, markers=None
   if axes is None: raise ArgumentError
   # define some meta data
   if varlist is None and expens.basetype is Dataset: raise TypeError
   if isinstance(varlist,basestring):
-    varlist_name = varlist; varlist = variable_atts[varlist_name].vars # look up variable set
+    varlist_name = varlist; varlist = variable_list[varlist_name].vars # look up variable set
   elif isinstance(varlist,(tuple,list)):
     varlist_name = varlist[0] # use first entry as name
   else: raise TypeError
@@ -48,7 +48,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   if shape_name or stnset_name or 'shape_name' in refds.atts:
     if not (shape_name or stnset_name): shape_name = refds.atts.shape_name
     else: shape_name = shape_name or stnset_name
-    shape_info = shape_annotation[shape_name] if shape_name in shape_annotation else shape_defaults 
+    shape_info = annotation[shape_name] if shape_name in annotation else defaults 
     # some annotation
     axes.xpad += 3
     if axtitle is not None and axtitle.lower() == 'basin': 
@@ -60,8 +60,8 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
       if ylabel is True: ylabel = '2m Temperature [{1:s}]'
     elif varlist_name in shape_info: 
       if not ylim: ylim = shape_info[varlist_name]
-      if ylabel is True and varlist_name in variable_atts: 
-        ylabel = variable_atts[varlist_name].label + ' [{1:s}]'
+      if ylabel is True and varlist_name in variable_list: 
+        ylabel = variable_list[varlist_name].label + ' [{1:s}]'
       if varlist_name in ('precip',): axes.ypad += 3
       else: axes.ypad -= 2
     else: # fallback 
@@ -164,9 +164,9 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
 
 if __name__ == '__main__':
   
-  from projects.WesternCanada.analysis_settings import variables_rc, shape_annotation_rc, shape_defaults_rc
+  from projects.WesternCanada.analysis_settings import variables_rc, clim_annotation, clim_defaults
   from projects.WesternCanada.analysis_settings import climFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
-#   from projects.GreatLakes.analysis_settings import variables_rc, shape_annotation_rc, shape_defaults_rc
+#   from projects.GreatLakes.analysis_settings import variables_rc, clim_annotation, clim_defaults
 #   from projects.GreatLakes.analysis_settings import climFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
@@ -196,7 +196,7 @@ if __name__ == '__main__':
     
     # make plots
     climPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
-              legend=2, dataset_legend=4, lprint=True, variable_atts=variables_rc, 
+              legend=2, dataset_legend=4, lprint=True, variable_list=variables_rc, 
               shape_annotation=shape_annotation_rc, shape_defaults=shape_defaults_rc,
               lperi=True, lparasiteMeans=True, master=exps.master, lineformats=exps.styles)
     # adjust margins
@@ -228,7 +228,7 @@ if __name__ == '__main__':
     axes = axes.ravel()
     for n,ax,expens,experr,obsens,obserr,varlist in zip(xrange(len(axes)),axes,expenses,experres,obsenses,obserres,varlists*len(basins)):
       climPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
-                master=exps.master, variable_atts=variables_rc, 
+                master=exps.master, variable_list=variables_rc, 
                 shape_annotation=shape_annotation_rc, shape_defaults=shape_defaults_rc,
                 legend=0 if n>1 else None, linestyles=('--','-.','-'), lparasiteMeans=True, axtitle=None)
     

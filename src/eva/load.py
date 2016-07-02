@@ -13,7 +13,7 @@ from geodata.misc import ArgumentError, AxisError
 from geodata.stats import VarRV
 from datasets.common import expandArgumentList
 # imports from clim
-from clim.load_ens import loadShapeEnsemble, loadStationEnsemble
+from clim.load import loadShapeEnsemble, loadStationEnsemble
 from geodata.netcdf import DatasetNetCDF
 
 
@@ -200,7 +200,7 @@ def addDistFit(ensemble=None, lfit=True, lflatten=None, lrescale=False, referenc
 def loadEnsembleFit(lfit=True, dist=None, dist_args=None, reference=None, target=None,
                     lglobalScale=False, lrescale=False, lflatten=True, sample_axis=None, 
                     lcrossval=False, ncv=0.2, lbootstrap=False, nbs=100,
-                    WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, variable_atts=None, 
+                    WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, variable_list=None, 
                     load_list=None, lproduct='outer', lshort=True, datatype=None, **kwargs):
   ''' convenience function to load ensemble time-series data and compute associated distribution ensembles '''
   if lrescale and not lfit: raise ArgumentError
@@ -208,10 +208,10 @@ def loadEnsembleFit(lfit=True, dist=None, dist_args=None, reference=None, target
 
   # load shape ensemble
   if datatype.lower() == 'shape':
-    ensemble = loadShapeEnsemble(variable_atts=variable_atts, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
+    ensemble = loadShapeEnsemble(variable_list=variable_list, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
                                  WRF_ens=WRF_ens, CESM_ens=CESM_ens, load_list=load_list, lproduct=lproduct, **kwargs)
   if datatype.lower() == 'station':
-    ensemble = loadStationEnsemble(variable_atts=variable_atts, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
+    ensemble = loadStationEnsemble(variable_list=variable_list, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
                                    WRF_ens=WRF_ens, CESM_ens=CESM_ens, load_list=load_list, lproduct=lproduct, **kwargs)
   # N.B.: kwargs are first passed on to loadShapeEnsemble/loadStationEnsemble and then to loadEnsembleTS
 
@@ -278,7 +278,7 @@ if __name__ == '__main__':
                                        filetypes=['lsm'], lfit=True, aggregation='mean', dist='norm',
                                        load_list=load_list, lproduct='outer',
                                        WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
-                                       variable_atts=variables_rc,)
+                                       variable_list=variables_rc,)
     # print diagnostics
     print bsnens[0]; print ''
     print fitens[0][0]
@@ -305,7 +305,7 @@ if __name__ == '__main__':
                                              lflatten=lflatten, domain=2, lbootstrap=lbootstrap, nbs=10,
                                              lensembleAxis=lensembleAxis, sample_axis=sample_axis,
                                              varlist=varlist, filetypes=filetypes,
-                                             variable_atts=variables_rc, default_constraints=constraints_rc,
+                                             variable_list=variables_rc, default_constraints=constraints_rc,
                                              WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
                                              load_list=['season',], lproduct='outer', lcrossval=None,)
     # print diagnostics
@@ -329,7 +329,7 @@ if __name__ == '__main__':
                                                 lrescale=True, reference='Observations', target='max-ens',
                                                 filetypes='hydro', domain=None, lfit=lfit, lflatten=lflatten,
                                                 lbootstrap=False, nbs=10,  
-                                                variable_atts=variables_rc, default_constraints=constraints_rc,
+                                                variable_list=variables_rc, default_constraints=constraints_rc,
                                                 WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
                                                 load_list=['names'], lproduct='outer')
     

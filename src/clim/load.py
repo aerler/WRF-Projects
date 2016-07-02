@@ -45,15 +45,15 @@ def _configSlices(slices=None, basins=None, provs=None, shapes=None, period=None
     slices['years'] = period
   return slices
 
-def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_atts=None):
+def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=None):
   # resolve variable list and filetype (no need to maintain order)
   if isinstance(varlist,basestring): varlist = [varlist]
   variables = set(params) # set required parameters
   filetypes = set() if filetypes is None else set(filetypes)
   for name in varlist: 
-    if name in variable_atts: 
-      variables.update(variable_atts[name].vars)
-      filetypes.update(variable_atts[name].files)
+    if name in variable_list: 
+      variables.update(variable_list[name].vars)
+      filetypes.update(variable_list[name].files)
     else: variables.add(name) 
   # return variables and filetypes as list
   return list(variables), list(filetypes)
@@ -61,7 +61,7 @@ def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_atts=Non
 # define new load fct. for observations
 @BatchLoad
 def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shapes=None, varlist=None, slices=None,
-                          aggregation='mean', shapetype=None, period=None, variable_atts=None, **kwargs):
+                          aggregation='mean', shapetype=None, period=None, variable_list=None, **kwargs):
   ''' convenience function to load shape observations; the main function is to select sensible defaults 
       based on 'varlist', if no 'obs' are specified '''
   # prepare arguments
@@ -70,7 +70,7 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
   if isinstance(varlist,basestring): varlist = [varlist]
   variables = set(shp_params)
   for name in varlist: 
-    if name in variable_atts: variables.update(variable_atts[name].vars)
+    if name in variable_list: variables.update(variable_list[name].vars)
     else: variables.add(name)
   variables = list(variables)
   # figure out default datasets
@@ -119,13 +119,13 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
 # define new load fct. for experiments (not intended for observations)
 @BatchLoad
 def loadShapeEnsemble(seasons=None, basins=None, provs=None, shapes=None, varlist=None, aggregation='mean', 
-                      slices=None, shapetype=None, filetypes=None, period=None, variable_atts=None, 
+                      slices=None, shapetype=None, filetypes=None, period=None, variable_list=None, 
                       WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, **kwargs):
   ''' convenience function to load shape ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
   # prepare arguments
   if shapetype is None: shapetype = 'shpavg' # really only one in use  
   variables, filetypes =  _resolveVarlist(varlist=varlist, filetypes=filetypes, 
-                                          params=shp_params, variable_atts=variable_atts)
+                                          params=shp_params, variable_list=variable_list)
   # configure slicing (extract basin/province/shape and period)
   slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, period=period)
   # load ensemble (no iteration here)
@@ -140,21 +140,22 @@ def loadShapeEnsemble(seasons=None, basins=None, provs=None, shapes=None, varlis
 def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, aggregation='mean', constraints=None, 
                         filetypes=None, cluster_name=None, stationtype=None, load_list=None, lproduct='outer',
                         WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, 
-                        variable_atts=None, default_constraints=None, **kwargs):
+                        variable_list=None, default_constraints=None, **kwargs):
   ''' convenience function to load station data for ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
   load_list = [] if load_list is None else load_list[:] # use a copy, since the list may be modified
   
   # figure out varlist  
   if isinstance(varlist,basestring) and not stationtype:
-      if varlist.lower().find('precip') >= 0: 
+      if varlist.lower().find('prec') >= 0: 
         stationtype = 'ecprecip'
       elif varlist.lower().find('temp') >= 0: 
         stationtype = 'ectemp'
-  if not isinstance(stationtype,basestring): raise ArgumentError # not inferred
+      else: raise ArgumentError, varlist
+  if not isinstance(stationtype,basestring): raise ArgumentError, stationtype # not inferred
   if clusters and not cluster_name: raise ArgumentError
   params = stn_params  + [cluster_name] if cluster_name else stn_params # need to load cluster_name!
   variables, filetypes =  _resolveVarlist(varlist=varlist, filetypes=filetypes, 
-                                         params=params, variable_atts=variable_atts)
+                                          params=params, variable_list=variable_list)
   # prepare arguments
   if provs or clusters:
     if constraints is None: constraints = default_constraints.copy()
@@ -219,7 +220,7 @@ if __name__ == '__main__':
 
     shpens = loadShapeObservations(obs='GPCC', basins=basins, varlist=varlist,
                                    aggregation=aggregation, load_list=['basins','varlist'],)
-#                                    variable_atts=variables_rc)
+#                                    variable_list=variables_rc)
     # print diagnostics
     print shpens[0]; print ''
     assert len(shpens) == len(basins) # len(seasons)
@@ -241,7 +242,7 @@ if __name__ == '__main__':
                                aggregation=aggregation, filetypes=None, reduction=red, 
                                load_list=['basins','seasons',], lproduct='outer', domain=2,
                                WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
-                               variable_atts=variables_rc)
+                               variable_list=variables_rc)
     # print diagnostics
     print shpens[0]; print ''
     assert len(shpens) == len(basins)*len(seasons)
@@ -273,7 +274,7 @@ if __name__ == '__main__':
     stnens = loadStationEnsemble(names=exps, provs=provs, clusters=clusters, varlist=varlist,  
                                  seasons=seasons, master=None, stationtype='ecprecip',
                                  domain=2, lensembleAxis=lensembleAxis, filetypes=filetypes,                                 
-                                 variable_atts=variables_rc, default_constraints=constraints_rc,
+                                 variable_list=variables_rc, default_constraints=constraints_rc,
                                  WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
                                  load_list=['season','provs'], lproduct='outer',)
     # print diagnostics
@@ -295,7 +296,7 @@ if __name__ == '__main__':
                                period=(1979,1994), # this does not work properly with just a number...
                                load_list=['basins','varlist'], lproduct='outer', filetypes=['srfc'],
                                WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
-                               variable_atts=variables_rc)
+                               variable_list=variables_rc)
     # print diagnostics
     print shpens[0]; print ''
     assert len(shpens) == len(basins)*len(varlists)
