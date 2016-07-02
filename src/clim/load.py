@@ -9,13 +9,14 @@ Utility functions related to loading basin-averaged data to support hydrological
 # internal imports
 from geodata.base import Ensemble, Dataset
 from utils.misc import defaultNamedtuple
-from datasets.common import loadEnsembleTS, BatchLoad, loadDataset, shp_params
+from datasets.common import loadEnsembleTS, BatchLoad, loadDataset, shp_params, stn_params
 from geodata.misc import ArgumentError, EmptyDatasetError
 from datasets.WSC import GageStationError, loadGageStation
 
 # some definitions
 VL = defaultNamedtuple('VarList', ('vars','files','label'))   
-EX = defaultNamedtuple('Experiments', ('name','exps','styles','master','title','reference','target'))  
+EX = defaultNamedtuple('Experiments', ('name','exps','styles','master','title','reference','target'),
+                       defaults=dict(styles=['-','-.','--'], ))  
 
 # wet-day thresholds
 wetday_thresholds = [0.2,1,10,20]
@@ -44,19 +45,18 @@ def _configSlices(slices=None, basins=None, provs=None, shapes=None, period=None
     slices['years'] = period
   return slices
 
-def _resolveVarlist(varlist=None, filetypes=None, shp_params=None, variable_atts=None):
-  raise NotImplementedError
+def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_atts=None):
   # resolve variable list and filetype (no need to maintain order)
   if isinstance(varlist,basestring): varlist = [varlist]
-  variables = set(shp_params)
+  variables = set(params) # set required parameters
   filetypes = set() if filetypes is None else set(filetypes)
   for name in varlist: 
     if name in variable_atts: 
       variables.update(variable_atts[name].vars)
       filetypes.update(variable_atts[name].files)
     else: variables.add(name) 
-  variables = list(variables); filetypes = list(filetypes)
-  
+  # return variables and filetypes as list
+  return list(variables), list(filetypes)
 
 # define new load fct. for observations
 @BatchLoad
@@ -124,7 +124,8 @@ def loadShapeEnsemble(seasons=None, basins=None, provs=None, shapes=None, varlis
   ''' convenience function to load shape ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
   # prepare arguments
   if shapetype is None: shapetype = 'shpavg' # really only one in use  
-  variables, filetypes =  _resolveVarlist(varlist=None, filetypes=None, shp_params=None, variable_atts=None)
+  variables, filetypes =  _resolveVarlist(varlist=varlist, filetypes=filetypes, 
+                                          params=shp_params, variable_atts=variable_atts)
   # configure slicing (extract basin/province/shape and period)
   slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, period=period)
   # load ensemble (no iteration here)
@@ -143,17 +144,17 @@ def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, a
   ''' convenience function to load station data for ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
   load_list = [] if load_list is None else load_list[:] # use a copy, since the list may be modified
   
-  # figure out varlist
-  if isinstance(varlist,basestring):
-    if stationtype is None:
+  # figure out varlist  
+  if isinstance(varlist,basestring) and not stationtype:
       if varlist.lower().find('precip') >= 0: 
         stationtype = 'ecprecip'
       elif varlist.lower().find('temp') >= 0: 
         stationtype = 'ectemp'
-    if filetypes is None: filetypes = variable_atts[varlist].files[:]
-    varlist = variable_atts[varlist].vars[:]
-  if cluster_name: varlist = varlist[:] + [cluster_name] # need to load this variable!
-    
+  if not isinstance(stationtype,basestring): raise ArgumentError # not inferred
+  if clusters and not cluster_name: raise ArgumentError
+  params = stn_params  + [cluster_name] if cluster_name else stn_params # need to load cluster_name!
+  variables, filetypes =  _resolveVarlist(varlist=varlist, filetypes=filetypes, 
+                                         params=params, variable_atts=variable_atts)
   # prepare arguments
   if provs or clusters:
     if constraints is None: constraints = default_constraints.copy()
@@ -186,7 +187,7 @@ def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, a
         load_list[load_list.index('cluster')] = 'constraints'
         constraints = constraint_list; clusters = None  
   # load ensemble (no iteration here)
-  stnens = loadEnsembleTS(season=seasons, prov=provs, station=stationtype, varlist=varlist, 
+  stnens = loadEnsembleTS(season=seasons, prov=provs, station=stationtype, varlist=variables, 
                           aggregation=aggregation, constraints=constraints, filetypes=filetypes, 
                           WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
                           load_list=load_list, lproduct=lproduct, lcheckVar=False, **kwargs)
@@ -197,15 +198,15 @@ def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, a
 ## abuse main section for testing
 if __name__ == '__main__':
   
-  #from projects.WesternCanada.WRF_experiments import Exp, WRF_exps, ensembles
-  #from projects.WesternCanada.settings import exps_rc
-  from projects.GreatLakes.WRF_experiments import WRF_exps, ensembles
-  from projects.GreatLakes.clim_settings import exps_rc, variables_rc, loadShapeObservations
+  from projects.WesternCanada.WRF_experiments import WRF_exps, ensembles
+  from projects.WesternCanada.analysis_settings import exps_rc, variables_rc, loadShapeObservations  
+#   from projects.GreatLakes.WRF_experiments import WRF_exps, ensembles
+#   from projects.GreatLakes.analysis_settings import exps_rc, variables_rc, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #  test = 'obs_timeseries'
-  test = 'basin_timeseries'
-#   test = 'station_timeseries'
+#   test = 'basin_timeseries'
+  test = 'station_timeseries'
 #   test = 'province_climatology'
   
   
@@ -262,21 +263,19 @@ if __name__ == '__main__':
     constraints_rc['end_after'] = 1980
   
     # some settings for tests
-#     exp = 'val'; exps = ['EC', 'erai-max', 'max-ctrl'] # 
-#     exp = 'max-all'; exps = exps_rc[exp]; provs = ('BC','AB'); clusters = None
-#     exp = 'marc-prj'; exps = exps_rc[exp]; provs = 'ON'; clusters = None
-#     provs = ('BC','AB'); clusters = None
     provs = None; clusters = None; lensembleAxis = False; sample_axis = None; lflatten = False
-    exp = 'g-ens'; exps = exps_rc[exp]; provs = None; clusters = [1,3]
+    exp = 'val'; exps = ['EC', 'erai-max', 'max-ctrl']; provs = ('BC','AB')
+#     exp = 'max-all'; exps = exps_rc[exp]; provs = ('BC','AB')
+#     exps = ['g-ctrl', 'g-ctrl-2050', 'g-ctrl-2100']; provs = ['ON']
     seasons = ['summer']; lfit = True; lrescale = True; lbootstrap = False
-    lflatten = False; lensembleAxis = True; sample_axis = ('stationtype','year')
+    lflatten = False; lensembleAxis = True
     varlist = ['MaxPrecip_1d', 'MaxPrecip_5d','MaxPreccu_1d'][:1]; filetypes = ['hydro']
-    stnens = loadStationEnsemble(names=exps.exps, provs=provs, clusters=clusters, varlist=varlist,  
+    stnens = loadStationEnsemble(names=exps, provs=provs, clusters=clusters, varlist=varlist,  
                                  seasons=seasons, master=None, stationtype='ecprecip',
                                  domain=2, lensembleAxis=lensembleAxis, filetypes=filetypes,                                 
                                  variable_atts=variables_rc, default_constraints=constraints_rc,
                                  WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
-                                 load_list=['season',], lproduct='outer',)
+                                 load_list=['season','provs'], lproduct='outer',)
     # print diagnostics
     print stnens[0][0]; print ''
     assert len(stnens) == len(seasons)

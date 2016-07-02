@@ -164,9 +164,10 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
 
 if __name__ == '__main__':
   
-  #   from projects.WesternCanada.WRF_experiments import Exp, WRF_exps, ensembles
-  from projects.GreatLakes.clim_settings import variables_rc, shape_annotation_rc, shape_defaults_rc
-  from projects.GreatLakes.clim_settings import getFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
+  from projects.WesternCanada.analysis_settings import variables_rc, shape_annotation_rc, shape_defaults_rc
+  from projects.WesternCanada.analysis_settings import climFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
+#   from projects.GreatLakes.analysis_settings import variables_rc, shape_annotation_rc, shape_defaults_rc
+#   from projects.GreatLakes.analysis_settings import climFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #   test = 'simple_climatology'
@@ -176,8 +177,9 @@ if __name__ == '__main__':
   # test load function for basin ensemble time-series
   if test == 'simple_climatology':
     
-    varlist = 'precip'; basin = 'GLB';
-    exp = 'g-ens'; exps = exps_rc[exp]; obs = 'GPCC'
+    varlist = 'precip'; obs = 'GPCC'
+#     exp = 'g-ens'; exps = exps_rc[exp]; basin = 'GLB'
+    exp = 'max-prj'; exps = exps_rc[exp]; basin = 'ARB'
     period = 1979,1994
 #     period = 1979,2009
     # some settings for tests
@@ -190,7 +192,7 @@ if __name__ == '__main__':
     print expens[0] if expens else obsens[0]; print ''
     
     # set up plot    
-    fig,ax = getFigAx((1,1), title=test, sharex=True, sharey=False, stylesheet='myggplot', lpresentation=False)    
+    fig,ax = climFigAx((1,1), title=test, sharex=True, sharey=False, stylesheet='myggplot', lpresentation=False)    
     
     # make plots
     climPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
@@ -204,8 +206,9 @@ if __name__ == '__main__':
   elif test == 'advanced_climatology':
     
     # some settings for tests
-    exp = 'g-ens'; exps = exps_rc[exp]; obs = 'GPCC'
-    varlists = ['flux','precip']; basins = ['GLB']
+#     exp = 'g-ens'; exps = exps_rc[exp]; basins = ['GLB']
+    exp = 'max-prj'; exps = exps_rc[exp]; basins = ['ARB']
+    obs = 'GPCC'; varlists = ['flux_snow','precip']
     period = 1979,1994
 #     period = 1979,2009
     # some settings for tests
@@ -219,7 +222,7 @@ if __name__ == '__main__':
     print expenses[0] if expenses else obsenses[0]; print ''
     
     # set up plot    
-    fig,axes = getFigAx((len(varlists),len(basins)), title=test, sharex=True, sharey=False, stylesheet='default', lpresentation=False)    
+    fig,axes = climFigAx((len(varlists),len(basins)), title=test, sharex=True, sharey=False, stylesheet='default', lpresentation=False)    
     
     # make plots
     axes = axes.ravel()

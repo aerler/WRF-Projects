@@ -9,16 +9,17 @@ A module that provides various project specific definitions, mainly related to e
 # external imports
 import matplotlib as mpl
 # internal imports
+import clim.load as clim_load
+import clim.plot as clim_plot
 from geodata.misc import AttrDict
 from plotting import figure
-from clim import plots, load_ens
 from WRF_experiments import WRF_ens, WRF_exps
 from projects.CESM_experiments import CESM_ens, CESM_exps
 
 
 # variable collections
-wetday_extensions = load_ens.wetday_extensions[:3]
-variables_rc = dict(); VL = load_ens.VL
+wetday_extensions = clim_load.wetday_extensions[:3]
+variables_rc = dict(); VL = clim_load.VL
 # mostly for hydrological analysis
 variables_rc['temp']            = VL(vars=('T2', 'Tmax', 'Tmin'), files=('srfc','xtrm',), label='2m Temperature')
 # variables_rc['temp']          = VL(vars=('T2',), files=('srfc',), label='2m Temperature')
@@ -70,18 +71,25 @@ constraints_rc['prov'] = ('ON')
 constraints_rc['end_after'] = 1980
                         
 # dataset collections
-exps_rc = dict(); EX = load_ens.EX
+exps_rc = dict(); EX = clim_load.EX
 exps_rc['obs']     = EX(name='obs',exps=['CRU','WSC'], styles=['-','-.'], title='Observations', 
                         master='CRU', reference='CRU', target=None)
-exps_rc['erai']    = EX(name='erai',exps=['erai-g','erai-t'], styles=['--','-'], title='G & T, ERA-I',
-                       master='erai-g', reference=None, target=None)
+exps_rc['erai']    = EX(name='erai',exps=['erai-g','erai-t','erai-g3','erai-t3'], styles=['--','-','-.',':'], 
+                        title='G & T (10km & 90km, ERA-I)',
+                        master='erai-g', reference=None, target=None)
 # initial condition ensembles
 exps_rc['g-ens']   = EX(name='g-ens',exps=['g-ens','g-ens-2050','g-ens-2100'], 
                         styles=['-','-.','--'], title='G Ensemble Average (Hist., Mid-, End-Century)',
                         master='g-ens', reference=None, target=None)
 exps_rc['t-ens']   = EX(name='t-ens',exps=['t-ens','t-ens-2050','t-ens-2100'], 
-                        styles=['-','-.','--'], title='G Ensemble Average (Hist., Mid-, End-Century)',
+                        styles=['-','-.','--'], title='T Ensemble Average (Hist., Mid-, End-Century)',
                         master='t-ens', reference=None, target=None)
+exps_rc['g3-ens']   = EX(name='g3-ens',exps=['g3-ens','g3-ens-2050','g3-ens-2100'], 
+                        styles=['-','-.','--'], title='G Ens. Avg. (90km, Hist., Mid-, End-Century)',
+                        master='g3-ens', reference=None, target=None)
+exps_rc['t3-ens']   = EX(name='t3-ens',exps=['t3-ens','t3-ens-2050','t3-ens-2100'], 
+                        styles=['-','-.','--'], title='T Ens. Avg. (90km, Hist., Mid-, End-Century)',
+                        master='t3-ens', reference=None, target=None)
 # G ensemble members
 exps_rc['g-Z']     = EX(name='g-Z',exps=['g-ctrl','g-ctrl-2050','g-ctrl-2100'], 
                         styles=['-','-.','--'], title='WRF-Z (Hist., Mid-, End-Century)',
@@ -119,20 +127,20 @@ exps_rc['mm-ctrl'] = EX(name='mm-ctrl', exps=['Observations', 'mm-ctrl', 'mm-ctr
 exps_rc['t-ctrl']  = EX(name='t-ctrl',  exps=['Observations', 't-ctrl', 't-ctrl-2050'],
                         styles=['-','-.','--'], master='Observations', reference='Observations', target=None, title='')
 
-# set default variable atts for load functions from load_ens
+# set default variable atts for load functions from clim_load
 def loadShapeObservations(variable_atts=None, **kwargs):
-  ''' wrapper for clim.load_ens.loadShapeObservations that sets variable lists '''
+  ''' wrapper for clim.load.loadShapeObservations that sets variable lists '''
   if variable_atts is None: variable_atts = variables_rc
-  return load_ens.loadShapeObservations(variable_atts=variable_atts, **kwargs)
+  return clim_load.loadShapeObservations(variable_atts=variable_atts, **kwargs)
 def loadShapeEnsemble(variable_atts=None, **kwargs):
-  ''' wrapper for clim.load_ens.loadShapeSimulations that sets experiment and variable lists '''
+  ''' wrapper for clim.load.loadShapeSimulations that sets experiment and variable lists '''
   if variable_atts is None: variable_atts = variables_rc  
-  return load_ens.loadShapeEnsemble(variable_atts=variable_atts, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
+  return clim_load.loadShapeEnsemble(variable_atts=variable_atts, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
                                     WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
 def loadStationEnsemble(variable_atts=None, **kwargs):
-  ''' wrapper for clim.load_ens.loadStationEnsemble that sets experiment and variable lists '''
+  ''' wrapper for clim.load.loadStationEnsemble that sets experiment and variable lists '''
   if variable_atts is None: variable_atts = variables_rc  
-  return load_ens.loadStationEnsemble(variable_atts=variable_atts, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
+  return clim_load.loadStationEnsemble(variable_atts=variable_atts, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
                                       WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
 
 
@@ -154,16 +162,22 @@ plot_labels_rc['phys-ens']        = 'Phy Ens.'
 plot_labels_rc['phys-ens-2050']   = 'Phy 2050' 
 plot_labels_rc['phys-ens-2100']   = 'Phy 2100' 
 plot_labels_rc['phys-ens_d01']    = 'Phy (D1)'
-# plot_labels_rc['g-ens']           = 'G Ens.'  
-# plot_labels_rc['g-ens-2050']      = 'G 2050' 
-# plot_labels_rc['g-ens-2100']      = 'G 2100' 
-plot_labels_rc['g-ens']           = 'WRF Ens.'  
-plot_labels_rc['g-ens-2050']      = 'WRF 2050' 
-plot_labels_rc['g-ens-2100']      = 'WRF 2100' 
+plot_labels_rc['g-ens']           = 'G Ens.'  
+plot_labels_rc['g-ens-2050']      = 'G 2050' 
+plot_labels_rc['g-ens-2100']      = 'G 2100' 
+plot_labels_rc['g3-ens']           = 'G Ens. (90km)'  
+plot_labels_rc['g3-ens-2050']      = 'G 2050 (90km)' 
+plot_labels_rc['g3-ens-2100']      = 'G 2100 (90km)' 
+# plot_labels_rc['g-ens']           = 'WRF Ens.'  
+# plot_labels_rc['g-ens-2050']      = 'WRF 2050' 
+# plot_labels_rc['g-ens-2100']      = 'WRF 2100' 
 plot_labels_rc['erai-g']          = 'ERA-I G'  
 plot_labels_rc['t-ens']           = 'T Ens.'
 plot_labels_rc['t-ens-2050']      = 'T 2050'
 plot_labels_rc['t-ens-2100']      = 'T 2100'
+plot_labels_rc['t3-ens']           = 'T Ens. (90km)'
+plot_labels_rc['t3-ens-2050']      = 'T 2050 (90km)'
+plot_labels_rc['t3-ens-2100']      = 'T 2100 (90km)'
 plot_labels_rc['erai-t']          = 'ERA-I T'   
 # variables
 plot_labels_rc['MaxPrecip_1d']    = 'Max Precip. (1d)'
@@ -243,7 +257,7 @@ variable_plotargs_rc['CNWD']           = AttrDict(color = 'green')
 variable_plotargs_rc['CNDD']           = AttrDict(color = 'green')
 # add wet-day threshold dependent variables    
 wetday_colors = ['steelblue', 'purple', 'crimson', 'orange']   
-for wdext,color in zip(load_ens.wetday_extensions,wetday_colors):
+for wdext,color in zip(clim_load.wetday_extensions,wetday_colors):
   variable_plotargs_rc['wetprec'+wdext] = AttrDict(color = color)
   variable_plotargs_rc['wetfrq' +wdext] = AttrDict(color = color)
   variable_plotargs_rc['CWD'+wdext]     = AttrDict(color = color)
@@ -293,7 +307,7 @@ def climPlot(shape_annotation=None, shape_defaults=None, variable_atts=None, **k
   if shape_annotation is None: shape_annotation = shape_annotation_rc 
   if shape_defaults is None: shape_defaults = shape_defaults_rc
   if variable_atts is None: variable_atts = variables_rc
-  return plots.climPlot(shape_annotation=shape_annotation, shape_defaults=shape_defaults, 
+  return clim_plot.climPlot(shape_annotation=shape_annotation, shape_defaults=shape_defaults, 
                         variable_atts=variable_atts, **kwargs)
 
 

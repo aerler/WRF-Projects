@@ -16,7 +16,6 @@ from geodata.stats import ks_2samp, VarRV
 import plotting.figure as pltfig
 from plotting.figure import show # don't import getFigAx directly, to avoid recursion
 from plotting.axes import checkVarlist
-from clim.plots import plot_labels_rc
 
 def stationInfo(stnds, varname, name, titlestr=None, alttitle=None, lflatten=False, lmon=False,):
   ''' helper to generate an axes title with station info '''

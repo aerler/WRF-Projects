@@ -10,13 +10,13 @@ A package that contains settings for the GreatLakes region projects for use with
 from figure_settings import getVariableSettings, getFigureSettings, figure_folder
 
 # import figure with hydro settings
-from clim_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations, exps_rc # load datasets
-from clim_settings import climFigAx, climPlot, variables_rc # plotting
+from analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations, exps_rc # load datasets
+from analysis_settings import climFigAx, climPlot, variables_rc # plotting
 
 # import map projection settings (basemap)
 try: 
   from map_settings import getSetup, map_folder
-except ImportError: 
+except ImportError:
   print("Error importing map settings - 'basemap' is likely not installed.")
 
 ## import load functions with GreatLakes experiments into local namespace
