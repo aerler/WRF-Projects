@@ -197,7 +197,7 @@ if __name__ == '__main__':
     # make plots
     climPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
               legend=2, dataset_legend=4, lprint=True, variable_list=variables_rc, 
-              shape_annotation=shape_annotation_rc, shape_defaults=shape_defaults_rc,
+              annotation=clim_annotation, defaults=clim_defaults,
               lperi=True, lparasiteMeans=True, master=exps.master, lineformats=exps.styles)
     # adjust margins
     fig.updateSubplots(left=0.02, right=0.015, top=0.0, bottom=-0.0)
@@ -229,7 +229,7 @@ if __name__ == '__main__':
     for n,ax,expens,experr,obsens,obserr,varlist in zip(xrange(len(axes)),axes,expenses,experres,obsenses,obserres,varlists*len(basins)):
       climPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
                 master=exps.master, variable_list=variables_rc, 
-                shape_annotation=shape_annotation_rc, shape_defaults=shape_defaults_rc,
+                annotation=clim_annotation, defaults=clim_defaults,
                 legend=0 if n>1 else None, linestyles=('--','-.','-'), lparasiteMeans=True, axtitle=None)
     
     # adjust margins

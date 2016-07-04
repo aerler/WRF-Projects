@@ -40,13 +40,14 @@ def stationInfo(stnds, varname, name, titlestr=None, alttitle=None, lflatten=Fal
 def _rescaleSample(smpl, loc, bs_axis=None):
   ''' helper method to rescale samples'''
   #print smpl.shape, np.nanmean(smpl), loc
-  if isinstance(loc, np.ndarray) and np.any(loc != 1): 
-    if bs_axis is not None: loc = loc.take([0], axis=bs_axis).squeeze()
-    if loc.ndim == smpl.ndim: 
-      smpl = smpl*loc
-    elif loc.ndim < smpl.ndim:
-      smpl = smpl*loc.reshape(loc.shape+(1,)*(smpl.ndim-loc.ndim)) # broadcast
-    else: raise ValueError, loc.shape
+  if isinstance(loc, np.ndarray):
+    if np.any(loc != 1): 
+      if bs_axis is not None: loc = loc.take([0], axis=bs_axis).squeeze()
+      if loc.ndim == smpl.ndim: 
+        smpl = smpl*loc
+      elif loc.ndim < smpl.ndim:
+        smpl = smpl*loc.reshape(loc.shape+(1,)*(smpl.ndim-loc.ndim)) # broadcast
+      else: raise ValueError, loc.shape
   elif loc is not None and loc != 1: smpl = smpl*loc
   return smpl
 
@@ -206,10 +207,10 @@ def selectDataset(ens, datasets):
   return enscp
 
 # simple function to generate a single annotated plot
-def distPlot(axes, varname, datasets=None, ens=None, fit=None, kde=None, scl=None, legend=True,
+def distPlot(axes=None, varname=None, datasets=None, ens=None, fit=None, kde=None, scl=None, legend=True,
              shape_name=None, stnset_name=None, lsmall=False, axtitle=None, ylabel=False, xlabel=True,
              lbootstrap=False, bootstrap_axis='bootstrap', lsample=False, sample_axis='station',
-             lrescale=None, reference=None, rescale_line='--', lrescaleBand=False,
+             lrescale=None, reference=None, rescale_line='--', lrescaleBand=False, band_vars=None,
              xlim=None, ylim=None, lanno='right', xfactor=None, lthinx=True, lcrossval=False,
              percentiles=(0.025,0.975), lmedian=None, median_fmt='', lmean=None, mean_fmt='', 
              lvar=False, lvarBand=False, lsmooth=None, lprint=False, mode='ratio', 
@@ -310,10 +311,10 @@ def distPlot(axes, varname, datasets=None, ens=None, fit=None, kde=None, scl=Non
                       legend=legend, sample_axis=sample_axis, bootstrap_axis=bootstrap_axis,
                       linewidth=1.25, xlim=xlim, ylim=ylim, percentiles=percentiles, llabel=True,   
                       lmedian=lmedian, median_fmt=median_fmt, lmean=lmean, mean_fmt=mean_fmt, 
-                      lsmooth=lsmooth, bandalpha=0.25, **kwargs)
+                      lsmooth=lsmooth, bandalpha=0.25, band_vars=band_vars, **kwargs)
     elif lbootstrap and any(ds.hasAxis(bootstrap_axis) for ds in fit): 
       axes.bootPlot(fit, varname=varname, support=bins, yticks=False, ylabel=ylabel, xlabel=xlabel, legend=legend,
-                    bootstrap_axis=bootstrap_axis, 
+                    bootstrap_axis=bootstrap_axis, band_vars=band_vars, 
                     linewidth=1.25, xlim=xlim, ylim=ylim, percentiles=percentiles, llabel=True,   
                     lmedian=lmedian, median_fmt=median_fmt, lmean=lmean, mean_fmt=mean_fmt, 
                     lvar=lvar, lvarBand=lvarBand, lsmooth=lsmooth, bandalpha=0.25, **kwargs)
@@ -324,14 +325,14 @@ def distPlot(axes, varname, datasets=None, ens=None, fit=None, kde=None, scl=Non
   if lrescale:
     if lsample and any(ds.hasAxis(sample_axis, lany=True) for ds in scl):
       axes.samplePlot(scl, varname=varname, support=bins, linestyle=rescale_line, bandalpha=0.25, linewidth=1.5,
-                      llabel=False, percentiles=percentiles if lrescaleBand else None, 
+                      llabel=False, percentiles=percentiles if lrescaleBand else None, band_vars=band_vars, 
                       lmedian=lmedian, median_fmt=median_fmt, bootstrap_axis=bootstrap_axis, 
                       lmean=lmean, xlabel=xlabel, ylabel=False, xticks=True, yticks=False,
                       sample_axis=sample_axis, mean_fmt=mean_fmt, lsmooth=lsmooth, **kwargs)
     elif lbootstrap and lrescaleBand and any(ds.hasAxis(bootstrap_axis) for ds in scl):
 #       bandalf = kwargs.pop('bandalhpa',0.5) * 0.7
       axes.bootPlot(scl, varname=varname, support=bins, linestyle=rescale_line, bandalpha=0.25, linewidth=1.5,
-                    bootstrap_axis=bootstrap_axis, 
+                    bootstrap_axis=bootstrap_axis, band_vars=band_vars, 
                     llabel=False, percentiles=percentiles, lmedian=lmedian, median_fmt=median_fmt, 
                     lmean=lmean, xlabel=xlabel, ylabel=ylabel, yticks=False,
                     mean_fmt=mean_fmt, lvar=lvar, lvarBand=lvarBand, lsmooth=lsmooth, **kwargs) 
@@ -355,9 +356,10 @@ def distPlot(axes, varname, datasets=None, ens=None, fit=None, kde=None, scl=Non
 
   
 # simple function to generate a single annotated plot
-def quantPlot(axes, varname, datasets=None, fit=None, scl=None, legend=True, quantiles=None, 
+def quantPlot(axes=None, varname=None, datasets=None, fit=None, scl=None, legend=True, quantiles=None, 
               shape_name=None, stnset_name=None, ylim=None, xlim=None, ylabel=True, xlabel=True, 
               xticks=True, yticks=True, axtitle=None, lbootstrap=False, percentiles=(0.025,0.975), 
+              band_vars=None,
               lmedian=None, median_fmt='', lrescaleBand=False, sampling_period=1, lmean=None, mean_fmt='', 
               lvar=False, lvarBand=False, lrescale=False, reference=0, bootstrap_axis='bootstrap', 
               lsample=False, sample_axis='station', annotation=None, defaults=None, **kwargs):
@@ -393,13 +395,13 @@ def quantPlot(axes, varname, datasets=None, fit=None, scl=None, legend=True, qua
   if lsample and any(ds.hasAxis(sample_axis, lany=True) for ds in fit):    
     plts = axes.samplePlot(fit,varname, support=bins, method='ppf', linewidth=1.25, title=axtitle,
                          flipxy=True, llabel=True, legend=legend, percentiles=percentiles,
-                         sample_axis=sample_axis, bootstrap_axis=bootstrap_axis,
+                         sample_axis=sample_axis, bootstrap_axis=bootstrap_axis, band_vars=band_vars,
                          xlim=xlim, ylim=ylim, ylabel=ylabel, xlabel=xlabel, xticks=xticks, yticks=yticks, 
                          lmedian=lmedian, median_fmt=median_fmt, lmean=lmean, mean_fmt=mean_fmt,
                          lsmooth=False, bandalpha=0.25, **kwargs)    
   elif lbootstrap and any(ds.hasAxis(bootstrap_axis) for ds in fit):    
     plts = axes.bootPlot(fit,varname, support=bins, method='ppf', linewidth=1.25, title=axtitle,
-                       flipxy=True, llabel=True, legend=legend, percentiles=percentiles,
+                       flipxy=True, llabel=True, legend=legend, percentiles=percentiles, band_vars=band_vars,
                        xlim=xlim, ylim=ylim, ylabel=ylabel, xlabel=xlabel, xticks=xticks, yticks=yticks, 
                        lmedian=lmedian, median_fmt=median_fmt, lmean=lmean, mean_fmt=mean_fmt, 
                        lvar=lvar, lvarBand=lvarBand, lsmooth=False, bandalpha=0.25, **kwargs)
@@ -422,7 +424,7 @@ def quantPlot(axes, varname, datasets=None, fit=None, scl=None, legend=True, qua
     if lsample and any(ds.hasAxis(sample_axis, lany=True) for ds in scl):    
       plts = axes.samplePlot(scl,varname, support=bins, method='ppf', linewidth=1., mean_fmt='--',
                            title=None, flipxy=True, llabel=False, legend=legend, 
-                           percentiles=percentiles if lrescaleBand else None, 
+                           percentiles=percentiles if lrescaleBand else None, band_vars=band_vars,
                            sample_axis=sample_axis, bootstrap_axis=bootstrap_axis, 
                            xlim=xlim, ylim=ylim, ylabel=ylabel, xlabel=xlabel, xticks=xticks, yticks=yticks, 
                            lmedian=lmedian, median_fmt='--', lmean=lmean, #mean_fmt=mean_fmt,
@@ -432,7 +434,7 @@ def quantPlot(axes, varname, datasets=None, fit=None, scl=None, legend=True, qua
       plts = axes.bootPlot(scl,varname, support=bins, method='ppf', percentiles=percentiles if lrescaleBand else None, 
                          linewidth=1., lineformat='--', bandalpha=0.25, flipxy=True, lmedian=lmedian, median_fmt='--',
                          xlim=xlim, ylim=ylim, ylabel=ylabel, xlabel=xlabel, xticks=xticks, yticks=yticks, 
-                         lmean=lmean, mean_fmt='--', lvar=lvar, lvarBand=lvarBand, 
+                         lmean=lmean, mean_fmt='--', lvar=lvar, lvarBand=lvarBand, band_vars=band_vars,
                          llabel=False, lsmooth=False, **kwargs)
       # N.B.: smoothing causes (resolution-dependent) artifacts near the limit (1 or 0)
     else:
@@ -456,7 +458,7 @@ def quantPlot(axes, varname, datasets=None, fit=None, scl=None, legend=True, qua
   return plts
 
 # helper function to convert quantiles
-def _convQuant(q, smpl_prd=None, lround=True):
+def convQuant(q, smpl_prd=None, lround=True):
   ''' convert quantiles to return periods if sampling period is specified, else return qunatile '''
   if smpl_prd:
     r = smpl_prd/(1.-q)
@@ -465,7 +467,7 @@ def _convQuant(q, smpl_prd=None, lround=True):
   return r 
 
 # simple function to compute return periods relative to reference
-def quantPeriod(varname, datasets=None, fit=None, quantiles=None, name=None, units='years', 
+def quantPeriod(varname=None, datasets=None, fit=None, quantiles=None, name=None, units='years', 
                 sampling_period=1, asVar=True,
                 lmean=None, lmedian=None, lbootstrap=False, percentiles=(0.025,0.975), lvar=False, 
                 reference=0, bootstrap_axis='bootstrap', lsample=False, sample_axis='station', **kwargs):
@@ -534,11 +536,11 @@ def quantPeriod(varname, datasets=None, fit=None, quantiles=None, name=None, uni
     name = name or varname+'_periods'
     quantvar = concatVars(qvars, axis=expax, asVar=True, name=name, units=units, 
                            lcheckAxis=True, lensembleAxis=True)
-    quantvar.data_array = _convQuant(quantvar.data_array, smpl_prd=sampling_period, lround=True)
+    quantvar.data_array = convQuant(quantvar.data_array, smpl_prd=sampling_period, lround=True)
     # rename "_bins" variable
     for axis in quantvar.axes:
       if axis.name[-5:] == '_bins':
-        axis.coord = _convQuant(quantiles, smpl_prd=sampling_period, lround=True)
+        axis.coord = convQuant(quantiles, smpl_prd=sampling_period, lround=True)
         axis.name = 'quantile'; axis.units = units
   else:
     quantvar = {dataset:qvar for dataset,qvar in zip(datasets,qvars)}
@@ -581,7 +583,7 @@ if __name__ == '__main__':
                                           lbootstrap=lbootstrap, nbs=30)
     
     # compute quantiles    
-    qvar = quantPeriod(varname, datrasets=exps, fit=sclens[0], quantiles=(0.98,0.99), sampling_period=1., 
+    qvar = quantPeriod(varname=varname, datrasets=exps, fit=sclens[0], quantiles=(0.98,0.99), sampling_period=1., 
                        reference='max-ens', percentiles=(0.025,0.975), lmedian=None, lmean=None, 
                        sample_axis=sample_axis, stnset_name=prov, lbootstrap=lbootstrap, lsample=lsample,)
     var = qvar(percentile=-1, lidx=False, )
@@ -597,17 +599,16 @@ if __name__ == '__main__':
 #     exps = ['EC', 'max-ens', 'max-kf', 'max-nosub', 'max-ctrl'][:]
 #     exps = ['EC', 'old-ctrl', 'ctrl-1', 'max-ctrl', 'new-ctrl'][:]
 #     exps = ['Observations', 'max-ens', 'max-ens-2050', 'max-ens-2100'][:]
-    exps = ['Observations', 'Ens', 'Ens-2050', 'Ens-2100']
+    exps = ['Observations', 'Ens', 'Ens-2050', 'Ens-2100'][:2]
 #     exps = ['MEns', 'MEns-2050', 'MEns-2100']    
 #     exps = 'Observations'
 #     prov = ['BC','AB']; season = ['summer','winter']; load_list=['season','prov']
 #     prov = ['BC']; season = ['annual']; load_list = ['season','prov']
 #     cluster = [8]; season = ['winter']; load_list = ['season','cluster']   
 #     prov = None; cluster = range(6); season = ['annual']; load_list=['season','cluster']
-    prov = None; clusters = [1,6,8]; seasons = ['summer','winter']; load_list=['season','cluster']
+    prov = None; clusters = [2,6]; seasons = ['winter']; load_list=['season','cluster']
     varlist = ['MaxPrecip_1d']; filetypes = ['hydro']; cluster_name = 'cluster_projection'
-    lflatten = True; lfit = True; lrescale = True; lbootstrap = False
-#     lflatten = True; lfit = True; lrescale = True; lbootstrap = True
+    lflatten = True; lfit = True; lrescale = True; lbootstrap = True
     # station criteria (we don't want too many stations...)
     constraints['min_len'] = 15
     constraints['lat'] = (45,55) 
@@ -634,8 +635,8 @@ if __name__ == '__main__':
                       stylesheet='myggplot', lpresentation=False, lreduce=False)
     # make plots
     for n in xrange(len(stnens)):
-      distPlot(ax.ravel()[n], varlist[0], ens=stnens[n], fit=fitens[n], 
-               sample_axis= None if lflatten else ('ensemble','station'),
+      distPlot(axes=ax.ravel()[n], varname=varlist[0], ens=stnens[n], fit=fitens[n], 
+               sample_axis= None if lflatten else ('ensemble','station'), band_vars=['Observations'],
                scl=sclens[n] if lrescale else None, lrescale=lrescale, lsample=not lflatten, lanno=True,
                lbootstrap=lbootstrap, legend= bool(n+1==len(stnens)), reference=0,
                annotation=dist_annotation, defaults=dist_defaults)
@@ -664,10 +665,11 @@ if __name__ == '__main__':
     fig,ax = evaFigAx(1, title='{} {}'.format(prov,season), sharex=True, sharey=False, 
                       stylesheet='myggplot', lpresentation=False)    
     # make plots
-    if lrescale: quantPlot(ax, varlist[0], fit=fitens[0], scl=sclens[0], legend=True, reference='max-ens',
-                           percentiles=None, lmedian=True, lmean=False, sample_axis=sample_axis, lsample=lsample,
-                           stnset_name=prov, quantiles=(0.98,0.99), lbootstrap=lbootstrap, lrescale=True)
-    else: quantPlot(ax, varlist[0], fit=fitens[0], scl=None, legend=True, reference='max-ens', 
+    if lrescale: quantPlot(axes=ax, varname=varlist[0], fit=fitens[0], scl=sclens[0], legend=True, reference='max-ens',
+                           percentiles=None, lmedian=True, lmean=False, sample_axis=sample_axis, 
+                           lsample=lsample, stnset_name=prov, quantiles=(0.98,0.99), lbootstrap=lbootstrap,
+                           lrescale=True, annotation=quant_annotation, defaults=quant_defaults)
+    else: quantPlot(axes=ax, varname=varlist[0], fit=fitens[0], scl=None, legend=True, reference='max-ens', 
                     percentiles=None, lmedian=True, lmean=False, sample_axis=sample_axis,
                     stnset_name=prov, quantiles=(0.98,0.99), lbootstrap=lbootstrap, lsample=lsample,
                     annotation=quant_annotation, defaults=quant_defaults)
