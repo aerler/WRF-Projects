@@ -105,7 +105,7 @@ exps_rc['max-obs']   = EX(name='max', exps=['Observations','max-ens','max-ens-20
                       master='max-ens', reference='Observations', target='max-ens', title='IC Ensemble')
 exps_rc['max-sum']   = EX(name='maxs', exps=['Observations','max-ens','max-ens-2100'], 
                       master='max-ens', reference='Observations', target='max-ens', title='IC Ensemble')
-exps_rc['ctrl-obs']  = EX(name='ctrl', exps=['Observations','ctrl-ens','ctrl-ens-2100'], 
+exps_rc['ctrl-obs']  = EX(name='ctrl', exps=['Observations','ctrl-ens','ctrl-ens-2050','ctrl-ens-2100'], 
                       master='ctrl-ens', reference='Observations', target='ctrl-ens', title='Alt. Ens.')
 exps_rc['ctrl-sum']  = EX(name='ctrl-sum', exps=['Observations','ctrl-ens','ctrl-ens-2100'], 
                           master='ctrl-ens', reference='Observations', target='ctrl-ens', title='Alt. Ens.')
