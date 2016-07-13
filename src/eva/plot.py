@@ -594,36 +594,31 @@ if __name__ == '__main__':
   elif test == 'annotated_plot':
 
     # some settings for tests
-    cluster = None; prov = None; season = None
-#     exps = ['EC', 'max-ens_d01', 'max-ens', 'erai-max', 'max-ctrl'][:]
-#     exps = ['EC', 'max-ens', 'max-kf', 'max-nosub', 'max-ctrl'][:]
-#     exps = ['EC', 'old-ctrl', 'ctrl-1', 'max-ctrl', 'new-ctrl'][:]
+    clusters = None; provs = None; seasons = None
+    exps = ['Observations', 'ctrl-ens', 'ctrl-ens-2050', 'ctrl-ens-2100'][:]
 #     exps = ['Observations', 'max-ens', 'max-ens-2050', 'max-ens-2100'][:]
-    exps = ['Observations', 'Ens', 'Ens-2050', 'Ens-2100'][:2]
+#     exps = ['Observations', 'Ens', 'Ens-2050', 'Ens-2100'][:2]
 #     exps = ['MEns', 'MEns-2050', 'MEns-2100']    
-#     exps = 'Observations'
-#     prov = ['BC','AB']; season = ['summer','winter']; load_list=['season','prov']
-#     prov = ['BC']; season = ['annual']; load_list = ['season','prov']
-#     cluster = [8]; season = ['winter']; load_list = ['season','cluster']   
+#     provs = ['BC','AB']; seasons = ['summer','winter']; load_list=['season','prov']
 #     prov = None; cluster = range(6); season = ['annual']; load_list=['season','cluster']
-    prov = None; clusters = [2,6]; seasons = ['winter']; load_list=['season','cluster']
+    clusters = [2,6,8]; seasons = ['summer','winter']; load_list=['season','cluster']
     varlist = ['MaxPrecip_1d']; filetypes = ['hydro']; cluster_name = 'cluster_projection'
     lflatten = True; lfit = True; lrescale = True; lbootstrap = True
     # station criteria (we don't want too many stations...)
     constraints['min_len'] = 15
     constraints['lat'] = (45,55) 
     constraints['max_zerr'] = 300
-    obsslices = dict(years=(1950,2010))
+    obsslices = dict(years=(1952,2012))
 #     obsslices = [dict(years=(1950,1970)),dict(years=(1970,1990)),dict(years=(1990,2010))]
 #     name_tags = ['_1','_2','_3']
 #     cluster = [0,2,3]; constraints_rc['max_zerr'] = 1000; constraints_rc['lat'] = (45,60)  
     # load some data
-    stnens,fitens,sclens = loadStationFit(names=exps, provs=prov, seasons=seasons, clusters=clusters, 
+    stnens,fitens,sclens = loadStationFit(names=exps, provs=provs, seasons=seasons, clusters=clusters, 
                                           cluster_name=cluster_name, varlist=varlist,
                                           stationtype='ecprecip', obsslices=obsslices, lshort=False,
                                           lensembleAxis=False, constraints=constraints,
                                           sample_axis=None if lflatten else ('year','station'),
-                                          lrescale=lrescale, reference='Ens', target='Ens',
+                                          lrescale=lrescale, reference=exps[0], target=exps[1],
                                           filetypes=filetypes, domain=2, lflatten=lflatten, lfit=lfit,
 #                                           ensemble_list=['obsslices','name_tags'], name_tags=name_tags,
                                           lbootstrap=lbootstrap, nbs=10, load_list=load_list,)
