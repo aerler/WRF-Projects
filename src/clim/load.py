@@ -137,13 +137,17 @@ def loadShapeEnsemble(seasons=None, basins=None, provs=None, shapes=None, varlis
 
 
 # define new load fct. (batch args: load_list=['season','prov',], lproduct='outer')
+@BatchLoad
 def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, aggregation='mean', constraints=None, 
                         filetypes=None, cluster_name=None, stationtype=None, load_list=None, lproduct='outer',
                         WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, 
                         variable_list=None, default_constraints=None, **kwargs):
   ''' convenience function to load station data for ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
   load_list = [] if load_list is None else load_list[:] # use a copy, since the list may be modified
+
   
+#XXX: move this into helper function with Batch-decorator to allow batch-loadign of varlists
+
   # figure out varlist  
   if isinstance(varlist,basestring) and not stationtype:
       if varlist.lower().find('prec') >= 0: 
@@ -199,10 +203,10 @@ def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, a
 ## abuse main section for testing
 if __name__ == '__main__':
   
-  from projects.WesternCanada.WRF_experiments import WRF_exps, ensembles
-  from projects.WesternCanada.analysis_settings import exps_rc, variables_rc, loadShapeObservations  
-#   from projects.GreatLakes.WRF_experiments import WRF_exps, ensembles
-#   from projects.GreatLakes.analysis_settings import exps_rc, variables_rc, loadShapeObservations
+#   from projects.WesternCanada.WRF_experiments import WRF_exps, ensembles
+#   from projects.WesternCanada.analysis_settings import exps_rc, variables_rc, loadShapeObservations  
+  from projects.GreatLakes.WRF_experiments import WRF_exps, ensembles
+  from projects.GreatLakes.analysis_settings import exps_rc, variables_rc, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #  test = 'obs_timeseries'
@@ -258,19 +262,20 @@ if __name__ == '__main__':
     # station selection criteria
     constraints_rc = dict()
     constraints_rc['min_len'] = 15 # for valid climatology
-    constraints_rc['lat'] = (45,55) 
+    constraints_rc['lat'] = (40,50) 
     constraints_rc['max_zerr'] = 100 # reduce sample size
     constraints_rc['prov'] = ('ON')
     constraints_rc['end_after'] = 1980
   
     # some settings for tests
     provs = None; clusters = None; lensembleAxis = False; sample_axis = None; lflatten = False
-    exp = 'val'; exps = ['EC', 'erai-max', 'max-ctrl']; provs = ('BC','AB')
+#     exp = 'val'; exps = ['EC', 'erai-max', 'max-ctrl']; provs = ('BC','AB')
 #     exp = 'max-all'; exps = exps_rc[exp]; provs = ('BC','AB')
-#     exps = ['g-ctrl', 'g-ctrl-2050', 'g-ctrl-2100']; provs = ['ON']
+    exps = ['erai-g']; provs = ['ON']
     seasons = ['summer']; lfit = True; lrescale = True; lbootstrap = False
     lflatten = False; lensembleAxis = True
     varlist = ['MaxPrecip_1d', 'MaxPrecip_5d','MaxPreccu_1d'][:1]; filetypes = ['hydro']
+    varlist = ['precip', 'pet']; filetypes = ['hydro','aux']
     stnens = loadStationEnsemble(names=exps, provs=provs, clusters=clusters, varlist=varlist,  
                                  seasons=seasons, master=None, stationtype='ecprecip',
                                  domain=2, lensembleAxis=lensembleAxis, filetypes=filetypes,                                 

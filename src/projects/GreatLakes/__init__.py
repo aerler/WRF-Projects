@@ -11,7 +11,7 @@ from figure_settings import getVariableSettings, getFigureSettings, figure_folde
 
 # import figure with hydro settings
 from analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations, exps_rc # load datasets
-from analysis_settings import climFigAx, climPlot, variables_rc # plotting
+from analysis_settings import climFigAx, climPlot, variables_rc, constraints_rc # plotting
 
 # import map projection settings (basemap)
 try: 

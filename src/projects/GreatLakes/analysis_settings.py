@@ -53,6 +53,8 @@ variables_rc['runoff_flux']     = VL(vars=('runoff','snwmlt','p-et'), files=('ls
 variables_rc['heat']            = VL(vars=('hfx','lhfx','rSM'),files=('srfc','lsm'), label='Energy Flux')
 variables_rc['evap']            = VL(vars=('p-et','evap','pet',), files=('hydro',), label='Water Flux')
 variables_rc['spei']            = VL(vars=('precip','evap','pet',), files=('aux','hydro',), label='Water Flux')
+variables_rc['pet']             = VL(vars=('pet','petrad','petwnd'), files=('aux',), label='Water Flux')
+variables_rc['rad']             = VL(vars=('netrad',), files=('aux',), label='Water Flux')
 variables_rc['Q2']              = VL(vars=('Q2',),files=('srfc',), label='2m Humidity')
 variables_rc['aSM']             = VL(vars=('aSM',),files=('lsm',), label='Soil Moisture') 
 variables_rc['rSM']             = VL(vars=('rSM',),files=('lsm',), label='Relative Soil Moisture')
@@ -75,9 +77,9 @@ variables_rc['precip_CDD']   = VL(vars=['CNDD','CNWD']+[var+threshold for thresh
 # station selection criteria
 constraints_rc = dict()
 constraints_rc['min_len'] = 15 # for valid climatology
-constraints_rc['lat'] = (45,55) 
+constraints_rc['lat'] = (40,50) 
 constraints_rc['max_zerr'] = 300 # can't use this, because we are loading EC data separately from WRF
-constraints_rc['prov'] = ('BC','AB')
+constraints_rc['prov'] = ('ON','QC')
 constraints_rc['end_after'] = 1980
                         
 # dataset collections
@@ -276,6 +278,7 @@ climds_plotargs_rc = dict()
 # observational datasets
 obs_args = AttrDict(marker='o', linestyle=' ') # 5*mpl.rcParams['lines.linewidth']
 climds_plotargs_rc['Observations'] =  obs_args
+climds_plotargs_rc['Elora']        =  obs_args
 climds_plotargs_rc['WSC']          =  obs_args
 climds_plotargs_rc['Unity']        =  obs_args
 climds_plotargs_rc['CRU']          =  obs_args
@@ -334,11 +337,11 @@ def climFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_label
 
 ## annotation for climatology plot
 # defaults
-clim_defaults = AttrDict(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100))
+clim_defaults  = AttrDict(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100))
 # specific settings
 clim_specifics = dict()
-clim_specifics['GLB']         = AttrDict(temp=(245,300), water=(-1.,5.), precip_net=(-0.5,5.5), precip_types=(-0.5,5.5), precip_xtrm=(-1.,29.),
-                                         runoff=(-0.5,2.5), runoff_flux=(-0.5,3.5), flux=(-0.5,3.5), flux_snow=(-0.5,3.5), spei=(-1.5,5.5), evap=(-1.5,5.5))
+clim_specifics['GLB']         = AttrDict(temp=(245,305), water=(-1.,5.), precip_net=(-0.5,5.5), precip_types=(-0.5,5.5), precip_xtrm=(-1.,29.),
+                                         runoff=(-0.5,3.5), runoff_flux=(-0.5,3.5), flux=(-0.5,3.5), flux_snow=(-0.5,3.5), spei=(-1.5,5.5), evap=(-1.5,5.5))
 clim_specifics['GRW']         = clim_specifics['GLB']
 clim_specifics['NRB']         = AttrDict(temp=(245,305), water=(-1.4,2.2), precip=(-0.4,3.4), runoff=(-2.,2.), flux=(-2,5.5))
 clim_specifics['Prairies']    = AttrDict(temp=(250,305), water=(-1.5,1.5), precip=(-0.5,3.5), precip_xtrm=(0,30), precip_cesm=(0,30), precip_alt=(0,30), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
