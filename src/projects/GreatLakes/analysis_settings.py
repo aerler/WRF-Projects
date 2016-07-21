@@ -32,6 +32,7 @@ wetday_extensions = clim_load.wetday_extensions[:3]
 variables_rc = dict(); VL = clim_load.VL
 # mostly for hydrological analysis
 variables_rc['temp']            = VL(vars=('T2', 'Tmax', 'Tmin'), files=('srfc','xtrm',), label='2m Temperature')
+# variables_rc['temp']          = VL(vars=('Tmean', 'Tmax', 'Tmin'), files=('xtrm',), label='2m Temperature')
 # variables_rc['temp']          = VL(vars=('T2',), files=('srfc',), label='2m Temperature')
 variables_rc['precip_obs']      = VL(vars=('precip', 'solprec', 'wetfrq_010'), files=('hydro',), label='Precipitation')
 variables_rc['precip_xtrm_obs'] = VL(vars=('MaxPrecip_1d', 'MaxPrecip_5d', 'wetprec_010'), files=('hydro',), label='Precipitation')
@@ -54,7 +55,8 @@ variables_rc['heat']            = VL(vars=('hfx','lhfx','rSM'),files=('srfc','ls
 variables_rc['evap']            = VL(vars=('p-et','evap','pet',), files=('hydro',), label='Water Flux')
 variables_rc['spei']            = VL(vars=('precip','evap','pet',), files=('aux','hydro',), label='Water Flux')
 variables_rc['pet']             = VL(vars=('pet','petrad','petwnd'), files=('aux',), label='Water Flux')
-variables_rc['rad']             = VL(vars=('netrad',), files=('aux',), label='Water Flux')
+variables_rc['rad']             = VL(vars=('SWDNB','netrad',), files=('aux','rad'), label='Radiative Flux')
+variables_rc['vap']             = VL(vars=('vapdef',), files=('aux',), label='Vapor Deficit')
 variables_rc['Q2']              = VL(vars=('Q2',),files=('srfc',), label='2m Humidity')
 variables_rc['aSM']             = VL(vars=('aSM',),files=('lsm',), label='Soil Moisture') 
 variables_rc['rSM']             = VL(vars=('rSM',),files=('lsm',), label='Relative Soil Moisture')
@@ -259,7 +261,12 @@ plot_labels_rc['preccu']          = 'Conv.'
 plot_labels_rc['precnc']          = 'NC'  
 plot_labels_rc['evap']            = 'ET'    
 plot_labels_rc['p-et']            = 'Net Precip.'    
-plot_labels_rc['pet']             = 'PET' 
+plot_labels_rc['pet']             = 'Pot. ET' 
+plot_labels_rc['petrad']          = 'Rad. Term' 
+plot_labels_rc['petwnd']          = 'Wind Term' 
+plot_labels_rc['vapdef']          = 'Vapor Deficit' 
+plot_labels_rc['netrad']          = 'Net Rad.' 
+plot_labels_rc['SWDNB']           = 'SW Rad.' 
 plot_labels_rc['waterflx']        = 'Water Flux'
 plot_labels_rc['snwmlt']          = 'Snow Melt' 
 plot_labels_rc['runoff']          = 'Total Runoff' 
@@ -305,6 +312,11 @@ variable_plotargs_rc['precnc']         = AttrDict(color = 'coral')
 variable_plotargs_rc['evap']           = AttrDict(color = 'red')
 variable_plotargs_rc['p-et']           = AttrDict(color = 'red')
 variable_plotargs_rc['pet']            = AttrDict(color = 'purple')
+variable_plotargs_rc['petrad']         = AttrDict(color = 'red')
+variable_plotargs_rc['petwnd']         = AttrDict(color = 'dodgerblue')
+variable_plotargs_rc['vapdef']         = AttrDict(color = 'blue')
+variable_plotargs_rc['netrad']         = AttrDict(color = 'crimson')
+variable_plotargs_rc['SWDNB']          = AttrDict(color = 'orange')
 variable_plotargs_rc['waterflx']       = AttrDict(color = 'dodgerblue') # 'dodgerblue'
 variable_plotargs_rc['snwmlt']         = AttrDict(color = 'orange')
 variable_plotargs_rc['runoff']         = AttrDict(color = 'purple')

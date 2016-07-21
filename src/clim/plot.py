@@ -68,8 +68,11 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
       if not ylim: ylim = shape_info.get('water',None) if shape_info else None
       if ylabel is True: ylabel = 'Water Flux [{1:s}]'
       axes.ypad -= 3 
-  else: ylim = ylim or None
-  
+  else: 
+    ylim = ylim or None
+    if ylabel is True and varlist_name in variable_list: 
+      ylabel = variable_list[varlist_name].label + ' [{1:s}]'
+      
   # some default kwargs
   if 'bandalpha' not in plotargs: plotargs['bandalpha'] = 0.35
   if 'errorscale' not in plotargs: plotargs['errorscale'] = 0.5
