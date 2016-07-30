@@ -210,8 +210,8 @@ if __name__ == '__main__':
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #  test = 'obs_timeseries'
-#   test = 'basin_timeseries'
-  test = 'station_timeseries'
+  test = 'basin_timeseries'
+#   test = 'station_timeseries'
 #   test = 'province_climatology'
   
   
@@ -238,9 +238,9 @@ if __name__ == '__main__':
   elif test == 'basin_timeseries':
     
     # some settings for tests
-    exp = 'g-ens'; exps = exps_rc[exp].exps; #exps = ['Unity']
-    basins = ['GLB']; seasons = ['summer','winter']
-    varlist = ['precip']; aggregation = 'mean'; red = dict(s='mean')
+    exp = 'g-prj'; exps = exps_rc[exp].exps; #exps = ['Unity']
+    basins = ['GRW']; seasons = ['summer','winter']
+    varlist = ['temp']; aggregation = 'mean'; red = dict(s='mean')
 
     shpens = loadShapeEnsemble(names=exps, basins=basins, seasons=seasons, varlist=varlist, 
                                aggregation=aggregation, filetypes=None, reduction=red, 

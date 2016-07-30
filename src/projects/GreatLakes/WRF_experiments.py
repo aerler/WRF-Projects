@@ -44,21 +44,21 @@ experiments['t-ensemble-2050'] = Exp(shortname='t-ens-2050', name='t-ensemble-20
 experiments['t-ensemble-2100'] = Exp(shortname='t-ens-2100', name='t-ensemble-2100', title="T-Ens. (2100)", begindate='2085-01-01', parent='Ens-2100')
 # low-res T-Ensemble (90km resolution)
 experiments['erai-t3'] = Exp(shortname='erai-t3', name='erai-t3', title='T (ERA-I, 90km)', grid='glb1-90km', domains=1)
-# experiments['t3-ctrl'] = Exp(shortname='t3-ctrl', name='t3-ctrl', title='T-Ctrl (90km)', ensemble='t3-ensemble', grid='glb1-90km', domains=1)
-# experiments['t3-ctrl-2050'] = Exp(shortname='t3-ctrl-2050', name='t3-ctrl-2050', title='T-Ctrl (2050, 90km)', begindate='2045-01-01', ensemble='t3-ensemble-2050', grid='glb1-90km', domains=1)
-# experiments['t3-ctrl-2100'] = Exp(shortname='t3-ctrl-2100', name='t3-ctrl-2100', title='T-Ctrl (2100, 90km)', begindate='2085-01-01', ensemble='t3-ensemble-2050', grid='glb1-90km', domains=1)
-# experiments['t3-ens-A'] = Exp(shortname='t3-ens-A', name='t3-ens-A', title='T-Ens-A', parent='Ens-A (90km)', ensemble='t3-ensemble', grid='glb1-90km', domains=1)
-# experiments['t3-ens-A-2050'] = Exp(shortname='t3-ens-A-2050', name='t3-ens-A-2050', title='T-Ens-A (2050, 90km)', parent='Ens-A-2050', ensemble='t3-ensemble-2050', begindate='2045-01-01', grid='glb1-90km', domains=1)
-# experiments['t3-ens-A-2100'] = Exp(shortname='t3-ens-A-2100', name='t3-ens-A-2100', title='T-Ens-A (2100, 90km)', parent='Ens-A-2100', ensemble='t3-ensemble-2100', begindate='2085-01-01', grid='glb1-90km', domains=1)
-# experiments['t3-ens-B'] = Exp(shortname='t3-ens-B', name='t3-ens-B', title='T-Ens-B', parent='Ens-B (90km)', ensemble='t3-ensemble', grid='glb1-90km', domains=1)
-# experiments['t3-ens-B-2050'] = Exp(shortname='t3-ens-B-2050', name='t3-ens-B-2050', title='T-Ens-B (2050, 90km)', begindate='2045-01-01', parent='Ens-B-2050', ensemble='t3-ensemble-2050', grid='glb1-90km', domains=1)
-# experiments['t3-ens-B-2100'] = Exp(shortname='t3-ens-B-2100', name='t3-ens-B-2100', title='T-Ens-B (2100, 90km)', begindate='2085-01-01', parent='Ens-B-2100', ensemble='t3-ensemble-2100', grid='glb1-90km', domains=1)
-# experiments['t3-ens-C'] = Exp(shortname='t3-ens-C', name='t3-ens-C', title='T-Ens-C', parent='Ens-C (90km)', ensemble='t3-ensemble', grid='glb1-90km', domains=1)
-# experiments['t3-ens-C-2050'] = Exp(shortname='t3-ens-C-2050', name='t3-ens-C-2050', title='T-Ens-C (2050, 90km)', begindate='2045-01-01', parent='Ens-C-2050', ensemble='t3-ensemble-2050', grid='glb1-90km', domains=1)
-# experiments['t3-ens-C-2100'] = Exp(shortname='t3-ens-C-2100', name='t3-ens-C-2100', title='T-Ens-C (2100, 90km)', begindate='2085-01-01', parent='Ens-C-2100', ensemble='t3-ensemble-2100', grid='glb1-90km', domains=1)
-# experiments['t3-ensemble'] = Exp(shortname='t3-ens', name='t3-ensemble', title='T-Ens. (90km)', parent='Ens', grid='glb1-90km', domains=1)
-# experiments['t3-ensemble-2050'] = Exp(shortname='t3-ens-2050', name='t3-ensemble-2050', title='T-Ens. (2050, 90km)', begindate='2045-01-01', parent='Ens-2050', grid='glb1-90km', domains=1)
-# experiments['t3-ensemble-2100'] = Exp(shortname='t3-ens-2100', name='t3-ensemble-2100', title='T-Ens. (2100, 90km)', begindate='2085-01-01', parent='Ens-2050', grid='glb1-90km', domains=1)
+experiments['t3-ctrl'] = Exp(shortname='t3-ctrl', name='t3-ctrl', title='T-Ctrl (90km)', ensemble='t3-ensemble', grid='glb1-90km', domains=1)
+experiments['t3-ctrl-2050'] = Exp(shortname='t3-ctrl-2050', name='t3-ctrl-2050', title='T-Ctrl (2050, 90km)', begindate='2045-01-01', ensemble='t3-ensemble-2050', grid='glb1-90km', domains=1)
+experiments['t3-ctrl-2100'] = Exp(shortname='t3-ctrl-2100', name='t3-ctrl-2100', title='T-Ctrl (2100, 90km)', begindate='2085-01-01', ensemble='t3-ensemble-2050', grid='glb1-90km', domains=1)
+experiments['t3-ens-A'] = Exp(shortname='t3-ens-A', name='t3-ens-A', title='T-Ens-A', parent='Ens-A (90km)', ensemble='t3-ensemble', grid='glb1-90km', domains=1)
+experiments['t3-ens-A-2050'] = Exp(shortname='t3-ens-A-2050', name='t3-ens-A-2050', title='T-Ens-A (2050, 90km)', parent='Ens-A-2050', ensemble='t3-ensemble-2050', begindate='2045-01-01', grid='glb1-90km', domains=1)
+experiments['t3-ens-A-2100'] = Exp(shortname='t3-ens-A-2100', name='t3-ens-A-2100', title='T-Ens-A (2100, 90km)', parent='Ens-A-2100', ensemble='t3-ensemble-2100', begindate='2085-01-01', grid='glb1-90km', domains=1)
+experiments['t3-ens-B'] = Exp(shortname='t3-ens-B', name='t3-ens-B', title='T-Ens-B', parent='Ens-B (90km)', ensemble='t3-ensemble', grid='glb1-90km', domains=1)
+experiments['t3-ens-B-2050'] = Exp(shortname='t3-ens-B-2050', name='t3-ens-B-2050', title='T-Ens-B (2050, 90km)', begindate='2045-01-01', parent='Ens-B-2050', ensemble='t3-ensemble-2050', grid='glb1-90km', domains=1)
+experiments['t3-ens-B-2100'] = Exp(shortname='t3-ens-B-2100', name='t3-ens-B-2100', title='T-Ens-B (2100, 90km)', begindate='2085-01-01', parent='Ens-B-2100', ensemble='t3-ensemble-2100', grid='glb1-90km', domains=1)
+experiments['t3-ens-C'] = Exp(shortname='t3-ens-C', name='t3-ens-C', title='T-Ens-C', parent='Ens-C (90km)', ensemble='t3-ensemble', grid='glb1-90km', domains=1)
+experiments['t3-ens-C-2050'] = Exp(shortname='t3-ens-C-2050', name='t3-ens-C-2050', title='T-Ens-C (2050, 90km)', begindate='2045-01-01', parent='Ens-C-2050', ensemble='t3-ensemble-2050', grid='glb1-90km', domains=1)
+experiments['t3-ens-C-2100'] = Exp(shortname='t3-ens-C-2100', name='t3-ens-C-2100', title='T-Ens-C (2100, 90km)', begindate='2085-01-01', parent='Ens-C-2100', ensemble='t3-ensemble-2100', grid='glb1-90km', domains=1)
+experiments['t3-ensemble'] = Exp(shortname='t3-ens', name='t3-ensemble', title='T-Ens. (90km)', parent='Ens', grid='glb1-90km', domains=1)
+experiments['t3-ensemble-2050'] = Exp(shortname='t3-ens-2050', name='t3-ensemble-2050', title='T-Ens. (2050, 90km)', begindate='2045-01-01', parent='Ens-2050', grid='glb1-90km', domains=1)
+experiments['t3-ensemble-2100'] = Exp(shortname='t3-ens-2100', name='t3-ensemble-2100', title='T-Ens. (2100, 90km)', begindate='2085-01-01', parent='Ens-2050', grid='glb1-90km', domains=1)
 # G-Ensemble
 experiments['erai-g'] = Exp(shortname='erai-g', name='erai-g', title='G (ERA-I)', parent='ERAI')
 experiments['g-ctrl'] = Exp(shortname='g-ctrl', name='g-ctrl', title='G-Ctrl', parent='Ctrl-1', ensemble='g-ensemble')
@@ -124,11 +124,11 @@ WRF_experiments = experiments # alias for dict with proper names
 ## dict of ensembles
 ensembles = OrderedDict()
 # Great Lakes ensembles
-ensembles['phys-ens'] = ('g-ctrl','gg-ctrl', 'm-ctrl','mm-ctrl', 't-ctrl')
-ensembles['g-ens'] = ('g-ctrl', 'g-ens-A', 'g-ens-B', 'g-ens-C')
-ensembles['t-ens'] = ('t-ctrl', 't-ens-A', 't-ens-B', 't-ens-C')
+ensembles['phys-ens'] = ('g-ctrl','gg-ctrl', 'm-ctrl','mm-ctrl', 't-ctrl')[1:]
+ensembles['g-ens'] = ('g-ctrl', 'g-ens-A', 'g-ens-B', 'g-ens-C')[1:]
+ensembles['t-ens'] = ('t-ctrl', 't-ens-A', 't-ens-B', 't-ens-C')[1:]
 ensembles['g3-ens'] = ('g3-ctrl', 'g3-ens-A', 'g3-ens-B', 'g3-ens-C')
-#ensembles['t3-ens'] = ('t3-ctrl', 't3-ens-A', 't3-ens-B', 't3-ens-C')
+ensembles['t3-ens'] = ('t3-ctrl', 't3-ens-A', 't3-ens-B', 't3-ens-C')
 # N.B.: static & meta data for the ensemble is copied from the first-listed member;
 #       this includes station attributes, such as the elevation error 
 # add future versions

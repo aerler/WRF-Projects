@@ -40,9 +40,10 @@ variables_rc['precip']          = VL(vars=('precip', 'preccu', 'solprec'), files
 variables_rc['precip_xtrm']     = VL(vars=('MaxPrecip_1d', 'MaxPrecip_5d', 'MaxPreccu_1d'), files=('hydro',), label='Precipitation')
 variables_rc['precip_cesm']     = VL(vars=('MaxPrecip_1d', 'MaxPreccu_1d', ), files=('hydro',), label='Precipitation')
 variables_rc['precip_alt']      = VL(vars=('MaxPrecip_1d', 'MaxPrecnc_1d', 'MaxSolprec_1d'), files=('hydro',), label='Precipitation')
-variables_rc['precip_types']    = VL(vars=('precip','preccu','precnc'), files=('hydro',), label='Water Flux')
+variables_rc['precip_types']    = VL(vars=('precip','preccu','solprec'), files=('hydro',), label='Water Flux')
+variables_rc['precip_conv']     = VL(vars=('precip','preccu','precnc'), files=('hydro',), label='Water Flux')
 variables_rc['precip_net']      = VL(vars=('precip','solprec','p-et'), files=('hydro',), label='Water Flux')
-variables_rc['flux_snow']       = VL(vars=('precip','snwmlt','solprec'), files=('hydro',), label='Water Flux')
+variables_rc['precip_snow']     = VL(vars=('precip','snwmlt','solprec'), files=('hydro',), label='Water Flux')
 variables_rc['flux_days']       = VL(vars=('wetfrq_010','snwmlt','p-et'), files=('hydro',), label='Water Flux')
 variables_rc['wetprec']         = VL(vars=['wetprec'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Precip.')
 variables_rc['wetdays']         = VL(vars=['wetfrq'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Ratio')
@@ -50,13 +51,14 @@ variables_rc['CWD']             = VL(vars=['CWD'+ext for ext in wetday_extension
 variables_rc['CDD']             = VL(vars=['CDD'+ext for ext in wetday_extensions[:-1]]+['CNDD'], files=('hydro',), label='Continuous Dry-days')
 variables_rc['sfcflx']          = VL(vars=('p-et','snwmlt','waterflx',), files=('hydro',), label='Surface Flux')
 variables_rc['runoff']          = VL(vars=('waterflx','sfroff','runoff'), files=('lsm','hydro'), label='Runoff')
-variables_rc['runoff_flux']     = VL(vars=('runoff','snwmlt','p-et'), files=('lsm','hydro'), label='Water Flux')
+variables_rc['rofflx']          = VL(vars=('runoff','snwmlt','waterflx'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['heat']            = VL(vars=('hfx','lhfx','rSM'),files=('srfc','lsm'), label='Energy Flux')
 variables_rc['evap']            = VL(vars=('p-et','evap','pet',), files=('hydro',), label='Water Flux')
 variables_rc['spei']            = VL(vars=('precip','evap','pet',), files=('aux','hydro',), label='Water Flux')
+variables_rc['wrfpet']          = VL(vars=('pet','pet_wrf','evap',), files=('aux','hydro',), label='Water Flux')
 variables_rc['pet']             = VL(vars=('pet','petrad','petwnd'), files=('aux',), label='Water Flux')
 variables_rc['rad']             = VL(vars=('SWDNB','netrad',), files=('aux','rad'), label='Radiative Flux')
-variables_rc['vap']             = VL(vars=('vapdef',), files=('aux',), label='Vapor Deficit')
+variables_rc['vap']             = VL(vars=('Q2','vapdef',), files=('srfc','aux'), label='Vapor Pressure')
 variables_rc['Q2']              = VL(vars=('Q2',),files=('srfc',), label='2m Humidity')
 variables_rc['aSM']             = VL(vars=('aSM',),files=('lsm',), label='Soil Moisture') 
 variables_rc['rSM']             = VL(vars=('rSM',),files=('lsm',), label='Relative Soil Moisture')
@@ -89,11 +91,11 @@ exps_rc = dict(); EX = clim_load.EX
 exps_rc['obs']       = EX(name='obs',exps=['CRU','WSC'], styles=['-','-.'], title='Observations', 
                           master='CRU', reference='CRU', target=None)
 exps_rc['erai']      = EX(name='erai',exps=['erai-g','erai-t'], styles=['--','-',], 
-                          title='ERA-I G & T',
-                          master='erai-g', reference=None, target=None)
-exps_rc['erai-3']      = EX(name='erai',exps=['erai-g','erai-t','erai-g3','erai-t3'], styles=['--','-','-.',':'], 
-                          title='G & T (10km & 90km, ERA-I)',
-                          master='erai-g', reference=None, target=None)
+                          title='ERA-I G & T', master='erai-g', reference=None, target=None)
+exps_rc['hist']      = EX(name='hist',exps=['g-ens','erai-g','erai-t'], styles=['-','--','-.',], 
+                          title='Historical WRF', master='erai-g', reference=None, target=None)
+exps_rc['erai-3']    = EX(name='erai',exps=['erai-g','erai-t','erai-g3','erai-t3'], styles=['--','-','-.',':'], 
+                          title='G & T (10km & 90km, ERA-I)', master='erai-g', reference=None, target=None)
 exps_rc['val-mod']   = EX(name='val-mod', exps=['g-ens', 'g-ens_d01', 'Ens','t-ens'],
                           master='g-ens', reference=None, target=None, title='Model Comparison')
 exps_rc['cesm-all']  = EX(name='cesm-all', exps=['Observations', 'Ens','Ens-2050','Ens-2100'],  
@@ -212,7 +214,8 @@ def loadStationFit(variable_list=None, default_constraints=None, **kwargs):
 # plot labels: translate internal names to something more presentable
 plot_labels_rc = dict()
 # datasets
-plot_labels_rc['Unity']           = 'Uni. Obs.'
+# plot_labels_rc['Unity']           = 'Uni. Obs.'
+plot_labels_rc['Unity']           = 'Observations'
 plot_labels_rc['Observations']    = 'EC Obs.'
 plot_labels_rc['EC_1935']         = 'EC (1935)'
 plot_labels_rc['EC_1965']         = 'EC (1965)'
@@ -230,20 +233,22 @@ plot_labels_rc['phys-ens_d01']    = 'Phy (D1)'
 plot_labels_rc['g-ens']           = 'G Ens.'  
 plot_labels_rc['g-ens-2050']      = 'G 2050' 
 plot_labels_rc['g-ens-2100']      = 'G 2100' 
-plot_labels_rc['g3-ens']           = 'G Ens. (90km)'  
-plot_labels_rc['g3-ens-2050']      = 'G 2050 (90km)' 
-plot_labels_rc['g3-ens-2100']      = 'G 2100 (90km)' 
-# plot_labels_rc['g-ens']           = 'WRF Ens.'  
-# plot_labels_rc['g-ens-2050']      = 'WRF 2050' 
-# plot_labels_rc['g-ens-2100']      = 'WRF 2100' 
-plot_labels_rc['erai-g']          = 'ERA-I G'  
+plot_labels_rc['g3-ens']          = 'G Ens. (90km)'  
+plot_labels_rc['g3-ens-2050']     = 'G 2050 (90km)' 
+plot_labels_rc['g3-ens-2100']     = 'G 2100 (90km)' 
+# plot_labels_rc['g-ens']          = 'WRF Ens.'  
+# plot_labels_rc['g-ens-2050']     = 'WRF 2050' 
+# plot_labels_rc['g-ens-2100']     = 'WRF 2100' 
+# plot_labels_rc['erai-g']          = 'ERA-I G'  
+# plot_labels_rc['erai-t']          = 'ERA-I T'   
+plot_labels_rc['erai-g']          = 'WRF G (ERA-I)'  
+plot_labels_rc['erai-t']          = 'WRF T (ERA-I)'   
 plot_labels_rc['t-ens']           = 'T Ens.'
 plot_labels_rc['t-ens-2050']      = 'T 2050'
 plot_labels_rc['t-ens-2100']      = 'T 2100'
-plot_labels_rc['t3-ens']           = 'T Ens. (90km)'
-plot_labels_rc['t3-ens-2050']      = 'T 2050 (90km)'
-plot_labels_rc['t3-ens-2100']      = 'T 2100 (90km)'
-plot_labels_rc['erai-t']          = 'ERA-I T'   
+plot_labels_rc['t3-ens']          = 'T Ens. (90km)'
+plot_labels_rc['t3-ens-2050']     = 'T 2050 (90km)'
+plot_labels_rc['t3-ens-2100']     = 'T 2100 (90km)'
 # variables
 plot_labels_rc['MaxPrecip_1d']    = 'Max Precip. (1d)'
 plot_labels_rc['MaxPrecip_5d']    = 'Max Precip. (5d)'
@@ -253,6 +258,7 @@ plot_labels_rc['MaxWaterFlx_1d']  = 'Max Flux (1d)'
 plot_labels_rc['wetfrq_010']      = 'Wet-days'
 plot_labels_rc['wetprec_010']     = 'Precip. Intensity'
 plot_labels_rc['T2']              = 'T (2m)'   
+plot_labels_rc['Q2']              = 'Humidity (2m)'   
 plot_labels_rc['precip']          = 'Precip.'  
 plot_labels_rc['liqprec']         = 'Liquid' 
 plot_labels_rc['solprec']         = 'Snow' 
@@ -262,6 +268,7 @@ plot_labels_rc['precnc']          = 'NC'
 plot_labels_rc['evap']            = 'ET'    
 plot_labels_rc['p-et']            = 'Net Precip.'    
 plot_labels_rc['pet']             = 'Pot. ET' 
+plot_labels_rc['pet_wrf']         = 'WRF PET' 
 plot_labels_rc['petrad']          = 'Rad. Term' 
 plot_labels_rc['petwnd']          = 'Wind Term' 
 plot_labels_rc['vapdef']          = 'Vapor Deficit' 
@@ -276,7 +283,6 @@ plot_labels_rc['Tmax']            = 'T (max)'
 plot_labels_rc['Tmin']            = 'T (min)'    
 plot_labels_rc['hfx']             = 'Sens. Heat'     
 plot_labels_rc['lhfx']            = 'Latent Heat'    
-plot_labels_rc['Q2']              = 'Q (2m)'      
 plot_labels_rc['aSM']             = 'aSM'     
 plot_labels_rc['rSM']             = 'Soil Moist.'       
 
@@ -303,6 +309,8 @@ variable_plotargs_rc['MaxPrecnc_1d']   = AttrDict(color = 'grey')
 variable_plotargs_rc['MaxSolprec_1d']  = AttrDict(color = 'blue')
 variable_plotargs_rc['MaxWaterFlx_1d'] = AttrDict(color = 'blue')
 variable_plotargs_rc['T2']             = AttrDict(color = 'green')
+# variable_plotargs_rc['Q2']             = AttrDict(color = 'green')
+variable_plotargs_rc['Q2']             = AttrDict(color = 'blue')
 variable_plotargs_rc['precip']         = AttrDict(color = 'green')
 variable_plotargs_rc['liqprec']        = AttrDict(color = 'cyan')
 variable_plotargs_rc['solprec']        = AttrDict(color = 'blue')
@@ -312,12 +320,14 @@ variable_plotargs_rc['precnc']         = AttrDict(color = 'coral')
 variable_plotargs_rc['evap']           = AttrDict(color = 'red')
 variable_plotargs_rc['p-et']           = AttrDict(color = 'red')
 variable_plotargs_rc['pet']            = AttrDict(color = 'purple')
+variable_plotargs_rc['pet_wrf']        = AttrDict(color = 'green')
 variable_plotargs_rc['petrad']         = AttrDict(color = 'red')
 variable_plotargs_rc['petwnd']         = AttrDict(color = 'dodgerblue')
-variable_plotargs_rc['vapdef']         = AttrDict(color = 'blue')
+# variable_plotargs_rc['vapdef']         = AttrDict(color = 'blue')
+variable_plotargs_rc['vapdef']         = AttrDict(color = 'magenta')
 variable_plotargs_rc['netrad']         = AttrDict(color = 'crimson')
 variable_plotargs_rc['SWDNB']          = AttrDict(color = 'orange')
-variable_plotargs_rc['waterflx']       = AttrDict(color = 'dodgerblue') # 'dodgerblue'
+variable_plotargs_rc['waterflx']       = AttrDict(color = 'blue') # 'dodgerblue'
 variable_plotargs_rc['snwmlt']         = AttrDict(color = 'orange')
 variable_plotargs_rc['runoff']         = AttrDict(color = 'purple')
 variable_plotargs_rc['ugroff']         = AttrDict(color = 'coral')
@@ -326,7 +336,6 @@ variable_plotargs_rc['Tmax']           = AttrDict(color = 'red')
 variable_plotargs_rc['Tmin']           = AttrDict(color = 'blue')
 variable_plotargs_rc['hfx']            = AttrDict(color = 'red')
 variable_plotargs_rc['lhfx']           = AttrDict(color = 'purple')
-variable_plotargs_rc['Q2']             = AttrDict(color = 'blue')
 variable_plotargs_rc['aSM']            = AttrDict(color = 'coral')
 variable_plotargs_rc['rSM']            = AttrDict(color = 'green')
 variable_plotargs_rc['CNWD']           = AttrDict(color = 'green')
@@ -349,14 +358,15 @@ def climFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_label
 
 ## annotation for climatology plot
 # defaults
-clim_defaults  = AttrDict(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100))
+clim_defaults  = AttrDict(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100), rad=(-50,350), vap=(-3.,22.), pet=(-0.5,5.), spei=(-1,6), wrfpet=(-1,6))
 # specific settings
 clim_specifics = dict()
-clim_specifics['GLB']         = AttrDict(temp=(245,305), water=(-1.,5.), precip_net=(-0.5,5.5), precip_types=(-0.5,5.5), precip_xtrm=(-1.,29.),
-                                         runoff=(-0.5,3.5), runoff_flux=(-0.5,3.5), flux=(-0.5,3.5), flux_snow=(-0.5,3.5), spei=(-1.5,5.5), evap=(-1.5,5.5))
-clim_specifics['GRW']         = clim_specifics['GLB']
-clim_specifics['NRB']         = AttrDict(temp=(245,305), water=(-1.4,2.2), precip=(-0.4,3.4), runoff=(-2.,2.), flux=(-2,5.5))
-clim_specifics['Prairies']    = AttrDict(temp=(250,305), water=(-1.5,1.5), precip=(-0.5,3.5), precip_xtrm=(0,30), precip_cesm=(0,30), precip_alt=(0,30), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
+clim_specifics['GLB']         = AttrDict(temp=(248,304), water=(-1.,5.), precip_net=(-1.5,5.), precip_types=(-0.5,5.), precip_xtrm=(-1.,29.),
+                                         runoff=(-0.5,3.5), rofflx=(-1.,5.), flux=(-1.,5.), flux_snow=(-1.,5.), spei=(-0.5,5.5), evap=(-1.5,4.5))
+clim_specifics['GRW']         = AttrDict(temp=(248,304), water=(-1.,6.), precip_net=(-0.5,5.5), precip_types=(-0.5,5.5), precip_xtrm=(-1.,35.),
+                                         runoff=(-0.5,4.5), rofflx=(-1.,6.), flux=(-1.,6.), flux_snow=(-1.,5.), spei=(-0.5,5.5), evap=(-1.5,5.5))
+clim_specifics['NRB']         = AttrDict(temp=(248,304), water=(-1.4,2.2), precip=(-0.4,3.4), runoff=(-2.,2.), flux=(-2,5.5))
+clim_specifics['Prairies']    = AttrDict(temp=(248,304), water=(-1.5,1.5), precip=(-0.5,3.5), precip_xtrm=(0,30), precip_cesm=(0,30), precip_alt=(0,30), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
 # add defaults to specifics
 clim_annotation = _mergeAnnotation(clim_specifics, clim_defaults)
   

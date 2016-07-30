@@ -69,7 +69,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
       if ylabel is True: ylabel = 'Water Flux [{1:s}]'
       axes.ypad -= 3 
   else: 
-    ylim = ylim or None
+    if not ylim: ylim = defaults.get(varlist_name,None)
     if ylabel is True and varlist_name in variable_list: 
       ylabel = variable_list[varlist_name].label + ' [{1:s}]'
       
