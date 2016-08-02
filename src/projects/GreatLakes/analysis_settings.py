@@ -49,7 +49,7 @@ variables_rc['wetprec']         = VL(vars=['wetprec'+ext for ext in wetday_exten
 variables_rc['wetdays']         = VL(vars=['wetfrq'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Ratio')
 variables_rc['CWD']             = VL(vars=['CWD'+ext for ext in wetday_extensions]+['CNWD'], files=('hydro',), label='Continuous Wet-days')
 variables_rc['CDD']             = VL(vars=['CDD'+ext for ext in wetday_extensions[:-1]]+['CNDD'], files=('hydro',), label='Continuous Dry-days')
-variables_rc['sfcflx']          = VL(vars=('p-et','snwmlt','waterflx',), files=('hydro',), label='Surface Flux')
+variables_rc['sfcflx']          = VL(vars=('p-et','snwmlt','waterflx','runoff'), files=('hydro',), label='Surface Flux')
 variables_rc['runoff']          = VL(vars=('waterflx','sfroff','runoff'), files=('lsm','hydro'), label='Runoff')
 variables_rc['rofflx']          = VL(vars=('runoff','snwmlt','waterflx'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['heat']            = VL(vars=('hfx','lhfx','rSM'),files=('srfc','lsm'), label='Energy Flux')
@@ -90,7 +90,7 @@ constraints_rc['end_after'] = 1980
 exps_rc = dict(); EX = clim_load.EX
 exps_rc['obs']       = EX(name='obs',exps=['CRU','WSC'], styles=['-','-.'], title='Observations', 
                           master='CRU', reference='CRU', target=None)
-exps_rc['erai']      = EX(name='erai',exps=['erai-g','erai-t'], styles=['--','-',], 
+exps_rc['erai']      = EX(name='erai',exps=['erai-g','erai-t'][:1], styles=['--','-',], 
                           title='ERA-I G & T', master='erai-g', reference=None, target=None)
 exps_rc['hist']      = EX(name='hist',exps=['g-ens','erai-g','erai-t'], styles=['-','--','-.',], 
                           title='Historical WRF', master='erai-g', reference=None, target=None)

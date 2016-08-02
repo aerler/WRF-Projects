@@ -111,7 +111,7 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
       if slices is not None: dataset = dataset(**noyears) # slice immediately
       obsens += dataset.load()
     except GageStationError: 
-      pass # just ignore, if gage station if data is missing 
+      pass # just ignore, if gage station data is missing 
   # return ensembles (will be wrapped in a list, if BatchLoad is used)
   return obsens
 
@@ -205,11 +205,12 @@ if __name__ == '__main__':
   
 #   from projects.WesternCanada.WRF_experiments import WRF_exps, ensembles
 #   from projects.WesternCanada.analysis_settings import exps_rc, variables_rc, loadShapeObservations  
-  from projects.GreatLakes.WRF_experiments import WRF_exps, ensembles
+  from projects.CESM_experiments import CESM_exps, CESM_ens
+  from projects.GreatLakes.WRF_experiments import WRF_exps, WRF_ens
   from projects.GreatLakes.analysis_settings import exps_rc, variables_rc, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
-#  test = 'obs_timeseries'
+#   test = 'obs_timeseries'
   test = 'basin_timeseries'
 #   test = 'station_timeseries'
 #   test = 'province_climatology'
@@ -219,10 +220,10 @@ if __name__ == '__main__':
   if test == 'obs_timeseries':
     
     # some settings for tests
-    basins = ['GLB'] #; period = (1979,1994)
-    varlist = ['precip',]; aggregation = 'mean'
+    basins = ['GRW'] #; period = (1979,1994)
+    varlist = ['sfcflx',]; aggregation = 'mean'
 
-    shpens = loadShapeObservations(obs='GPCC', basins=basins, varlist=varlist,
+    shpens = loadShapeObservations(obs=None, basins=basins, varlist=varlist,
                                    aggregation=aggregation, load_list=['basins','varlist'],)
 #                                    variable_list=variables_rc)
     # print diagnostics
@@ -240,12 +241,12 @@ if __name__ == '__main__':
     # some settings for tests
     exp = 'g-prj'; exps = exps_rc[exp].exps; #exps = ['Unity']
     basins = ['GRW']; seasons = ['summer','winter']
-    varlist = ['temp']; aggregation = 'mean'; red = dict(s='mean')
+    varlist = ['sfcflx']; aggregation = 'mean'; red = dict(s='mean')
 
     shpens = loadShapeEnsemble(names=exps, basins=basins, seasons=seasons, varlist=varlist, 
                                aggregation=aggregation, filetypes=None, reduction=red, 
                                load_list=['basins','seasons',], lproduct='outer', domain=2,
-                               WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
+                               WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens,
                                variable_list=variables_rc)
     # print diagnostics
     print shpens[0]; print ''
@@ -280,7 +281,7 @@ if __name__ == '__main__':
                                  seasons=seasons, master=None, stationtype='ecprecip',
                                  domain=2, lensembleAxis=lensembleAxis, filetypes=filetypes,                                 
                                  variable_list=variables_rc, default_constraints=constraints_rc,
-                                 WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
+                                 WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens,
                                  load_list=['season','provs'], lproduct='outer',)
     # print diagnostics
     print stnens[0][0]; print ''
@@ -300,7 +301,7 @@ if __name__ == '__main__':
     shpens = loadShapeEnsemble(names=exps, basins=basins, varlist=varlists, aggregation=aggregation,
                                period=(1979,1994), # this does not work properly with just a number...
                                load_list=['basins','varlist'], lproduct='outer', filetypes=['srfc'],
-                               WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
+                               WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens,
                                variable_list=variables_rc)
     # print diagnostics
     print shpens[0]; print ''

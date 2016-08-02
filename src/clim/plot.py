@@ -87,8 +87,11 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
     tmp_varlist = []; tmp_scalevars = []
     for var in varlist:
         if lauto:
-          if expens[0][var].units: tmp_varlist.append(var)
-          else: tmp_scalevars.append(var)
+          for exp in expens+obsens:
+            if var in exp:
+              if expens[0][var].units: tmp_varlist.append(var)
+              else: tmp_scalevars.append(var)
+              break
         else: 
           if var in scalevars: tmp_scalevars.append(var)
           else: tmp_varlist.append(var)

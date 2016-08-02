@@ -69,8 +69,6 @@ ensembles['ensrcp85cn1x1d']  = [tag+'rcp85cn1x1d' for tag in 'htb', 'hab', 'hab'
 ensembles['mens20trcn1x1']   = [tag+'20trcn1x1'   for tag in 'hab', 'hab', 'hab']
 ensembles['mensrcp85cn1x1']  = [tag+'rcp85cn1x1'  for tag in 'hab', 'hab', 'hab']
 ensembles['mensrcp85cn1x1d'] = [tag+'rcp85cn1x1d' for tag in 'hab', 'hab', 'hab']
-# add aliases 
-CESM_ens = enss = ensembles
 
 # N.B.: static & meta data for the ensemble is copied from the first-listed member;
 #       this includes station attributes, such as the elevation error 
@@ -80,6 +78,8 @@ for ensname,enslist in ensembles.items(): # don't use iter, because we chagne th
   ensembles[ensname] = members
   ensembles[experiments[ensname].shortname] = members
 
+# add aliases 
+CESM_ens = enss = ensembles
 
 ## generate loadCESM* versions with these experiments
 from datasets.CESM import loadCESM, loadCESM_Shp, loadCESM_Stn, loadCESM_TS, loadCESM_ShpTS, loadCESM_StnTS, loadCESM_Ensemble, loadCESM_ShpEns, loadCESM_StnEns
