@@ -249,7 +249,7 @@ def loadStationFit(**kwargs):
 if __name__ == '__main__':
   
   from projects.WesternCanada.WRF_experiments import Exp, WRF_exps, ensembles
-  from projects.WesternCanada.settings import exps_rc, variables_rc
+  from projects.WesternCanada.analysis_settings import exps_rc, variables_rc
   #from projects.GreatLakes.WRF_experiments import WRF_exps, ensembles
   #from projects.GreatLakes.settings import exps_rc
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
@@ -262,7 +262,7 @@ if __name__ == '__main__':
   constraints_rc = dict()
   constraints_rc['min_len'] = 15 # for valid climatology
   constraints_rc['lat'] = (45,55) 
-  constraints_rc['max_zerr'] = 100 # reduce sample size
+  constraints_rc['max_zerr'] = 300 # reduce sample size
   constraints_rc['prov'] = ('BC','AB')
   constraints_rc['end_after'] = 1980
   
@@ -295,27 +295,31 @@ if __name__ == '__main__':
 #     exp = 'marc-prj'; exps = exps_rc[exp]; provs = 'ON'; clusters = None
 #     provs = ('BC','AB'); clusters = None
     provs = None; clusters = None; lensembleAxis = False; sample_axis = None; lflatten = False
-    exp = 'max-val'; exps = exps_rc[exp]; provs = None; clusters = [1,3]
-    seasons = ['summer']; lfit = True; lrescale = True; lbootstrap = False
+    exp = 'erai'; exps = exps_rc[exp]; provs = None; clusters = [2,6,8]; slices = None
+    seasons = ['summer','winter']; lfit = True; lrescale = True; lbootstrap = False
     lflatten = False; lensembleAxis = True; sample_axis = ('station','year')
     varlist = ['MaxPrecip_1d', 'MaxPrecip_5d','MaxPreccu_1d'][:1]; filetypes = ['hydro']
+    slices = [dict(years=(1979,1995))]*3+[None]
     stnens, fitens, sclens  = loadStationFit(names=exps.exps, provs=provs, clusters=clusters, 
+                                             cluster_name='cluster_projection',
                                              seasons=seasons, lfit=lfit, master=None, stationtype='ecprecip',
                                              lrescale=lrescale, reference=exps.reference, target=exps.target,
-                                             lflatten=lflatten, domain=2, lbootstrap=lbootstrap, nbs=10,
+                                             lflatten=lflatten, domain=None, lbootstrap=lbootstrap, nbs=10,
                                              lensembleAxis=lensembleAxis, sample_axis=sample_axis,
-                                             varlist=varlist, filetypes=filetypes,
+                                             varlist=varlist, filetypes=filetypes, slices=slices,
+                                             ensemble_list=['names','slices'] if slices else None,
                                              variable_list=variables_rc, default_constraints=constraints_rc,
                                              WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
-                                             load_list=['season',], lproduct='outer', lcrossval=None,)
+                                             load_list=['seasons','clusters'], lproduct='outer', lcrossval=None,)
     # print diagnostics
     print stnens[0][0]; print ''
     print fitens[0][0].MaxPrecip_1d.atts.sample_axis; print ''
     print fitens[0][1] if fitens is not None else fitens ; print ''
     print sclens[0] if sclens is not None else sclens ; print ''
-    assert len(stnens) == len(seasons)
-    print stnens[0][0]
-    print stnens[0][1].MaxPrecip_1d.mean()
+    assert len(stnens) == len(seasons) * (len(clusters) or len(provs))
+    print stnens[-1][1]
+    print stnens[-1][-1]
+    print stnens[0][-1].MaxPrecip_1d.mean()
   
   elif test == 'rescaling':
     

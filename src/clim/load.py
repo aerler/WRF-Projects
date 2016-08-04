@@ -143,7 +143,7 @@ def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, a
                         WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, 
                         variable_list=None, default_constraints=None, **kwargs):
   ''' convenience function to load station data for ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
-  load_list = [] if load_list is None else load_list[:] # use a copy, since the list may be modified
+  if load_list: load_list = load_list[:] # use a copy, since the list may be modified
 
   
 #XXX: move this into helper function with Batch-decorator to allow batch-loadign of varlists
@@ -162,13 +162,13 @@ def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, a
                                           params=params, variable_list=variable_list)
   # prepare arguments
   if provs or clusters:
-    if constraints is None: constraints = default_constraints.copy()
+    constraints = default_constraints.copy() if constraints is None else constraints.copy()
     constraint_list = []
-    if 'provs' in load_list and 'clusters' in load_list: 
+    if load_list and 'provs' in load_list and 'clusters' in load_list: 
       raise ArgumentError, "Cannot expand 'provs' and 'clusters' at the same time."
     # figure out proper handling of provinces
     if provs:
-      if 'prov' not in load_list: 
+      if not load_list or 'prov' not in load_list: 
         constraints['prov'] = provs; provs = None
       else:  
         if len(constraint_list) > 0: raise ArgumentError, "Cannot expand multiple keyword-constraints at once."
@@ -180,8 +180,9 @@ def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, a
         constraints = constraint_list; provs = None
     # and analogously, handling of clusters!
     if clusters:
-      if 'cluster' not in load_list: 
+      if not load_list or 'cluster' not in load_list: 
         constraints['cluster'] = clusters; clusters = None
+        if cluster_name: constraints['cluster_name'] = cluster_name
       else:  
         if len(constraint_list) > 0: raise ArgumentError, "Cannot expand multiple keyword-constraints at once."
         for cluster in clusters:
@@ -190,7 +191,7 @@ def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, a
           if cluster_name: tmp['cluster_name'] = cluster_name # will be expanded next to cluster index
           constraint_list.append(tmp)
         load_list[load_list.index('cluster')] = 'constraints'
-        constraints = constraint_list; clusters = None  
+        constraints = constraint_list; clusters = None
   # load ensemble (no iteration here)
   stnens = loadEnsembleTS(season=seasons, prov=provs, station=stationtype, varlist=variables, 
                           aggregation=aggregation, constraints=constraints, filetypes=filetypes, 
