@@ -46,6 +46,7 @@ variables_rc['precip_net']      = VL(vars=('precip','solprec','p-et'), files=('h
 variables_rc['precip_snow']     = VL(vars=('precip','snwmlt','solprec'), files=('hydro',), label='Water Flux')
 variables_rc['flux_days']       = VL(vars=('wetfrq_010','snwmlt','p-et'), files=('hydro',), label='Water Flux')
 variables_rc['wetprec']         = VL(vars=['wetprec'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Precip.')
+variables_rc['dryprec']         = VL(vars=['precip','dryprec_002','dryprec_010'], files=('hydro',), label='Wet-day Precip.')
 variables_rc['wetdays']         = VL(vars=['wetfrq'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Ratio')
 variables_rc['CWD']             = VL(vars=['CWD'+ext for ext in wetday_extensions]+['CNWD'], files=('hydro',), label='Continuous Wet-days')
 variables_rc['CDD']             = VL(vars=['CDD'+ext for ext in wetday_extensions[:-1]]+['CNDD'], files=('hydro',), label='Continuous Dry-days')
@@ -59,7 +60,7 @@ variables_rc['wrfpet']          = VL(vars=('pet','pet_wrf','evap',), files=('aux
 variables_rc['pet']             = VL(vars=('pet','petrad','petwnd'), files=('aux',), label='Water Flux')
 variables_rc['rad']             = VL(vars=('SWDNB','netrad',), files=('aux','rad'), label='Radiative Flux')
 variables_rc['vap']             = VL(vars=('Q2','vapdef',), files=('srfc','aux'), label='Vapor Pressure')
-variables_rc['Q2']              = VL(vars=('Q2',),files=('srfc',), label='2m Humidity')
+variables_rc['Q2']              = VL(vars=('Q2','wetfrq_002','wetfrq_010'),files=('srfc',), label='2m Humidity')
 variables_rc['aSM']             = VL(vars=('aSM',),files=('lsm',), label='Soil Moisture') 
 variables_rc['rSM']             = VL(vars=('rSM',),files=('lsm',), label='Relative Soil Moisture')
 # N.B.: Noah-MP does not have relative soil moisture and there is not much difference anyway
