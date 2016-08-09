@@ -1,8 +1,6 @@
 '''
 Created on 2013-11-13
-
 This module defines variable and figure properties for use in the GreatLakes project.      
-
 @author: Andre R. Erler, GPL v3
 '''
 
@@ -266,6 +264,7 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
       elif nexp == 2: subplot = (1,2)
       elif nexp == 4: subplot = (2,2)
       elif nexp == 6: subplot = (2,3)
+      elif nexp == 8: subplot = (2,4)
       else: raise ValueError
     else:
       if not ( isinstance(nexp,(tuple,list)) and len(nexp) == 2 ): raise TypeError  
@@ -340,6 +339,19 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
         if cbo == 'horizontal': 
           margins = dict(bottom=0.09, left=0.05, right=.97, top=.92, hspace=0.1, wspace=0.05)
           caxpos = [0.05, 0.0275, 0.9, 0.03]
+      else:
+        margins = dict(bottom=0.025, left=0.05, right=.97, top=.92, hspace=0.1, wspace=0.05)
+    elif subplot == (2,4):
+      # 6 panel
+      figsize = (9.25,5.5) # width, height (inches)
+      if cbar:
+        cbo = cbo or 'horizontal'
+        if cbo == 'vertical': 
+          margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05)
+          caxpos = [0.91, 0.05, 0.03, 0.9]
+        if cbo == 'horizontal': 
+          margins = dict(bottom=0.12, left=0.06, right=.97, top=.92, hspace=0.10, wspace=0.05)
+          caxpos = [0.05, 0.05, 0.95, 0.03]
       else:
         margins = dict(bottom=0.025, left=0.05, right=.97, top=.92, hspace=0.1, wspace=0.05)    
   #   # figure out colorbar placement
