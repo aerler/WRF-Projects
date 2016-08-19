@@ -40,7 +40,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   else: raise ArgumentError
   # x-axis
   xticks = axes.xaxis.get_ticklabels() # determine if labels are appropriate
-  if xlabel and len(xticks) > 0 and xticks[-1].get_visible(): xlabel = 'Seasonal Cycle [{1:s}]' 
+  if xlabel and len(xticks) > 0 and xticks[-1].get_visible(): xlabel = 'Seasonal Cycle [{UNITS:s}]' 
   else: xlabel = False
   # len(xticks) > 0 is necessary to avoid errors with AxesGrid, which removes invisible tick labels      
   xlim = 0.5,12.5
