@@ -1,0 +1,39 @@
+# YAML configuration file for conversion to ASCII raster (processing.ascii_raster.py)
+# 16/05/2016, Andre R. Erler
+
+NP: 2 # environment variable has precedence; likely I/O limited
+loverwrite: false # this is usually run manually anyway...
+modes: ['climatology','time-series',] # 
+load_list: ['waterflx','liqprec','solprec','precip','evap','snwmlt','pet_wrf','lat2D','lon2D','zs','grdflx','A','SWD','e','GLW','ps','U10','Q2','Tmin','Tmax','Tmean','TSmin','TSmax','SWDNB','SWUPB','LWDNB','LWUPB'] # variables for PET
+periods: [15,] # climatology periods to process
+# Datasets
+datasets: [] # this will generally not work, because we don't have snow/-melt...
+resolutions: Null # process all applicable
+lLTM: false # not relevant anyway 
+# CESM
+CESM_project: Null # all available experiments
+load3D: false
+CESM_experiments: [] # PET calculation is not implemented for CESM
+CESM_filetypes: ['atm','lnd'] # used to load dataset; both are necessary
+# WRF
+WRF_project: 'GreatLakes' # all available experiments
+WRF_experiments: ['erai-g3','erai-t3','erai-g','erai-t',] # only ERA-I
+#WRF_experiments: Null # all available experiments
+#WRF_experiments: ['g-ensemble-2100'] # all available experiments
+WRF_domains: Null
+WRF_filetypes: ['srfc','xtrm','hydro','lsm','rad'] # used to load dataset; not processed individually
+#WRF_filetypes: ['hydro'] # used to load dataset; not processed individually
+grids: # mapping with list of resolutions  
+  #- Null # native grid
+  - 'grw2' # Grand River Watershed, 5km resolution
+# export parameters
+export_parameters:
+  project: 'GRW' # project tag, mainly for folder
+  #format : 'NetCDF' # NetCDF4 file with standard path and naming convention
+  #lm3    : false 
+  #varlist: ['waterflx','liqwatflx','netrad','netrad_0','netrad_bb','vapdef','pet','pet_wrf','zs','lat2D','lon2D'] # varlist for export    
+  format: 'ASCII_raster' # ArcInfo ASCII raster format
+  lm3: true # convert water flux from kg/m^2/s to m^3/s
+  varlist: ['waterflx','liqwatflx','pet','pet_wrf','zs','lat2D','lon2D'] # varlist for ASCII export
+  folder: '/data-3/HGS/{0:s}/{1:s}/{2:s}/{3:s}/' # (folder specification: project/grid/experiment/period/) 
+  prefix: '{0:s}_{1:s}_{2:s}_{3:s}' # (argument order: project/grid/experiment/period/)

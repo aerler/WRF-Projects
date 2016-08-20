@@ -1,0 +1,32 @@
+# YAML configuration file for HGS ensemble runs
+# 16/08/2016, Andre R. Erler
+
+# export parameters
+HGS_parameters:
+  project: 'GRW' # project tag, mainly for folder
+  rundir: '/home/aerler/Data/HGS/{project}/grw2/{EXPERIMENT}/{PERIOD}/{HGS_TASK}/'
+  problem: 'grw_omafra'
+  runtime: Null
+  length:  180 # in month
+  NP: 2  # parallel execution
+  input_mode: ['steady-state','periodic','transient']
+  input_interval: 'monthly'
+  input_vars: 'PET'
+  input_prefix: 'grw2'
+  input_folder: '../climate_forcing'
+  template_folder: '/home/aerler/Data/HGS/Templates/GRW-OMAFRA/' 
+  # N.B.: folder specification by keyword argument
+  # rundir specification
+  EXPERIMENT: ['erai-g3_d01','erai-t3_d01','erai-g_d01','erai-t_d01','erai-g_d02','erai-t_d02']
+  PERIOD: ['annual_15','clim_15','timeseries']
+  HGS_TASK: 'hgs_run'
+  # list expansion parameters
+  outer_list: ['EXPERIMENT',['input_mode','PERIOD']]
+# parameters for parallel batch execution
+batch_config:
+  lsetup: True
+  lgrok: False # i.e. run Grok just before HGS (same process)
+  lparallel: True
+  NP: 16 # number of concurrent HGS instances
+#  runtime_override: 10 # 10 seconds for testing
+  
