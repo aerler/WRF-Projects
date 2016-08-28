@@ -184,38 +184,41 @@ if __name__ == '__main__':
 
 
 # # validation and projection for the Great Lakes region
+  explist = ['CFSR','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]; tag = 'd01'; domain = 2
+  exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
 #   explist = ['g-ens','Ens','g-ens','Ens']; seasons = [['summer']*2+['winter']*2]; tag = 'd02'
 #   exptitles = ['WRF Ensemble (30km)','CESM Ensemble']*2; grid = ['glb1_d02','glb1_d02']*2
-# #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
-# #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
-#   exptitles = [ '{}, {}'.format(e,s.title()) for e,s in zip(exptitles,seasons[0]) ]; domain = 1
-# #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj']; reflist = 'CRU' # T2
-#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj']; reflist = 'GPCC' # precip
-# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
-# #   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-#   period = H15; refprd = H15; case = tag+'val'; variable_settings = None # validation 
+#   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
+#   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
+  exptitles = [ '{}, {}'.format(e,s.title()) for e,s in zip(exptitles,seasons[0]) ]
+#   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
+  variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+#   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
+#   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+  period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
+  case = tag+'val_narr'; reflist = 'NARR'
 
 # single-panel validation with larger map
-#   case = 'ongl'; maptype = 'lcc-ongl'; lstations = False; lbasins = False; lprovinces = False
-  variables = ['aSM']; WRFfiletypes = ['lsm']; seasons = ['jas']; figtitles = ['Summer Soil Moisture Change [%]']
-#   variables = ['MaxPrecip_1d']; WRFfiletypes = ['srfc']; seasons = ['annual']; aggregation = 'max'
-#   figtitles = ['Annual Max. Daily Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
-#   variables = ['MaxPrecip_5d']; WRFfiletypes = ['hydro']; seasons = ['annual']; aggregation = 'max'
-#   figtitles = ['Annual Max. Pendat Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
-  lWRFnative = True; loutline = False; lframe = True; lcontour = True; period = H15
-#   explist = ['erai-t']; case = 'tval'; figtitles = None; domain = (1,2)
-  explist = [('g3-ens','g-ens',)]; exptitles = 'WRF Ensemble (10km)'; case = 'prj'; domain = (1,2)
-#   explist = [('g-ens','g-ens',)]; exptitles = 'WRF Ensemble (10km)'; case = 'prj12'; domain = (1,2)
-#   explist = ['g-ens']; exptitles = 'WRF Ensemble (30km)'; case = 'prj'; domain = 1
-#   explist = ['g3-ens']; exptitles = 'WRF Ensemble (90km)'; case = 'g3prj'; domain = 1
-  lfrac = True; refprd = H15; period = B15; reflist = explist
+# #   case = 'ongl'; maptype = 'lcc-ongl'; lstations = False; lbasins = False; lprovinces = False
+#   variables = ['aSM']; WRFfiletypes = ['lsm']; seasons = ['jas']; figtitles = ['Summer Soil Moisture Change [%]']
+# #   variables = ['MaxPrecip_1d']; WRFfiletypes = ['srfc']; seasons = ['annual']; aggregation = 'max'
+# #   figtitles = ['Annual Max. Daily Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
+# #   variables = ['MaxPrecip_5d']; WRFfiletypes = ['hydro']; seasons = ['annual']; aggregation = 'max'
+# #   figtitles = ['Annual Max. Pendat Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
+#   lWRFnative = True; loutline = False; lframe = True; lcontour = True; period = H15
+# #   explist = ['erai-t']; case = 'tval'; figtitles = None; domain = (1,2)
+#   explist = [('g3-ens','g-ens',)]; exptitles = 'WRF Ensemble (10km)'; case = 'prj'; domain = (1,2)
+# #   explist = [('g-ens','g-ens',)]; exptitles = 'WRF Ensemble (10km)'; case = 'prj12'; domain = (1,2)
+# #   explist = ['g-ens']; exptitles = 'WRF Ensemble (30km)'; case = 'prj'; domain = 1
+# #   explist = ['g3-ens']; exptitles = 'WRF Ensemble (90km)'; case = 'g3prj'; domain = 1
+#   lfrac = True; refprd = H15; period = B15; reflist = explist
   
 # # validation over Great Lakes region
-#   explist = ['g-ctrl','GPCC','g-ens-A','g-ens-B','NARR','g-ens-C']
+#   explist = ['g-ctrl','g-ens','g-ens-A','g-ens-B','NARR','g-ens-C']
 #   seasons = ['annual','summer','winter']; variables = ['precip']
-#   period  = H15; domain = 2; case = 'ens_d0{:d}'.format(domain)
-# #   variables = ['precip'];  reflist = 'GPCC'; lfrac = True
-# #   variables = ['T2']; reflist = 'CRU'; refprd = H15; ldiff = True
+#   period  = H15; domain = 1; case = 'ens_d0{:d}'.format(domain); grid = 'glb1_d01'
+# #   variables = ['precip'];  reflist = 'Unity'; lfrac = True
+#   variables = ['T2']; reflist = 'Unity'; refprd = H15; ldiff = True
 
 # # validation over Great Lakes region
 #   explist = ['Ens','GPCC','g-ens','NARR']; seasons = ['annual','summer','winter']
@@ -252,10 +255,10 @@ if __name__ == '__main__':
 #   variables = ['zs']; seasons = ['topo']; lcontour = True; 
 #   lframe = True; framewidths = 2.; framecolor = 'w'
 #   loutline = True; outlinewidth = 1.; outlinecolor = 'k'
-#   maptype = 'lcc-can'; lstations = False; stations = 'EC'
-#   period = H15; lWRFnative = True
-#   explist = ['g-ctrl']; exptitles = ' '; domain = (0,1,2)
-#   lbasins = False; basinlist = ('GLB',); primary_basins = basinlist; subbasins = {} #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
+#   maptype = 'ortho-can'; lstations = False; stations = 'EC'
+#   period = H15; lWRFnative = True; lbackground = False
+#   explist = [('Ctrl-1','erai-g3','erai-g','erai-g')]; exptitles = ' '; domain = (0,1,1,2)
+#   lbasins = False; basinlist = ('GRW',); primary_basins = basinlist; subbasins = {} #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
 #   lprovinces = False; provlist = ('ON',)
 
 # # larger map with river basins
