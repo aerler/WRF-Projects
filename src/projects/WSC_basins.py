@@ -8,7 +8,21 @@ This module contains meta data for all available WSC river basins in Canada.
 
 from collections import OrderedDict
 from datasets.common import addLoadFcts
-from datasets.WSC import BasinSet, Basin, Lake
+from datasets.WSC import BasinSet, Basin, LakeSet, Lake, Nation, Province, province_names
+
+
+# generate province info objects
+province_list = OrderedDict()
+provinces = OrderedDict()
+for key,val in province_names.iteritems():
+  shapetype = 'NAT' if key == 'CAN' else 'PRV' 
+  prov = Province(name=key, long_name=val, shapefile=val, data_source='?', shapetype=shapetype)
+  province_list[key] = prov
+  provinces[key] = prov
+# the whole nation
+province_list['CAN'] = Nation(name='CAN', long_name=province_names['CAN'], 
+                              provinces=province_list.values(), data_source='?')
+
 
 # dictionary with basin meta data
 basin_list = OrderedDict() # maintain order
@@ -54,7 +68,7 @@ basin_list['SSR'] = BasinSet(name='SSR', long_name='South Sasketchewan River', r
 
 basin_sets = basin_list.copy() # dict that only contains basin sets
 # dictionary of basins
-basins = OrderedDict() # maintain order
+basins = OrderedDict() # just the basin, and every basin only once
 for name,basin in basin_list.items():
   # add plain Basin instance of main basin under proper name
   basins[name] = basin.subbasins[basin.outline]
@@ -64,32 +78,34 @@ for name,basin in basin_list.items():
     basins[subname] = subbasin # list with all Basin instances
     basin_list[subname] = subbasin # list with all basins, BasinSet and Basin instances
 
-
-# dictionary with lake meta data
-great_lakes = OrderedDict() # maintain order
-# meta data for specific lakes
-great_lakes['Ontario']  = Lake(name='LakeOntario', long_name='Lake Ontario', data_source='Natural Earth',
-                               stations=dict(), rivers=[], subbasins=[])
-great_lakes['Huron']  = Lake(name='LakeHuron', long_name='Lake Huron', data_source='Natural Earth',
-                               stations=dict(), rivers=[], subbasins=[])
-great_lakes['Erie']  = Lake(name='LakeErie', long_name='Lake Erie', data_source='Natural Earth',
-                               stations=dict(), rivers=[], subbasins=[])
-great_lakes['Michigan']  = Lake(name='LakeMichigan', long_name='Lake Michigan', data_source='Natural Earth',
-                               stations=dict(), rivers=[], subbasins=[])
-great_lakes['Superior']  = Lake(name='LakeSuperior', long_name='Lake Superior', data_source='Natural Earth',
-                               stations=dict(), rivers=[], subbasins=[])
-
-# add aliases
-for lake in great_lakes.values(): # do not iter, since dict is changes in for-loop
-  great_lakes[lake.name] = lake
-  great_lakes[lake.long_name] = lake
-  
-
 # N.B.: to add new gage stations add the name to the statins-dict and download the CSV files for monthly values and meta data
 #       from the WSC historical archive (no missing days): http://wateroffice.ec.gc.ca/search/search_e.html?sType=h2oArc
 #       all shapefiles for basins were obtained from the Water Survey of Canada; shapefiles for the lakes were optained from
 #       the Natural Earth website (http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/physical/ne_10m_lakes.zip)
 
+
+# dictionary with lake meta data
+great_lakes = OrderedDict() # maintain order
+# meta data for specific lakes
+great_lakes['Ontario']   = Lake(name='LakeOntario', long_name='Lake Ontario', data_source='Natural Earth',)
+great_lakes['Huron']     = Lake(name='LakeHuron', long_name='Lake Huron', data_source='Natural Earth',)
+great_lakes['Erie']      = Lake(name='LakeErie', long_name='Lake Erie', data_source='Natural Earth',)
+great_lakes['Michigan']  = Lake(name='LakeMichigan', long_name='Lake Michigan', data_source='Natural Earth',)
+great_lakes['Superior']  = Lake(name='LakeSuperior', long_name='Lake Superior', data_source='Natural Earth',)
+# the Great Lakes as a group
+great_lakes['GreatLakes'] = LakeSet(name='GreatLakes', long_name='Great Lakes', data_source='Natural Earth',
+                                    lakes=['GreatLakes']+great_lakes.values())
+# N.B.: individual lakes have to be initialized seperately and added to the set post-hoc, 
+#       because they don't share a folder
+
+# add aliases
+lake_list = OrderedDict()
+for name,lake in great_lakes.items(): # do not iter, since dict is changes in for-loop
+  lake_list[name] = lake
+  lake_list[lake.name] = lake
+  lake_list[lake.long_name] = lake
+
+  
 
 ## generate loadGageStation* versions with these basins
 from datasets.WSC import loadGageStation, loadGageStation_TS
@@ -101,7 +117,7 @@ if __name__ == '__main__':
     
   ## print basins
   for name,basin in basin_list.iteritems():
-    s = '  {:3s}: '.format(name)
+    s = '  {:3s} ({:s}): '.format(name,basin.shapetype)
     if hasattr(basin, 'subbasins'):
       for subbasin in basin.subbasins: s += ' {:9s}'.format('{:s},'.format(subbasin))
     print(s)
@@ -109,6 +125,16 @@ if __name__ == '__main__':
     
   ## print Great Lakes
   for name,lake in great_lakes.iteritems():
-    s = '  {:3s}: '.format(name)
+    s = '  {:3s} ({:s}): '.format(name,lake.shapetype)
+    if hasattr(lake, 'lakes'):
+      for sublake in lake.lakes: s += ' {:9s}'.format('{:s},'.format(sublake))
     print(s)
     #print(lake.folder)
+    
+  ## print Canadian Provinces
+  for name,prov in provinces.iteritems():
+    s = '  {:3s} ({:s}): '.format(name,prov.shapetype)
+    if hasattr(prov, 'provinces'):
+      for province in prov.provinces: s += ' {:3s}'.format('{:s},'.format(province))
+    print(s)
+    #print(prov.folder)

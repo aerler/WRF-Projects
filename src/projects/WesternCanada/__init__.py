@@ -35,3 +35,6 @@ from projects.CESM_experiments import loadCESM, loadCESM_Shp, loadCESM_Stn, load
 from datasets.common import loadDataset, loadClim, loadShpTS, loadStnTS, loadEnsembleTS, addLoadFcts
 # modify functions (wont affect modified WRF/CESM functions)
 addLoadFcts(locals(), locals(), WRF_exps=WRF_exps, WRF_ens=WRF_ens, CESM_exps=CESM_exps, CESM_ens=CESM_ens)
+
+## import shape dictionaries
+from projects.WSC_basins import basins, provinces # import the dicts with unique entries
