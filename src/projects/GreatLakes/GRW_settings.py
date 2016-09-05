@@ -65,6 +65,11 @@ def loadHGS_StnTS(station=main_gage, varlist=None, varatts=None, name=None, titl
   else:
     exp_name = experiment[:-4] # cut off domain string
     domain = int(experiment[-2:]) # last two digits
+  # extract resolution for later use
+  if domain == 0: resolution = '90km'
+  elif domain == 1: resolution = '30km'
+  elif domain == 2: resolution = '10km'
+  else: resolution = None
   # resolve aliases (always return full string format)
   if experiment in exp_aliases: 
     experiment = exp_aliases[experiment] # resolve alias
@@ -91,12 +96,17 @@ def loadHGS_StnTS(station=main_gage, varlist=None, varatts=None, name=None, titl
   elif clim_mode.lower() in ('clim','climatology','periodic'): clim_mode = 'clim_{:02d}'.format(period)
   elif clim_mode.lower() in ('mean','annual','steady-state'): clim_mode = 'annual_{:02d}'.format(period)
   # call load function from HGS module
-  return hgs.loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
-                           folder=folder, experiment=experiment, period=period, start_date=start_date,
-                           project_folder=project_folder, project=project, grid=grid, task=task, 
-                           prefix=prefix, clim_mode=clim_mode, WSC_station=WSC_station, basin=basin, 
-                           basin_list=basin_list, filename=hgs.station_file, date_parser=hgs.date_parser, 
-                           resampling=resampling, **kwargs)
+  dataset = hgs.loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
+                              folder=folder, experiment=experiment, period=period, start_date=start_date,
+                              project_folder=project_folder, project=project, grid=grid, task=task, 
+                              prefix=prefix, clim_mode=clim_mode, WSC_station=WSC_station, basin=basin, 
+                              basin_list=basin_list, filename=hgs.station_file, date_parser=hgs.date_parser, 
+                              resampling=resampling, **kwargs)
+  # add WRF attributes to dataset
+  for key,value in exp.__dict__.items():
+    dataset.atts['WRF_'+key] = value
+  dataset.atts['WRF_resolution'] = resolution
+  return dataset
 
 # an enhanced ensemble loader
 @BatchLoad
@@ -107,16 +117,14 @@ def loadHGS_StnEns(station=main_gage, varlist=None, varatts=None, name=None, tit
                   WSC_station=None, basin=main_basin, basin_list=None, resampling='1M', **kwargs):
   ''' a wrapper for the regular HGS loader that can also load gage stations instead '''
   if experiment.upper() == 'WSC':
-    # load gage station
-    if station in station_list: station = station_list[station].WSC
-    elif WSC_station is not None: station = WSC_station
-    if basin_list is None: basin_list = wsc.basin_list # default basin list
+    # translate parameters
+    station = station if WSC_station is None else WSC_station
+    period = period if obs_period is None else obs_period
     if resampling == '1M': filetype = 'monthly'
     else: raise NotImplementedError("Currently only monthly time-series are supported (not '{}').".format(resampling))
-    dataset = wsc.loadGageStation_TS(basin=basin, station=station, varlist=varlist, varatts=varatts, 
-                                     filetype=filetype, folder=None, name=name, basin_list=basin_list)
-    if obs_period: dataset = dataset(years=obs_period)
-    return dataset
+    # load gage station with slightly altered parameters
+    return loadGageStation_TS(station=station, name=name, title=title, basin=basin, basin_list=basin_list, 
+                              varlist=varlist, varatts=varatts, period=period, filetype=filetype)
   else:
     # load HGS simulation
     return loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
@@ -125,14 +133,32 @@ def loadHGS_StnEns(station=main_gage, varlist=None, varatts=None, name=None, tit
                          grid=grid, task=task, prefix=prefix, WSC_station=WSC_station, basin=basin, 
                          basin_list=basin_list, resampling=resampling, **kwargs)
 
+# custom gage station loader
+def loadGageStation_TS(station=main_gage, name=None, title=None, basin=main_basin, basin_list=None,
+                       varlist=None, varatts=None, period=None, filetype='monthly'):
+  ''' a wrapper to load gage stations for the GRW with appropriate default values'''
+  # load gage station
+  if station in station_list: station = station_list[station].WSC
+  if basin_list is None: basin_list = wsc.basin_list # default basin list
+  dataset = wsc.loadGageStation_TS(basin=basin, station=station, varlist=varlist, varatts=varatts, 
+                                   filetype=filetype, folder=None, name=name, basin_list=basin_list)
+  if period: dataset = dataset(years=period) # apply slice
+  return dataset
 
 # abuse for testing
 if __name__ == '__main__':
     
+  test_mode = 'gage_station'
 #   test_mode = 'dataset'
-  test_mode = 'ensemble'
-  
-  if test_mode == 'dataset':
+#   test_mode = 'ensemble'
+
+  if test_mode == 'gage_station':
+    
+    # load single dataset
+    ds = loadGageStation_TS(period=(1979,1994), )
+    print(ds)
+    
+  elif test_mode == 'dataset':
     
     # load single dataset
     ds = loadHGS_StnTS(experiment='erai-g', domain=0, period=(1979,1994), clim_mode='periodic', )

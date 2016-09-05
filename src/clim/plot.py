@@ -57,21 +57,21 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
     # y-axis labeling
     if varlist_name.lower() == 'temp': 
       if not ylim: ylim = shape_info['temp'] if 'temp' in shape_info else None
-      if ylabel is True: ylabel = '2m Temperature [{1:s}]'
+      if ylabel is True: ylabel = '2m Temperature [{UNITS:s}]'
     elif varlist_name in shape_info: 
       if not ylim: ylim = shape_info[varlist_name]
       if ylabel is True and varlist_name in variable_list: 
-        ylabel = variable_list[varlist_name].label + ' [{1:s}]'
+        ylabel = variable_list[varlist_name].label + ' [{UNITS:s}]'
       if varlist_name in ('precip',): axes.ypad += 3
       else: axes.ypad -= 2
     else: # fallback 
       if not ylim: ylim = shape_info.get('water',None) if shape_info else None
-      if ylabel is True: ylabel = 'Water Flux [{1:s}]'
+      if ylabel is True: ylabel = 'Water Flux [{UNITS:s}]'
       axes.ypad -= 3 
   else: 
     if not ylim: ylim = defaults.get(varlist_name,None)
     if ylabel is True and varlist_name in variable_list: 
-      ylabel = variable_list[varlist_name].label + ' [{1:s}]'
+      ylabel = variable_list[varlist_name].label + ' [{UNITS:s}]'
       
   # some default kwargs
   if 'bandalpha' not in plotargs: plotargs['bandalpha'] = 0.35
