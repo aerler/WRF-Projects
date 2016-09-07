@@ -5,7 +5,7 @@ This module contains a meta data for HGS simulations for the GRW and a wrapper t
 
 @author: Andre R. Erler, GPL v3
 '''
-
+import numpy as np
 import hgs.HGS as hgs # need to prevent name collisions here
 import projects.WSC_basins as wsc
 from projects.GreatLakes.WRF_experiments import WRF_exps
@@ -22,7 +22,27 @@ main_grid  = 'grw2' # climate data grid
 main_task  = 'hgs_run' # HGS run folder
 # project folders
 project_folder = '{:s}/{:s}/'.format(hgs.root_folder,project_name) # the dataset root folder
-project_folder_pattern = '{PROJECT_FOLDER:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_MODE:s}/{TASK:s}/'
+project_folder_pattern = '{PROJECT_FOLDER:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s}/{TASK:s}/'
+
+# plotting parameters for HGS simulations
+hgs_plotargs = dict() 
+hgs_plotargs['Observations'] = dict(color='#959595') # gray
+# hgs_plotargs['Observations'] = dict(color='#68615E') # dark gray
+hgs_plotargs['Transient']    = dict(color='#62A1C6') # blue
+hgs_plotargs['Steady-State'] = dict(color='#AAA2D8') # purple
+hgs_plotargs['Periodic']     = dict(color='#E24B34') # red
+hgs_plotargs['WRF 90km']     = dict(color='#E24B34') # red
+hgs_plotargs['WRF 30km']     = dict(color='#AAA2D8') # purple
+hgs_plotargs['WRF 10km']     = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['1980']         = dict(color='#62A1C6') # blue
+hgs_plotargs['2050']         = dict(color='#AAA2D8') # purple
+hgs_plotargs['2100']         = dict(color='#E24B34') # red
+hgs_plotargs['1979-1994']    = dict(color='#62A1C6') # blue
+hgs_plotargs['1984-1994']    = dict(color='#62A1C6') # blue
+hgs_plotargs['2045-2060']    = dict(color='#AAA2D8') # purple
+hgs_plotargs['2050-2060']    = dict(color='#AAA2D8') # purple
+hgs_plotargs['2085-2100']    = dict(color='#E24B34') # red
+hgs_plotargs['2090-2100']    = dict(color='#E24B34') # red
 
 # mapping of WSC station names to HGS hydrograph names
 Station = namedtuple('Station', ('HGS','WSC'),)
@@ -40,9 +60,9 @@ exp_aliases = {'erai-g_d00':'erai-g3_d01','erai-t_d00':'erai-t3_d01',
 # simple dataset loader
 def loadHGS_StnTS(station=main_gage, varlist=None, varatts=None, name=None, title=None, 
                   experiment=None, domain=None, exp_aliases=exp_aliases, period=15, clim_mode=None,
-                  folder=project_folder_pattern, project_folder=None,
-                  project=project_name, grid=main_grid, task=main_task, prefix=project_prefix, 
-                  WSC_station=None, basin=main_basin, basin_list=None, resampling='1M', **kwargs):
+                  folder=project_folder_pattern, project_folder=None, project=project_name, 
+                  grid=main_grid, task=main_task, prefix=project_prefix, WSC_station=None, 
+                  basin=main_basin, basin_list=None, resampling='1M', lpad=True, **kwargs):
   ''' Get a properly formatted HGS dataset with a regular time-series at station locations; as in
       the hgsrun module, the capitalized kwargs can be used to construct folders and/or names '''
   if experiment is None or clim_mode is None: raise ArgumentError
@@ -69,7 +89,8 @@ def loadHGS_StnTS(station=main_gage, varlist=None, varatts=None, name=None, titl
   if domain == 0: resolution = '90km'
   elif domain == 1: resolution = '30km'
   elif domain == 2: resolution = '10km'
-  else: resolution = None
+  else: raise NotImplementedError("Unsupported domain number '{:d}'.".format(domain))
+  if 'resolution' not in kwargs: kwargs['resolution'] = resolution # for name expansion (will be capitalized)
   # resolve aliases (always return full string format)
   if experiment in exp_aliases: 
     experiment = exp_aliases[experiment] # resolve alias
@@ -77,11 +98,10 @@ def loadHGS_StnTS(station=main_gage, varlist=None, varatts=None, name=None, titl
   # add period extensions of necessary/possible
   if isinstance(period, (tuple,list)):
     start_year, end_year = period
-    period = end_year - start_year # period length
     # append conventional period name to name, if it appears to be missing
     if start_year > 2080 and exp_name[-5:] != '-2100': exp_name += '-2100'
     elif start_year > 2040 and exp_name[-5:] != '-2050': exp_name += '-2050'
-  else: start_year = None
+  else: start_year = end_year = None # not used
   # reassemble experiment name with domain extension
   experiment = '{:s}_d{:02d}'.format(exp_name,domain)
   # validate WRF experiment
@@ -89,19 +109,36 @@ def loadHGS_StnTS(station=main_gage, varlist=None, varatts=None, name=None, titl
   exp = WRF_exps[exp_name]
   if domain > exp.domains or domain < 1: raise DatasetError("Invalid domain number: {}".format(domain))
   # get start date from experiment (if not defined in period)
-  if start_year is not None: start_date = start_year
-  else: start_date = tuple(int(d) for d in exp.begindate.split('-')) # year,month,day tuple  
+  start_date = tuple(int(d) for d in exp.begindate.split('-')) # year,month,day tuple  
+  if start_year is None: start_year = start_date[0]
+  if end_year is None: end_year = start_date[0] + period # period length
+  else: period = end_year - start_date[0]
+  assert isinstance(period,(np.integer,int)), period
+  # construct period information  
+  prdstr = '{:04d}-{:04d}'.format(start_year, end_year)
+  if 'prdstr' not in kwargs: kwargs['prdstr'] = prdstr # for name expansion (will be capitalized)
+  # append conventional period name to name, if it appears to be missing
+  if start_year > 2080: prdext = '2100'
+  elif start_year > 2040: prdext = '2050'
+  elif start_year < 1990: prdext = '1980'
+  else:  raise NotImplementedError("Unable to determine period extension for start date '{:d}'.".format(start_year))
+  if 'prdext' not in kwargs: kwargs['prdext'] = prdext # for name expansion (will be capitalized)
   # resolve climate input mode (time aggregation; assuming period is just length, i.e. int;)
-  if clim_mode.lower() in ('timeseries','transient'): clim_mode = 'timeseries'
-  elif clim_mode.lower() in ('clim','climatology','periodic'): clim_mode = 'clim_{:02d}'.format(period)
-  elif clim_mode.lower() in ('mean','annual','steady-state'): clim_mode = 'annual_{:02d}'.format(period)
+  if 'clim_mode' not in kwargs: kwargs['clim_mode'] = clim_mode # for name expansion
+  # translate climate mode into path convention, while retaining clim_mode
+  if clim_mode.lower() in ('timeseries','transient'): clim_dir = 'timeseries'
+  elif clim_mode.lower() in ('clim','climatology','periodic'): clim_dir = 'clim_{:02d}'.format(period)
+  elif clim_mode.lower() in ('mean','annual','steady-state'): clim_dir = 'annual_{:02d}'.format(period)
   # call load function from HGS module
   dataset = hgs.loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
                               folder=folder, experiment=experiment, period=period, start_date=start_date,
                               project_folder=project_folder, project=project, grid=grid, task=task, 
-                              prefix=prefix, clim_mode=clim_mode, WSC_station=WSC_station, basin=basin, 
+                              prefix=prefix, clim_dir=clim_dir, WSC_station=WSC_station, basin=basin, 
                               basin_list=basin_list, filename=hgs.station_file, date_parser=hgs.date_parser, 
-                              resampling=resampling, **kwargs)
+                              resampling=resampling, lpad=lpad, **kwargs)
+  # slice time axis for period
+  if start_year is not None and end_year is not None:
+    dataset = dataset(years=(start_year,end_year))
   # add WRF attributes to dataset
   for key,value in exp.__dict__.items():
     dataset.atts['WRF_'+key] = value
@@ -148,8 +185,8 @@ def loadGageStation_TS(station=main_gage, name=None, title=None, basin=main_basi
 # abuse for testing
 if __name__ == '__main__':
     
-  test_mode = 'gage_station'
-#   test_mode = 'dataset'
+#   test_mode = 'gage_station'
+  test_mode = 'dataset'
 #   test_mode = 'ensemble'
 
   if test_mode == 'gage_station':
@@ -159,10 +196,17 @@ if __name__ == '__main__':
     print(ds)
     
   elif test_mode == 'dataset':
-    
+
     # load single dataset
-    ds = loadHGS_StnTS(experiment='erai-g', domain=0, period=(1979,1994), clim_mode='periodic', )
+    ds = loadHGS_StnTS(experiment='t-ensemble', domain=0, period=(2090,2100), 
+                       clim_mode='periodic', lpad=True)
     print(ds)
+    print(ds.discharge[:])
+    
+#     # load single dataset
+#     ds = loadHGS_StnTS(experiment='erai-g', domain=0, period=(1984,1994), clim_mode='periodic', )
+#     print(ds)
+#     assert ds.time[0] == 60, ds.time[:]
     
   elif test_mode == 'ensemble':
     
