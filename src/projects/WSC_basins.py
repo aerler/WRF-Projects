@@ -12,15 +12,15 @@ from datasets.WSC import BasinSet, Basin, LakeSet, Lake, Nation, Province, provi
 
 
 # generate province info objects
-province_list = OrderedDict()
-provinces = OrderedDict()
+province_list = OrderedDict() # just provinces
+provinces = OrderedDict() # include nation for shape averages
 for key,val in province_names.iteritems():
   shapetype = 'NAT' if key == 'CAN' else 'PRV' 
   prov = Province(name=key, long_name=val, shapefile=val, data_source='?', shapetype=shapetype)
   province_list[key] = prov
   provinces[key] = prov
 # the whole nation
-province_list['CAN'] = Nation(name='CAN', long_name=province_names['CAN'], 
+provinces['CAN'] = Nation(name='CAN', long_name=province_names['CAN'], 
                               provinces=province_list.values(), data_source='?')
 
 
@@ -40,7 +40,7 @@ basin_list['FRB'] = BasinSet(name='FRB', long_name='Fraser River Basin', rivers=
                              stations=dict(Fraser=['PortMann','Mission']),
                              subbasins=['WholeFRB','UpperFRB','LowerFRB'])
 basin_list['GLB'] = BasinSet(name='GLB', long_name='Great Lakes Basin', rivers=['Upper Saint Lawrence'], data_source='WSC',
-                             stations=dict(), subbasins=['WholeGLB'])
+                             stations=dict(), subbasins=['WholeGLB','LandGLB'])
 basin_list['GRW'] = BasinSet(name='GRW', long_name='Grand River Watershed', rivers=['Grand River'], data_source='Aquanty',
                              stations={'Grand River':['Brantford']}, subbasins=['WholeGRW','UpperGRW','LowerGRW','NorthernGRW','SouthernGRW','WesternGRW'])
 basin_list['GSL'] = BasinSet(name='GSL', long_name='Great Slave Lake', rivers=[], data_source='WSC',
@@ -68,15 +68,16 @@ basin_list['SSR'] = BasinSet(name='SSR', long_name='South Sasketchewan River', r
 
 basin_sets = basin_list.copy() # dict that only contains basin sets
 # dictionary of basins
-basins = OrderedDict() # just the basin, and every basin only once
+basins = OrderedDict() # just the basin, and every basin only once (for shape averaging)
 for name,basin in basin_list.items():
   # add plain Basin instance of main basin under proper name
-  basins[name] = basin.subbasins[basin.outline]
+  basins[name] = basin # main basin under basin_list key (i.e. no Whole*)
   basin_list[basin.long_name] = basin # also make available by long_name
   # add all subbasins (including main basin with 'Whole' prefix)
   for subname,subbasin in basin.subbasins.iteritems():
-    basins[subname] = subbasin # list with all Basin instances
-    basin_list[subname] = subbasin # list with all basins, BasinSet and Basin instances
+    if subname != basin.outline: # don't list outline/main basin twice
+      basins[subname] = subbasin # list with all Basin instances
+      basin_list[subname] = subbasin # list with all basins, BasinSet and Basin instances
 
 # N.B.: to add new gage stations add the name to the statins-dict and download the CSV files for monthly values and meta data
 #       from the WSC historical archive (no missing days): http://wateroffice.ec.gc.ca/search/search_e.html?sType=h2oArc
