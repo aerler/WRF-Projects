@@ -92,12 +92,14 @@ constraints_rc['end_after'] = 1980
 exps_rc = dict(); EX = clim_load.EX
 exps_rc['obs']       = EX(name='obs',exps=['CRU','WSC'], styles=['-','-.'], title='Observations', 
                           master='CRU', reference='CRU', target=None)
-exps_rc['erai']      = EX(name='erai',exps=['erai-g','erai-t'][:1], styles=['--','-',], 
+exps_rc['erai']      = EX(name='erai',exps=['erai-g','erai-t'], styles=['--','-',], 
                           title='ERA-I G & T', master='erai-g', reference=None, target=None)
+exps_rc['erai-all']  = EX(name='erai-all',exps=['erai-g','erai-t','erai-g3','erai-t3'], styles=['--','-','-.',':'], 
+                          title='G & T (10km & 90km, ERA-I)', master='erai-g', reference=None, target=None)
+exps_rc['erai-3']    = EX(name='erai-3',exps=['erai-g3','erai-t3'], styles=['--','-',], 
+                          title='G & T (90km, ERA-I)', master='erai-g3', reference=None, target=None)
 exps_rc['hist']      = EX(name='hist',exps=['g-ens','erai-g','erai-t'], styles=['-','--','-.',], 
                           title='Historical WRF', master='erai-g', reference=None, target=None)
-exps_rc['erai-3']    = EX(name='erai',exps=['erai-g','erai-t','erai-g3','erai-t3'], styles=['--','-','-.',':'], 
-                          title='G & T (10km & 90km, ERA-I)', master='erai-g', reference=None, target=None)
 exps_rc['val-mod']   = EX(name='val-mod', exps=['g-ens', 'g-ens_d01', 'Ens','t-ens'],
                           master='g-ens', reference=None, target=None, title='Model Comparison')
 exps_rc['cesm-all']  = EX(name='cesm-all', exps=['Observations', 'Ens','Ens-2050','Ens-2100'],  
@@ -246,6 +248,8 @@ plot_labels_rc['g3-ens-2100']     = 'G 2100 (90km)'
 # plot_labels_rc['erai-t']          = 'ERA-I T'   
 plot_labels_rc['erai-g']          = 'WRF G (ERA-I)'  
 plot_labels_rc['erai-t']          = 'WRF T (ERA-I)'   
+plot_labels_rc['erai-g3']         = 'WRF G (90km, ERA-I)'  
+plot_labels_rc['erai-t3']         = 'WRF T (90km, ERA-I)'   
 plot_labels_rc['t-ens']           = 'T Ens.'
 plot_labels_rc['t-ens-2050']      = 'T 2050'
 plot_labels_rc['t-ens-2100']      = 'T 2100'
@@ -361,13 +365,13 @@ def climFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_label
 
 ## annotation for climatology plot
 # defaults
-clim_defaults  = AttrDict(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100), rad=(-50,350), vap=(-3.,22.), pet=(-0.5,5.), spei=(-1,6), wrfpet=(-1,6))
+clim_defaults  = AttrDict(heat=(-10,150), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100), rad=(-50,350), vap=(-3.,22.), pet=(-0.5,5.), spei=(-1,6), wrfpet=(-1,6))
 # specific settings
 clim_specifics = dict()
 clim_specifics['GLB']         = AttrDict(temp=(248,304), water=(-1.,5.), precip_net=(-1.5,5.), precip_types=(-0.5,5.), precip_xtrm=(-1.,29.),
                                          runoff=(-0.5,3.5), rofflx=(-1.,5.), flux=(-1.,5.), flux_snow=(-1.,5.), spei=(-0.5,5.5), evap=(-1.5,4.5))
-clim_specifics['GRW']         = AttrDict(temp=(248,304), water=(-1.,6.), precip_net=(-0.5,5.5), precip_types=(-0.5,5.5), precip_xtrm=(-1.,35.),
-                                         runoff=(-0.5,4.5), rofflx=(-1.,6.), flux=(-1.,6.), flux_snow=(-1.,5.), spei=(-0.5,5.5), evap=(-1.5,5.5))
+clim_specifics['GRW']         = AttrDict(temp=(250,308), water=(-1.,6.), precip_net=(-0.5,5.5), precip_types=(-0.5,5.5), precip_xtrm=(-1.,35.),
+                                         runoff=(-0.5,4.5), rofflx=(-1.,4.), flux=(-1.,6.), flux_snow=(-1.,5.), spei=(-0.5,5.5), evap=(-1.5,5.5))
 clim_specifics['NRB']         = AttrDict(temp=(248,304), water=(-1.4,2.2), precip=(-0.4,3.4), runoff=(-2.,2.), flux=(-2,5.5))
 clim_specifics['Prairies']    = AttrDict(temp=(248,304), water=(-1.5,1.5), precip=(-0.5,3.5), precip_xtrm=(0,30), precip_cesm=(0,30), precip_alt=(0,30), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
 # add defaults to specifics

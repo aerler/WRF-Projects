@@ -87,7 +87,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
     tmp_varlist = []; tmp_scalevars = []
     for var in varlist:
         if lauto:
-          for exp in expens+obsens:
+          for exp in expens[:]+obsens[:]: # make sure to copy lists or convert ensembles to lists, otherwise the list grows!
             if var in exp:
               if expens[0][var].units: tmp_varlist.append(var)
               else: tmp_scalevars.append(var)
@@ -133,10 +133,10 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   if ylim is not None: axes.set_ylim(ylim) 
   if varlist:
     plts += makePlots(obsens, obserr, varlist=varlist, lleg=False, lerrbar=True, lerrbnd=False)
-    plts += makePlots(expens, experr, varlist=varlist, lleg=True, lerrbar=False, lerrbnd=True, **plotargs)
+    plts += makePlots(expens, experr, varlist=varlist, lleg=True, lerrbar=False, lerrbnd=True, **plotargs.copy())
   if scalevars:
     plts += makePlots(obsens, obserr, scalevars=scalevars, lleg=False, lerrbar=True, lerrbnd=False)
-    plts += makePlots(expens, experr, scalevars=scalevars, lleg=True, lerrbar=False, lerrbnd=True, **plotargs)  
+    plts += makePlots(expens, experr, scalevars=scalevars, lleg=True, lerrbar=False, lerrbnd=True, **plotargs.copy())  
   
   # add dataset legend (if desired)
   if dataset_legend is not False and dataset_legend is not None:
@@ -176,8 +176,8 @@ if __name__ == '__main__':
 #   from projects.GreatLakes.analysis_settings import climFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
-#   test = 'simple_climatology'
-  test = 'advanced_climatology'
+  test = 'simple_climatology'
+#   test = 'advanced_climatology'
   
   
   # test load function for basin ensemble time-series
