@@ -17,6 +17,7 @@ from geodata.misc import AttrDict
 from plotting import figure
 from WRF_experiments import WRF_ens, WRF_exps
 from projects.CESM_experiments import CESM_ens, CESM_exps
+import projects.WSC_basins as wsc_basins
 
 # method to add defaults to specifics
 def _mergeAnnotation(specifics, defaults):
@@ -182,10 +183,11 @@ exps_rc['t-ctrl']  = EX(name='t-ctrl',  exps=['t-ctrl', 't-ctrl-2050'],
 
 
 # set default variable atts for load functions from clim_load
-def loadShapeObservations(variable_list=None, **kwargs):
+def loadShapeObservations(variable_list=None, basin_list=None, **kwargs):
   ''' wrapper for clim.load.loadShapeObservations that sets variable lists '''
   if variable_list is None: variable_list = variables_rc
-  return clim_load.loadShapeObservations(variable_list=variable_list, **kwargs)
+  if basin_list is None: basin_list = wsc_basins.basin_list
+  return clim_load.loadShapeObservations(variable_list=variable_list, basin_list=basin_list, **kwargs)
 def loadShapeEnsemble(variable_list=None, **kwargs):
   ''' wrapper for clim.load.loadShapeEnsemble that sets experiment and variable lists '''
   if variable_list is None: variable_list = variables_rc  

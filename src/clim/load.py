@@ -61,7 +61,7 @@ def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=Non
 # define new load fct. for observations
 @BatchLoad
 def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shapes=None, varlist=None, slices=None,
-                          aggregation='mean', shapetype=None, period=None, variable_list=None, **kwargs):
+                          aggregation='mean', shapetype=None, period=None, variable_list=None, basin_list=None, **kwargs):
   ''' convenience function to load shape observations; the main function is to select sensible defaults 
       based on 'varlist', if no 'obs' are specified '''
   # prepare arguments
@@ -107,7 +107,8 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
   if lWSC: # another special case: river hydrographs
 #     from datasets.WSC import loadGageStation, GageStationError
     try:
-      dataset = loadGageStation(basin=basins, varlist=['runoff'], aggregation=aggregation, mode='climatology', filetype='monthly')
+      dataset = loadGageStation(basin=basins, varlist=['runoff'], aggregation=aggregation, mode='climatology', 
+                                filetype='monthly', basin_list=basin_list)
       if slices is not None: dataset = dataset(**noyears) # slice immediately
       obsens += dataset.load()
     except GageStationError: 
