@@ -27,8 +27,6 @@ mpl.rc('font', size=10)
 from mpl_toolkits.basemap import maskoceans # used for masking data
   
 from geodata.base import DatasetError
-from datasets.WSC import basins_info
-from datasets.EC import province_info
 from datasets.common import stn_params
 from legacy_plotting.legacy import loadDatasets, checkItemList
 # project related stuff
@@ -37,6 +35,7 @@ from legacy_plotting.legacy import loadDatasets, checkItemList
 # Great Lakes
 from projects.GreatLakes import getSetup, getFigureSettings, getVariableSettings
 from projects.GreatLakes import figure_folder, map_folder, WRF_exps, CESM_exps
+from projects.GreatLakes import basins, provinces
 
 station_constraints = dict()
 station_constraints['min_len'] = 15 # for valid climatology
@@ -73,7 +72,7 @@ if __name__ == '__main__':
   locean = False # mask continent in white and omit country borders
   lstations = False; stations = 'EC'; cluster_symbols = {2:'o',5:'^',8:'s'}; cluster_name = 'cluster_projection'
   cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.iteritems()}
-  lbasins = False; basinlist = ('ARB','FRB','GLB'); primary_basins = []; subbasins = {} #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
+  lbasins = False; primary_basins = ('ARB','FRB','GLB'); subbasins = ('WholeARB','UpperARB','LowerCentralARB',) #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
   basin_args = dict(linewidth = 1., color='k'); subbasin_args = dict(linewidth = 0.5, color='k')
   lprovinces = True; provlist = ('BC','AB','ON')
   cbo = None # default based on figure type
@@ -184,19 +183,22 @@ if __name__ == '__main__':
 
 
 # # validation and projection for the Great Lakes region
-  explist = ['CFSR','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]; tag = 'd01'; domain = 2
-  exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
+#   explist = ['CFSR','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]; tag = 'd01'; domain = 2
+#   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
 #   explist = ['g-ens','Ens','g-ens','Ens']; seasons = [['summer']*2+['winter']*2]; tag = 'd02'
 #   exptitles = ['WRF Ensemble (30km)','CESM Ensemble']*2; grid = ['glb1_d02','glb1_d02']*2
+  explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['winter']*2]
+  domain = 1; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+  exptitles = ['G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
 #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
 #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
-  exptitles = [ '{}, {}'.format(e,s.title()) for e,s in zip(exptitles,seasons[0]) ]
+  exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
 #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
 #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
-#   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-  period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
-  case = tag+'val_narr'; reflist = 'NARR'
+  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+#   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
+#   case = tag+'val_narr'; reflist = 'NARR'
 
 # single-panel validation with larger map
 # #   case = 'ongl'; maptype = 'lcc-ongl'; lstations = False; lbasins = False; lprovinces = False
@@ -231,9 +233,9 @@ if __name__ == '__main__':
 # #   lpickle = False; lprint = False
 #   case = 'glb'; figtitles = 'Basin Outline and Topography [km]'
 #   variables = ['zs']; seasons = ['topo']; lcontour = True 
-#   maptype = 'lcc-glb'; lstations = False; lprovinces = False; lbasins = True
+#   maptype = 'lcc-ongl'; lstations = False; lprovinces = False; lbasins = True
 #   period = H15; lWRFnative = True; loutline = False; lframe = False
-# #   lframe = True; case = 'glb_wrf2'
+#   lframe = True; case = 'glb'; basin_args = dict(linewidth = 1.5, color='k')
 #   explist = ['g-ctrl']; exptitles = ' '; domain = (1,2)
   
 # # larger map with river basins
@@ -894,17 +896,17 @@ if __name__ == '__main__':
           # add basin outlines          
           if lbasins:
             for basin in basinlist:      
-              basininfo = basins_info[basin]
+              basininfo = basins[basin]
               try:
                 if basin in subbasins:
                   for subbasin in subbasins[basin]:		  
                     bmap.readshapefile(basininfo.shapefiles[subbasin][:-4], subbasin, ax=axn, 
                                        drawbounds=True, **subbasin_args)          
                 elif basin in primary_basins:
-                  bmap.readshapefile(basininfo.shapefiles['Whole'+basin][:-4], basin, ax=axn, 
+                  bmap.readshapefile(basininfo.shapefiles[basininfo.outline][:-4], basin, ax=axn, 
                                      drawbounds=True, **basin_args)            
                 else:
-                  bmap.readshapefile(basininfo.shapefiles['Whole'+basin][:-4], basin, ax=axn, 
+                  bmap.readshapefile(basininfo.shapefiles[basininfo.outline][:-4], basin, ax=axn, 
                                      drawbounds=True, linewidth = 1., color='k')
               except:
                 print(basin)
@@ -912,7 +914,7 @@ if __name__ == '__main__':
           # add certain provinces
           if lprovinces: 
             for province in provlist:    
-              provinfo = province_info[province]
+              provinfo = provinces[province]
               bmap.readshapefile(provinfo.shapefiles[provinfo.long_name][:-4], province, 
                                  drawbounds=True, linewidth = 1., color='k')            
 
