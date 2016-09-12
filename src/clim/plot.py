@@ -20,10 +20,10 @@ from geodata.base import Dataset
 ## custom plotting functions
 @BatchLoad
 def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varlist=None, master=None, 
-              scalevars='auto', legend=0, shape_name=None, stnset_name=None, ylim=None,
-              lperi=True, lparasiteMeans=True, axtitle=None, ylabel=True, xlabel=True, lyint=True,
-              lprint=True, dataset_legend=False, dataset_labels=None, variable_list=None,
-              annotation=None, defaults=None, **plotargs):
+             scalevars='auto', legend=0, shape_name=None, stnset_name=None, ylim=None,
+             lperi=True, lparasiteMeans=True, axtitle=None, ylabel=True, xlabel=True, lyint=True,
+             lprint=True, dataset_legend=False, dataset_labels=None, variable_list=None,
+             annotation=None, defaults=None, **plotargs):
   ''' plot the seasonal cycle over a basin ''' # linestyles=None, lineformats=None, colors=None, markers=None
   if axes is None: raise ArgumentError
   # define some meta data

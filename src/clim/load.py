@@ -26,6 +26,8 @@ wetday_extensions = ['_{:03.0f}'.format(threshold*10) for threshold in wetday_th
 CRU_vars = ('T2','Tmin','Tmax','dTd','Q2','pet','precip','cldfrc','wetfrq','frzfrq')
 WSC_vars = ('runoff','sfroff','ugroff')
 
+# default shape type
+shapetype = 'glbshp'
 
 # internal method for do slicing for Ensembles and Obs
 def _configSlices(slices=None, basins=None, provs=None, shapes=None, period=None):
@@ -61,11 +63,9 @@ def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=Non
 # define new load fct. for observations
 @BatchLoad
 def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shapes=None, varlist=None, slices=None,
-                          aggregation='mean', shapetype=None, period=None, variable_list=None, basin_list=None, **kwargs):
+                          aggregation='mean', shapetype=shapetype, period=None, variable_list=None, basin_list=None, **kwargs):
   ''' convenience function to load shape observations; the main function is to select sensible defaults 
       based on 'varlist', if no 'obs' are specified '''
-  # prepare arguments
-  if shapetype is None: shapetype = 'shpavg' # really only one in use  
   # resolve variable list (no need to maintain order)
   if isinstance(varlist,basestring): varlist = [varlist]
   variables = set(shp_params)
@@ -120,11 +120,10 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
 # define new load fct. for experiments (not intended for observations)
 @BatchLoad
 def loadShapeEnsemble(seasons=None, basins=None, provs=None, shapes=None, varlist=None, aggregation='mean', 
-                      slices=None, shapetype=None, filetypes=None, period=None, variable_list=None, 
+                      slices=None, shapetype=shapetype, filetypes=None, period=None, variable_list=None, 
                       WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, **kwargs):
   ''' convenience function to load shape ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
   # prepare arguments
-  if shapetype is None: shapetype = 'shpavg' # really only one in use  
   variables, filetypes =  _resolveVarlist(varlist=varlist, filetypes=filetypes, 
                                           params=shp_params, variable_list=variable_list)
   # configure slicing (extract basin/province/shape and period)
@@ -140,14 +139,13 @@ def loadShapeEnsemble(seasons=None, basins=None, provs=None, shapes=None, varlis
 # define new load fct. (batch args: load_list=['season','prov',], lproduct='outer')
 @BatchLoad
 def loadStationEnsemble(seasons=None, provs=None, clusters=None, varlist=None, aggregation='mean', constraints=None, 
-                        filetypes=None, cluster_name=None, stationtype=None, load_list=None, lproduct='outer',
+                        filetypes=None, cluster_name=None, stationtype=shapetype, load_list=None, lproduct='outer',
                         WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, 
                         variable_list=None, default_constraints=None, **kwargs):
   ''' convenience function to load station data for ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
   if load_list: load_list = load_list[:] # use a copy, since the list may be modified
-
-  
-#XXX: move this into helper function with Batch-decorator to allow batch-loadign of varlists
+ 
+#XXX: move this into helper function with Batch-decorator to allow batch-loading of varlists
 
   # figure out varlist  
   if isinstance(varlist,basestring) and not stationtype:

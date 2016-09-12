@@ -52,8 +52,9 @@ variables_rc['wetdays']         = VL(vars=['wetfrq'+ext for ext in wetday_extens
 variables_rc['CWD']             = VL(vars=['CWD'+ext for ext in wetday_extensions]+['CNWD'], files=('hydro',), label='Continuous Wet-days')
 variables_rc['CDD']             = VL(vars=['CDD'+ext for ext in wetday_extensions[:-1]]+['CNDD'], files=('hydro',), label='Continuous Dry-days')
 variables_rc['sfcflx']          = VL(vars=('p-et','snwmlt','waterflx','runoff'), files=('hydro',), label='Surface Flux')
-variables_rc['runoff']          = VL(vars=('waterflx','sfroff','runoff'), files=('lsm','hydro'), label='Runoff')
-variables_rc['rofflx']          = VL(vars=('runoff','snwmlt','waterflx'), files=('lsm','hydro'), label='Water Flux')
+variables_rc['runoff']          = VL(vars=('waterflx','runoff'), files=('lsm','hydro'), label='Runoff')
+variables_rc['rofflx']          = VL(vars=('runoff','evap','liqwatflx'), files=('lsm','hydro'), label='Runoff')
+variables_rc['roffsnw']         = VL(vars=('runoff','snwmlt','waterflx'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['heat']            = VL(vars=('hfx','lhfx','rSM'),files=('srfc','lsm'), label='Energy Flux')
 variables_rc['evap']            = VL(vars=('p-et','evap','pet',), files=('hydro',), label='Water Flux')
 variables_rc['spei']            = VL(vars=('precip','evap','pet',), files=('aux','hydro',), label='Water Flux')
@@ -368,8 +369,8 @@ def climFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_label
 clim_defaults  = AttrDict(heat=(-10,150), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100), rad=(-50,350), vap=(-3.,22.), pet=(-0.5,5.), spei=(-1,6), wrfpet=(-1,6))
 # specific settings
 clim_specifics = dict()
-clim_specifics['GLB']         = AttrDict(temp=(248,304), water=(-1.,5.), precip_net=(-1.5,5.), precip_types=(-0.5,5.), precip_xtrm=(-1.,29.),
-                                         runoff=(-0.5,3.5), rofflx=(-1.,5.), flux=(-1.,5.), flux_snow=(-1.,5.), spei=(-0.5,5.5), evap=(-1.5,4.5))
+clim_specifics['GLB']         = AttrDict(temp=(248,304), water=(-1.,5.), precip_net=(-1.,5.5), precip_types=(-0.5,5.), precip_xtrm=(-1.,29.),
+                                         runoff=(-1.,4.), rofflx=(-1.,5.), flux=(-1.,5.), flux_snow=(-1.,5.), spei=(-0.5,5.5), evap=(-1.5,4.5))
 clim_specifics['GRW']         = AttrDict(temp=(250,308), water=(-1.,6.), precip_net=(-0.5,5.5), precip_types=(-0.5,5.5), precip_xtrm=(-1.,35.),
                                          runoff=(-0.5,4.5), rofflx=(-1.,4.), flux=(-1.,6.), flux_snow=(-1.,5.), spei=(-0.5,5.5), evap=(-1.5,5.5))
 clim_specifics['NRB']         = AttrDict(temp=(248,304), water=(-1.4,2.2), precip=(-0.4,3.4), runoff=(-2.,2.), flux=(-2,5.5))
