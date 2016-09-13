@@ -33,6 +33,8 @@ wetday_extensions = clim_load.wetday_extensions[:3]
 variables_rc = dict(); VL = clim_load.VL
 # mostly for hydrological analysis
 variables_rc['temp']            = VL(vars=('T2', 'Tmax', 'Tmin'), files=('srfc','xtrm',), label='2m Temperature')
+variables_rc['temp_mean']       = VL(vars=('T2',), files=('srfc',), label='2m Temperature')
+variables_rc['heat_flux']       = VL(vars=('hfx','lhfx'),files=('srfc',), label='Energy Flux')
 # variables_rc['temp']          = VL(vars=('Tmean', 'Tmax', 'Tmin'), files=('xtrm',), label='2m Temperature')
 # variables_rc['temp']          = VL(vars=('T2',), files=('srfc',), label='2m Temperature')
 variables_rc['precip_obs']      = VL(vars=('precip', 'solprec', 'wetfrq_010'), files=('hydro',), label='Precipitation')
@@ -43,7 +45,7 @@ variables_rc['precip_cesm']     = VL(vars=('MaxPrecip_1d', 'MaxPreccu_1d', ), fi
 variables_rc['precip_alt']      = VL(vars=('MaxPrecip_1d', 'MaxPrecnc_1d', 'MaxSolprec_1d'), files=('hydro',), label='Precipitation')
 variables_rc['precip_types']    = VL(vars=('precip','preccu','solprec'), files=('hydro',), label='Water Flux')
 variables_rc['precip_conv']     = VL(vars=('precip','preccu','precnc'), files=('hydro',), label='Water Flux')
-variables_rc['precip_net']      = VL(vars=('precip','solprec','p-et'), files=('hydro',), label='Water Flux')
+variables_rc['precip_net']      = VL(vars=('precip','solprec','p-et'), files=('srfc',), label='Water Flux')
 variables_rc['precip_snow']     = VL(vars=('precip','snwmlt','solprec'), files=('hydro',), label='Water Flux')
 variables_rc['flux_days']       = VL(vars=('wetfrq_010','snwmlt','p-et'), files=('hydro',), label='Water Flux')
 variables_rc['wetprec']         = VL(vars=['wetprec'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Precip.')
@@ -61,6 +63,7 @@ variables_rc['spei']            = VL(vars=('precip','evap','pet',), files=('aux'
 variables_rc['wrfpet']          = VL(vars=('pet','pet_wrf','evap',), files=('aux','hydro',), label='Water Flux')
 variables_rc['pet']             = VL(vars=('pet','petrad','petwnd'), files=('aux',), label='Water Flux')
 variables_rc['rad']             = VL(vars=('SWDNB','netrad',), files=('aux','rad'), label='Radiative Flux')
+# variables_rc['rad']             = VL(vars=('SWD','netrad',), files=('aux','srfc'), label='Radiative Flux')
 variables_rc['vap']             = VL(vars=('Q2','vapdef',), files=('srfc','aux'), label='Vapor Pressure')
 variables_rc['Q2']              = VL(vars=('Q2','wetfrq_002','wetfrq_010'),files=('srfc',), label='2m Humidity')
 variables_rc['aSM']             = VL(vars=('aSM',),files=('lsm',), label='Soil Moisture') 
@@ -148,6 +151,19 @@ exps_rc['g-B']       = EX(name='g-B',exps=['g-ens-B','g-ens-B-2050','g-ens-B-210
 exps_rc['g-C']       = EX(name='g-C',exps=['g-ens-C','g-ens-C-2050','g-ens-C-2100'], 
                           styles=['-','-.','--'], title='WRF-C (Hist., Mid-, End-Century)',
                           master='g-ens-C', reference=None, target=None)
+# T ensemble members
+exps_rc['t-Z']       = EX(name='t-Z',exps=['t-ctrl','t-ctrl-2050','t-ctrl-2100'], 
+                          styles=['-','-.','--'], title='WRF-Z (Hist., Mid-, End-Century)',
+                          master='t-ctrl', reference=None, target=None)
+exps_rc['t-A']       = EX(name='t-A',exps=['t-ens-A','t-ens-A-2050','t-ens-A-2100'], 
+                          styles=['-','-.','--'], title='WRF-A (Hist., Mid-, End-Century)',
+                          master='t-ens-A', reference=None, target=None)
+exps_rc['t-B']       = EX(name='t-B',exps=['t-ens-B','t-ens-B-2050','t-ens-B-2100'], 
+                          styles=['-','-.','--'], title='WRF-B (Hist., Mid-, End-Century)',
+                          master='t-ens-B', reference=None, target=None)
+exps_rc['t-C']       = EX(name='t-C',exps=['t-ens-C','t-ens-C-2050','t-ens-C-2100'], 
+                          styles=['-','-.','--'], title='WRF-C (Hist., Mid-, End-Century)',
+                          master='t-ens-C', reference=None, target=None)
 # physics ensemble  (withand without Observations)
 exps_rc['phys-all']  = EX(name='phys',exps=['phys-ens','phys-ens-2050','phys-ens-2100'], 
                         styles=['-','-.','--'], title='WRF Phys. Ens. (Hist., Mid-, End-Century)',
@@ -366,11 +382,13 @@ def climFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_label
 
 ## annotation for climatology plot
 # defaults
-clim_defaults  = AttrDict(heat=(-10,150), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100), rad=(-50,350), vap=(-3.,22.), pet=(-0.5,5.), spei=(-1,6), wrfpet=(-1,6))
+clim_defaults  = AttrDict(heat=(-10,150), heat_flux=(-10,150), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), temp_mean=(250,300), wetprec=(0,25), wetfrq=(0,100), rad=(-50,350), vap=(-3.,22.), pet=(-0.5,5.), spei=(-1,6), wrfpet=(-1,6))
 # specific settings
 clim_specifics = dict()
-clim_specifics['GLB']         = AttrDict(temp=(248,304), water=(-1.,5.), precip_net=(-1.,5.5), precip_types=(-0.5,5.), precip_xtrm=(-1.,29.),
+clim_specifics['GLB']         = AttrDict(temp=(248,304), temp_mean=(255,300), water=(-1.,5.), precip_net=(-1.,5.5), precip_types=(-0.5,5.), precip_xtrm=(-1.,29.),
                                          runoff=(-1.,4.), rofflx=(-1.,5.), flux=(-1.,5.), flux_snow=(-1.,5.), spei=(-0.5,5.5), evap=(-1.5,4.5))
+clim_specifics['GreatLakes']  = AttrDict(temp=(250,300), temp_mean=(255,300), water=(-1.,5.), precip_net=(-1.,5.5))
+clim_specifics['LandGLB']     = clim_specifics['GreatLakes']
 clim_specifics['GRW']         = AttrDict(temp=(250,308), water=(-1.,6.), precip_net=(-0.5,5.5), precip_types=(-0.5,5.5), precip_xtrm=(-1.,35.),
                                          runoff=(-0.5,4.5), rofflx=(-1.,4.), flux=(-1.,6.), flux_snow=(-1.,5.), spei=(-0.5,5.5), evap=(-1.5,5.5))
 clim_specifics['NRB']         = AttrDict(temp=(248,304), water=(-1.4,2.2), precip=(-0.4,3.4), runoff=(-2.,2.), flux=(-2,5.5))

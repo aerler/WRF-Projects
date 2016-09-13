@@ -188,15 +188,18 @@ if __name__ == '__main__':
 #   explist = ['g-ens','Ens','g-ens','Ens']; seasons = [['summer']*2+['winter']*2]; tag = 'd02'
 #   exptitles = ['WRF Ensemble (30km)','CESM Ensemble']*2; grid = ['glb1_d02','glb1_d02']*2
   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['winter']*2]
-  domain = 1; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+  domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+#   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
+#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
   exptitles = ['G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
 #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
 #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
   exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
 #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
-  variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-#   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
-  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+  variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
+#   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
+#   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
 #   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
 #   case = tag+'val_narr'; reflist = 'NARR'
 
