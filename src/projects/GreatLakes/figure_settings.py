@@ -175,7 +175,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(0,5,26); clbl = '%02.1f' # mm/day
     elif var == 'Q2':
       clevs = np.linspace(0,20,21); clbl = '%02.1f' # mm/day
-    elif var=='SST' or var=='Ts': # skin temperature (SST)
+    elif var in ('SST','Ts','Tlake'): # skin temperature (SST)
       clevs = np.linspace(240,305,66); clbl = '%03.0f' # K
       cmap = mpl.cm.gist_ncar; cmap.set_over('white'); cmap.set_under('blue') # different from T2
       if var=='SST': lmsklnd = True # mask land for SST      

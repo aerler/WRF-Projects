@@ -25,6 +25,10 @@ class Exp(WRF_Exp):
 # N.B.: This is the reference list, with unambiguous, unique keys and no aliases/duplicate entries  
 experiments = OrderedDict() # dictionary of experiments
 ## Great Lakes experiments
+# new experiments with V3.6 and new physics: V-Ensemble
+experiments['erai-v36'] = Exp(shortname='erai-v36', name='erai-v36', title='V3.6 (ERA-I)', parent='ERAI', domains=1)
+experiments['erai-v36-shallow'] = Exp(shortname='v36-shallow', name='erai-v36-shallow', title='V3.6 (ERA-I, Shallow)', parent='ERAI', domains=1)
+experiments['erai-v36-noflake'] = Exp(shortname='v36-noflake', name='erai-v36-noflake', title='V3.6 (ERA-I, No FLake)', parent='ERAI', domains=1)
 # T-Ensemble
 experiments['erai-t'] = Exp(shortname='erai-t', name='erai-t', title='T (ERA-I)', parent='ERAI')
 experiments['t-ctrl'] = Exp(shortname='t-ctrl', name='t-ctrl', title='T-Ctrl', parent='Ctrl-1', ensemble='t-ensemble-2100')
