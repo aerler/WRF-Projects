@@ -7,7 +7,7 @@ Meta data related to the Athabasca River Basin downscaling project; primarily ma
 '''
 
 from plotting.mapsetup import getMapSetup
-from datasets.WSC import basins_info
+from projects.WSC_basins import basin_list
 from figure_settings import figure_folder
 
 map_folder = figure_folder + '.mapsetup/'
@@ -16,11 +16,11 @@ map_folder = figure_folder + '.mapsetup/'
 #ARB_shapefile = ARB_shapefolder+'ARB_Basins_Outline_WGS84'
 shape_folder = '/data/WSC/'
 # Athabasca River Basin (shape file from Atlas of Canada) 
-ARB_Info = basins_info['ARB']
+ARB_Info = basin_list['ARB']
 ARB_shapefolder = ARB_Info.folder
 ARB_shapefiles = ARB_Info.shapefiles
 # Fraser River Basin
-FRB_Info = basins_info['FRB']
+FRB_Info = basin_list['FRB']
 FRB_shapefolder = FRB_Info.folder
 FRB_shapefiles = FRB_Info.shapefiles
 # N.B.: basemap can only read shapefiles in geographic projection; use this GDAL command to convert:

@@ -33,16 +33,16 @@ from legacy_plotting.legacy import loadDatasets, checkItemList
 # Western Canada
 # from projects.WesternCanada import getSetup, figure_folder, map_folder, getFigureSettings, getVariableSettings
 # Great Lakes
-from projects.GreatLakes import getSetup, getFigureSettings, getVariableSettings
-from projects.GreatLakes import figure_folder, map_folder, WRF_exps, CESM_exps
-from projects.GreatLakes import basins, provinces
+from projects.WesternCanada import getSetup, getFigureSettings, getVariableSettings
+from projects.WesternCanada import figure_folder, map_folder, WRF_exps, CESM_exps
+from projects.WesternCanada import basins, provinces
 
 station_constraints = dict()
 station_constraints['min_len'] = 15 # for valid climatology
 station_constraints['lat'] = (40,55)
 station_constraints['end_after'] = 1980
 #station_constraints['max_zerr'] = 100 # can't use this, because we are loading EC data separately from WRF
-station_constraints['prov'] = ('ON')
+station_constraints['prov'] = ('BC','AB')
 
 if __name__ == '__main__':
 
@@ -58,7 +58,7 @@ if __name__ == '__main__':
   subplot = None # subplot layout (or defaults based on number of plots)
   lbackground = True
   lcontour = False # contour or pcolor plot
-  shading = 'flat' # shading for pixel plot: 'flat' | 'gouraud'
+  shading = 'gouraud' # shading for pixel plot: 'flat' | 'gouraud'
   laddContour = False # add black contour lines
   lframe = True # draw domain boundary
   framewidths = 1.5; framecolor = 'k' # line width for domain outline
@@ -164,61 +164,58 @@ if __name__ == '__main__':
   folder = figure_folder
   lpickle = True # load projection from file or recompute
   lprint = True # write plots to disk using case as a name tag
-#   maptype = 'lcc-grw'; lstations = False; lbasins = True; domain = 2
-#   maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = 2
-  maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = None
+  maptype = 'lcc-new'; lstations = False; lbasins = True; domain = None
 #   maptype = 'lcc-can'; lstations = False; domain = 1
 #   lbasins = True; basinlist = ('ARB','FRB','CRB','NRB','PSB'); lprovinces = False; provlist = ['BC','AB','ON']
 #   lbasins = False; basinlist = ('ARB','FRB','GLB'); lprovinces = False; provlist = ['BC','AB','ON']
-#   lbasins = True; basinlist = ('GLB','GRW'); lprovinces = False; provlist = ['ON']
-  lbasins = True; basinlist = ('GLB',); lprovinces = False; provlist = ['ON']
+  lbasins = True; basinlist = ('ARB','FRB',); lprovinces = False; provlist = ['BC','AB']
 
 
-## PET validation for GRW
-#   lprint = True; lpickle = False
-#   explist = ['g-ens']*3+['GPCC']*3
-#   seasons = [['annual','summer','winter']*2]
-#   period  = [H15]*3+[H15]*3; grid = 'grw2'; case = 'grw'
-#   variables = [['dryprec_010']*3+['precip']*3, 'precip']
-
-
-# # # validation and projection for the Great Lakes region
-# #   explist = ['CFSR','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]; tag = 'd01'; domain = 2
-# #   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
-# #   explist = ['g-ens','Ens','g-ens','Ens']; seasons = [['summer']*2+['winter']*2]; tag = 'd02'
-# #   exptitles = ['WRF Ensemble (30km)','CESM Ensemble']*2; grid = ['glb1_d02','glb1_d02']*2
-#   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['winter']*2]
-#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+# ## validation and projection for the Paper
+#   explist = ['Ens','max-ens','ctrl-ens']*2; seasons = [['summer']*3+['winter']*3]
+#   domain = 1; tag = 'd{:02d}'.format(domain); grid = 2*( ['cesm1x1']+2*['arb2_'+tag] ) # 'arb2_'+tag; 
 # #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
 # #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
-#   exptitles = ['G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
+#   exptitles = ['CESM','G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
 # #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
 # #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
 #   exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
 # #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
-# #   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-#   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
+#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
 # #   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
 # #   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-# #   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
+#   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
 # #   case = tag+'val_narr'; reflist = 'NARR'
 
-# ERA-Interim validation
-  explist = ['erai-v36','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]
-#   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
-  domain = 1; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag
-#   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
-#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
-  exptitles = ['ERA-I V3.6','ERA-I G', 'ERA-I T']*2; res = '30km' if domain == 1 else '10km'
-#   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
-#   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
+## 2-panel projection for the Paper
+  explist = ['max-ens','ctrl-ens']*2; seasons = [['summer']*2+['winter']*2]
+  domain = 2; tag = 'd{:02d}'.format(domain); grid = 'arb2_'+tag; 
+  exptitles = ['G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
   exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
+#   variables = ['OI']; lfrac = True
+  variables = ['U']; lfrac = True
+  WRFfiletypes = ['plev3d']; level_agg = dict(p=0)
+#   variables = ['COIP']; lfrac = True
+  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+#   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
+
+# # ERA-Interim validation
+#   explist = ['erai-v361','erai-max','erai-v361-noah',]*2; seasons = [['summer']*3+['winter']*3]
+# #   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
+#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'arb2_'+tag
+# #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
+# #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+#   exptitles = ['ERA-I V3.6','ERA-I G', 'ERA-I T']*2; res = '30km' if domain == 1 else '10km'
+# #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
+# #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
+#   exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
 #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
-  variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-#   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
-#   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
-  period = H10; refprd = H10; case = tag+'val_new'; variable_settings = None; reflist = 'Unity' # validation 
-#   case = tag+'val_narr'; reflist = 'NARR'
+# #   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
+# #   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
+#   period = H10; refprd = H10; case = tag+'val_new'; variable_settings = None; reflist = 'Unity' # validation 
+# #   case = tag+'val_narr'; reflist = 'NARR'
 
 
 # single-panel validation with larger map
@@ -236,42 +233,6 @@ if __name__ == '__main__':
 # #   explist = ['g-ens']; exptitles = 'WRF Ensemble (30km)'; case = 'prj'; domain = 1
 # #   explist = ['g3-ens']; exptitles = 'WRF Ensemble (90km)'; case = 'g3prj'; domain = 1
 # #   lfrac = True; refprd = H15; period = B15; reflist = explist
-  
-# # validation over Great Lakes region
-#   explist = ['g-ctrl','g-ens','g-ens-A','g-ens-B','NARR','g-ens-C']
-#   seasons = ['annual','summer','winter']; variables = ['precip']
-#   period  = H15; domain = 1; case = 'ens_d0{:d}'.format(domain); grid = 'glb1_d01'
-# #   variables = ['precip'];  reflist = 'Unity'; lfrac = True
-#   variables = ['T2']; reflist = 'Unity'; refprd = H15; ldiff = True
-
-# # validation over Great Lakes region
-#   explist = ['Ens','GPCC','g-ens','NARR']; seasons = ['annual','summer','winter']
-#   exptitles = [None, None, 'WRF Ensemble Mean (30km)', None]
-#   period  = H15; grid = None; case = 'val'; lframe = False
-#   variables = ['precip']; WRFfiletypes = ['srfc']; domain = 1
-# #   variables = ['T2']; explist[1] = 'CRU'
-
-# # multi-panel map with river basins
-# #   lpickle = False; lprint = False
-#   case = 'glb'; figtitles = 'Basin Outline and Topography [km]'
-#   variables = ['zs']; seasons = ['topo']; lcontour = True 
-#   maptype = 'lcc-ongl'; lstations = False; lprovinces = False; lbasins = True
-#   period = H15; lWRFnative = True; loutline = False; lframe = False
-#   lframe = True; case = 'glb'; basin_args = dict(linewidth = 1.5, color='k')
-#   explist = ['g-ctrl']; exptitles = ' '; domain = (1,2)
-  
-# # larger map with river basins
-# #   lpickle = False; lprint = False
-#   case = 'ongl'; lbasins = False; figtitles = 'Basin Outline and Topography [km]'
-#   variables = ['zs']; seasons = ['topo']; lcontour = True
-#   maptype = 'lcc-ongl'; lstations = False; stations = 'EC'
-#   period = H15; lWRFnative = True; loutline = False; lframe = True 
-#   explist = ['g-ctrl']; exptitles = ' '; domain = (1,2)
-#   basinlist = ('GLB',); primary_basins = basinlist; subbasins = {} #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
-# #   lbasins = True; basin_args = dict(linewidth = 1.5, color='k'); case = 'ongl_glb'
-# #   lbasins = True; basin_args = dict(linewidth = 1.5, color='m'); case = 'ongl_glb_m'
-#   lbasins = True; basin_args = dict(linewidth = 1.5, color='w'); case = 'ongl_glb_w'
-#   lprovinces = False; provlist = ('ON',); lsamesize = True
   
 # # continental-scale map with domains
 # #   lpickle = False; lprint = False
@@ -328,45 +289,6 @@ if __name__ == '__main__':
 #   case = 'gpcc'; lsamesize = False; #grid = 'arb2_d02'
 #   variables = ['stations']; seasons = ['annual']; shading = 'flat'
 
-# # ERA-Interim validation
-# #   explist = ['max-ens']; seasons = ['annual']; period = H15; domain = 2
-#   explist = ['Unity','erai-max','max-ens']*2
-#   seasons = [('summer',)*3+('winter',)*3]
-#   period = H15; domain = 2
-# #   maptype = 'lcc-can'; lstations = False; lbasins = True; domain = 1
-# #   lfrac = True; reflist = ['max-ens',]; refprd = H15;
-#   case = 'erai'; lsamesize = True
-
-# # differences to historical period
-# #   reflist = ['max-ens-2050','max-ens-2100']*2; case = 'max-seaice'; # l3pan = True (left column of 6-panel figure)
-# #   explist = [case+'-2050',case+'-2100']*2
-# #   seasons = [('summer',)*2+('winter',)*2]; period = [A15,B15]*2
-#   seasons = [('summer',)*3+('winter',)*3]; period = B15; refprd = H15
-#   exptitles = ['{:s}, CESM', '{:s}, WRF (IC)', '{:s}, WRF (AE)']*2  
-#   exptitles = [title.format(season.title())  for season,title in zip(seasons[0],exptitles)]
-#   explist = ['Ens-2100','max-ens-2100','ctrl-ens-2100']*2; case = 'xtrm'
-#   reflist = ['Ens','max-ens','ctrl-ens']*2; #grid = 'arb2_d02'
-# #  exptitles = ['Historical, {:s}', 'Mid-century, {:s}', 'End-century, {:s}']*2
-# #  exptitles = [model.format(season.title()) for model,season in zip(exptitles,seasons[0])]
-#   domain = 2; maptype = 'lcc-new'; lstations = True; lbasins = False
-# #   lsamesize = False; cbo = 'horizontal'  
-# #   variables = ['precip']; ldiff = True
-# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; lfrac = True
-# #   variables = ['precip']; lfrac = True 
-#   variables = ['T2']; variable_settings = ['T2_prj']; ldiff = True 
-
-# # differences to Obs
-# #   reflist = ['max-ens-2050','max-ens-2100']*2; case = 'max-seaice'; # l3pan = True (left column of 6-panel figure)
-# #   explist = [case+'-2050',case+'-2100']*2
-# #   seasons = [('summer',)*2+('winter',)*2]; period = [A15,B15]*2
-# #   exptitles = ['Mid-century, {:s}', 'End-century, {:s}']*2  
-#   case = 'mc_val'; explist = ['ctrl-ens','max-ens']*2; reflist = 'Unity'
-#   seasons = [('summer',)*2+('winter',)*2]; period = H15
-#   domain = 1; maptype = 'lcc-can'; lstations = False; lbasins = True; grid = 'arb2_d01'
-# #   lsamesize = False; cbo = 'horizontal'  
-#   variables = ['precip']; ldiff = True
-# #   variables = ['MaxPrecip_1d']; domain = 2; cbo = 'vertical'; lfrac = True
-
 # # historical state (continental; vertical orientation)
 #   refexp = 'max-ctrl'; case = refexp; exptitles = ['Historical, {:s}',]*2; l3pan = True
 #   explist = [refexp]*2; seasons = [('summer','winter',)]; period = H15
@@ -403,7 +325,6 @@ if __name__ == '__main__':
 #   vartitles = ['zonal flux','zonal flux','meridional flux','meridional flux']
 #   exptitles = [exptitle.format(vartitle.title()) for exptitle,vartitle in zip(exptitles,vartitles)]
 #   figtitles = ['Water Flux Differences in {:s} [$kg m^{{-1}} s^{{-1}}$]'.format(season.title()) for season in seasons]
-
 
 # summer and winter progression (continental)
 #   refexp = 'ctrl-ens'; case = refexp; cbo = 'horizontal'

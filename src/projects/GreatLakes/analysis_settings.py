@@ -34,7 +34,6 @@ variables_rc = dict(); VL = clim_load.VL
 # mostly for hydrological analysis
 variables_rc['temp']            = VL(vars=('T2', 'Tmax', 'Tmin'), files=('srfc','xtrm',), label='2m Temperature')
 variables_rc['temp_mean']       = VL(vars=('T2',), files=('srfc',), label='2m Temperature')
-# variables_rc['temp_mean']       = VL(vars=('T2','Tlake'), files=('srfc',), label='2m Temperature')
 variables_rc['heat_flux']       = VL(vars=('hfx','lhfx'),files=('srfc',), label='Energy Flux')
 # variables_rc['temp']          = VL(vars=('Tmean', 'Tmax', 'Tmin'), files=('xtrm',), label='2m Temperature')
 # variables_rc['temp']          = VL(vars=('T2',), files=('srfc',), label='2m Temperature')
@@ -283,8 +282,7 @@ plot_labels_rc['MaxWaterFlx_1d']  = 'Max Flux (1d)'
 plot_labels_rc['wetfrq_010']      = 'Wet-days'
 plot_labels_rc['wetprec_010']     = 'Precip. Intensity'
 plot_labels_rc['T2']              = 'T (2m)'   
-plot_labels_rc['Tlake']           = 'T (lake)'    
-plot_labels_rc['Q2']              = 'Humidity (2m)'  
+plot_labels_rc['Q2']              = 'Humidity (2m)'   
 plot_labels_rc['precip']          = 'Precip.'  
 plot_labels_rc['liqprec']         = 'Liquid' 
 plot_labels_rc['solprec']         = 'Snow' 
@@ -335,7 +333,6 @@ variable_plotargs_rc['MaxPrecnc_1d']   = AttrDict(color = 'grey')
 variable_plotargs_rc['MaxSolprec_1d']  = AttrDict(color = 'blue')
 variable_plotargs_rc['MaxWaterFlx_1d'] = AttrDict(color = 'blue')
 variable_plotargs_rc['T2']             = AttrDict(color = 'green')
-variable_plotargs_rc['Tlake']          = AttrDict(color = 'blue')
 # variable_plotargs_rc['Q2']             = AttrDict(color = 'green')
 variable_plotargs_rc['Q2']             = AttrDict(color = 'blue')
 variable_plotargs_rc['precip']         = AttrDict(color = 'green')
