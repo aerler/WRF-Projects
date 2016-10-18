@@ -63,8 +63,8 @@ basin_list['PSB'] = BasinSet(name='PSB', long_name='Pacific Seaboard', rivers=[]
                              stations=dict(), subbasins=['WholePSB','NorthernPSB','SouthernPSB'])
 basin_list['SLR'] = BasinSet(name='SLR', long_name='Saint Lawrence River', rivers=['Saint Lawrence'], data_source='WSC',
                              stations=dict(), subbasins=['WholeSLR'])
-basin_list['SSR'] = BasinSet(name='SSR', long_name='South Sasketchewan River', rivers=['South Sasketchewan River'], data_source='Aquanty',
-                             stations=dict(), subbasins=['WholeSSR'])
+basin_list['SSR'] = BasinSet(name='SSR', long_name='South Sasketchewan River', rivers=['South Sasketchewan'], data_source='Aquanty',
+                             stations={'South Sasketchewan':['St Louis','Saskatoon']}, subbasins=['WholeSSR'])
 
 basin_sets = basin_list.copy() # dict that only contains basin sets
 # dictionary of basins
