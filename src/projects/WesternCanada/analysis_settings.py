@@ -18,6 +18,11 @@ from plotting import figure
 from WRF_experiments import WRF_ens, WRF_exps
 from projects.CESM_experiments import CESM_ens, CESM_exps
 
+# default shape type
+default_shapetype = 'shpavg'
+# default station type
+default_stationtype = 'ecprecip'
+
 # method to add defaults to specifics
 def _mergeAnnotation(specifics, defaults):
   annotation = dict()
@@ -183,32 +188,25 @@ exps_rc['ens-2100']  = EX(name='ens-2100', exps=['max-ens-2100','max-ctrl-2100',
 
 
 # set default variable atts for load functions from clim_load
-def loadShapeObservations(variable_list=None, **kwargs):
+def loadShapeObservations(variable_list=variables_rc, shapetype=default_shapetype, **kwargs):
   ''' wrapper for clim.load.loadShapeObservations that sets variable lists '''
-  if variable_list is None: variable_list = variables_rc
-  return clim_load.loadShapeObservations(variable_list=variable_list, **kwargs)
-def loadShapeEnsemble(variable_list=None, **kwargs):
+  return clim_load.loadShapeObservations(variable_list=variable_list, shapetype=shapetype, **kwargs)
+def loadShapeEnsemble(variable_list=variables_rc, shapetype=default_shapetype, **kwargs):
   ''' wrapper for clim.load.loadShapeEnsemble that sets experiment and variable lists '''
-  if variable_list is None: variable_list = variables_rc  
-  return clim_load.loadShapeEnsemble(variable_list=variable_list, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
-                                     WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
-def loadStationEnsemble(variable_list=None, **kwargs):
+  return clim_load.loadShapeEnsemble(variable_list=variable_list, shapetype=shapetype, WRF_exps=WRF_exps, 
+                                     CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+def loadStationEnsemble(variable_list=variables_rc, stationtype=default_stationtype, **kwargs):
   ''' wrapper for clim.load.loadStationEnsemble that sets experiment and variable lists '''
-  if variable_list is None: variable_list = variables_rc  
-  return clim_load.loadStationEnsemble(variable_list=variable_list, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
-                                       WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
-def loadShapeFit(variable_list=None, **kwargs):
+  return clim_load.loadStationEnsemble(variable_list=variable_list, stationtype=stationtype, WRF_exps=WRF_exps, 
+                                       CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+def loadShapeFit(variable_list=variables_rc, shapetype=default_shapetype, **kwargs):
   ''' wrapper for eva.load.loadShapeEnsemble that sets experiment and variable lists '''
-  if variable_list is None: variable_list = variables_rc  
-  return eva_load.loadShapeFit(variable_list=variable_list, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
-                               WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
-def loadStationFit(variable_list=None, default_constraints=None, **kwargs):
+  return eva_load.loadShapeFit(variable_list=variable_list, shapetype=shapetype, WRF_exps=WRF_exps, 
+                               CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+def loadStationFit(variable_list=variables_rc, default_constraints=constraints_rc, stationtype=default_stationtype, **kwargs):
   ''' wrapper for eva.load.loadStationEnsemble that sets experiment and variable lists etc. '''
-  if variable_list is None: variable_list = variables_rc  
-  if default_constraints is None: default_constraints = constraints_rc    
-  return eva_load.loadStationFit(variable_list=variable_list, default_constraints=default_constraints,
-                                 WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, 
-                                 CESM_ens=CESM_ens, **kwargs)
+  return eva_load.loadStationFit(variable_list=variable_list, default_constraints=default_constraints, stationtype=stationtype,
+                                 WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
 
 
 ## settings for plotting 
