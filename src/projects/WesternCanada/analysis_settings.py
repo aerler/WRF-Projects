@@ -19,7 +19,7 @@ from WRF_experiments import WRF_ens, WRF_exps
 from projects.CESM_experiments import CESM_ens, CESM_exps
 
 # default shape type
-default_shapetype = 'shpavg'
+default_shapetype = 'wcshp'
 # default station type
 default_stationtype = 'ecprecip'
 
