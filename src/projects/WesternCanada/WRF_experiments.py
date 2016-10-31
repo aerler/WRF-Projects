@@ -25,14 +25,21 @@ class Exp(WRF_Exp):
 # N.B.: This is the reference list, with unambiguous, unique keys and no aliases/duplicate entries  
 experiments = OrderedDict() # dictionary of experiments
 ## very high resolution experiments
-# Columbia Icefield region
-experiments['erai-wc2-2013'] = Exp(shortname='wc2-2013', name='erai-wc2-2013', title='ERA-I 1km (2013)', begindate='2013-08-01', project='Columbia', grid='wc2', parent='ERA-I')
+# Columbia Icefield domain (1km)
 experiments['erai-wc2-2010'] = Exp(shortname='wc2-2010', name='erai-wc2-2010', title='ERA-I 1km (2010)', begindate='2010-08-01', project='Columbia', grid='wc2', parent='ERA-I')
+experiments['erai-wc2-2011'] = Exp(shortname='wc2-2011', name='erai-wc2-2011', title='ERA-I 1km (2011)', begindate='2011-08-01', project='Columbia', grid='wc2', parent='ERA-I')
+experiments['erai-wc2-2012'] = Exp(shortname='wc2-2012', name='erai-wc2-2012', title='ERA-I 1km (2012)', begindate='2012-08-01', project='Columbia', grid='wc2', parent='ERA-I')
+experiments['erai-wc2-2013'] = Exp(shortname='wc2-2013', name='erai-wc2-2013', title='ERA-I 1km (2013)', begindate='2013-08-01', project='Columbia', grid='wc2', parent='ERA-I')
+experiments['erai-wc2-2014'] = Exp(shortname='wc2-2014', name='erai-wc2-2014', title='ERA-I 1km (2014)', begindate='2014-08-01', project='Columbia', grid='wc2', parent='ERA-I')
+# Coast Mountains domain (1km)
+experiments['erai-wc1-2013'] = Exp(shortname='wc1-2013', name='erai-wc1-2013', title='ERA-I 1km (2013)', begindate='2013-08-01', project='Columbia', grid='wc1', parent='ERA-I')
+experiments['erai-wc1-2014'] = Exp(shortname='wc1-2014', name='erai-wc1-2014', title='ERA-I 1km (2014)', begindate='2014-08-01', project='Columbia', grid='wc1', parent='ERA-I')
 # experiments['coast-brian'] = Exp(shortname='coast', name='coast-brian', title='Coast Mtns. (CFSR)', begindate='1979-09-01', domains=3, grid='coast1', parent='CFSR')
 # experiments['col1-ctrl'] = Exp(shortname='col1', name='col1-ctrl', title='Columbia (CFSR)', begindate='1979-09-01', grid='col1', domains=3, parent='CFSR')
-# Western Canada
-experiments['max-3km'] = Exp(shortname='max-3km', name='max-3km', title='Max 3km (CESM)', begindate='1979-09-01', grid='col2', domains=3, parent='Ctrl-1')
+# Western Canada (3km)
 experiments['erai-3km'] = Exp(shortname='erai-3km', name='erai-3km', title='Max 3km (ERA-I)', begindate='1979-09-01', grid='col2', domains=3, parent='ERA-I')
+experiments['max-3km'] = Exp(shortname='max-3km', name='max-3km', title='Max 3km (1990)', begindate='1979-09-01', grid='col2', domains=3, parent='Ctrl-1')
+experiments['max-3km-2100'] = Exp(shortname='max-3km-2100', name='max-3km-2100', title='Max 3km (2100)', begindate='2085-09-01', grid='col2', domains=3, parent='Ctrl-2050')
 ## Western Canada simulations
 # some new experiments using WRF V3.6 or V3.6.1 and the new configuration 
 experiments['erai-v361-ctrl'] = Exp(shortname='erai-v361', name='erai-v361-ctrl', title='ERA-I (New, V3.6.1)', begindate='1979-01-01', grid='arb3', parent='ERA-I')

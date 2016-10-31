@@ -17,6 +17,7 @@ from geodata.misc import AttrDict
 from plotting import figure
 from WRF_experiments import WRF_ens, WRF_exps
 from projects.CESM_experiments import CESM_ens, CESM_exps
+from projects.WSC_basins import basin_list as default_basin_list
 
 # default shape type
 default_shapetype = 'wcshp'
@@ -189,9 +190,10 @@ exps_rc['ens-2100']  = EX(name='ens-2100', exps=['max-ens-2100','max-ctrl-2100',
 
 
 # set default variable atts for load functions from clim_load
-def loadShapeObservations(variable_list=variables_rc, shapetype=default_shapetype, **kwargs):
+def loadShapeObservations(variable_list=variables_rc, shapetype=default_shapetype, basin_list=None, **kwargs):
   ''' wrapper for clim.load.loadShapeObservations that sets variable lists '''
-  return clim_load.loadShapeObservations(variable_list=variable_list, shapetype=shapetype, **kwargs)
+  if basin_list is None: basin_list = default_basin_list
+  return clim_load.loadShapeObservations(variable_list=variable_list, shapetype=shapetype, basin_list=basin_list, **kwargs)
 def loadShapeEnsemble(variable_list=variables_rc, shapetype=default_shapetype, **kwargs):
   ''' wrapper for clim.load.loadShapeEnsemble that sets experiment and variable lists '''
   return clim_load.loadShapeEnsemble(variable_list=variable_list, shapetype=shapetype, WRF_exps=WRF_exps, 

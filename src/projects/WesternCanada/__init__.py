@@ -33,8 +33,12 @@ from projects.CESM_experiments import loadCESM, loadCESM_Shp, loadCESM_Stn, load
 
 # add relevant experiments to general load functions
 from datasets.common import loadDataset, loadClim, loadShpTS, loadStnTS, loadEnsembleTS, addLoadFcts
+from datasets.Unity import loadUnity, loadUnity_Shp, loadUnity_Stn, loadUnity_ShpTS, loadUnity_StnTS # loadUnity_TS doesn't exist
+unity_grid = 'arb2_d02' # Unified Dataset default grid
+# N.B.: it is recommended to import Unity load fcts. from here
 # modify functions (wont affect modified WRF/CESM functions)
-addLoadFcts(locals(), locals(), WRF_exps=WRF_exps, WRF_ens=WRF_ens, CESM_exps=CESM_exps, CESM_ens=CESM_ens)
+addLoadFcts(locals(), locals(), unity_grid=unity_grid , WRF_exps=WRF_exps, WRF_ens=WRF_ens, 
+            CESM_exps=CESM_exps, CESM_ens=CESM_ens)
 
 ## import shape dictionaries
 from projects.WSC_basins import basins, provinces # import the dicts with unique entries

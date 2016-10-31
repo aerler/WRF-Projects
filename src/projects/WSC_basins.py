@@ -63,8 +63,10 @@ basin_list['PSB'] = BasinSet(name='PSB', long_name='Pacific Seaboard', rivers=[]
                              stations=dict(), subbasins=['WholePSB','NorthernPSB','SouthernPSB'])
 basin_list['SLR'] = BasinSet(name='SLR', long_name='Saint Lawrence River', rivers=['Saint Lawrence'], data_source='WSC',
                              stations=dict(), subbasins=['WholeSLR'])
-basin_list['SSR'] = BasinSet(name='SSR', long_name='South Sasketchewan River', rivers=['South Sasketchewan'], data_source='Aquanty',
-                             stations={'South Sasketchewan':['St Louis','Saskatoon']}, subbasins=['WholeSSR'])
+basin_list['SSR'] = BasinSet(name='SSR', long_name='South Saskatchewan River', rivers=['South Saskatchewan'], data_source='Aquanty',
+                             stations={'South Saskatchewan':['Saskatoon',]}, subbasins=['WholeSSR'])
+                             # N.B.: there seem to be some issues with the St. Louis station in the SSRB - the flow is consistently 
+                             #       less than Saskatoon, eventhough the drainage area is larger...
 
 basin_sets = basin_list.copy() # dict that only contains basin sets
 # dictionary of basins
@@ -124,20 +126,20 @@ if __name__ == '__main__':
     if hasattr(basin, 'subbasins'):
       for subbasin in basin.subbasins: s += ' {:9s}'.format('{:s},'.format(subbasin))
     print(s)
-    #print(basin.folder)
+#     if basin.maingage: print(basin.maingage.monthly_file)
     
-  ## print Great Lakes
-  for name,lake in great_lakes.iteritems():
-    s = '  {:3s} ({:s}): '.format(name,lake.shapetype)
-    if hasattr(lake, 'lakes'):
-      for sublake in lake.lakes: s += ' {:9s}'.format('{:s},'.format(sublake))
-    print(s)
-    #print(lake.folder)
-    
-  ## print Canadian Provinces
-  for name,prov in provinces.iteritems():
-    s = '  {:3s} ({:s}): '.format(name,prov.shapetype)
-    if hasattr(prov, 'provinces'):
-      for province in prov.provinces: s += ' {:3s}'.format('{:s},'.format(province))
-    print(s)
-    #print(prov.folder)
+#   ## print Great Lakes
+#   for name,lake in great_lakes.iteritems():
+#     s = '  {:3s} ({:s}): '.format(name,lake.shapetype)
+#     if hasattr(lake, 'lakes'):
+#       for sublake in lake.lakes: s += ' {:9s}'.format('{:s},'.format(sublake))
+#     print(s)
+#     #print(lake.folder)
+#     
+#   ## print Canadian Provinces
+#   for name,prov in provinces.iteritems():
+#     s = '  {:3s} ({:s}): '.format(name,prov.shapetype)
+#     if hasattr(prov, 'provinces'):
+#       for province in prov.provinces: s += ' {:3s}'.format('{:s},'.format(province))
+#     print(s)
+#     #print(prov.folder)
