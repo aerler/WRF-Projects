@@ -10,8 +10,10 @@ A package that contains settings for the GreatLakes region projects for use with
 from figure_settings import getVariableSettings, getFigureSettings, figure_folder
 
 # import figure with hydro settings
-from analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations, exps_rc # load datasets
-from analysis_settings import climFigAx, climPlot, variables_rc, constraints_rc # plotting
+from analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations  # load datasets 
+from analysis_settings import loadStationFit, loadShapeFit
+from analysis_settings import exps_rc, variables_rc, constraints_rc
+from analysis_settings import climFigAx, climPlot, evaFigAx, distPlot, quantPlot # plotting
 
 # import map projection settings (basemap)
 try: 
@@ -34,8 +36,10 @@ from projects.CESM_experiments import loadCESM, loadCESM_Shp, loadCESM_Stn, load
 # add relevant experiments to general load functions
 from datasets.common import loadDataset, loadClim, loadShpTS, loadStnTS, loadEnsembleTS, addLoadFcts
 from datasets.Unity import loadUnity, loadUnity_Shp, loadUnity_Stn, loadUnity_ShpTS, loadUnity_StnTS # loadUnity_TS doesn't exist
+unity_grid = 'glb1_d02' # Unified Dataset default grid
+# N.B.: it is recommended to import Unity load fcts. from here
 # modify functions (wont affect modified WRF/CESM functions)
-addLoadFcts(locals(), locals(), unity_grid='arb2_d02', WRF_exps=WRF_exps, WRF_ens=WRF_ens, 
+addLoadFcts(locals(), locals(), unity_grid=unity_grid , WRF_exps=WRF_exps, WRF_ens=WRF_ens, 
             CESM_exps=CESM_exps, CESM_ens=CESM_ens)
 
 ## import shape dictionaries

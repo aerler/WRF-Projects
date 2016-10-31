@@ -10,8 +10,10 @@ A package that contains settings for the WesternCanada region projects for use w
 from figure_settings import getVariableSettings, getFigureSettings, figure_folder
 
 # import figure with hydro settings
-from analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations, exps_rc # load datasets
-from analysis_settings import climFigAx, climPlot, variables_rc, constraints_rc # plotting
+from analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations  # load datasets 
+from analysis_settings import loadStationFit, loadShapeFit
+from analysis_settings import exps_rc, variables_rc, constraints_rc
+from analysis_settings import climFigAx, climPlot, evaFigAx, distPlot, quantPlot # plotting
 
 # import map projection settings (basemap)
 try: 
