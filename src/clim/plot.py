@@ -62,12 +62,12 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
       if not ylim: ylim = shape_info[varlist_name]
       if ylabel is True and varlist_name in variable_list: 
         ylabel = variable_list[varlist_name].label + ' [{UNITS:s}]'
-      if varlist_name in ('precip',): axes.ypad += 3
-      else: axes.ypad -= 2
+#       if varlist_name in ('precip',): axes.ypad += 3
+#       else: axes.ypad -= 2
     else: # fallback 
       if not ylim: ylim = shape_info.get('water',None) if shape_info else None
       if ylabel is True: ylabel = 'Water Flux [{UNITS:s}]'
-      axes.ypad -= 3 
+#       axes.ypad -= 3 
   else: 
     if not ylim: ylim = defaults.get(varlist_name,None)
     if ylabel is True and varlist_name in variable_list: 
