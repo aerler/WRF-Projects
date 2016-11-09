@@ -97,7 +97,7 @@ great_lakes['Michigan']  = Lake(name='LakeMichigan', long_name='Lake Michigan', 
 great_lakes['Superior']  = Lake(name='LakeSuperior', long_name='Lake Superior', data_source='Natural Earth',)
 # the Great Lakes in groups
 great_lakes['NorthernLakes'] = LakeSet(name='NorthernLakes', long_name='Northern Great Lakes', data_source='Natural Earth',
-                                    lakes=['NorthernLakes']+[great_lakes[lake] for lake in ['Superior','Michigan','Huron']])
+                                       lakes=['NorthernLakes']+[great_lakes[lake] for lake in ['Superior','Michigan','Huron']])
 great_lakes['GreatLakes'] = LakeSet(name='GreatLakes', long_name='Great Lakes', data_source='Natural Earth',
                                     lakes=['GreatLakes',]+great_lakes.values())
 # N.B.: individual lakes have to be initialized seperately and added to the set post-hoc, 
