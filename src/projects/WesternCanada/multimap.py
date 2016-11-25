@@ -66,7 +66,7 @@ if __name__ == '__main__':
   outlinewidth = 1.; outlinecolor = 'k'
   cbn = None # colorbar levels
   figuretype = None
-  lsamesize = True
+  lsamesize = False
   l3pan = False # make a single column of a three-column figure
   lminor = True # draw minor tick mark labels
   locean = False # mask continent in white and omit country borders
@@ -88,7 +88,7 @@ if __name__ == '__main__':
   variable_settings = None
   season_settings = None
   aggregation = 'mean'
-  level_agg = dict(p=2,s='mean',soil_layers_stag='mean')
+  level_agg = dict(p=2,i_p=2,s='mean',i_s='mean',soil_layers_stag='mean')
     
   # WRF file types
   WRFfiletypes = [] # WRF data source
@@ -171,34 +171,47 @@ if __name__ == '__main__':
   lbasins = True; basinlist = ('ARB','FRB',); lprovinces = False; provlist = ['BC','AB']
 
 
-# ## validation and projection for the Paper
-#   explist = ['Ens','max-ens','ctrl-ens']*2; seasons = [['summer']*3+['winter']*3]
-#   domain = 1; tag = 'd{:02d}'.format(domain); grid = 2*( ['cesm1x1']+2*['arb2_'+tag] ) # 'arb2_'+tag; 
-# #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
-# #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
-#   exptitles = ['CESM','G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
-# #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
-# #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
-#   exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
-# #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
-#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
-# #   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
-# #   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-#   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
-# #   case = tag+'val_narr'; reflist = 'NARR'
+### validation and projection for the Paper
+#  explist = ['Ens','max-ens','ctrl-ens']*2; seasons = [['summer']*3+['winter']*3]
+#  domain = 1; tag = 'd{:02d}'.format(domain); grid = 2*( ['cesm1x1']+2*['arb2_'+tag] ) # 'arb2_'+tag; 
+##   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
+##   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+#  exptitles = ['CESM','G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
+##   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
+##   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
+#  exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
+##   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
+#  variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+##   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
+##  variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
+#  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+##  period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
+##   case = tag+'val_narr'; reflist = 'NARR'
 
-## 2-panel projection for the Paper
-  explist = ['max-ens','ctrl-ens']*2; seasons = [['summer']*2+['winter']*2]
-  domain = 2; tag = 'd{:02d}'.format(domain); grid = 'arb2_'+tag; 
-  exptitles = ['G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
-  exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
-#   variables = ['OI']; lfrac = True
-  variables = ['U']; lfrac = True
-  WRFfiletypes = ['plev3d']; level_agg = dict(p=0)
-#   variables = ['COIP']; lfrac = True
-  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-#   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
+### 2x2-panel projection for the Paper
+#  explist = ['max-ens','ctrl-ens']*2; seasons = [['summer']*2+['winter']*2]
+#  domain = 2; tag = 'd{:02d}'.format(domain); grid = 'arb2_'+tag; 
+#  exptitles = ['G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
+#  exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
+##  variables = ['OI']; lfrac = True
+##  variables = ['U']; lfrac = True
+##  variables = ['COIP']; lfrac = True
+##  WRFfiletypes = ['plev3d']; level_agg = dict(p=0)
+#  variables = [['aSM']*2+['p-et']*2]; aggregation = 'mean'
+#  WRFfiletypes = ['lsm','hydro']; cbn = 7; lfrac = True
+#  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+##   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
+
+### 2x1-panel projection for the Paper
+#  explist = ['max-ens','ctrl-ens']; cbo = 'vertical'
+#  domain = 2; tag = 'd{:02d}'.format(domain); grid = 'arb2_'+tag; 
+##  seasons = ['annual']; variables = ['p-et']; WRFfiletypes = ['hydro']; ldiff = True 
+##  figtitles = ['Annual Water Supply Change [mm/day]']
+#  seasons = ['JAS']; variables = ['aSM']; WRFfiletypes = ['lsm']; cbn = 7; lfrac = True
+#  figtitles = ['Late Summer Soil Moisture Change [%]']
+#  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+#  exptitles = ['G Ensemble','T Ensemble']; res = '30km' if domain == 1 else '10km'
+#  exptitles = [ '{} ({})'.format(e,res) for e in exptitles ]
 
 # # ERA-Interim validation
 #   explist = ['erai-v361','erai-max','erai-v361-noah',]*2; seasons = [['summer']*3+['winter']*3]

@@ -56,7 +56,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('evap','pet','precip','precipc','precipnc','wetprec','dryprec','MaxPrecip_1d'):
       clevs = np.linspace(-4,4,41); clbl = '%3.1f'; cmap = mpl.cm.BrBG # mm/day
     elif var in ('snwmlt', 'runoff', 'ugroff', 'sfroff','p-et','waterflx'): # moisture fluxes (kg /(m^2 s))
-      clevs = np.linspace(-1.2,1.2,41); clbl = '%3.2f' # mm/day  
+      clevs = np.linspace(-1.2,1.2,41); clbl = '%2.1f'; cmap = mpl.cm.PuOr # mm/day
     elif var == 'zs':
       clevs = np.linspace(-0.5,0.5,21); clbl = '%3.1f' # mm/day
     elif var in ('Z',):
@@ -87,7 +87,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('WaterTransport_U','WaterTransport_V','ColumnWater','cqwu','cqwv','cqw'):
       clevs = np.linspace(-50,50,41); clbl = '%2.0f'
     elif var in ('aSM',):
-      clevs = np.linspace(-21,21,43); clbl = '%2.0f'; cmap = mpl.cm.PuOr
+      clevs = np.linspace(-21,21,43); clbl = '%2.0f'; cmap = mpl.cm.BrBG
     elif var in ('asm_red',):
       clevs = np.linspace(-20,20,41); clbl = '%2.0f';
       cmap = cm.redblue_light; #cmap.set_over('blue'); cmap.set_under('red')
@@ -165,10 +165,10 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(0,16,33); clbl = '%2.0f' # mm/day
     elif var in ('precip_hist'): # total precipitation for north america
       clevs = np.linspace(0,8,25); clbl = '%2.0f' # mm/day
-    elif var in ('MaxPrecip_1d'): # total precipitation for north america
+    elif var in ('MaxPrecip_1d'): # max precipitation for north america
       clevs = np.linspace(0,80,21); clbl = '%2.0f' # mm/day
       if season in ('summer','spring'): clevs /= 2.
-    elif var in ('precipc',): # convective precipitation 
+    elif var in ('precic',): # convective precipitation 
       clevs = np.linspace(0,5,26); clbl = '%02.1f' # mm/day
     elif var == 'Q2':
       clevs = np.linspace(0,15,31); clbl = '%02.1f' # mm/day
@@ -288,7 +288,7 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
       if cbar:
         cbo = cbo or 'horizontal'
         if cbo == 'vertical': 
-          margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05)
+          margins = dict(bottom=0.0, left=0.065, right=.885, top=.92, hspace=0.05, wspace=0.05)
           caxpos = [0.91, 0.05, 0.02, 0.9]
         if cbo == 'horizontal': 
           margins = dict(bottom=0.075, left=0.07, right=.97, top=.95, hspace=0.05, wspace=0.05)
@@ -302,7 +302,7 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
       if cbar:
         cbo = cbo or 'horizontal'
         if cbo == 'vertical': 
-          margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05)
+          margins = dict(bottom=0.015, left=0.065, right=.885, top=.935, hspace=0.05, wspace=0.05)
           caxpos = [0.91, 0.05, 0.02, 0.9]
         if cbo == 'horizontal': 
           if l3pan:
