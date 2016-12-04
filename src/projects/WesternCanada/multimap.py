@@ -205,16 +205,16 @@ if __name__ == '__main__':
 #  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
 ##   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
 
-## 2x1-panel projection for the Paper
-  explist = ['max-ens','ctrl-ens']; cbo = 'vertical'
-  domain = 2; tag = 'd{:02d}'.format(domain); grid = 'arb2_'+tag; 
-  seasons = ['annual']; variables = ['p-et']; WRFfiletypes = ['hydro']; ldiff = True 
-  figtitles = ['Annual Water Supply Change [mm/day]']
-#  seasons = ['JAS']; variables = ['aSM']; WRFfiletypes = ['lsm']; cbn = 7; lfrac = True
-#  figtitles = ['Late Summer Soil Moisture Change [%]']
-  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-  exptitles = ['1st WRF Ens.','Alt. WRF Ens.']; res = '30km' if domain == 1 else '10km'
-  exptitles = [ '{} ({})'.format(e,res) for e in exptitles ]
+### 2x1-panel projection for the Paper
+#  explist = ['max-ens','ctrl-ens']; cbo = 'vertical'
+#  domain = 2; tag = 'd{:02d}'.format(domain); grid = 'arb2_'+tag; 
+#  seasons = ['annual']; variables = ['p-et']; WRFfiletypes = ['hydro']; ldiff = True 
+#  figtitles = ['Annual Water Supply Change [mm/day]']
+##  seasons = ['JAS']; variables = ['aSM']; WRFfiletypes = ['lsm']; cbn = 7; lfrac = True
+##  figtitles = ['Late Summer Soil Moisture Change [%]']
+#  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+#  exptitles = ['1st WRF Ens.','Alt. WRF Ens.']; res = '30km' if domain == 1 else '10km'
+#  exptitles = [ '{} ({})'.format(e,res) for e in exptitles ]
 
 # # ERA-Interim validation
 #   explist = ['erai-v361','erai-max','erai-v361-noah',]*2; seasons = [['summer']*3+['winter']*3]
@@ -297,6 +297,13 @@ if __name__ == '__main__':
 #   case = 'sum'; lsamesize = False; figtitles = ''; primary_basins = ['FRB','ARB']
 #   variables = ['aSM']; seasons = ['jas']; exptitles = 'Soil Moisture Change [%]'
 #   variable_settings = ['asm_red']
+
+# simple six-panel plot
+  explist = ['Unity','max-ens','ctrl-ens','Ens','max-ens','ctrl-ens']; maptype = 'lcc-new'; period = H15
+  grid = ['arb2_d02']*3+['cesm1x1']+['arb2_d01']*2; domain = [None, 2, 2, None, 1, 1]
+  exptitles = ['Merged Observations','1st WRF Ens., 10km','Alt. WRF Ens., 10km','CESM','1st WRF Ens., 30km','Alt. WRF Ens., 30km']
+  case = 'res'; lbasins = True; lprovinces = True
+  variables = ['precip']; seasons = ['annual'] 
 
 # GPCC stations
 #   variables = ['stations']; seasons = ['annual']
@@ -492,19 +499,19 @@ if __name__ == '__main__':
 #   ldiff = True; variables = ['precip']; variable_settings = ['precip_prj']
 
 ## large map for all domains
-#   maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
-#   lstations = False; lbasins = True; lprovinces = False
-#   explist = ['max']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
-#   case = 'arb2_basins'; basinlist = ('FRB','ARB','CRB','NRB'); primary_basins = ('FRB','ARB')
-# #   lprovinces = True; provlist = ('BC','AB') 
-#   variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True
-#   figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']
-## smaller map for western Canada
-#   maptype = 'lcc-new'; lstations = False; lbasins = True
-#   case = 'arb'; period = None; lWRFnative = True; lframe = False; loutline = False
-#   explist = ['columbia']; exptitles = ' '; domain = (2,3)
-#   case = 'frb'; basins = ('FRB',)
-#   case = 'arb'; basins = ('ARB',)
+#  maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
+#  lstations = False; lbasins = True; lprovinces = False
+#  explist = ['max']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
+#  case = 'arb2_basins'; #basinlist = ('FRB','ARB','CRB','NRB'); primary_basins = ('FRB','ARB')
+#  lprovinces = True; # provlist = ('AB',) 
+#  variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True
+#  figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']
+### smaller map for western Canada
+##   maptype = 'lcc-new'; lstations = False; lbasins = True
+##   case = 'arb'; period = None; lWRFnative = True; lframe = False; loutline = False
+##   explist = ['columbia']; exptitles = ' '; domain = (2,3)
+##   case = 'frb'; basins = ('FRB',)
+##   case = 'arb'; basins = ('ARB',)
 
     
   if not case: raise ValueError, 'Need to define a \'case\' name!'
@@ -874,8 +881,8 @@ if __name__ == '__main__':
           if lprovinces: 
             for province in provlist:    
               provinfo = provinces[province]
-              bmap.readshapefile(provinfo.shapefiles[provinfo.long_name][:-4], province, 
-                                 drawbounds=True, linewidth = 1., color='k')            
+              bmap.readshapefile(provinfo.shapefile[:-4], province, 
+                                 drawbounds=True, linewidth = .5, color='k')            
 
       # save figure to disk
       if lprint:
