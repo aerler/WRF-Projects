@@ -54,8 +54,8 @@ experiments['erai-v36-nmp'] = Exp(shortname='erai-nmp', name='erai-v36-nmp', tit
 experiments['erai-v36-noah'] = Exp(shortname='erai-noah', name='erai-v36-noah', title='ERA-I (Noah, V3.6)', begindate='1979-01-01', grid='arb3', parent='ERA-I')
 # these are all based on the "new" configuration (ARB3 domain)
 experiments['new-ctrl'] = Exp(shortname='new', name='new-ctrl', title='New (V3.4)', begindate='1979-01-01', grid='arb3')
-experiments['new-ctrl-2050'] = Exp(shortname='new-2050', name='new-ctrl-2050', title='New (2050)', begindate='2045-01-01', grid='arb3')
-experiments['new-ctrl-2100'] = Exp(shortname='new-2100', name='new-ctrl-2100', title='New (2100)', begindate='2085-01-01', grid='arb3')
+experiments['new-ctrl-2050'] = Exp(shortname='new-2050', name='new-ctrl-2050', title='New (2050)', begindate='2045-01-01', grid='arb3', parent='Ctrl-1-2050')
+experiments['new-ctrl-2100'] = Exp(shortname='new-2100', name='new-ctrl-2100', title='New (2100)', begindate='2085-01-01', grid='arb3', parent='Ctrl-1-2100')
 experiments['new-grell'] = Exp(shortname='grell', name='new-grell', title='New (Grell)', begindate='1979-01-01', grid='arb3')
 experiments['new-grell-old'] = Exp(shortname='new-grell-old', name='new-grell-old', title='New (Grell, old NMP)', begindate='1979-01-01', grid='arb3')
 experiments['new-nogulf'] = Exp(shortname='nogulf', name='new-nogulf', title='New (no Gulf)', begindate='1979-01-01', grid='arb2') # ARB2 domain
@@ -66,6 +66,7 @@ experiments['cfsr-new'] = Exp(shortname='cfsr-new', name='cfsr-new', title='New 
 #experiments['max-ctrl-dry'] = Exp(shortname='max-dry', name='max-ctrl-dry', title='Max-1 (dry)', begindate='1979-01-01', grid='arb2')
 experiments['max-grass'] = Exp(shortname='grass', name='max-grass', title='Deforest (Max)', begindate='1979-01-01', domains=1, grid='arb2')
 experiments['max-lowres'] = Exp(shortname='lowres', name='max-lowres', title='Max (low-res)', begindate='1979-01-01', domains=1, grid='arb2-120km')
+experiments['max-lowres-2100'] = Exp(shortname='lowres-2100', name='max-lowres-2100', title='Max (low-res,2100)', begindate='2085-01-01', domains=1, grid='arb2-120km', parent='Ctrl-1-2100')
 experiments['max-diff'] = Exp(shortname='diff', name='max-diff', title='Max-1 (diff)', begindate='1979-01-01', grid='arb2')
 experiments['max-clm'] = Exp(shortname='max-clm', name='max-clm', title='Max-1 (CLM)', begindate='1979-01-01', grid='arb2')
 experiments['max-kf'] = Exp(shortname='max-kf', name='max-kf', title='Max-1 (KF)', begindate='1979-01-01', grid='arb2')

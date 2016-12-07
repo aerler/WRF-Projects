@@ -50,6 +50,9 @@ annotation_dict['lcc-arb'] = dict(scale=(-111, 52, -120, 55, 400), lat_full=[50,
 ## Lambert Conic Conformal - BC & Alberta (below 55N)
 annotation_dict['lcc-bcab'] = dict(scale=(-112.5, 47, -120, 50, 300), lat_full=[50,60], lat_half=[45,55,65], 
                               lon_full=[-130,-120,-110], lon_half=[-135,-125,-115,-105])
+## Lambert Conic Conformal - ARB3 3rd Domain
+annotation_dict['lcc-arb3_d03'] = dict(scale=(-129, 48.5, -122, 54, 400), lat_full=[50,60], lat_half=[45,55,65], 
+                              lon_full=[-130,-120,-110], lon_half=[-135,-125,-115,-105])
 ## Lambert Conic Conformal - New Fine Domain
 annotation_dict['lcc-new'] = dict(scale=(-128.5, 48, -120, 55, 400), lat_full=[40,50,60,70], lat_half=[45,55,65], 
                              lon_full=[-180,-160,-140,-120,-100], lon_half=[-170,-150,-130,-110])
@@ -58,6 +61,9 @@ annotation_dict['lcc-fine'] = dict(scale=(-132, 47, -137, 47, 500), lat_full=[45
                                     lon_full=[-180,-160,-140,-120,-100], lon_half=[-170,-150,-130,-110])
 ## Lambert Conic Conformal - Small Domain
 annotation_dict['lcc-small'] = dict(scale=(-136, 45, -137, 57, 800), lat_full=[45,65], lat_half=[55,75], 
+                              lon_full=[-180,-160,-140,-120,-100], lon_half=[-170,-150,-130,-110])
+## Lambert Conic Conformal - ARB3 2nd Domain
+annotation_dict['lcc-arb3_d02'] = dict(scale=(-134, 44, -123, 55, 800), lat_full=[45,65], lat_half=[55,75], 
                               lon_full=[-180,-160,-140,-120,-100], lon_half=[-170,-150,-130,-110])
 ## Lambert Conic Conformal - the Paries, focussed on Alberta
 annotation_dict['lcc-prairies'] = annotation_dict['lcc-small']
@@ -103,6 +109,9 @@ projection_dict['lcc-arb'] = dict(projection='lcc', lat_0=55.5, lon_0=-114.5, la
 ## Lambert Conic Conformal - BC & Alberta (below 55N)
 projection_dict['lcc-bcab'] = dict(projection='lcc', lat_0=52.5, lon_0=-119, lat_1=52.5, rsphere=rsphere,
               width=150*10e3, height=150*10e3, area_thresh = 500., resolution='l')
+## Lambert Conic Conformal - ARB3 3rd Domain
+projection_dict['lcc-arb3_d03'] = dict(projection='lcc', lat_0=54, lon_0=-122, lat_1=54, rsphere=rsphere,
+                width=155*10e3, height=145*10e3, area_thresh = 500., resolution='l')
 ## Lambert Conic Conformal - New Fine Domain
 projection_dict['lcc-new'] = dict(projection='lcc', lat_0=55, lon_0=-120, lat_1=52, rsphere=rsphere,
               width=180*10e3, height=180*10e3, area_thresh = 1000., resolution='l')
@@ -112,6 +121,9 @@ projection_dict['lcc-prairies'] = dict(projection='lcc', lat_0=53, lon_0=-115, l
 ## Lambert Conic Conformal - Fine Domain
 projection_dict['lcc-fine'] = dict(projection='lcc', lat_0=56, lon_0=-125, lat_1=53, rsphere=rsphere,
               width=180*10e3, height=315*10e3, area_thresh = 1000., resolution='l')
+## Lambert Conic Conformal - ARB3 2nd Domain
+projection_dict['lcc-arb3_d02'] = dict(projection='lcc', lat_0=55, lon_0=-123, lat_1=55, rsphere=rsphere,
+                width=2900e3, height=2700e3, area_thresh = 1000., resolution='l')
 ## Lambert Conic Conformal - Small Domain
 projection_dict['lcc-small'] = dict(projection='lcc', lat_0=56, lon_0=-130, lat_1=53, rsphere=rsphere,
               width=2500e3, height=2650e3, area_thresh = 1000., resolution='l')

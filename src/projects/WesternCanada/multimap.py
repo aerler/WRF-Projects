@@ -66,7 +66,7 @@ if __name__ == '__main__':
   outlinewidth = 1.; outlinecolor = 'k'
   cbn = None # colorbar levels
   figuretype = None
-  lsamesize = False
+  lsamesize = True
   l3pan = False # make a single column of a three-column figure
   lminor = True # draw minor tick mark labels
   locean = False # mask continent in white and omit country borders
@@ -298,12 +298,12 @@ if __name__ == '__main__':
 #   variables = ['aSM']; seasons = ['jas']; exptitles = 'Soil Moisture Change [%]'
 #   variable_settings = ['asm_red']
 
-# simple six-panel plot
-  explist = ['Unity','max-ens','ctrl-ens','Ens','max-ens','ctrl-ens']; maptype = 'lcc-new'; period = H15
-  grid = ['arb2_d02']*3+['cesm1x1']+['arb2_d01']*2; domain = [None, 2, 2, None, 1, 1]
-  exptitles = ['Merged Observations','1st WRF Ens., 10km','Alt. WRF Ens., 10km','CESM','1st WRF Ens., 30km','Alt. WRF Ens., 30km']
-  case = 'res'; lbasins = True; lprovinces = True
-  variables = ['precip']; seasons = ['annual'] 
+## simple six-panel plot
+#  explist = ['Unity','max-ens','ctrl-ens','Ens','max-ens','ctrl-ens']; maptype = 'lcc-new'; period = H15
+#  grid = ['arb2_d02']*3+['cesm1x1']+['arb2_d01']*2; domain = [None, 2, 2, None, 1, 1]
+#  exptitles = ['Merged Observations','1st WRF Ens., 10km','Alt. WRF Ens., 10km','CESM','1st WRF Ens., 30km','Alt. WRF Ens., 30km']
+#  case = 'res'; lbasins = True; lprovinces = True
+#  variables = ['precip']; seasons = ['annual'] 
 
 # GPCC stations
 #   variables = ['stations']; seasons = ['annual']
@@ -499,19 +499,22 @@ if __name__ == '__main__':
 #   ldiff = True; variables = ['precip']; variable_settings = ['precip_prj']
 
 ## large map for all domains
+  variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True
+  lstations = False; lbasins = False; lprovinces = True; # provlist = ('AB',) 
+# figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']; exptitles = ' '
 #  maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
-#  lstations = False; lbasins = True; lprovinces = False
 #  explist = ['max']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
 #  case = 'arb2_basins'; #basinlist = ('FRB','ARB','CRB','NRB'); primary_basins = ('FRB','ARB')
-#  lprovinces = True; # provlist = ('AB',) 
-#  variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True
-#  figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']
-### smaller map for western Canada
-##   maptype = 'lcc-new'; lstations = False; lbasins = True
-##   case = 'arb'; period = None; lWRFnative = True; lframe = False; loutline = False
-##   explist = ['columbia']; exptitles = ' '; domain = (2,3)
-##   case = 'frb'; basins = ('FRB',)
-##   case = 'arb'; basins = ('ARB',)
+# smaller map for western Canada
+  explist = ['erai-3km']; figtitles = ['Topographic Height [km]']; exptitles = ' '
+  period = H15; lWRFnative = True; lframe = True; loutline = False
+  #maptype = 'lcc-arb3_d02'; case = 'large'
+  maptype = 'lcc-arb3_d03'; case = 'small'
+  #domain = (1,); case += '_d01'
+  #domain = (1,2); case += '_d02'
+  domain = (1,2,3); case += '_d03'
+#  case = 'frb'; basins = ('FRB',)
+#  case = 'arb'; basins = ('ARB',)
 
     
   if not case: raise ValueError, 'Need to define a \'case\' name!'
