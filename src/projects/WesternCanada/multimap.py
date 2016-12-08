@@ -218,20 +218,31 @@ if __name__ == '__main__':
 
 ## single-panel Observations
 #  maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
-#  explist = ['PCIC']; figtitles = ['Precipitation Climatology (PRISM & GPCC)']; exptitles = ['']; period = None
-#  #explist = ['erai-3km']; domain = 3; figtitles = ['WRF 3km (1979-1994, ERA-I)']; exptitles = ['']; period = H15
+#  #explist = ['PCIC']; figtitles = ['Precipitation Climatology (PRISM & GPCC)']; exptitles = ['']; period = None
+#  explist = ['erai-3km']; domain = 3; figtitles = ['WRF 3km (1979-1994, ERA-I)']; exptitles = ['']; period = H15
 #  #explist = ['max-3km']; domain = 3; figtitles = ['WRF 3km (1979-1992, CESM)']; exptitles = ['']; period = H12
 #  variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual']
-#  grid = None; loutline = False; lcontour = False; case = explist[0].lower()
+#  grid = None; loutline = False; lcontour = False; case = explist[0].lower() + '_d0{:d}'.format(domain) if domain else ''
+#  seasons = ['annual','winter','summer','fall','spring']
 #  #loutline = True; case += '_outline'; lcontour = False
+
+### four-panel validation
+#  maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
+##  explist = ['PCIC']; figtitles = ['Precipitation Climatology (PRISM & GPCC)']; exptitles = ['']; period = None
+#  explist = ['erai-3km','PCIC','erai-3km','erai-3km']; domain = [3,None,2,1]; period = H15
+#  exptitles = ['WRF 3km (15yr, ERA-I)','PRISM & GPCC','WRF 10km (15yr, ERA-I)','WRF 30km (15yr, ERA-I)']; case = 'valobs'; figtitles = [None]; cbo = 'horizontal'
+##  #explist = ['max-3km']; domain = 3; figtitles = ['WRF 3km (1979-1992, CESM)']; exptitles = ['']; period = H12
+#  variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual']; lcontour = True; loutline = False
+#  seasons = ['annual','winter','summer','fall','spring']
 
 ## four-panel validation
   maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
-#  explist = ['PCIC']; figtitles = ['Precipitation Climatology (PRISM & GPCC)']; exptitles = ['']; period = None
-  explist = ['erai-3km','PCIC','erai-3km','erai-3km']; domain = [3,None,1,2]; period = H15
-  exptitles = ['WRF 3km (15yr, ERA-I)','PRISM & GPCC','WRF 30km (15yr, ERA-I)','WRF 10km (15yr, ERA-I)']; case = 'valobs'; figtitles = [None]; cbo = 'horizontal'
+  explist = ['erai-3km','Ens','erai-3km','erai-3km']; domain = [3,None,2,1]; period = H15
+  exptitles = ['WRF 3km (15yr, ERA-I)','CESM (100km)','WRF 10km (15yr, ERA-I)','WRF 30km (15yr, ERA-I)']; case = 'valobs'; figtitles = [None]; cbo = 'horizontal'
 #  #explist = ['max-3km']; domain = 3; figtitles = ['WRF 3km (1979-1992, CESM)']; exptitles = ['']; period = H12
-  variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual']; lcontour = True; loutline = False
+#  variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual','winter','summer','fall','spring']; lcontour = True; loutline = False
+#  lfrac = True; reflist = 'Unity'; grid = 'arb3_d03'; # grid = ['arb3_d03','cesm1x1','arb3_d02','arb3_d01',]
+  variables = ['MaxPrecip_1d']; aggregation = 'max'; WRFfiletypes = ['hydro']; seasons = ['annual','winter','summer','fall','spring']; lcontour = True; loutline = False
 
 # # ERA-Interim validation
 #   explist = ['erai-v361','erai-max','erai-v361-noah',]*2; seasons = [['summer']*3+['winter']*3]
