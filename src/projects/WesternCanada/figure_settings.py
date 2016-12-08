@@ -199,7 +199,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
         cmap = mpl.cm.gist_earth; cmap.set_over('white'); cmap.set_under('blue') # topography
       elif season == 'hidef': 
         lmskocn = True; clim = (-0.5,2.5); # good contrast for high elevation
-        clevs = np.hstack((np.array((-.5,)), np.linspace(0,2.5,26))); clbl = '%02.1f' # km
+        clevs = np.hstack((np.array((-.5,)), np.linspace(0,2.5,29))); clbl = '%02.1f' # km
         cmap = mpl.cm.gist_ncar; cmap.set_over('white'); cmap.set_under('blue')
       else: 
         raise ValueError, 'No map color scheme defined (use \'season\' to select color scheme).'

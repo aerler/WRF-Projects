@@ -36,10 +36,12 @@ experiments['erai-wc1-2013'] = Exp(shortname='wc1-2013', name='erai-wc1-2013', t
 experiments['erai-wc1-2014'] = Exp(shortname='wc1-2014', name='erai-wc1-2014', title='ERA-I 1km (2014)', begindate='2014-08-01', project='Columbia', grid='wc1', parent='ERA-I')
 # experiments['coast-brian'] = Exp(shortname='coast', name='coast-brian', title='Coast Mtns. (CFSR)', begindate='1979-09-01', domains=3, grid='coast1', parent='CFSR')
 # experiments['col1-ctrl'] = Exp(shortname='col1', name='col1-ctrl', title='Columbia (CFSR)', begindate='1979-09-01', grid='col1', domains=3, parent='CFSR')
+## just to plot high-res topography
+#experiments['col1-const'] = Exp(shortname='col1', name='col1-const', title='Topography (1km)', begindate='1979-01-01', grid='col1', domains=3, parent='Ctrl-1')
 # Western Canada (3km)
-experiments['erai-3km'] = Exp(shortname='erai-3km', name='erai-3km', title='Max 3km (ERA-I)', begindate='1979-09-01', grid='col2', domains=3, parent='ERA-I')
-experiments['max-3km'] = Exp(shortname='max-3km', name='max-3km', title='Max 3km (1990)', begindate='1979-09-01', grid='col2', domains=3, parent='Ctrl-1')
-experiments['max-3km-2100'] = Exp(shortname='max-3km-2100', name='max-3km-2100', title='Max 3km (2100)', begindate='2085-09-01', grid='col2', domains=3, parent='Ctrl-2050')
+experiments['erai-3km'] = Exp(shortname='erai-3km', name='erai-3km', title='Max 3km (ERA-I)', begindate='1979-09-01', grid='arb3', domains=3, parent='ERA-I')
+experiments['max-3km'] = Exp(shortname='max-3km', name='max-3km', title='Max 3km (1990)', begindate='1979-09-01', grid='arb3', domains=3, parent='Ctrl-1')
+experiments['max-3km-2100'] = Exp(shortname='max-3km-2100', name='max-3km-2100', title='Max 3km (2100)', begindate='2085-09-01', grid='arb3', domains=3, parent='Ctrl-2100')
 ## Western Canada simulations
 # some new experiments using WRF V3.6 or V3.6.1 and the new configuration 
 experiments['erai-v361-ctrl'] = Exp(shortname='erai-v361', name='erai-v361-ctrl', title='ERA-I (New, V3.6.1)', begindate='1979-01-01', grid='arb3', parent='ERA-I')
