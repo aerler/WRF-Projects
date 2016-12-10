@@ -140,7 +140,7 @@ projection_dict['lcc-large'] = dict(projection='lcc', lat_0=50, lon_0=-130, lat_
 projection_dict['laea'] = dict(projection='laea', lat_0=57, lon_0=-137, lat_ts=53, resolution='l', #
               width=259*30e3, height=179*30e3, rsphere=rsphere, area_thresh = 1000.)  
 ## Orthographic Projection
-projection_dict['ortho-NA'] = dict(projection='ortho', lat_0 = 50, lon_0 = -130, resolution = 'l', area_thresh = 1000.)
+projection_dict['ortho-NA'] = dict(projection='ortho', lat_0 = 47, lon_0 = -125, resolution = 'l', area_thresh = 1000.)
 ## Global Robinson Projection
 projection_dict['robinson'] = dict(projection='robin', lat_0 = 0, lon_0 = 180, resolution = 'l', area_thresh = 100000.)
 
