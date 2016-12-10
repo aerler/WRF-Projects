@@ -91,6 +91,13 @@ constraints_rc['end_after'] = 1990
 # dataset collections
 exps_rc = dict(); EX = clim_load.EX
 exps_rc['obs']       = EX(name='obs',exps=['CRU','WSC'], styles=['-','-.'], master='CRU', title='Observations')
+exps_rc['erai-3km']  = EX(name='erai-3km', exps=['Observations', 'erai-3km_d01', 'erai-3km_d02', 'erai-3km_d03'], # ,'erai-max','ctrl-1','max-1deg' 
+                          master='erai-3km_d03', reference='Observations', title='WRF 3km Validation',
+                          styles=['--',':','-']) # obs are extra... only WRF
+exps_rc['max-3km']   = EX(name='max-3km', exps=['max-3km', 'max-3km-2100'], styles=['--','-'], 
+                          master='max-3km', reference='max-3km', title='WRF 3km Projections')
+exps_rc['3km-obs']   = EX(name='3km-obs', exps=['Observations','max-3km', 'max-3km-2100'], styles=['--','-'], # obs are extra...
+                          master='max-3km', reference='Observations', title='WRF 3km Projections')
 exps_rc['erai']      = EX(name='erai', exps=['Observations', 'erai-max_d01', 'erai-max', 'erai-3km'], # ,'erai-max','ctrl-1','max-1deg' 
                           master='erai-3km', reference='Observations', title='ERA-I Resolution')
 exps_rc['val-res']   = EX(name='val-res', exps=['Observations', 'max-ens_d01', 'max-ens', 'Ens'], # ,'erai-max','ctrl-1','max-1deg' 
@@ -234,7 +241,18 @@ plot_labels_rc['max-ens-2100']    = 'IC 2100'
 plot_labels_rc['max-ens_d01']     = 'IC (D1)'
 plot_labels_rc['erai-max_d01']    = 'ERAI 30km'  
 plot_labels_rc['erai-max']        = 'ERAI 10km'  
-plot_labels_rc['erai-3km']        = 'ERAI  3km'  
+plot_labels_rc['erai-3km']        = 'ERAI 3km'  
+plot_labels_rc['erai-3km_d01']    = 'ERAI 30km'  
+plot_labels_rc['erai-3km_d02']    = 'ERAI 10km'  
+plot_labels_rc['erai-3km_d03']    = 'ERAI  3km'  
+plot_labels_rc['max-3km']         = 'WRF 3km'  
+plot_labels_rc['max-3km_d01']     = 'WRF 30km'  
+plot_labels_rc['max-3km_d02']     = 'WRF 10km'  
+plot_labels_rc['max-3km_d03']     = 'WRF  3km'  
+plot_labels_rc['max-3km-2100']     = 'WRF (2100)'  
+plot_labels_rc['max-3km-2100_d01'] = 'WRF 30km (2100)'  
+plot_labels_rc['max-3km-2100_d02'] = 'WRF 10km (2100)'  
+plot_labels_rc['max-3km-2100_d03'] = 'WRF  3km (2100)'  
 plot_labels_rc['ctrl-ens']        = 'Alt. Ens.'  
 plot_labels_rc['ctrl-ens-2050']   = 'AE 2050' 
 plot_labels_rc['ctrl-ens-2100']   = 'AE 2100' 
