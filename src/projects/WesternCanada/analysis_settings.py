@@ -94,9 +94,9 @@ exps_rc['obs']       = EX(name='obs',exps=['CRU','WSC'], styles=['-','-.'], mast
 exps_rc['erai-3km']  = EX(name='erai-3km', exps=['Observations', 'erai-3km_d01', 'erai-3km_d02', 'erai-3km_d03'], # ,'erai-max','ctrl-1','max-1deg' 
                           master='erai-3km_d03', reference='Observations', title='WRF 3km Validation',
                           styles=['--',':','-']) # obs are extra... only WRF
-exps_rc['max-3km']   = EX(name='max-3km', exps=['max-3km', 'max-3km-2100'], styles=['--','-'], 
+exps_rc['3km-prj']   = EX(name='3km-prj', exps=['max-3km', 'max-3km-2100'], styles=['--','-'], 
                           master='max-3km', reference='max-3km', title='WRF 3km Projections')
-exps_rc['3km-obs']   = EX(name='3km-obs', exps=['Observations','max-3km', 'max-3km-2100'], styles=['--','-'], # obs are extra...
+exps_rc['max-3km']   = EX(name='max-3km', exps=['Observations','max-3km', 'max-3km-2100'], styles=['--','-'], # obs are extra...
                           master='max-3km', reference='Observations', title='WRF 3km Projections')
 exps_rc['erai']      = EX(name='erai', exps=['Observations', 'erai-max_d01', 'erai-max', 'erai-3km'], # ,'erai-max','ctrl-1','max-1deg' 
                           master='erai-3km', reference='Observations', title='ERA-I Resolution')
@@ -118,11 +118,11 @@ exps_rc['max-prj']   = EX(name='prj', exps=['max-ens','max-ens-2050','max-ens-21
                           master='max-ens', reference=None, target=None, title='Projection')
 exps_rc['max-all']   = EX(name='max-all', exps=['Observations', 'max-ens','max-ens_d01','erai-max','max-ens-2050','max-ens-2100'], # ,'erai-max','ctrl-1','max-1deg' 
                           master='max-ens', reference='Observations', target='auto', title='Validation & Projection')
-exps_rc['max-obs']   = EX(name='max', exps=['Observations','max-ens','max-ens-2050','max-ens-2100'], 
+exps_rc['max-obs']   = EX(name='max', exps=['Observations','max-ens','max-ens-2050','max-ens-2100'], styles=['--',':','-'], 
                           master='max-ens', reference='Observations', target='max-ens', title='IC Ensemble')
 exps_rc['max-sum']   = EX(name='maxs', exps=['Observations','max-ens','max-ens-2100'], 
                           master='max-ens', reference='Observations', target='max-ens', title='IC Ensemble')
-exps_rc['ctrl-obs']  = EX(name='ctrl', exps=['Observations','ctrl-ens','ctrl-ens-2050','ctrl-ens-2100'], 
+exps_rc['ctrl-obs']  = EX(name='ctrl', exps=['Observations','ctrl-ens','ctrl-ens-2050','ctrl-ens-2100'], styles=['--',':','-'],
                           master='ctrl-ens', reference='Observations', target='ctrl-ens', title='Alt. Ens.')
 exps_rc['ctrl-sum']  = EX(name='ctrl-sum', exps=['Observations','ctrl-ens','ctrl-ens-2100'], 
                           master='ctrl-ens', reference='Observations', target='ctrl-ens', title='Alt. Ens.')
@@ -382,10 +382,10 @@ clim_specifics['PSB']         = AttrDict(temp=(255,295), water=(-2.,16.))
 clim_specifics['NorthernPSB'] = AttrDict(temp=(255,295), water=(-2.,14.), precip=(-2,14))
 clim_specifics['SouthernPSB'] = AttrDict(temp=(255,295), water=(-2.,16.), precip=(-2,16))
 clim_specifics['SSR']         = AttrDict(temp=(250,305), water=(-1.5,2.5), precip=(-0.5,3.5), precip_types=(-0.5,3.5), spei=(-1.5,5.5), runoff=(-1.2,2), flux=(-1.5,3.5), flux_alt=(-0.5,3.5), evap=(-1.5,5.5))
-clim_specifics['Pacific']     = AttrDict(temp=(265,300), water=(-2,10)   , precip=(0,12)    , precip_xtrm=(0,60), precip_cesm=(0,60), precip_alt=(0,40), wetprec=(0,30), wetdays=(0,80), CWD=(0,25), CDD=(0,25))
-clim_specifics['Coast']       = AttrDict(temp=(265,300), water=(-4,6)    , precip=(-1,8)    , precip_xtrm=(0,40), precip_cesm=(0,40), precip_alt=(0,40), wetprec=(0,30), wetdays=(0,80), CWD=(0,20), CDD=(0,31))
+clim_specifics['Pacific']     = AttrDict(temp=(265,300), water=(-2,10)   , precip=(-1,12)    , precip_xtrm=(0,60), precip_cesm=(0,60), precip_alt=(0,40), wetprec=(0,30), wetdays=(0,80), CWD=(0,25), CDD=(0,25))
+clim_specifics['Coast']       = AttrDict(temp=(265,300), water=(-4,6)    , precip=(-1,10)    , precip_xtrm=(0,50), precip_cesm=(0,40), precip_alt=(0,40), wetprec=(0,30), wetdays=(0,80), CWD=(0,20), CDD=(0,31))
 clim_specifics['Plateau']     = AttrDict(temp=(255,305), water=(-2.,2.)  , precip=(-0.5,2.5), precip_xtrm=(0,20), precip_cesm=(0,20), precip_alt=(0,20), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
-clim_specifics['Prairies']    = AttrDict(temp=(250,305), water=(-1.5,1.5), precip=(-0.5,3.5), precip_xtrm=(0,30), precip_cesm=(0,30), precip_alt=(0,30), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
+clim_specifics['Prairies']    = AttrDict(temp=(250,305), water=(-1.5,1.5), precip=(-0.5,4.), precip_xtrm=(0,30), precip_cesm=(0,30), precip_alt=(0,30), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
 # add defaults to specifics
 clim_annotation = _mergeAnnotation(clim_specifics, clim_defaults)
   
