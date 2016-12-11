@@ -47,7 +47,7 @@ def _rescaleSample(smpl, loc, bs_axis=None):
   #print smpl.shape, np.nanmean(smpl), loc
   if isinstance(loc, np.ndarray):
     if np.any(loc != 1): 
-      if bs_axis is not None: loc = loc.take([0], axis=bs_axis).squeeze()
+      if bs_axis is not None: loc = loc.take([0], axis=bs_axis).squeeze() # untie bootstraps
       if loc.ndim == smpl.ndim: 
         smpl = smpl*loc
       elif loc.ndim < smpl.ndim:
@@ -155,7 +155,8 @@ def rescaleDistributions(fits, samples=None, reference=None, target=None, lscale
             assert sample is not None
             if lscale: raise NotImplementedError
             svar = sample.variables[varname]
-            svar.load(_rescaleSample(svar.getArray(), scalefactor, bs_axis=None))
+            bsi = var.axisIndex(var.bootstrap_axis) if var.bootstrap_axis else None # tie bootstraps
+            svar.load(_rescaleSample(svar.getArray(), scalefactor, bs_axis=bsi))
 #             svar *= scalefactor # in-place scaling
             svar.atts['rescaled'] = True
     # add dataset to list
