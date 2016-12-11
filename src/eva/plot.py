@@ -15,6 +15,7 @@ from geodata.misc import ArgumentError, AxisError, DatasetError
 from geodata.stats import ks_2samp, VarRV
 from plotting.figure import show # don't import getFigAx directly, to avoid recursion
 from plotting.axes import checkVarlist
+from eva.load import _rescaleSample
 
 def stationInfo(stnds, varname, name, titlestr=None, alttitle=None, lflatten=False, lmon=False,):
   ''' helper to generate an axes title with station info '''
@@ -35,21 +36,6 @@ def stationInfo(stnds, varname, name, titlestr=None, alttitle=None, lflatten=Fal
       elif titlestr: axtitle = titlestr.format(name,nstn) # axes label
       else: axtitle = "{:s} (#{:d}, WRF only)".format(name,nstn) # axes label
   return axtitle
-
-# helper method for generateStatistics
-def _rescaleSample(smpl, loc, bs_axis=None):
-  ''' helper method to rescale samples'''
-  #print smpl.shape, np.nanmean(smpl), loc
-  if isinstance(loc, np.ndarray):
-    if np.any(loc != 1): 
-      if bs_axis is not None: loc = loc.take([0], axis=bs_axis).squeeze()
-      if loc.ndim == smpl.ndim: 
-        smpl = smpl*loc
-      elif loc.ndim < smpl.ndim:
-        smpl = smpl*loc.reshape(loc.shape+(1,)*(smpl.ndim-loc.ndim)) # broadcast
-      else: raise ValueError, loc.shape
-  elif loc is not None and loc != 1: smpl = smpl*loc
-  return smpl
 
 # function to compute some statistics and print them
 def generateStatistics(varname, ens, fit, scl=None, reference=None, mode='Ratio', plot_labels=None, 
@@ -157,14 +143,16 @@ def generateStatistics(varname, ens, fit, scl=None, reference=None, mode='Ratio'
           if not (scale is None or scale == 1) and not (shape is None or shape == 1): 
             raise NotImplementedError, "Cannot rescale scale/variance and shape parameters of reference sample!"
           refsmpl = varsmpl.getArray(unmask=True, fillValue=fillValue) # only once
-          refsmpl = _rescaleSample(refsmpl, dist.atts.get('loc_factor', 1), bs_axis=bs_axis) # apply rescaling (varies, dependign on loc-type)
+          if not varsmpl.atts.get('rescaled',False):
+            refsmpl = _rescaleSample(refsmpl, dist.atts.get('loc_factor', 1), bs_axis=bs_axis) # apply rescaling (varies, dependign on loc-type)
         elif i != iref:
           scale,shape = dist.atts.get('scale_factor', 1),dist.atts.get('shape_factor', 1) 
           # perform K-S test
           if (scale is None or scale == 1) and (shape is None or shape == 1):
             # K-S test between actual samples is more realistic, and rescaling of mean is simple
             smpl = varsmpl.getArray(unmask=True, fillValue=fillValue) # only once
-            smpl = _rescaleSample(smpl, dist.atts.get('loc_factor', 1), bs_axis=bs_axis) # apply rescaling (varies, dependign on loc-type)
+            if not varsmpl.atts.get('rescaled',False):
+              smpl = _rescaleSample(smpl, dist.atts.get('loc_factor', 1), bs_axis=bs_axis) # apply rescaling (varies, dependign on loc-type)
   #           print varsmpl.dataset_name, [ax.name for ax in varsmpl.axes], smpl.shape
   #           print smpl.shape, np.nanmean(smpl), refsmpl.shape, np.nanmean(refsmpl)
   #           print lflatten, sample_axis

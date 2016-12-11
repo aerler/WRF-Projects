@@ -41,18 +41,38 @@ def extractLocation(*datasets, **kwargs):
     return newsets
 
 
+# helper method for generateStatistics
+def _rescaleSample(smpl, loc, bs_axis=None):
+  ''' helper method to rescale samples'''
+  #print smpl.shape, np.nanmean(smpl), loc
+  if isinstance(loc, np.ndarray):
+    if np.any(loc != 1): 
+      if bs_axis is not None: loc = loc.take([0], axis=bs_axis).squeeze()
+      if loc.ndim == smpl.ndim: 
+        smpl = smpl*loc
+      elif loc.ndim < smpl.ndim:
+        smpl = smpl*loc.reshape(loc.shape+(1,)*(smpl.ndim-loc.ndim)) # broadcast
+      else: raise ValueError, loc.shape
+  elif loc is not None and loc != 1: smpl = smpl*loc
+  return smpl
+
 # function to generate a rescaled dataset or ensemble of datasets
-def rescaleDistributions(datasets, reference=None, target=None, lscale=False, suffixes=None, lglobal=False):
-  ''' Rescale datasets, so that the mean of each variable matches the corresponding variable in the
+def rescaleDistributions(fits, samples=None, reference=None, target=None, lscale=False, lsourceScale=False, 
+                         suffixes=None, lglobal=False):
+  ''' Rescale fits (datasets), so that the mean of each variable matches the corresponding variable in the
       reference dataset; if a target is specified, the target scale factors are applied to all
       datasets, if target is None, each dataset is rescaled individually. '''
-  if not isinstance(datasets, (list,tuple,Ensemble)): raise TypeError
-  if isinstance(datasets,Ensemble) and isinstance(reference,basestring):
-    reference = datasets[reference]
+  if not isinstance(fits, (list,tuple,Ensemble)): raise TypeError, fits
+  if lsourceScale: 
+    if samples is None: raise ArgumentError('Need source samples for source rescaling!')
+    elif not isinstance(samples, (list,tuple,Ensemble)): raise TypeError, samples
+  elif samples is None: samples = [None]*len(fits) # avoid errors
+  if isinstance(fits,Ensemble) and isinstance(reference,basestring):
+    reference = fits[reference]
   elif not isinstance(reference,Dataset): raise TypeError
   if target is None or target == 'auto': pass # every dataset is scaled individually or based on suffixes
-  elif isinstance(datasets,Ensemble) and isinstance(target,basestring):
-    target = datasets[target]
+  elif isinstance(fits,Ensemble) and isinstance(target,basestring):
+    target = fits[target]
   elif not isinstance(target,Dataset): raise TypeError, target
   if suffixes is None: suffixes = ('-2050','2100') # suffixes for scaling heuristic
   # determine scale factor
@@ -93,8 +113,8 @@ def rescaleDistributions(datasets, reference=None, target=None, lscale=False, su
   elif target is not None: 
     scalefactors = scaleFactor(reference, target, lscale=lscale, lglobal=lglobal) 
   # loop over datasets
-  rescaled_datasets = []
-  for dataset in datasets:
+  rescaled_fits = []
+  for dataset,sample in zip(fits,samples):
     if dataset == reference:
       # determine variables that can be scaled (VarRV's)
       varlist = [varname for varname,var in dataset.variables.iteritems() if isinstance(var,VarRV)]
@@ -130,18 +150,26 @@ def rescaleDistributions(datasets, reference=None, target=None, lscale=False, su
           if lscale: rsvar = var.rescale(loc=scalefactor[0], scale=scalefactor[1])
           else: rsvar = var.rescale(loc=scalefactor)
           rescaled_dataset.addVariable(rsvar)
+          # if desired, also rescale the source/sample
+          if lsourceScale:
+            assert sample is not None
+            if lscale: raise NotImplementedError
+            svar = sample.variables[varname]
+            svar.load(_rescaleSample(svar.getArray(), scalefactor, bs_axis=None))
+#             svar *= scalefactor # in-place scaling
+            svar.atts['rescaled'] = True
     # add dataset to list
-    rescaled_datasets.append(rescaled_dataset)
+    rescaled_fits.append(rescaled_dataset)
   # put everythign into Ensemble, if input was Ensemble
-  if isinstance(datasets,Ensemble): 
-    rescaled_datasets = Ensemble(*rescaled_datasets, name=datasets.ens_name, title=datasets.ens_title)
-  # return datasets/ensemble
-  return rescaled_datasets
+  if isinstance(fits,Ensemble): 
+    rescaled_fits = Ensemble(*rescaled_fits, name=fits.ens_name, title=fits.ens_title)
+  # return fits/ensemble
+  return rescaled_fits
 
   
 def addDistFit(ensemble=None, lfit=True, lflatten=None, lrescale=False, reference=None, target=None,  
-               lbootstrap=False, nbs=30, sample_axis=None, lglobalScale=False, lcrossval=False, ncv=0.2, 
-               dist=None, dist_args=None, load_list=None, lproduct='outer', **kwargs): 
+               lbootstrap=False, nbs=30, sample_axis=None, lglobalScale=False, lsourceScale=False, 
+               lcrossval=False, ncv=0.2, dist=None, dist_args=None, load_list=None, lproduct='outer', **kwargs): 
   ''' add distribution fits to ensemble; optionally also rescale; kwargs are necessary for correct list expansion '''
   
   # find appropriate sample axis
@@ -188,7 +216,8 @@ def addDistFit(ensemble=None, lfit=True, lflatten=None, lrescale=False, referenc
       while i < len(fitens) and reference not in fitens[i]: i += 1
       if i >= len(fitens): raise ArgumentError, "Reference {:s} not found in any dataset!".format(reference)
       reference = fitens[i][reference]
-    sclens = [rescaleDistributions(fit, reference=reference, target=tgt, lglobal=lglobalScale) for fit,tgt in zip(fitens,targets)]
+    sclens = [rescaleDistributions(fit, samples=ens, reference=reference, target=tgt, 
+                                   lglobal=lglobalScale, lsourceScale=lsourceScale) for fit,ens,tgt in zip(fitens,ensemble,targets)]
   else: sclens = [None]*len(ensemble)
   
   # return results
@@ -198,8 +227,8 @@ def addDistFit(ensemble=None, lfit=True, lflatten=None, lrescale=False, referenc
 ## function to load ensembles of time-series data and compute associated distribution ensembles
 # define new load fct. (batch args: load_list=['season','prov',], lproduct='outer')
 def loadEnsembleFit(lfit=True, dist=None, dist_args=None, reference=None, target=None,
-                    lglobalScale=False, lrescale=False, lflatten=True, sample_axis=None, 
-                    lcrossval=False, ncv=0.2, lbootstrap=False, nbs=100,
+                    lglobalScale=False, lrescale=False, lsourceScale=False, lflatten=True, 
+                    sample_axis=None, lcrossval=False, ncv=0.2, lbootstrap=False, nbs=100,
                     WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, variable_list=None, 
                     load_list=None, lproduct='outer', lshort=True, datatype=None, **kwargs):
   ''' convenience function to load ensemble time-series data and compute associated distribution ensembles '''
@@ -218,13 +247,15 @@ def loadEnsembleFit(lfit=True, dist=None, dist_args=None, reference=None, target
   # generate matching datasets with fitted distributions
   fitens, sclens = addDistFit(ensemble=ensemble, lfit=lfit, dist=dist, dist_args=dist_args, lflatten=lflatten, 
                               lrescale=lrescale, reference=reference, target=target, lglobalScale=lglobalScale,   
-                              lbootstrap=lbootstrap, nbs=nbs, lcrossval=lcrossval, ncv=ncv,
-                              sample_axis=sample_axis, load_list=load_list, lproduct=lproduct, **kwargs)
+                              lsourceScale=lsourceScale, lbootstrap=lbootstrap, nbs=nbs, lcrossval=lcrossval, 
+                              ncv=ncv, sample_axis=sample_axis, load_list=load_list, lproduct=lproduct, **kwargs)
   # N.B.: kwargs are mainly needed to infer the expanded shape of the ensemble list
   
   # return ensembles (will be wrapped in a list, if BatchLoad is used)
   if lshort:
-    if lfit and lrescale: return ensemble, fitens, sclens
+    if lfit and lrescale: 
+      if lsourceScale: return ensemble, sclens
+      else: return ensemble, fitens, sclens
     elif lfit: return ensemble, fitens
     else: return ensemble
   else:
