@@ -93,9 +93,9 @@ if __name__ == '__main__':
   # WRF file types
   WRFfiletypes = [] # WRF data source
 #   WRFfiletypes += ['aux']
-#   WRFfiletypes += ['hydro']
+  WRFfiletypes += ['hydro']
 #   WRFfiletypes += ['lsm']
-  WRFfiletypes += ['srfc']
+#  WRFfiletypes += ['srfc']
 #   WRFfiletypes += ['xtrm']
 #   WRFfiletypes += ['plev3d']
   ## select variables and seasons
@@ -216,12 +216,13 @@ if __name__ == '__main__':
 #  exptitles = ['1st WRF Ens.','Alt. WRF Ens.']; res = '30km' if domain == 1 else '10km'
 #  exptitles = [ '{} ({})'.format(e,res) for e in exptitles ]
 
-## single-panel Observations
+### single-panel Observations
 #  maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
 #  #explist = ['PCIC']; figtitles = ['Precipitation Climatology (PRISM & GPCC)']; exptitles = ['']; period = None
 #  explist = ['erai-3km']; domain = 3; figtitles = ['WRF 3km (1979-1994, ERA-I)']; exptitles = ['']; period = H15
 #  #explist = ['max-3km']; domain = 3; figtitles = ['WRF 3km (1979-1992, CESM)']; exptitles = ['']; period = H12
-#  variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual']
+##  variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual']
+#  variables = ['MaxPrecip_1d']; aggregation = 'max'; WRFfiletypes = ['hydro']; lcontour = True
 #  grid = None; loutline = False; lcontour = False; case = explist[0].lower() + '_d0{:d}'.format(domain) if domain else ''
 #  seasons = ['annual','winter','summer','fall','spring']
 #  #loutline = True; case += '_outline'; lcontour = False
@@ -236,13 +237,13 @@ if __name__ == '__main__':
 #  seasons = ['annual','winter','summer','fall','spring']
 
 ## four-panel validation
-  maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
-  explist = ['erai-3km','Ens','erai-3km','erai-3km']; domain = [3,None,2,1]; period = H15
-  exptitles = ['WRF 3km (15yr, ERA-I)','CESM (100km)','WRF 10km (15yr, ERA-I)','WRF 30km (15yr, ERA-I)']; case = 'valobs'; figtitles = [None]; cbo = 'horizontal'
-#  #explist = ['max-3km']; domain = 3; figtitles = ['WRF 3km (1979-1992, CESM)']; exptitles = ['']; period = H12
-#  variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual','winter','summer','fall','spring']; lcontour = True; loutline = False
-#  lfrac = True; reflist = 'Unity'; grid = 'arb3_d03'; # grid = ['arb3_d03','cesm1x1','arb3_d02','arb3_d01',]
-  variables = ['MaxPrecip_1d']; aggregation = 'max'; WRFfiletypes = ['hydro']; seasons = ['annual','winter','summer','fall','spring']; lcontour = True; loutline = False
+#  maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
+#  explist = ['erai-3km','Ens','erai-3km','erai-3km']; domain = [3,None,2,1]; period = H15
+#  exptitles = ['WRF 3km (15yr, ERA-I)','CESM (100km)','WRF 10km (15yr, ERA-I)','WRF 30km (15yr, ERA-I)']; case = 'valobs'; figtitles = [None]; cbo = 'horizontal'
+##  #explist = ['max-3km']; domain = 3; figtitles = ['WRF 3km (1979-1992, CESM)']; exptitles = ['']; period = H12
+##  variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual','winter','summer','fall','spring']; lcontour = True; loutline = False
+##  lfrac = True; reflist = 'Unity'; grid = 'arb3_d03'; # grid = ['arb3_d03','cesm1x1','arb3_d02','arb3_d01',]
+#  variables = ['MaxPrecip_1d']; aggregation = 'max'; WRFfiletypes = ['hydro']; seasons = ['annual','winter','summer','fall','spring']; lcontour = True; loutline = False
 
 # # ERA-Interim validation
 #   explist = ['erai-v361','erai-max','erai-v361-noah',]*2; seasons = [['summer']*3+['winter']*3]
@@ -271,6 +272,7 @@ if __name__ == '__main__':
 # #   variables = ['MaxPrecip_5d']; WRFfiletypes = ['hydro']; seasons = ['annual']; aggregation = 'max'
 # #   figtitles = ['Annual Max. Pendat Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
 #   lWRFnative = True; loutline = False; lframe = True; lcontour = True; period = H15
+# #   explist = ['erai-t']; case = 'tval'; figtitles = None; domain = (1,2)
 # #   explist = ['erai-t']; case = 'tval'; figtitles = None; domain = (1,2)
 #   explist = ['g-ens',]; case = 'lake'; domain = 1
 # #   explist = [('g-ens','g-ens',)]; exptitles = 'WRF Ensemble (10km)'; case = 'prj12'; domain = (1,2)
@@ -309,22 +311,28 @@ if __name__ == '__main__':
 # #   exptitles = ['Merged Observations (10 km)']
 #   variables = ['Ts']; seasons = ['annual']; WRFfiletypes = ['srfc'] 
 
-# # observations
-#   variables = ['precip']; seasons = ['annual']
-#   explist = ['Unity']; maptype = 'lcc-bcab'; period = H15
-# #   ldiff = True; reflist = ['Unity']; maptype = 'lcc-small'
-#   exptitles = 'Annual Total Precipitation [mm/day]'; figtitles = '' # ['Merged Observations (10 km)']
-#   case = 'unity'; lsamesize = False; grid = 'arb2_d02'
-#   cluster_name = 'cluster_historical'; cluster_symbols = {i:'o' for i in xrange(10)} # '^','s'
-#   cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.iteritems()}
-#   lbasins = False; lstations = True; stations = 'EC'; case += '_stations'
+## observations
+  variables = ['precip']; seasons = ['annual']
+  explist = ['Unity']; period = H15
+#   ldiff = True; reflist = ['Unity']; maptype = 'lcc-small'
+  exptitles = 'Annual Total Precipitation [mm/day]'; figtitles = '' # ['Merged Observations (10 km)']
+  case = 'unity'; grid = 'arb2_d02'
+  lsamesize = False; lcontour = True 
+  lprovinces = True; provlist = ('AB',)
+  lbasins = True; basinlist = ('FRB','SSR'); maptype = 'lcc-prairies'
+#  cluster_name = 'cluster_historical'; cluster_symbols = {i:'o' for i in xrange(10)} # '^','s'
+#  cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.iteritems()}
+#  lbasins = False; lstations = True; stations = 'EC'; case += '_stations'
   
-# single panel plot
-#   explist = ['max-ens-2100']; maptype = 'lcc-new'; period = B15
-#   lfrac = True; reflist = ['max-ens']; refprd = H15
-#   case = 'sum'; lsamesize = False; figtitles = ''; primary_basins = ['FRB','ARB']
-#   variables = ['aSM']; seasons = ['jas']; exptitles = 'Soil Moisture Change [%]'
-#   variable_settings = ['asm_red']
+## single panel plot
+#  explist = ['max-ens-2100']; maptype = 'lcc-new'; period = B15
+#  lfrac = True; reflist = ['max-ens']; refprd = H15
+#  case = 'sum'; lsamesize = False; figtitles = ''; # primary_basins = ['FRB','ARB']
+#  WRFfiletypes = ['lsm']; variables = ['aSM']; seasons = ['jas']; exptitles = 'Soil Moisture Change [%]'
+#  variable_settings = ['asm_red']
+#  lsamesize = False; lcontour = True 
+#  lprovinces = True; provlist = ('AB',)
+#  lbasins = True; basinlist = ('FRB','SSR'); maptype = 'lcc-prairies'
 
 ## simple six-panel plot
 #  explist = ['Unity','max-ens','ctrl-ens','Ens','max-ens','ctrl-ens']; maptype = 'lcc-new'; period = H15
@@ -528,18 +536,20 @@ if __name__ == '__main__':
 
 ## large map for all domains
 #  variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True
-#  lstations = False; lbasins = False; lprovinces = True; # provlist = ('AB',) 
+#  lbasins = True; lprovinces = True; provlist = ['AB']
+#  #lstations = False; lbasins = False; lprovinces = True; # provlist = ('AB',) 
 ## figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']; exptitles = ' '
 ##  maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
 ##  explist = ['max']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
 ##  case = 'arb2_basins'; #basinlist = ('FRB','ARB','CRB','NRB'); primary_basins = ('FRB','ARB')
 ## smaller map for western Canada
-#  explist = ['max-3km']; figtitles = ['Topographic Height [km]']; exptitles = ' '
-#  period = H10; lWRFnative = True; lframe = True; loutline = False
+#  explist = ['max-3km']; domain = (1,2,3); exptitles = ['Terrain Height [km]']; figtitles = ' ' 
+#  period = H10; lWRFnative = True; lframe = False; loutline = False
+#  maptype = 'lcc-prairies'
 #  #maptype = 'lcc-arb3_d02'; case = 'large'
 #  #maptype = 'lcc-arb3_d03'; case = 'small'
-#  maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']
-#  domain = (1,); case += '_d01'
+#  #maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']
+#  #domain = (1,); case += '_d01'
 #  #domain = (1,2); case += '_d02'
 #  #domain = (1,2,3); case += '_d03'
 #  #maptype = 'ortho-NA'; case = 'global'
@@ -548,6 +558,7 @@ if __name__ == '__main__':
 ##  maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']; domain = (3,) # ; explist = ['col1-const']
 ##  case = 'frb'; basins = ('FRB',)
 ##  case = 'arb'; basins = ('ARB',)
+#  case = 'ssr'; basinlist = ('SSR',)
 
     
   if not case: raise ValueError, 'Need to define a \'case\' name!'
@@ -889,7 +900,6 @@ if __name__ == '__main__':
                                               **station_constraints)
               # loop over points
               for lon,lat,zerr,cln in zip(ecstns.stn_lon, ecstns.stn_lat, wrfstns.zs_err, ecstns[cluster_name]):
-                if cln in cluster_symbols: # and zerr <= 300
                   tmp = cluster_symbols[cln].copy()
                   xx,yy = bmap(lon, lat)
                   marker = tmp.pop('marker')
