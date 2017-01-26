@@ -60,7 +60,8 @@ def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=Non
 # define new load fct. for observations
 @BatchLoad
 def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shapes=None, varlist=None, slices=None,
-                          aggregation='mean', shapetype=None, period=None, variable_list=None, basin_list=None, **kwargs):
+                          aggregation='mean', dataset_mode='time-series', shapetype=None, period=None, lWSC=True, 
+                          variable_list=None, basin_list=None, **kwargs):
   ''' convenience function to load shape observations; the main function is to select sensible defaults 
       based on 'varlist', if no 'obs' are specified '''
   # resolve variable list (no need to maintain order)
@@ -72,15 +73,13 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
   variables = list(variables)
   # figure out default datasets
   if obs is None: obs = 'Observations'
-  lUnity = lWSC = False # lCRU =  = False
-  if obs[:3].lower() in ('obs','wsc'):    
+  lUnity = False
+  if obs[:3].lower() == 'obs':    
     if any(var in CRU_vars for var in variables): 
-      if aggregation == 'mean' and seasons is None: 
+      if ( aggregation == 'mean' and seasons is None ) or (): 
         lUnity = True; obs = []
-    if basins and any([var in WSC_vars for var in variables]): 
-      lWSC = True # should not interfere with anything else
-#       if aggregation.lower() in ('mean','std','sem','min','max') and seasons is None: 
-#         lWSC = True; obs = []
+  # load stream gage data from WSC; should not interfere with anything else
+  lWSC = basins and any([var in WSC_vars for var in variables]) and ( obs[:3].lower() in ('obs','wsc') or lWSC )
   if not isinstance(obs,(list,tuple)): obs = (obs,)
   # configure slicing (extract basin/province/shape and period)
   slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, period=period)
@@ -90,28 +89,29 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
   obsens = Ensemble(name='obs',title='Observations', basetype=Dataset)
   if len(obs) > 0: # regular operations with user-defined dataset
     try:
-      ensemble = loadEnsembleTS(names=obs, season=seasons, aggregation=aggregation, slices=slices, 
-                                varlist=variables, shape=shapetype, ldataset=False, **kwargs)
+      ensemble = loadEnsembleTS(names=obs, season=seasons, aggregation=aggregation, slices=slices, varlist=variables, 
+                                shape=shapetype, ldataset=False, dataset_mode=dataset_mode, **kwargs)
       for ens in ensemble: obsens += ens
     except EmptyDatasetError: pass 
   if lUnity: # load Unity data instead of averaging CRU data
     if period is None: period = (1979,1994)
-    dataset = loadDataset(name='Unity', varlist=variables, mode='climatology', period=period, shape=shapetype)
+    dataset = loadDataset(name='Unity', varlist=variables, mode=dataset_mode, period=period, shape=shapetype)
     if slices is not None: dataset = dataset(**noyears) # slice immediately
     obsens += dataset.load() 
-#   if lCRU: # this is basically regular operations with CRU as default
-#     obsens += loadEnsembleTS(names='CRU', season=seasons, aggregation=aggregation, slices=slices, 
-#                              varlist=variables, shape=shapetype, ldataset=True, **kwargs)    
   if lWSC: # another special case: river hydrographs
     try:
-      if seasons is None and aggregation is not None:
-        dataset = loadGageStation(basin=basins, varlist=['runoff'], aggregation=aggregation, mode='climatology', 
-                                  filetype='monthly', basin_list=basin_list)
-        if slices is not None: dataset = dataset(**noyears) # slice immediately
-      else:
-        dataset = loadGageStation(basin=basins, varlist=['runoff'], aggregation=None, mode='time-series', 
-                                  filetype='monthly', basin_list=basin_list)
-        if slices is not None: dataset = dataset(**slices) # slice immediately
+      if aggregation is not None and seasons is None: dataset_mode = 'climatology' # handled differently with gage data
+      dataset = loadGageStation(basin=basins, varlist=['runoff'], aggregation=aggregation, mode=dataset_mode, 
+                                filetype='monthly', basin_list=basin_list) # always load runoff/discharge
+      if seasons:
+        method = aggregation if aggregation.isupper() else aggregation.title() 
+        if aggregation:
+          dataset = getattr(dataset,'seasonal'+method)(season=seasons, taxis='time')
+        else:
+          dataset = dataset.seasonalSample(season=seasons)
+      if slices is not None: # slice immediately
+        if aggregation is None or dataset_mode[:4].lower() == 'clim' : dataset = dataset(**noyears)
+        else: dataset = dataset(**slices) # 'years' comes from aggregation of monthly data
       obsens += dataset.load()
     except GageStationError: 
       pass # just ignore, if gage station data is missing 
@@ -224,14 +224,14 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
 ## abuse main section for testing
 if __name__ == '__main__':
   
-  from projects.WesternCanada.analysis_settings import exps_rc, variables_rc, loadShapeObservations
-  from projects.WesternCanada.analysis_settings import loadShapeEnsemble, loadStationEnsemble
-#   from projects.GreatLakes.analysis_settings import exps_rc, variables_rc, loadShapeObservations
-#   from projects.GreatLakes.analysis_settings import loadShapeEnsemble, loadStationEnsemble
+#   from projects.WesternCanada.analysis_settings import exps_rc, variables_rc, loadShapeObservations
+#   from projects.WesternCanada.analysis_settings import loadShapeEnsemble, loadStationEnsemble
+  from projects.GreatLakes.analysis_settings import exps_rc, variables_rc, loadShapeObservations
+  from projects.GreatLakes.analysis_settings import loadShapeEnsemble, loadStationEnsemble
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
-#   test = 'obs_timeseries'
-  test = 'basin_timeseries'
+  test = 'obs_timeseries'
+#   test = 'basin_timeseries'
 #   test = 'station_timeseries'
 #   test = 'province_climatology'
   
@@ -240,16 +240,15 @@ if __name__ == '__main__':
   if test == 'obs_timeseries':
     
     # some settings for tests
-    basins = ['ARB'] #; period = (1979,1994)
-    varlist = ['runoff',]; aggregation = 'mean'
+    basins = ['GRW'] #; period = (1979,1994)
+    varlist = [['precip','runoff',]]; aggregation = 'SEM'
 
-    shpens = loadShapeObservations(obs=None, basins=basins, varlist=varlist,
+    shpens = loadShapeObservations(obs='CRU', basins=basins, varlist=varlist, 
                                    aggregation=aggregation, load_list=['basins','varlist'],)
-#                                    variable_list=variables_rc)
     # print diagnostics
     print shpens[0]; print ''
-    assert len(shpens) == len(basins) # len(seasons)
-    print shpens[0][0]
+    assert len(shpens) == len(basins)*len(varlist)
+    print shpens[0][-1]
     for i,basin in enumerate(basins): 
       #for ds in shpens[i]: print ds.atts.shape_name
 #       for ds in shpens[i]: print ds.atts.shape_name

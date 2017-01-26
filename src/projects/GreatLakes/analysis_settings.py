@@ -313,6 +313,7 @@ climds_plotargs_rc = dict()
 obs_args = AttrDict(marker='o', linestyle=' ') # 5*mpl.rcParams['lines.linewidth']
 climds_plotargs_rc['Observations'] =  obs_args
 climds_plotargs_rc['Elora']        =  obs_args
+climds_plotargs_rc['NRCan']        =  obs_args
 climds_plotargs_rc['WSC']          =  obs_args
 climds_plotargs_rc['Unity']        =  obs_args
 climds_plotargs_rc['CRU']          =  obs_args
