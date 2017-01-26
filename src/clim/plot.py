@@ -114,9 +114,11 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
         assert len(plotargs) == len(ens)
       else: plotargs = [dict()]*len(ens)
       # loop over datasets
-      for n,vards,errds,plotarg in zip(xrange(len(ens)),ens,err,plotargs):
+      for n,vards,plotarg in zip(xrange(len(ens)),ens,plotargs):
         lmaster = vards.name == master if isinstance(master, basestring) else n == imaster
         plotarg.pop('label',None) # that was just a dummy to get the length right
+        assert err.idkey == 'name', err
+        errds = err[vards.name] if vards.name in err else None # find appropriate error dataset (order may not be the same)
         bards = errds if lerrbar else None # draw as many bars as datasets
         bndds = errds if lerrbnd and lmaster else None # only draw bands for last dataset
         if any(var in vards for var in varlist):
@@ -170,10 +172,10 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
 
 if __name__ == '__main__':
   
-  from projects.WesternCanada.analysis_settings import variables_rc, clim_annotation, clim_defaults
-  from projects.WesternCanada.analysis_settings import climFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
-#   from projects.GreatLakes.analysis_settings import variables_rc, clim_annotation, clim_defaults
-#   from projects.GreatLakes.analysis_settings import climFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
+#   from projects.WesternCanada.analysis_settings import variables_rc, clim_annotation, clim_defaults
+#   from projects.WesternCanada.analysis_settings import climFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
+  from projects.GreatLakes.analysis_settings import variables_rc, clim_annotation, clim_defaults
+  from projects.GreatLakes.analysis_settings import climFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
   test = 'simple_climatology'
@@ -183,28 +185,29 @@ if __name__ == '__main__':
   # test load function for basin ensemble time-series
   if test == 'simple_climatology':
     
-    varlist = 'precip'; obs = 'GPCC'
-#     exp = 'g-ens'; exps = exps_rc[exp]; basin = 'GLB'
-    exp = 'max-prj'; exps = exps_rc[exp]; basin = 'ARB'
+    varlist = ['precip','runoff']; obs = 'CRU'
+    exp = 'g-prj'; exps = exps_rc[exp]; basin = 'GRW'
+#     exp = 'max-prj'; exps = exps_rc[exp]; basin = 'ARB'
     period = 1979,1994
 #     period = 1979,2009
     # some settings for tests
     expens = None; experr = None; obsens = None; obserr = None
     expens = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='mean',)
     experr = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='std',)
-    obsens = loadShapeObservations(obs=obs, basins=basin, varlist=varlist, aggregation='mean', period=period)
-    obserr = loadShapeObservations(obs=obs, basins=basin, varlist=varlist, aggregation='std', period=period)
+    obsens = loadShapeObservations(obs='NRCan', basins=basin, varlist=varlist, aggregation=None, dataset_mode='climatology', period=None)
+    obserr = loadShapeObservations(obs='CRU', basins=basin, varlist=varlist, aggregation='std')
     # print diagnostics
-    print expens[0] if expens else obsens[0]; print ''
+    print expens[-1] if expens else obsens[-1]; print ''
+    print experr[-1] if experr else obserr[-1]; print ''
     
     # set up plot    
     fig,ax = climFigAx((1,1), title=test, sharex=True, sharey=False, stylesheet='myggplot', lpresentation=False)    
     
     # make plots
     climPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
-              legend=2, dataset_legend=4, lprint=True, variable_list=variables_rc, 
-              annotation=clim_annotation, defaults=clim_defaults,
-              lperi=True, lparasiteMeans=True, master=exps.master, lineformats=exps.styles)
+             legend=2, dataset_legend=4, lprint=True, variable_list=variables_rc, 
+             annotation=clim_annotation, defaults=clim_defaults,
+             lperi=True, lparasiteMeans=True, master=exps.master, lineformats=exps.styles)
     # adjust margins
     fig.updateSubplots(left=0.02, right=0.015, top=0.0, bottom=-0.0)
     
