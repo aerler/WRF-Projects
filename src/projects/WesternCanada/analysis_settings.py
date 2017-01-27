@@ -6,8 +6,6 @@ A module that provides various project specific definitions, mainly related to e
 @author:  Andre R. Erler, GPL v3
 '''
 
-# external imports
-import matplotlib as mpl
 # internal imports
 import clim.load as clim_load
 import clim.plot as clim_plot
@@ -18,70 +16,22 @@ from plotting import figure
 from WRF_experiments import WRF_ens, WRF_exps
 from projects.CESM_experiments import CESM_ens, CESM_exps
 import projects.WSC_basins as wsc_basins
+# import defaults for analysis settings
+import projects.analysis_settings as default
 
 # default shape type
 default_shapetype = 'wcshp'
 # default station type
 default_stationtype = 'ecprecip'
 
-# method to add defaults to specifics
-def _mergeAnnotation(specifics, defaults):
-  annotation = dict()
-  for name,specs in specifics.iteritems():
-    atts = defaults.copy()
-    atts.update(specs)
-    annotation[name] = atts 
-  return annotation
 
 # variable collections
-wetday_extensions = clim_load.wetday_extensions[:3]
-variables_rc = dict(); VL = clim_load.VL
-# mostly for hydrological analysis
-variables_rc['temp']            = VL(vars=('T2', 'Tmax', 'Tmin'), files=('srfc','xtrm',), label='2m Temperature')
-variables_rc['tmpx']            = VL(vars=('Tmax', 'Tmin'), files=('xtrm',), label='2m Temperature')
-# variables_rc['temp']          = VL(vars=('T2',), files=('srfc',), label='2m Temperature')
-variables_rc['precip_obs']      = VL(vars=('precip', 'solprec', 'wetfrq_010'), files=('hydro',), label='Precipitation')
-variables_rc['precip_xtrm_obs'] = VL(vars=('MaxPrecip_1d', 'MaxPrecip_5d', 'wetprec_010'), files=('hydro',), label='Precipitation')
-variables_rc['precip']          = VL(vars=('precip', 'preccu', 'solprec'), files=('hydro',), label='Precipitation')
-variables_rc['precip_xtrm']     = VL(vars=('MaxPrecip_1d', 'MaxPrecip_5d', 'MaxPreccu_1d'), files=('hydro',), label='Precipitation')
-variables_rc['precip_cesm']     = VL(vars=('MaxPrecip_1d', 'MaxPreccu_1d', ), files=('hydro',), label='Precipitation')
-variables_rc['precip_alt']      = VL(vars=('MaxPrecip_1d', 'MaxPrecnc_1d', 'MaxSolprec_1d'), files=('hydro',), label='Precipitation')
-variables_rc['precip_types']    = VL(vars=('precip','preccu','precnc'), files=('hydro',), label='Water Flux')
-variables_rc['precip_net']      = VL(vars=('precip','solprec','p-et'), files=('hydro',), label='Water Flux')
-variables_rc['flux_snow']       = VL(vars=('precip','snwmlt','solprec'), files=('hydro',), label='Water Flux')
-variables_rc['flux_days']       = VL(vars=('wetfrq_010','snwmlt','p-et'), files=('hydro',), label='Water Flux')
-variables_rc['wetprec']         = VL(vars=['wetprec'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Precip.')
-variables_rc['wetdays']         = VL(vars=['wetfrq'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Ratio')
-variables_rc['CWD']             = VL(vars=['CWD'+ext for ext in wetday_extensions]+['CNWD'], files=('hydro',), label='Continuous Wet-days')
-variables_rc['CDD']             = VL(vars=['CDD'+ext for ext in wetday_extensions[:-1]]+['CNDD'], files=('hydro',), label='Continuous Dry-days')
-variables_rc['sfcflx']          = VL(vars=('p-et','snwmlt','waterflx',), files=('hydro',), label='Surface Flux')
-variables_rc['runoff']          = VL(vars=('waterflx','sfroff','runoff'), files=('lsm','hydro'), label='Runoff')
-variables_rc['runoff_flux']     = VL(vars=('runoff','snwmlt','p-et'), files=('lsm','hydro'), label='Water Flux')
-variables_rc['heat']            = VL(vars=('hfx','lhfx','rSM'),files=('srfc','lsm'), label='Energy Flux')
-variables_rc['evap']            = VL(vars=('p-et','evap','pet',), files=('hydro',), label='Water Flux')
-variables_rc['spei']            = VL(vars=('precip','evap','pet',), files=('aux','hydro',), label='Water Flux')
-variables_rc['Q2']              = VL(vars=('Q2',),files=('srfc',), label='2m Humidity')
-variables_rc['aSM']             = VL(vars=('aSM',),files=('lsm',), label='Soil Moisture') 
-variables_rc['rSM']             = VL(vars=('rSM',),files=('lsm',), label='Relative Soil Moisture')
-variables_rc['annual_flux']     = VL(vars=('waterflx',),files=('hydro',), label='Annual Net Water Forcing')
-# N.B.: Noah-MP does not have relative soil moisture and there is not much difference anyway
-# mostly for extreme value analysis
-variables_rc['hydro_eva']    = VL(vars=['precip', 'p-et', 'snwmlt', 'waterflx','sfroff','runoff','aSM'],
-                                  files=['hydro','lsm'], label='')
-variables_rc['precip_eva']   = VL(vars=['precip', 'MaxPrecip_1h', 'MaxPrecip_6h', 'MaxPrecip_1d', 'MaxPrecip_5d',
-                                        'MaxWaterflx_5d', 'wetfrq', 'CDD', 'CWD'], files=['hydro','srfc'], label='Precipitation')
-variables_rc['temp_eva']     = VL(vars=['T2', 'MaxT2', 'MaxTmax', 'MinTmin', 'MaxTmax_7d', 'MinTmin_7d', 
-                                        'frzfrq', 'CFD', 'CDFD', 'CNFD'], files=['srfc','xtrm'], label='Temperature')                          
-variables_rc['precip_short'] = VL(vars=['MaxPreccu_1h', 'MaxPrecnc_1h', 'MaxPrecip_6h', 'MaxPreccu_6h'], 
-                                  files=['xtrm','srfc'], label='MaxPrecip')
-variables_rc['precip_long']  = VL(vars=['MaxPrecip_1d', 'MaxPreccu_1d', 'MaxPrecip_5d',], 
-                                  files=['hydro'], label='MaxPrecip')
-variables_rc['precip_CDD']   = VL(vars=['CNDD','CNWD']+[var+threshold for threshold in wetday_extensions for var in 'CDD','CWD'], 
-                                  files=['hydro'], label='CDD')
+wetday_extensions = default.wetday_extensions[:] # make a copy to prevent interference
+variables_rc = default.variables_rc.copy(); VL = clim_load.VL
 
 
 # station selection criteria
-constraints_rc = dict()
+constraints_rc = default.constraints_rc.copy()
 constraints_rc['min_len'] = 15 # for valid climatology
 constraints_rc['lat'] = (45,55) 
 constraints_rc['max_zerr'] = 100 # can't use this, because we are loading EC data separately from WRF
@@ -89,7 +39,7 @@ constraints_rc['prov'] = ('BC','AB')
 constraints_rc['end_after'] = 1990
                         
 # dataset collections
-exps_rc = dict(); EX = clim_load.EX
+exps_rc = default.exps_rc.copy(); EX = clim_load.EX
 exps_rc['obs']       = EX(name='obs',exps=['CRU','WSC'], styles=['-','-.'], master='CRU', title='Observations')
 exps_rc['erai-3km']  = EX(name='erai-3km', exps=['Observations', 'erai-3km_d01', 'erai-3km_d02', 'erai-3km_d03'], # ,'erai-max','ctrl-1','max-1deg' 
                           master='erai-3km_d03', reference='Observations', title='WRF 3km Validation',
@@ -222,7 +172,7 @@ def loadStationFit(variable_list=variables_rc, default_constraints=constraints_r
 ## settings for plotting 
 
 # plot labels: translate internal names to something more presentable
-plot_labels_rc = dict()
+plot_labels_rc = default.plot_labels_rc.copy()
 # datasets
 plot_labels_rc['Unity']           = 'Uni. Obs.'
 plot_labels_rc['Observations']    = 'EC Obs.'
@@ -309,20 +259,20 @@ plot_labels_rc['aSM']             = 'aSM'
 plot_labels_rc['rSM']             = 'Soil Moist.'       
 
 ## plot styles for climatology plots
-climds_plotargs_rc = dict()
+climds_plotargs_rc = default.climds_plotargs_rc.copy()
 # observational datasets
-obs_args = AttrDict(marker='o', linestyle=' ') # 5*mpl.rcParams['lines.linewidth']
+obs_args = default.obs_args.copy()
 climds_plotargs_rc['Observations'] =  obs_args
 climds_plotargs_rc['WSC']          =  obs_args
 climds_plotargs_rc['Unity']        =  obs_args
 climds_plotargs_rc['CRU']          =  obs_args
 climds_plotargs_rc['GPCC']         =  obs_args
 # reanalysis datasets
-rea_args = AttrDict(marker='^', markersize=mpl.rcParams['lines.markersize'], linestyle=' ') # 'small'
+rea_args = default.rea_args.copy()
 climds_plotargs_rc['CFSR']         =  rea_args
 climds_plotargs_rc['NARR']         =  rea_args
 # variable settings
-variable_plotargs_rc = dict()
+variable_plotargs_rc = default.variable_plotargs_rc.copy()
 variable_plotargs_rc['MaxPrecip_1d']   = AttrDict(color = 'green')
 variable_plotargs_rc['MaxPrecip_5d']   = AttrDict(color = 'sienna')
 variable_plotargs_rc['MaxPreccu_1d']   = AttrDict(color = 'magenta')
@@ -371,7 +321,8 @@ def climFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_label
 
 ## annotation for climatology plot
 # defaults
-clim_defaults = AttrDict(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100))
+clim_defaults = default.clim_defaults.copy() # copy defaults to prevent interference, then update with regional defaults 
+clim_defaults.update(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305), wetprec=(0,25), wetfrq=(0,100))
 # specific settings
 clim_specifics = dict()
 clim_specifics['ARB']         = AttrDict(temp=(245,300), water=(-1.5,2.5), precip=(-0.5,3.5), precip_types=(-0.5,3.5), precip_net=(-1.5,3.5), spei=(-1.5,5.5), runoff=(-1.2,2), flux_net=(-1.5,3.5), flux_snow=(-0.5,3.5), evap=(-1.5,5.5), precip_xtrm=(0,18), precip_cesm=(0,18))
@@ -387,7 +338,7 @@ clim_specifics['Coast']       = AttrDict(temp=(265,300), water=(-4,6)    , preci
 clim_specifics['Plateau']     = AttrDict(temp=(255,305), water=(-2.,2.)  , precip=(-0.5,2.5), precip_xtrm=(0,20), precip_cesm=(0,20), precip_alt=(0,20), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
 clim_specifics['Prairies']    = AttrDict(temp=(250,305), water=(-1.5,1.5), precip=(-0.5,4.), precip_xtrm=(0,30), precip_cesm=(0,30), precip_alt=(0,30), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
 # add defaults to specifics
-clim_annotation = _mergeAnnotation(clim_specifics, clim_defaults)
+clim_annotation = default.mergeAnnotation(clim_specifics, clim_defaults)
   
 # wrapper with annotation defaults for climPlot
 def climPlot(annotation=None, defaults=None, variable_list=None, **kwargs):
@@ -399,7 +350,7 @@ def climPlot(annotation=None, defaults=None, variable_list=None, **kwargs):
 
 ## plot styles for EVA plots
 # dataset settings
-evads_plotargs_rc = dict()
+evads_plotargs_rc = default.evads_plotargs_rc.copy()
 evads_plotargs_rc['EC']              = AttrDict(color='black')
 evads_plotargs_rc['EC (1935)']       = AttrDict(color='blue')evads_plotargs_rc['EC (1940)']       = AttrDict(color='blue')evads_plotargs_rc['EC (1965)']       = AttrDict(color='purple')evads_plotargs_rc['EC (1995)']       = AttrDict(color='red')evads_plotargs_rc['EC (1990)']       = AttrDict(color='red')evads_plotargs_rc['Unity']           = AttrDict(color='black', marker='.')evads_plotargs_rc['Observations']    = AttrDict(color='black')evads_plotargs_rc['WSC']             = AttrDict(color='green', marker='.')evads_plotargs_rc['CRU']             = AttrDict(color='green', marker='.')evads_plotargs_rc['GPCC']            = AttrDict(color='purple', marker='.')evads_plotargs_rc['Ens']             = AttrDict(color='crimson',)evads_plotargs_rc['Ens-2050']        = AttrDict(color='darkorchid',)evads_plotargs_rc['Ens-2100']        = AttrDict(color='royalblue',)evads_plotargs_rc['MEns']            = AttrDict(color='royalblue',)    evads_plotargs_rc['MEns-2050']       = AttrDict(color='darkorchid',)   evads_plotargs_rc['MEns-2100']       = AttrDict(color='crimson',)      evads_plotargs_rc['Ctrl-A']          = AttrDict(color='royalblue',)evads_plotargs_rc['Ctrl-A-2050']     = AttrDict(color='darkorchid',)evads_plotargs_rc['Ctrl-A-2100']     = AttrDict(color='crimson',)evads_plotargs_rc['max-ens']         = AttrDict(color='blue',  )evads_plotargs_rc['max-ens-2050']    = AttrDict(color='purple',)evads_plotargs_rc['max-ens-2100']    = AttrDict(color='red',   )evads_plotargs_rc['max-ens_d01']     = AttrDict(color='green',)evads_plotargs_rc['ctrl-ens']        = AttrDict(color='royalblue',  )evads_plotargs_rc['ctrl-ens-2050']   = AttrDict(color='darkorchid',)evads_plotargs_rc['ctrl-ens-2100']   = AttrDict(color='crimson',   )evads_plotargs_rc['ctrl-ens_d01']    = AttrDict(color='forestgreen',)evads_plotargs_rc['mex-ens']         = AttrDict(color='blue')evads_plotargs_rc['mex-ens-2050']    = AttrDict(color='purple')evads_plotargs_rc['mex-ens-2100']    = AttrDict(color='red')evads_plotargs_rc['mex-ens_d01']     = AttrDict(color='purple', ) evads_plotargs_rc['phys-ens']        = AttrDict(color='forestgreen',  ) evads_plotargs_rc['phys-ens-2050']   = AttrDict(color='brown',) evads_plotargs_rc['phys-ens-2100']   = AttrDict(color='coral',    ) evads_plotargs_rc['phys-ens_d01']    = AttrDict(color='sandybrown',)evads_plotargs_rc['grell-ens']       = AttrDict(color='blue',  )evads_plotargs_rc['grell-ens-2050']  = AttrDict(color='purple',)evads_plotargs_rc['grell-ens-2100']  = AttrDict(color='red',   )evads_plotargs_rc['kf-ens']          = AttrDict(color='seagreen',  ) evads_plotargs_rc['kf-ens-2050']     = AttrDict(color='brown',) evads_plotargs_rc['kf-ens-2100']     = AttrDict(color='coral',    ) evads_plotargs_rc['max-ctrl']        = AttrDict(color='gold')evads_plotargs_rc['max-ctrl-2050']   = AttrDict(color='greenyellow',)evads_plotargs_rc['max-ctrl-2100']   = AttrDict(color='magenta',   )evads_plotargs_rc['max-ctrl_d01']    = AttrDict(color='greenyellow',)evads_plotargs_rc['max-3km']         = AttrDict(color='blue')
 evads_plotargs_rc['max-3km-2100']    = AttrDict(color='red')
@@ -408,30 +359,34 @@ evads_plotargs_rc['erai-3km']        = AttrDict(color='red')
 evads_plotargs_rc['erai-3km_d01']    = AttrDict(color='blue')
 evads_plotargs_rc['erai-3km_d02']    = AttrDict(color='green')
 evads_plotargs_rc['erai-3km_d03']    = AttrDict(color='red')
-evads_plotargs_rc['cfsr-max']        = AttrDict(color='yellow')evads_plotargs_rc['new-v361']        = AttrDict(color='crimson')evads_plotargs_rc['new-v361-2050']   = AttrDict(color='royalblue')evads_plotargs_rc['new-v361-2100']   = AttrDict(color='darkorchid')evads_plotargs_rc['max-seaice-2050'] = AttrDict(color='darkorchid')evads_plotargs_rc['max-seaice-2100'] = AttrDict(color='crimson')evads_plotargs_rc['max-1deg']        = AttrDict(color='green')evads_plotargs_rc['max-hilev']       = AttrDict(color='purple') # Marc's experiments for the Great Lakesevads_plotargs_rc['marc-g'] = AttrDict(color='blue')evads_plotargs_rc['marc-gg'] = AttrDict(color='darkcyan')evads_plotargs_rc['marc-m'] = AttrDict(color='red')evads_plotargs_rc['marc-mm'] = AttrDict(color='brown')evads_plotargs_rc['marc-t'] = AttrDict(color='gold')evads_plotargs_rc['marc-g-2050'] = AttrDict(color='purple')evads_plotargs_rc['marc-gg-2050'] = AttrDict(color='limegreen')evads_plotargs_rc['marc-m-2050'] = AttrDict(color='magenta')evads_plotargs_rc['marc-mm-2050'] = AttrDict(color='darkorange')evads_plotargs_rc['marc-t-2050'] = AttrDict(color='coral')# wrapper with custom defaults to figure creator (plotargs and label positions)def evaFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels=None, **kwargs):  if dataset_plotargs is None: dataset_plotargs = evads_plotargs_rc   if variable_plotargs is None: variable_plotargs = None  if plot_labels is None: plot_labels = plot_labels_rc  return figure.getFigAx(subplot, dataset_plotargs=dataset_plotargs, variable_plotargs=variable_plotargs,                          plot_labels=plot_labels, **kwargs)## annotation for climatology plot
-# distribution plot defaultsdist_defaults = AttrDict(heat=(-30,120), Q2=(0,20), aSM=(0.15,0.35), waterflx=(-2,12), runoff=(-2,12),                         T2=(245,305), Tmax=(250,310), Tmin=(240,300), precip=(0,20), 
-                         MaxWaterflx_5d=(5,35), CWD=(0,30), CDD=(0,50), CNWD=(0,30), CNDD=(0,80),                          CWD_002=(0,30), CDD_002=(0,50), CWD_010=(0,30), CDD_010=(0,80), 
-                         CWD_100=(0,15), CDD_100=(0,100), CWD_200=(0,10), CDD_200=(0,100),
-                         MaxPrecip_1d=(0,120), MaxPreccu_1d=(0, 40), MaxPrecnc_1d=(0,120),                          MaxSolprec_1d=(0, 40), MaxPrecip_6h=(0,150), MaxPreccu_1h=(0,500), 
-                         MaxPrecnc_1h=(0,500), MaxPrecip_5d=(0,20),)
+evads_plotargs_rc['cfsr-max']        = AttrDict(color='yellow')evads_plotargs_rc['new-v361']        = AttrDict(color='crimson')evads_plotargs_rc['new-v361-2050']   = AttrDict(color='royalblue')evads_plotargs_rc['new-v361-2100']   = AttrDict(color='darkorchid')evads_plotargs_rc['max-seaice-2050'] = AttrDict(color='darkorchid')evads_plotargs_rc['max-seaice-2100'] = AttrDict(color='crimson')evads_plotargs_rc['max-1deg']        = AttrDict(color='green')evads_plotargs_rc['max-hilev']       = AttrDict(color='purple') 
+# wrapper with custom defaults to figure creator (plotargs and label positions)def evaFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels=None, **kwargs):  if dataset_plotargs is None: dataset_plotargs = evads_plotargs_rc   if variable_plotargs is None: variable_plotargs = None  if plot_labels is None: plot_labels = plot_labels_rc  return figure.getFigAx(subplot, dataset_plotargs=dataset_plotargs, variable_plotargs=variable_plotargs,                          plot_labels=plot_labels, **kwargs)
+## annotation for climatology plot
+# distribution plot defaults
+dist_defaults = default.dist_defaults.copy(), # global defaults, followed by local defaults
+dist_defaults.update(heat=(-30,120), Q2=(0,20), aSM=(0.15,0.35), waterflx=(-2,12), runoff=(-2,12),                     T2=(245,305), Tmax=(250,310), Tmin=(240,300), precip=(0,20), 
+                     MaxWaterflx_5d=(5,35), CWD=(0,30), CDD=(0,50), CNWD=(0,30), CNDD=(0,80),                      CWD_002=(0,30), CDD_002=(0,50), CWD_010=(0,30), CDD_010=(0,80), 
+                     CWD_100=(0,15), CDD_100=(0,100), CWD_200=(0,10), CDD_200=(0,100),
+                     MaxPrecip_1d=(0,120), MaxPreccu_1d=(0, 40), MaxPrecnc_1d=(0,120),                      MaxSolprec_1d=(0, 40), MaxPrecip_6h=(0,150), MaxPreccu_1h=(0,500), 
+                     MaxPrecnc_1h=(0,500), MaxPrecip_5d=(0,20),)
 dist_specifics = dict() 
 # basins (annual)dist_specifics['ARB'] = AttrDict(MaxWaterflx_5d=(2,14), precip=(0,6), waterflx=(0,6))dist_specifics['CRB'] = AttrDict(water=(-2.5,8.5), waterflx=(2,16))dist_specifics['FRB'] = AttrDict(water=(-2.5,8.5), aSM=(0.2,0.4), precip=(0,12), waterflx=(2,14), runoff=(2,14))dist_specifics['NRB'] = AttrDict(water=(-2.,4.), runoff=(-2.,2.), flux=(-2,5.5), waterflx=(0,7))dist_specifics['PSB'] = AttrDict(water=(-2.,16.))
 dist_specifics['SSR'] = AttrDict(MaxWaterflx_5d=(2,14), precip=(0,6), waterflx=(0,6), aSM=(0.05,0.4), runoff=(0,6),)
-# clusters (seasonal)dist_specifics['coast_summer']    = AttrDict(MaxPreccu_1h=(0,500), MaxPrecnc_1h=(0,500), MaxPrecip_6h=(0,180), MaxPrecnc_6h=(0,180), MaxPreccu_6h=(0, 80), MaxPrecip_1d=(0, 80), MaxSolprec_1d=(0, 80), MaxPrecnc_1d=(0, 60), MaxPreccu_1d=(0,20), MaxPrecip_5d=(0,30), MaxSolprec_5d=(0,30), MaxWaterflx_5d=(-4,10), CWD_002=(0,40), CDD_002=(0,60), CWD_010=(0,30), CDD_010=(0,120), CNWD=(0,20), CNDD=(0,150))dist_specifics['pacific_summer']  = AttrDict(MaxPreccu_1h=(0,500), MaxPrecnc_1h=(0,500), MaxPrecip_6h=(0,180), MaxPrecnc_6h=(0,180), MaxPreccu_6h=(0, 80), MaxPrecip_1d=(0,100), MaxSolprec_1d=(0,100), MaxPrecnc_1d=(0, 90), MaxPreccu_1d=(0,25), MaxPrecip_5d=(0,50), MaxSolprec_5d=(0,30), MaxWaterflx_5d=(-4,10), CWD_002=(0,40), CDD_002=(0,60), CWD_010=(0,30), CDD_010=(0,120), CNWD=(0,20), CNDD=(0,150))dist_specifics['island_summer']   = dist_specifics['coast_summer']                                                    dist_specifics['plateau_summer']  = AttrDict(MaxPreccu_1h=(0,600), MaxPrecnc_1h=(0,600), MaxPrecip_6h=(0,180), MaxPrecnc_6h=(0,180), MaxPreccu_6h=(0,100), MaxPrecip_1d=(0, 60), MaxSolprec_1d=(0, 60), MaxPrecnc_1d=(0, 60), MaxPreccu_1d=(0,30), MaxPrecip_5d=(0,30), MaxSolprec_5d=(0,30), MaxWaterflx_5d=(-4,10), CWD_002=(0,30), CDD_002=(0,50), CWD_010=(0,45), CDD_010=(0,90), CNWD=(0,20), CNDD=(0,120))dist_specifics['north_summer']    = dist_specifics['plateau_summer']                                                  dist_specifics['prairies_summer'] = AttrDict(MaxPreccu_1h=(0,800), MaxPrecnc_1h=(0,800), MaxPrecip_6h=(0,240), MaxPrecnc_6h=(0,240), MaxPreccu_6h=(0,120), MaxPrecip_1d=(0,100), MaxSolprec_1d=(0,100), MaxPrecnc_1d=(0, 90), MaxPreccu_1d=(0,35), MaxPrecip_5d=(0,45), MaxSolprec_5d=(0,45), MaxWaterflx_5d=(-5,15), CWD_002=(0,40), CDD_002=(0,40), CWD_010=(0,45), CDD_010=(0,60), CNWD=(0,20), CNDD=(0, 90))dist_specifics['pacific_fall']    = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,700), MaxPrecip_6h=(0,240), MaxPrecnc_6h=(0,240), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0,150), MaxSolprec_1d=(0,150), MaxPrecnc_1d=(0,150), MaxPreccu_1d=(0,60), MaxPrecip_5d=(0,110), MaxSolprec_5d=(0,60), MaxWaterflx_5d=(-5,30), CWD_002=(0,80), CDD_002=(0,40), CWD_010=(0,60), CDD_010=(0, 60), CNWD=(0,80), CNDD=(0, 45))dist_specifics['coast_fall']      = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,700), MaxPrecip_6h=(0,240), MaxPrecnc_6h=(0,240), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0,150), MaxSolprec_1d=(0,150), MaxPrecnc_1d=(0,150), MaxPreccu_1d=(0,60), MaxPrecip_5d=(0,110), MaxSolprec_5d=(0,60), MaxWaterflx_5d=(-5,30), CWD_002=(0,80), CDD_002=(0,40), CWD_010=(0,60), CDD_010=(0, 60), CNWD=(0,80), CNDD=(0, 45))dist_specifics['coast_winter']    = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,700), MaxPrecip_6h=(0,240), MaxPrecnc_6h=(0,240), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0,120), MaxSolprec_1d=(0,120), MaxPrecnc_1d=(0,120), MaxPreccu_1d=(0, 0), MaxPrecip_5d=(0,60), MaxSolprec_5d=(0,60), MaxWaterflx_5d=(-5,30), CWD_002=(0,80), CDD_002=(0,40), CWD_010=(0,60), CDD_010=(0, 60), CNWD=(0,80), CNDD=(0, 45))dist_specifics['pacific_winter']  = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,700), MaxPrecip_6h=(0,240), MaxPrecnc_6h=(0,240), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0,150), MaxSolprec_1d=(0,150), MaxPrecnc_1d=(0,150), MaxPreccu_1d=(0, 0), MaxPrecip_5d=(0,110), MaxSolprec_5d=(0,60), MaxWaterflx_5d=(-5,30), CWD_002=(0,80), CDD_002=(0,40), CWD_010=(0,60), CDD_010=(0, 60), CNWD=(0,80), CNDD=(0, 45))dist_specifics['island_winter']   = dist_specifics['coast_winter']                                                    dist_specifics['island_fall']     = dist_specifics['coast_fall']                                                        dist_specifics['plateau_winter']  = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,400), MaxPrecip_6h=(0,120), MaxPrecnc_6h=(0,120), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0, 40), MaxSolprec_1d=(0, 40), MaxPrecnc_1d=(0, 40), MaxPreccu_1d=(0, 0), MaxPrecip_5d=(0,22), MaxSolprec_5d=(0,22), MaxWaterflx_5d=(-5,15), CWD_002=(0,40), CDD_002=(0,40), CWD_010=(0,45), CDD_010=(0,90), CNWD=(0,60), CNDD=(0, 45))dist_specifics['north_winter']    = dist_specifics['plateau_winter']                                                  dist_specifics['prairies_winter'] = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,250), MaxPrecip_6h=(0, 90), MaxPrecnc_6h=(0, 90), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0, 40), MaxSolprec_1d=(0, 40), MaxPrecnc_1d=(0, 40), MaxPreccu_1d=(0, 0), MaxPrecip_5d=(0,22), MaxSolprec_5d=(0,22), MaxWaterflx_5d=(-4,10), CWD_002=(0,30), CDD_002=(0,40), CWD_010=(0,45), CDD_010=(0,90), CNWD=(0,60), CNDD=(0, 45))dist_specifics['BC_summer']       = dist_specifics['coast_summer']dist_specifics['AB_summer']       = dist_specifics['prairies_summer'] dist_specifics['BC_winter']       = dist_specifics['coast_winter']dist_specifics['AB_winter']       = dist_specifics['prairies_winter']dist_annotation = _mergeAnnotation(dist_specifics, dist_defaults)
+# clusters (seasonal)dist_specifics['coast_summer']    = AttrDict(MaxPreccu_1h=(0,500), MaxPrecnc_1h=(0,500), MaxPrecip_6h=(0,180), MaxPrecnc_6h=(0,180), MaxPreccu_6h=(0, 80), MaxPrecip_1d=(0, 80), MaxSolprec_1d=(0, 80), MaxPrecnc_1d=(0, 60), MaxPreccu_1d=(0,20), MaxPrecip_5d=(0,30), MaxSolprec_5d=(0,30), MaxWaterflx_5d=(-4,10), CWD_002=(0,40), CDD_002=(0,60), CWD_010=(0,30), CDD_010=(0,120), CNWD=(0,20), CNDD=(0,150))dist_specifics['pacific_summer']  = AttrDict(MaxPreccu_1h=(0,500), MaxPrecnc_1h=(0,500), MaxPrecip_6h=(0,180), MaxPrecnc_6h=(0,180), MaxPreccu_6h=(0, 80), MaxPrecip_1d=(0,100), MaxSolprec_1d=(0,100), MaxPrecnc_1d=(0, 90), MaxPreccu_1d=(0,25), MaxPrecip_5d=(0,50), MaxSolprec_5d=(0,30), MaxWaterflx_5d=(-4,10), CWD_002=(0,40), CDD_002=(0,60), CWD_010=(0,30), CDD_010=(0,120), CNWD=(0,20), CNDD=(0,150))dist_specifics['island_summer']   = dist_specifics['coast_summer']                                                    dist_specifics['plateau_summer']  = AttrDict(MaxPreccu_1h=(0,600), MaxPrecnc_1h=(0,600), MaxPrecip_6h=(0,180), MaxPrecnc_6h=(0,180), MaxPreccu_6h=(0,100), MaxPrecip_1d=(0, 60), MaxSolprec_1d=(0, 60), MaxPrecnc_1d=(0, 60), MaxPreccu_1d=(0,30), MaxPrecip_5d=(0,30), MaxSolprec_5d=(0,30), MaxWaterflx_5d=(-4,10), CWD_002=(0,30), CDD_002=(0,50), CWD_010=(0,45), CDD_010=(0,90), CNWD=(0,20), CNDD=(0,120))dist_specifics['north_summer']    = dist_specifics['plateau_summer']                                                  dist_specifics['prairies_summer'] = AttrDict(MaxPreccu_1h=(0,800), MaxPrecnc_1h=(0,800), MaxPrecip_6h=(0,240), MaxPrecnc_6h=(0,240), MaxPreccu_6h=(0,120), MaxPrecip_1d=(0,100), MaxSolprec_1d=(0,100), MaxPrecnc_1d=(0, 90), MaxPreccu_1d=(0,35), MaxPrecip_5d=(0,45), MaxSolprec_5d=(0,45), MaxWaterflx_5d=(-5,15), CWD_002=(0,40), CDD_002=(0,40), CWD_010=(0,45), CDD_010=(0,60), CNWD=(0,20), CNDD=(0, 90))dist_specifics['pacific_fall']    = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,700), MaxPrecip_6h=(0,240), MaxPrecnc_6h=(0,240), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0,150), MaxSolprec_1d=(0,150), MaxPrecnc_1d=(0,150), MaxPreccu_1d=(0,60), MaxPrecip_5d=(0,110), MaxSolprec_5d=(0,60), MaxWaterflx_5d=(-5,30), CWD_002=(0,80), CDD_002=(0,40), CWD_010=(0,60), CDD_010=(0, 60), CNWD=(0,80), CNDD=(0, 45))dist_specifics['coast_fall']      = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,700), MaxPrecip_6h=(0,240), MaxPrecnc_6h=(0,240), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0,150), MaxSolprec_1d=(0,150), MaxPrecnc_1d=(0,150), MaxPreccu_1d=(0,60), MaxPrecip_5d=(0,110), MaxSolprec_5d=(0,60), MaxWaterflx_5d=(-5,30), CWD_002=(0,80), CDD_002=(0,40), CWD_010=(0,60), CDD_010=(0, 60), CNWD=(0,80), CNDD=(0, 45))dist_specifics['coast_winter']    = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,700), MaxPrecip_6h=(0,240), MaxPrecnc_6h=(0,240), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0,120), MaxSolprec_1d=(0,120), MaxPrecnc_1d=(0,120), MaxPreccu_1d=(0, 0), MaxPrecip_5d=(0,60), MaxSolprec_5d=(0,60), MaxWaterflx_5d=(-5,30), CWD_002=(0,80), CDD_002=(0,40), CWD_010=(0,60), CDD_010=(0, 60), CNWD=(0,80), CNDD=(0, 45))dist_specifics['pacific_winter']  = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,700), MaxPrecip_6h=(0,240), MaxPrecnc_6h=(0,240), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0,150), MaxSolprec_1d=(0,150), MaxPrecnc_1d=(0,150), MaxPreccu_1d=(0, 0), MaxPrecip_5d=(0,110), MaxSolprec_5d=(0,60), MaxWaterflx_5d=(-5,30), CWD_002=(0,80), CDD_002=(0,40), CWD_010=(0,60), CDD_010=(0, 60), CNWD=(0,80), CNDD=(0, 45))dist_specifics['island_winter']   = dist_specifics['coast_winter']                                                    dist_specifics['island_fall']     = dist_specifics['coast_fall']                                                        dist_specifics['plateau_winter']  = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,400), MaxPrecip_6h=(0,120), MaxPrecnc_6h=(0,120), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0, 40), MaxSolprec_1d=(0, 40), MaxPrecnc_1d=(0, 40), MaxPreccu_1d=(0, 0), MaxPrecip_5d=(0,22), MaxSolprec_5d=(0,22), MaxWaterflx_5d=(-5,15), CWD_002=(0,40), CDD_002=(0,40), CWD_010=(0,45), CDD_010=(0,90), CNWD=(0,60), CNDD=(0, 45))dist_specifics['north_winter']    = dist_specifics['plateau_winter']                                                  dist_specifics['prairies_winter'] = AttrDict(MaxPreccu_1h=(0, 10), MaxPrecnc_1h=(0,250), MaxPrecip_6h=(0, 90), MaxPrecnc_6h=(0, 90), MaxPreccu_6h=(0,  0), MaxPrecip_1d=(0, 40), MaxSolprec_1d=(0, 40), MaxPrecnc_1d=(0, 40), MaxPreccu_1d=(0, 0), MaxPrecip_5d=(0,22), MaxSolprec_5d=(0,22), MaxWaterflx_5d=(-4,10), CWD_002=(0,30), CDD_002=(0,40), CWD_010=(0,45), CDD_010=(0,90), CNWD=(0,60), CNDD=(0, 45))dist_specifics['BC_summer']       = dist_specifics['coast_summer']dist_specifics['AB_summer']       = dist_specifics['prairies_summer'] dist_specifics['BC_winter']       = dist_specifics['coast_winter']dist_specifics['AB_winter']       = dist_specifics['prairies_winter']dist_annotation = default.mergeAnnotation(dist_specifics, dist_defaults)
 # wrapper with custom annotation defaults for distPlot
 def distPlot(annotation=None, defaults=None, variable_list=None, **kwargs):
   if annotation is None: annotation = dist_annotation
   if defaults is None: defaults = dist_defaults
   return eva_plot.distPlot(annotation=annotation, defaults=defaults, **kwargs)
 
-# quantile plot defaultsquant_defaults = AttrDict(heat=(-30,120), Q2=(0,20), aSM=(0.15,0.25), waterflx=(-2,12),                           T2=(245,305), precip = (10,30),  runoff=(-2,12),                          MaxPrecip_6h  = (120,260), MaxPrecip_1d = (50,200), MaxPrecip_7d = (0,30),                           MaxWaterflx_5d = (0,50), CDD=(17.5,42.5), CWD=(20,100))quant_specifics = dict()quant_specifics['ARB'] = AttrDict(waterflx=(1.5,4.5), MaxWaterflx_5d = (5,15), aSM=(0.16,0.21))quant_specifics['CRB'] = AttrDict(waterflx=(5,12), aSM=(0.2,0.28))quant_specifics['FRB'] = AttrDict(waterflx=(5,13), runoff=(5,12), MaxWaterflx_5d = (10,40), aSM=(0.2,0.28))quant_specifics['NRB'] = AttrDict(waterflx=(1,4), aSM=(0.16,0.21))quant_specifics['PSB'] = AttrDict(waterflx=(6,14), MaxWaterflx_5d = (10,40), aSM=(0.2,0.28))
+# quantile plot defaults
+quant_defaults = default.quant_defaults.copy() # global defaults, followed by local defaults
+quant_defaults.update(heat=(-30,120), Q2=(0,20), aSM=(0.15,0.25), waterflx=(-2,12),                       T2=(245,305), precip = (10,30),  runoff=(-2,12),                      MaxPrecip_6h  = (120,260), MaxPrecip_1d = (50,200), MaxPrecip_7d = (0,30),                       MaxWaterflx_5d = (0,50), CDD=(17.5,42.5), CWD=(20,100))quant_specifics = dict()quant_specifics['ARB'] = AttrDict(waterflx=(1.5,4.5), MaxWaterflx_5d = (5,15), aSM=(0.16,0.21))quant_specifics['CRB'] = AttrDict(waterflx=(5,12), aSM=(0.2,0.28))quant_specifics['FRB'] = AttrDict(waterflx=(5,13), runoff=(5,12), MaxWaterflx_5d = (10,40), aSM=(0.2,0.28))quant_specifics['NRB'] = AttrDict(waterflx=(1,4), aSM=(0.16,0.21))quant_specifics['PSB'] = AttrDict(waterflx=(6,14), MaxWaterflx_5d = (10,40), aSM=(0.2,0.28))
 quant_specifics['SSR'] = AttrDict(waterflx=(1.5,4.5), runoff=(1,3), MaxWaterflx_5d = (5,15), aSM=(0.16,0.21))
-quant_specifics['coast_summer']    = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(200,1000), MaxPrecip_6h=( 75,300), MaxPreccu_6h=( 50,200), MaxPrecip_1d=(30,120), MaxPrecnc_1d=(30,120), MaxPreccu_1d=( 0, 60), MaxPrecip_5d = (10,30), MaxWaterflx_5d = (40,120)) # coast_summer  quant_specifics['pacific_summer']  = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(200,1000), MaxPrecip_6h=( 75,300), MaxPreccu_6h=( 50,200), MaxPrecip_1d=(30,120), MaxPrecnc_1d=(30,120), MaxPreccu_1d=( 0, 60), MaxPrecip_5d = (10,30), MaxWaterflx_5d = (40,120)) # pacific_summer quant_specifics['island_summer']   = quant_specifics['coast_summer']                                                                                                                                                                                                    # island_summer quant_specifics['plateau_summer']  = AttrDict(MaxPreccu_1h=(300,1200), MaxPrecnc_1h=(300,1200), MaxPrecip_6h=( 90,280), MaxPreccu_6h=( 80,220), MaxPrecip_1d=(30,120), MaxPrecnc_1d=(15, 90), MaxPreccu_1d=(15, 60), MaxPrecip_5d = (10,30), MaxWaterflx_5d = (40,120)) # plateau_summer quant_specifics['north_summer']    = quant_specifics['plateau_summer']                                                                                                                                                                                                  # north_summer quant_specifics['prairies_summer'] = AttrDict(MaxPreccu_1h=(400,1800), MaxPrecnc_1h=(400,1600), MaxPrecip_6h=(150,320), MaxPreccu_6h=(120,260), MaxPrecip_1d=(60,160), MaxPrecnc_1d=(30,120), MaxPreccu_1d=(20, 80), MaxPrecip_5d = (10,40), MaxWaterflx_5d = (40,120)) # prairies_summer quant_specifics['pacific_fall']    = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(300, 900), MaxPrecip_6h=(150,320), MaxPreccu_6h=(120,260), MaxPrecip_1d=(90,290), MaxPrecnc_1d=(90,240), MaxPreccu_1d=(30,120), MaxPrecip_5d = (30,90), MaxWaterflx_5d = (40,120)) # pacific_fall  quant_specifics['coast_fall']    = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(300, 900), MaxPrecip_6h=(150,320), MaxPreccu_6h=(120,260), MaxPrecip_1d=(90,290), MaxPrecnc_1d=(90,240), MaxPreccu_1d=(30,120), MaxPrecip_5d = (30,90), MaxWaterflx_5d = (40,120)) # pacific_fall  quant_specifics['coast_winter']    = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(300, 900), MaxPrecip_6h=(150,320), MaxPreccu_6h=(120,260), MaxPrecip_1d=(60,200), MaxPrecnc_1d=(60,200), MaxPreccu_1d=( 0,  0), MaxPrecip_5d = (20,50), MaxWaterflx_5d = (40,120)) # coast_winter  quant_specifics['pacific_winter']  = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(300, 900), MaxPrecip_6h=(150,320), MaxPreccu_6h=(120,260), MaxPrecip_1d=(90,240), MaxPrecnc_1d=(90,240), MaxPreccu_1d=( 0,  0), MaxPrecip_5d = (30,90), MaxWaterflx_5d = (40,120)) # pacific_winter                                                  quant_specifics['island_winter']   = quant_specifics['coast_winter']                                                                                                                                                                                                    # island_winter quant_specifics['plateau_winter']  = AttrDict(MaxPreccu_1h=(200,1200), MaxPrecnc_1h=(100, 500), MaxPrecip_6h=( 60,180), MaxPreccu_6h=( 30,150), MaxPrecip_1d=(15, 75), MaxPrecnc_1d=(15, 75), MaxPreccu_1d=( 0,  0), MaxPrecip_5d = ( 3,22), MaxWaterflx_5d = (40,120)) # plateau_winter quant_specifics['north_winter']    = quant_specifics['plateau_winter']                                                                                                                                                                                                  # north_winter quant_specifics['prairies_winter'] = AttrDict(MaxPreccu_1h=(200,1600), MaxPrecnc_1h=( 50, 300), MaxPrecip_6h=( 50,120), MaxPreccu_6h=( 20,100), MaxPrecip_1d=(15, 75), MaxPrecnc_1d=(15, 75), MaxPreccu_1d=( 0,  0), MaxPrecip_5d = ( 3,22), MaxWaterflx_5d = (40,120)) # prairies_winter quant_specifics['BC'] = AttrDict(MaxPreccu_1h=( 0,1500), MaxPrecip_1d=(60,180))quant_specifics['AB'] = AttrDict(MaxPrecip_1d=(15,75))quant_specifics['ON'] = AttrDict(MaxPrecip_1d=(10,80))quant_annotation = _mergeAnnotation(quant_specifics, quant_defaults)
+quant_specifics['coast_summer']    = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(200,1000), MaxPrecip_6h=( 75,300), MaxPreccu_6h=( 50,200), MaxPrecip_1d=(30,120), MaxPrecnc_1d=(30,120), MaxPreccu_1d=( 0, 60), MaxPrecip_5d = (10,30), MaxWaterflx_5d = (40,120)) # coast_summer  quant_specifics['pacific_summer']  = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(200,1000), MaxPrecip_6h=( 75,300), MaxPreccu_6h=( 50,200), MaxPrecip_1d=(30,120), MaxPrecnc_1d=(30,120), MaxPreccu_1d=( 0, 60), MaxPrecip_5d = (10,30), MaxWaterflx_5d = (40,120)) # pacific_summer quant_specifics['island_summer']   = quant_specifics['coast_summer']                                                                                                                                                                                                    # island_summer quant_specifics['plateau_summer']  = AttrDict(MaxPreccu_1h=(300,1200), MaxPrecnc_1h=(300,1200), MaxPrecip_6h=( 90,280), MaxPreccu_6h=( 80,220), MaxPrecip_1d=(30,120), MaxPrecnc_1d=(15, 90), MaxPreccu_1d=(15, 60), MaxPrecip_5d = (10,30), MaxWaterflx_5d = (40,120)) # plateau_summer quant_specifics['north_summer']    = quant_specifics['plateau_summer']                                                                                                                                                                                                  # north_summer quant_specifics['prairies_summer'] = AttrDict(MaxPreccu_1h=(400,1800), MaxPrecnc_1h=(400,1600), MaxPrecip_6h=(150,320), MaxPreccu_6h=(120,260), MaxPrecip_1d=(60,160), MaxPrecnc_1d=(30,120), MaxPreccu_1d=(20, 80), MaxPrecip_5d = (10,40), MaxWaterflx_5d = (40,120)) # prairies_summer quant_specifics['pacific_fall']    = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(300, 900), MaxPrecip_6h=(150,320), MaxPreccu_6h=(120,260), MaxPrecip_1d=(90,290), MaxPrecnc_1d=(90,240), MaxPreccu_1d=(30,120), MaxPrecip_5d = (30,90), MaxWaterflx_5d = (40,120)) # pacific_fall  quant_specifics['coast_fall']    = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(300, 900), MaxPrecip_6h=(150,320), MaxPreccu_6h=(120,260), MaxPrecip_1d=(90,290), MaxPrecnc_1d=(90,240), MaxPreccu_1d=(30,120), MaxPrecip_5d = (30,90), MaxWaterflx_5d = (40,120)) # pacific_fall  quant_specifics['coast_winter']    = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(300, 900), MaxPrecip_6h=(150,320), MaxPreccu_6h=(120,260), MaxPrecip_1d=(60,200), MaxPrecnc_1d=(60,200), MaxPreccu_1d=( 0,  0), MaxPrecip_5d = (20,50), MaxWaterflx_5d = (40,120)) # coast_winter  quant_specifics['pacific_winter']  = AttrDict(MaxPreccu_1h=(200,1000), MaxPrecnc_1h=(300, 900), MaxPrecip_6h=(150,320), MaxPreccu_6h=(120,260), MaxPrecip_1d=(90,240), MaxPrecnc_1d=(90,240), MaxPreccu_1d=( 0,  0), MaxPrecip_5d = (30,90), MaxWaterflx_5d = (40,120)) # pacific_winter                                                  quant_specifics['island_winter']   = quant_specifics['coast_winter']                                                                                                                                                                                                    # island_winter quant_specifics['plateau_winter']  = AttrDict(MaxPreccu_1h=(200,1200), MaxPrecnc_1h=(100, 500), MaxPrecip_6h=( 60,180), MaxPreccu_6h=( 30,150), MaxPrecip_1d=(15, 75), MaxPrecnc_1d=(15, 75), MaxPreccu_1d=( 0,  0), MaxPrecip_5d = ( 3,22), MaxWaterflx_5d = (40,120)) # plateau_winter quant_specifics['north_winter']    = quant_specifics['plateau_winter']                                                                                                                                                                                                  # north_winter quant_specifics['prairies_winter'] = AttrDict(MaxPreccu_1h=(200,1600), MaxPrecnc_1h=( 50, 300), MaxPrecip_6h=( 50,120), MaxPreccu_6h=( 20,100), MaxPrecip_1d=(15, 75), MaxPrecnc_1d=(15, 75), MaxPreccu_1d=( 0,  0), MaxPrecip_5d = ( 3,22), MaxWaterflx_5d = (40,120)) # prairies_winter quant_specifics['BC'] = AttrDict(MaxPreccu_1h=( 0,1500), MaxPrecip_1d=(60,180))quant_specifics['AB'] = AttrDict(MaxPrecip_1d=(15,75))quant_specifics['ON'] = AttrDict(MaxPrecip_1d=(10,80))quant_annotation = default.mergeAnnotation(quant_specifics, quant_defaults)
 
 # wrapper with custom annotation defaults for distPlot
 def quantPlot(annotation=None, defaults=None, variable_list=None, **kwargs):
   if annotation is None: annotation = quant_annotation
   if defaults is None: defaults = quant_defaults
   return eva_plot.quantPlot(annotation=annotation, defaults=defaults, **kwargs)
-
-if __name__ == '__main__':      pass

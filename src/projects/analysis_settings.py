@@ -25,8 +25,8 @@ default_shapetype = 'shpavg'
 default_stationtype = 'ecprecip'
 
 # method to add defaults to specifics
-def _mergeAnnotation(specifics, defaults):
-  annotation = dict()
+def mergeAnnotation(specifics, defaults):
+  annotation = AttrDict()
   for name,specs in specifics.iteritems():
     atts = defaults.copy()
     atts.update(specs)
@@ -234,7 +234,7 @@ clim_defaults = AttrDict(heat=(-30,130), Q2=(0,20), aSM=(0.1,0.5), temp=(245,305
 # specific settings
 clim_specifics = dict()
 # add defaults to specifics
-clim_annotation = _mergeAnnotation(clim_specifics, clim_defaults)
+clim_annotation = mergeAnnotation(clim_specifics, clim_defaults)
 
 # wrapper with annotation defaults for climPlot
 def climPlot(annotation=None, defaults=None, variable_list=None, **kwargs):
@@ -267,7 +267,7 @@ def evaFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels
 # specific settings
 dist_specifics = dict() 
 # add defaults to specifics
-dist_annotation = _mergeAnnotation(dist_specifics, dist_defaults)
+dist_annotation = mergeAnnotation(dist_specifics, dist_defaults)
 
 # wrapper with custom annotation defaults for distPlot
 def distPlot(annotation=None, defaults=None, variable_list=None, **kwargs):
@@ -278,7 +278,7 @@ def distPlot(annotation=None, defaults=None, variable_list=None, **kwargs):
 # quantile plot defaultsquant_defaults = AttrDict(heat=(-30,120), Q2=(0,20), aSM=(0.15,0.25), waterflx=(-2,12),                           T2=(245,305), precip = (10,30),  runoff=(-2,12),                          MaxPrecip_6h  = (120,260), MaxPrecip_1d = (50,200), MaxPrecip_7d = (0,30),                           MaxWaterflx_5d = (0,50), CDD=(17.5,42.5), CWD=(20,100))# specific settings
 quant_specifics = dict() 
 # add defaults to specifics
-quant_annotation = _mergeAnnotation(quant_specifics, quant_defaults)
+quant_annotation = mergeAnnotation(quant_specifics, quant_defaults)
 
 # wrapper with custom annotation defaults for distPlot
 def quantPlot(annotation=None, defaults=None, variable_list=None, **kwargs):
