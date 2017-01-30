@@ -15,9 +15,12 @@ import eva.load as eva_load
 import eva.plot as eva_plot
 from geodata.misc import AttrDict
 from plotting import figure
-from WRF_experiments import WRF_ens, WRF_exps
-from projects.CESM_experiments import CESM_ens, CESM_exps
-import projects.WSC_basins as wsc_basins
+# from WRF_experiments import WRF_ens, WRF_exps
+# from projects.CESM_experiments import CESM_ens, CESM_exps
+# import projects.WSC_basins as wsc_basins
+# N.B.: importing WRF_experments here causes a circular import, because WRF_experiments loads the projects.x.__init__ modules
+#       which themselves import this module via the local analysis_settings (importing without __init__ is not possible)
+
 
 # default shape type
 default_shapetype = 'shpavg'
@@ -98,25 +101,26 @@ exps_rc['cesm-ens']  = EX(name='cesm-ens', exps=['MEns','MEns-2050','MEns-2100']
                          master='MEns', reference='MEns', target='MEns', title='CESM Projection')
 
 # set default variable atts for load functions from clim_load
-def loadShapeObservations(variable_list=variables_rc, shapetype=default_shapetype, basin_list=wsc_basins.basin_list, **kwargs):
+def loadShapeObservations(variable_list=variables_rc, shapetype=default_shapetype, basin_list=None, **kwargs):
   ''' wrapper for clim.load.loadShapeObservations that sets variable lists '''
   return clim_load.loadShapeObservations(variable_list=variable_list, shapetype=shapetype, basin_list=basin_list, **kwargs)
-def loadShapeEnsemble(variable_list=variables_rc, shapetype=default_shapetype, basin_list=wsc_basins.basin_list, **kwargs):
+def loadShapeEnsemble(variable_list=variables_rc, shapetype=default_shapetype, basin_list=None, **kwargs):
   ''' wrapper for clim.load.loadShapeEnsemble that sets experiment and variable lists '''
-  return clim_load.loadShapeEnsemble(variable_list=variable_list, shapetype=shapetype, WRF_exps=WRF_exps, 
-                                     CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, basin_list=basin_list, **kwargs)
+  return clim_load.loadShapeEnsemble(variable_list=variable_list, shapetype=shapetype, WRF_exps=None, 
+                                     CESM_exps=None, WRF_ens=None, CESM_ens=None, basin_list=None, **kwargs)
 def loadStationEnsemble(variable_list=variables_rc, stationtype=default_stationtype, **kwargs):
   ''' wrapper for clim.load.loadStationEnsemble that sets experiment and variable lists '''
-  return clim_load.loadStationEnsemble(variable_list=variable_list, stationtype=stationtype, WRF_exps=WRF_exps, 
-                                       CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
-def loadShapeFit(variable_list=variables_rc, shapetype=default_shapetype, basin_list=wsc_basins.basin_list, **kwargs):
+  return clim_load.loadStationEnsemble(variable_list=variable_list, stationtype=stationtype, WRF_exps=None, 
+                                       CESM_exps=None, WRF_ens=None, CESM_ens=None, basin_list=None, **kwargs)
+def loadShapeFit(variable_list=variables_rc, shapetype=default_shapetype, basin_list=None, **kwargs):
   ''' wrapper for eva.load.loadShapeEnsemble that sets experiment and variable lists '''
-  return eva_load.loadShapeFit(variable_list=variable_list, shapetype=shapetype, WRF_exps=WRF_exps, 
-                               CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, basin_list=basin_list, **kwargs)
+  return eva_load.loadShapeFit(variable_list=variable_list, shapetype=shapetype, WRF_exps=None, 
+                               CESM_exps=None, WRF_ens=None, CESM_ens=None, basin_list=None, **kwargs)
 def loadStationFit(variable_list=variables_rc, default_constraints=constraints_rc, stationtype=default_stationtype, **kwargs):
   ''' wrapper for eva.load.loadStationEnsemble that sets experiment and variable lists etc. '''
   return eva_load.loadStationFit(variable_list=variable_list, default_constraints=default_constraints, stationtype=stationtype,
-                                 WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+                                 WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, **kwargs)
+# N.B.: for a specific project the WRF/CESM_exps/ens variables and basin_list should be hardcoded with the appropriate lists
 
 
 ## settings for plotting 

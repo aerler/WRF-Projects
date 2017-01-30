@@ -38,6 +38,7 @@ constraints_rc['max_zerr'] = 100 # can't use this, because we are loading EC dat
 constraints_rc['prov'] = ('BC','AB')
 constraints_rc['end_after'] = 1990
                         
+                        
 # dataset collections
 exps_rc = default.exps_rc.copy(); EX = clim_load.EX
 exps_rc['obs']       = EX(name='obs',exps=['CRU','WSC'], styles=['-','-.'], master='CRU', title='Observations')
@@ -273,43 +274,6 @@ climds_plotargs_rc['CFSR']         =  rea_args
 climds_plotargs_rc['NARR']         =  rea_args
 # variable settings
 variable_plotargs_rc = default.variable_plotargs_rc.copy()
-variable_plotargs_rc['MaxPrecip_1d']   = AttrDict(color = 'green')
-variable_plotargs_rc['MaxPrecip_5d']   = AttrDict(color = 'sienna')
-variable_plotargs_rc['MaxPreccu_1d']   = AttrDict(color = 'magenta')
-variable_plotargs_rc['MaxPrecnc_1d']   = AttrDict(color = 'grey')
-variable_plotargs_rc['MaxSolprec_1d']  = AttrDict(color = 'blue')
-variable_plotargs_rc['MaxWaterFlx_1d'] = AttrDict(color = 'blue')
-variable_plotargs_rc['T2']             = AttrDict(color = 'green')
-variable_plotargs_rc['precip']         = AttrDict(color = 'green')
-variable_plotargs_rc['liqprec']        = AttrDict(color = 'cyan')
-variable_plotargs_rc['solprec']        = AttrDict(color = 'blue')
-variable_plotargs_rc['dryprec']        = AttrDict(color = 'green')
-variable_plotargs_rc['preccu']         = AttrDict(color = 'magenta')
-variable_plotargs_rc['precnc']         = AttrDict(color = 'coral')
-variable_plotargs_rc['evap']           = AttrDict(color = 'red')
-variable_plotargs_rc['p-et']           = AttrDict(color = 'red')
-variable_plotargs_rc['pet']            = AttrDict(color = 'purple')
-variable_plotargs_rc['waterflx']       = AttrDict(color = 'dodgerblue') # 'dodgerblue'
-variable_plotargs_rc['snwmlt']         = AttrDict(color = 'orange')
-variable_plotargs_rc['runoff']         = AttrDict(color = 'purple')
-variable_plotargs_rc['ugroff']         = AttrDict(color = 'coral')
-variable_plotargs_rc['sfroff']         = AttrDict(color = 'green')
-variable_plotargs_rc['Tmax']           = AttrDict(color = 'red')
-variable_plotargs_rc['Tmin']           = AttrDict(color = 'blue')
-variable_plotargs_rc['hfx']            = AttrDict(color = 'red')
-variable_plotargs_rc['lhfx']           = AttrDict(color = 'purple')
-variable_plotargs_rc['Q2']             = AttrDict(color = 'blue')
-variable_plotargs_rc['aSM']            = AttrDict(color = 'coral')
-variable_plotargs_rc['rSM']            = AttrDict(color = 'green')
-variable_plotargs_rc['CNWD']           = AttrDict(color = 'green')
-variable_plotargs_rc['CNDD']           = AttrDict(color = 'green')
-# add wet-day threshold dependent variables    
-wetday_colors = ['steelblue', 'purple', 'crimson', 'orange']   
-for wdext,color in zip(clim_load.wetday_extensions,wetday_colors):
-  variable_plotargs_rc['wetprec'+wdext] = AttrDict(color = color)
-  variable_plotargs_rc['wetfrq' +wdext] = AttrDict(color = color)
-  variable_plotargs_rc['CWD'+wdext]     = AttrDict(color = color)
-  variable_plotargs_rc['CDD' +wdext]    = AttrDict(color = color)
 
 # wrapper with custom defaults to figure creator (plotargs and label positions)
 def climFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels=None, xtop=None, yright=None, **kwargs):
@@ -363,7 +327,7 @@ evads_plotargs_rc['cfsr-max']        = AttrDict(color='yellow')evads_plotargs_r
 # wrapper with custom defaults to figure creator (plotargs and label positions)def evaFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels=None, **kwargs):  if dataset_plotargs is None: dataset_plotargs = evads_plotargs_rc   if variable_plotargs is None: variable_plotargs = None  if plot_labels is None: plot_labels = plot_labels_rc  return figure.getFigAx(subplot, dataset_plotargs=dataset_plotargs, variable_plotargs=variable_plotargs,                          plot_labels=plot_labels, **kwargs)
 ## annotation for climatology plot
 # distribution plot defaults
-dist_defaults = default.dist_defaults.copy(), # global defaults, followed by local defaults
+dist_defaults = default.dist_defaults.copy() # global defaults, followed by local defaults
 dist_defaults.update(heat=(-30,120), Q2=(0,20), aSM=(0.15,0.35), waterflx=(-2,12), runoff=(-2,12),                     T2=(245,305), Tmax=(250,310), Tmin=(240,300), precip=(0,20), 
                      MaxWaterflx_5d=(5,35), CWD=(0,30), CDD=(0,50), CNWD=(0,30), CNDD=(0,80),                      CWD_002=(0,30), CDD_002=(0,50), CWD_010=(0,30), CDD_010=(0,80), 
                      CWD_100=(0,15), CDD_100=(0,100), CWD_200=(0,10), CDD_200=(0,100),

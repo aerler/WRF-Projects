@@ -178,8 +178,8 @@ if __name__ == '__main__':
   from projects.GreatLakes.analysis_settings import climFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
-  test = 'simple_climatology'
-#   test = 'advanced_climatology'
+#   test = 'simple_climatology'
+  test = 'advanced_climatology'
   
   
   # test load function for basin ensemble time-series
@@ -196,6 +196,8 @@ if __name__ == '__main__':
     experr = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='std',)
     obsens = loadShapeObservations(obs='NRCan', basins=basin, varlist=varlist, aggregation=None, dataset_mode='climatology', period=None)
     obserr = loadShapeObservations(obs='CRU', basins=basin, varlist=varlist, aggregation='std')
+#     obsens = loadShapeObservations(obs='Unity', basins=basin, varlist=varlist, aggregation='mean')
+#     obserr = loadShapeObservations(obs='Unity', basins=basin, varlist=varlist, aggregation='std')
     # print diagnostics
     print expens[-1] if expens else obsens[-1]; print ''
     print experr[-1] if experr else obserr[-1]; print ''
@@ -215,8 +217,8 @@ if __name__ == '__main__':
   elif test == 'advanced_climatology':
     
     # some settings for tests
-#     exp = 'g-ens'; exps = exps_rc[exp]; basins = ['GLB']
-    exp = 'max-prj'; exps = exps_rc[exp]; basins = ['ARB']
+    exp = 'g-prj'; exps = exps_rc[exp]; basins = ['GRW']
+#     exp = 'max-prj'; exps = exps_rc[exp]; basins = ['ARB']
     obs = 'GPCC'; varlists = ['flux_snow','precip']
     period = 1979,1994
 #     period = 1979,2009
@@ -225,8 +227,10 @@ if __name__ == '__main__':
     kwargs = dict(basins=basins, varlist=varlists, load_list=['basins','varlist'], lproduct='outer')
     expenses = loadShapeEnsemble(names=exps.exps, aggregation='mean', **kwargs)
     experres = loadShapeEnsemble(names=exps.exps, aggregation='SEM', **kwargs)
-    obsenses = loadShapeObservations(obs=obs, aggregation='mean', period=None, **kwargs)
-    obserres = loadShapeObservations(obs=obs, aggregation='SEM', period=None, **kwargs)
+    obsenses = loadShapeObservations(obs='NRCan', aggregation=None, dataset_mode='climatology', period=None, **kwargs)
+    obserres = loadShapeObservations(obs='CRU', aggregation='SEM', **kwargs)
+#     obsenses = loadShapeObservations(obs=obs, aggregation='mean', period=None, **kwargs)
+#     obserres = loadShapeObservations(obs=obs, aggregation='SEM', period=None, **kwargs)
     # print diagnostics
     print expenses[0] if expenses else obsenses[0]; print ''
     

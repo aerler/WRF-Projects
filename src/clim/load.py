@@ -10,7 +10,7 @@ Utility functions related to loading basin-averaged data to support hydrological
 from geodata.base import Ensemble, Dataset
 from utils.misc import defaultNamedtuple
 from datasets.common import loadEnsembleTS, BatchLoad, loadDataset, shp_params, stn_params
-from geodata.misc import ArgumentError, EmptyDatasetError
+from geodata.misc import ArgumentError, EmptyDatasetError, VariableError
 from datasets.WSC import GageStationError, loadGageStation
 
 # some definitions
@@ -44,7 +44,7 @@ def _configSlices(slices=None, basins=None, provs=None, shapes=None, period=None
     slices['years'] = period
   return slices
 
-def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=None):
+def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=None, lforceList=True):
   # resolve variable list and filetype (no need to maintain order)
   if isinstance(varlist,basestring): varlist = [varlist]
   variables = set(params) # set required parameters
@@ -53,7 +53,10 @@ def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=Non
     if name in variable_list: 
       variables.update(variable_list[name].vars)
       filetypes.update(variable_list[name].files)
-    else: variables.add(name) 
+    elif lforceList: 
+      raise VariableError("Variable list '{}' does not exist.".format(name))
+    else: 
+      variables.add(name) 
   # return variables and filetypes as list
   return list(variables), list(filetypes)
 
@@ -61,7 +64,7 @@ def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=Non
 @BatchLoad
 def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shapes=None, varlist=None, slices=None,
                           aggregation='mean', dataset_mode='time-series', shapetype=None, period=None, lWSC=True, 
-                          variable_list=None, basin_list=None, **kwargs):
+                          variable_list=None, basin_list=None, lforceList=True, **kwargs):
   ''' convenience function to load shape observations; the main function is to select sensible defaults 
       based on 'varlist', if no 'obs' are specified '''
   # resolve variable list (no need to maintain order)
@@ -69,6 +72,7 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
   variables = set(shp_params)
   for name in varlist: 
     if name in variable_list: variables.update(variable_list[name].vars)
+    elif lforceList: raise VariableError("Variable list '{}' does not exist.".format(name))
     else: variables.add(name)
   variables = list(variables)
   # figure out default datasets
@@ -124,7 +128,7 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
 def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, shapes=None, varlist=None, 
                       aggregation='mean', slices=None, shapetype=None, filetypes=None, period=None, 
                       variable_list=None, WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, 
-                      basin_list=None, **kwargs):
+                      basin_list=None, lforceList=True, **kwargs):
   ''' convenience function to load shape ensembles (in Ensemble container) or observations; kwargs are passed to loadEnsembleTS '''
   names = list(names) # make a new list (copy)
   # separate observations
@@ -144,7 +148,7 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, shapes=
   if len(names): # has to be a list
     # prepare arguments
     variables, filetypes = _resolveVarlist(varlist=varlist, filetypes=filetypes, 
-                                            params=shp_params, variable_list=variable_list)
+                                          params=shp_params, variable_list=variable_list, lforceList=lforceList)
     # configure slicing (extract basin/province/shape and period)
     slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, period=period)
     # load ensemble (no iteration here)
@@ -162,7 +166,7 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, shapes=
 def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, varlist=None, aggregation='mean', 
                         constraints=None, filetypes=None, cluster_name=None, stationtype=None, 
                         load_list=None, lproduct='outer', WRF_exps=None, CESM_exps=None, WRF_ens=None, 
-                        CESM_ens=None, variable_list=None, default_constraints=None, **kwargs):
+                        CESM_ens=None, variable_list=None, default_constraints=None, lforceList=True, **kwargs):
   ''' convenience function to load station data for ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
   if load_list: load_list = load_list[:] # use a copy, since the list may be modified
  
@@ -179,7 +183,7 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
   if clusters and not cluster_name: raise ArgumentError
   params = stn_params  + [cluster_name] if cluster_name else stn_params # need to load cluster_name!
   variables, filetypes =  _resolveVarlist(varlist=varlist, filetypes=filetypes, 
-                                          params=params, variable_list=variable_list)
+                                          params=params, variable_list=variable_list, lforceList=lforceList)
   # prepare arguments
   if provs or clusters:
     constraints = default_constraints.copy() if constraints is None else constraints.copy()
@@ -230,8 +234,8 @@ if __name__ == '__main__':
   from projects.GreatLakes.analysis_settings import loadShapeEnsemble, loadStationEnsemble
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
-  test = 'obs_timeseries'
-#   test = 'basin_timeseries'
+#   test = 'obs_timeseries'
+  test = 'basin_timeseries'
 #   test = 'station_timeseries'
 #   test = 'province_climatology'
   
@@ -240,7 +244,7 @@ if __name__ == '__main__':
   if test == 'obs_timeseries':
     
     # some settings for tests
-    basins = ['GRW'] #; period = (1979,1994)
+    basins = ['SSR'] #; period = (1979,1994)
     varlist = [['precip','runoff',]]; aggregation = 'SEM'
 
     shpens = loadShapeObservations(obs='CRU', basins=basins, varlist=varlist, 
@@ -259,9 +263,11 @@ if __name__ == '__main__':
   elif test == 'basin_timeseries':
     
     # some settings for tests
-    exp = 'ctrl-obs'; exps = exps_rc[exp].exps; #exps = ['Unity']
-    basins = ['SSR']; seasons = ['summer','winter']
-    varlist = ['runoff']; aggregation = 'mean'; red = dict(i_s='mean')
+#     exp = 'ctrl-obs'; basins = ['SSR'] 
+    exp = 'g-prj'; basins = ['GRW'] 
+    exps = exps_rc[exp].exps; #exps = ['Unity']
+    seasons = ['summer','winter']
+    varlist = ['precip']; aggregation = 'mean'; red = dict(i_s='mean')
     
     shpens = loadShapeEnsemble(names=exps, basins=basins, seasons=seasons, varlist=varlist, 
                                aggregation=aggregation, filetypes=None, reduction=red, 
