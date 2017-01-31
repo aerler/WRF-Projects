@@ -12,6 +12,7 @@ import matplotlib as mpl
 import numpy as np
 # internal imports
 from datasets.common import name_of_month, BatchLoad
+from geodata.base import Ensemble
 from geodata.misc import ArgumentError
 from plotting.figure import show # don't import getFigAx directly, to avoid recursion
 from geodata.base import Dataset
@@ -114,11 +115,12 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
         assert len(plotargs) == len(ens)
       else: plotargs = [dict()]*len(ens)
       # loop over datasets
-      for n,vards,plotarg in zip(xrange(len(ens)),ens,plotargs):
+      for n,vards,errds,plotarg in zip(xrange(len(ens)),ens,err,plotargs):
         lmaster = vards.name == master if isinstance(master, basestring) else n == imaster
         plotarg.pop('label',None) # that was just a dummy to get the length right
-        assert err.idkey == 'name', err
-        errds = err[vards.name] if vards.name in err else None # find appropriate error dataset (order may not be the same)
+        if isinstance(err, Ensemble):
+          assert err.idkey == 'name', err
+          errds = err[vards.name] if vards.name in err else None # find appropriate error dataset (order may not be the same)
         bards = errds if lerrbar else None # draw as many bars as datasets
         bndds = errds if lerrbnd and lmaster else None # only draw bands for last dataset
         if any(var in vards for var in varlist):

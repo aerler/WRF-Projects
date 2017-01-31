@@ -27,6 +27,7 @@ project_folder_pattern = '{PROJECT_FOLDER:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s
 # plotting parameters for HGS simulations
 hgs_plotargs = dict() 
 hgs_plotargs['Observations'] = dict(color='#959595') # gray
+hgs_plotargs['NRCan']        = dict(color='green') # gray
 # hgs_plotargs['Observations'] = dict(color='#68615E') # dark gray
 hgs_plotargs['Transient']    = dict(color='#62A1C6') # blue
 hgs_plotargs['Steady-State'] = dict(color='#AAA2D8') # purple
@@ -54,7 +55,7 @@ exp_aliases = {'erai-g_d00':'erai-g3_d01','erai-t_d00':'erai-t3_d01',
                'g-ensemble_d00':'g3-ensemble_d01','t-ensemble_d00':'t3-ensemble_d01',
                'g-ensemble-2050_d00':'g3-ensemble-2050_d01','t-ensemble-2050_d00':'t3-ensemble-2050_d01',
                'g-ensemble-2100_d00':'g3-ensemble-2100_d01','t-ensemble-2100_d00':'t3-ensemble-2100_d01'}
-
+obs_datasets = ['NRCan','CRU']
 ## wrapper functions to load HGS station timeseries with GRW parameters
 
 # simple dataset loader
@@ -75,26 +76,28 @@ def loadHGS_StnTS(station=main_gage, varlist=None, varatts=None, name=None, titl
   if project_folder is None and project is not None: 
     project_folder = '{:s}/{:s}/'.format(hgs.root_folder,project)
   # figure out experiment name and domain
-  if domain is not None: 
+  if domain is not None:
+    lWRF = True 
     exp_name = experiment
     experiment = '{:s}_d{:02d}'.format(experiment,domain) # used to determine aliases
   elif experiment in WRF_exps: # i.e. if domain is None
+    lWRF = True
     exp_name = experiment
     domain = WRF_exps[experiment].domains # innermost domain
     experiment = '{:s}_d{:02d}'.format(experiment,domain) # used to determine aliases
-  else:
-    exp_name = experiment[:-4] # cut off domain string
-    domain = int(experiment[-2:]) # last two digits
-  # extract resolution for later use
-  if domain == 0: resolution = '90km'
-  elif domain == 1: resolution = '30km'
-  elif domain == 2: resolution = '10km'
-  else: raise NotImplementedError("Unsupported domain number '{:d}'.".format(domain))
-  if 'resolution' not in kwargs: kwargs['resolution'] = resolution # for name expansion (will be capitalized)
-  # resolve aliases (always return full string format)
-  if experiment in exp_aliases: 
+  elif experiment in exp_aliases:
+    lWRF = True 
+    # resolve aliases (always return full string format)
     experiment = exp_aliases[experiment] # resolve alias
     exp_name = experiment[:-4]; domain = int(experiment[-2:]) # always full string format
+  else: lWRF = False # likely not a WRF experiment
+  if lWRF:
+    # extract resolution for later use
+    if domain == 0: resolution = '90km'
+    elif domain == 1: resolution = '30km'
+    elif domain == 2: resolution = '10km'
+    else: raise NotImplementedError("Unsupported domain number '{:d}'.".format(domain))
+    if 'resolution' not in kwargs: kwargs['resolution'] = resolution # for name expansion (will be capitalized)
   # add period extensions of necessary/possible
   if isinstance(period, (tuple,list)):
     start_year, end_year = period
@@ -102,17 +105,24 @@ def loadHGS_StnTS(station=main_gage, varlist=None, varatts=None, name=None, titl
     if start_year > 2080 and exp_name[-5:] != '-2100': exp_name += '-2100'
     elif start_year > 2040 and exp_name[-5:] != '-2050': exp_name += '-2050'
   else: start_year = end_year = None # not used
-  # reassemble experiment name with domain extension
-  experiment = '{:s}_d{:02d}'.format(exp_name,domain)
   # validate WRF experiment
-  if exp_name not in WRF_exps: raise DatasetError("Unknown WRF experiment: '{}'".format(exp_name))
-  exp = WRF_exps[exp_name]
-  if domain > exp.domains or domain < 1: raise DatasetError("Invalid domain number: {}".format(domain))
-  # get start date from experiment (if not defined in period)
-  start_date = tuple(int(d) for d in exp.begindate.split('-')) # year,month,day tuple  
-  if start_year is None: start_year = start_date[0]
-  if end_year is None: end_year = start_date[0] + period # period length
-  else: period = end_year - start_date[0]
+  if lWRF: 
+    # reassemble experiment name with domain extension
+    experiment = '{:s}_d{:02d}'.format(exp_name,domain)
+    exp = WRF_exps[exp_name]
+    if domain > exp.domains or domain < 1: raise DatasetError("Invalid domain number: {}".format(domain))
+    # get start date from experiment (if not defined in period)
+    if start_year is None: 
+      start_date = tuple(int(d) for d in exp.begindate.split('-')) # year,month,day tuple
+      start_year = start_date[0]
+    else:
+      start_date = start_year  
+  else:
+    # assume observationa data, with time axis origin in Jan 1979
+    if start_year is None: start_year = 1979 
+    start_date = start_year
+  if end_year is None: end_year = start_year + period # period length
+  else: period = end_year - start_year
   assert isinstance(period,(np.integer,int)), period
   # construct period information  
   prdstr = '{:04d}-{:04d}'.format(start_year, end_year)
@@ -140,9 +150,10 @@ def loadHGS_StnTS(station=main_gage, varlist=None, varatts=None, name=None, titl
   if start_year is not None and end_year is not None:
     dataset = dataset(years=(start_year,end_year))
   # add WRF attributes to dataset
-  for key,value in exp.__dict__.items():
-    dataset.atts['WRF_'+key] = value
-  dataset.atts['WRF_resolution'] = resolution
+  if lWRF:
+    for key,value in exp.__dict__.items():
+      dataset.atts['WRF_'+key] = value
+    dataset.atts['WRF_resolution'] = resolution
   return dataset
 
 # an enhanced ensemble loader
@@ -198,7 +209,7 @@ if __name__ == '__main__':
   elif test_mode == 'dataset':
 
     # load single dataset
-    ds = loadHGS_StnTS(experiment='t-ensemble', domain=0, period=(2090,2100), 
+    ds = loadHGS_StnTS(experiment='NRCan', domain=None, period=(1984,1994), 
                        clim_mode='periodic', lpad=True)
     print(ds)
     print(ds.discharge[:])
