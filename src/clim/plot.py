@@ -115,12 +115,16 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
         assert len(plotargs) == len(ens)
       else: plotargs = [dict()]*len(ens)
       # loop over datasets
-      for n,vards,errds,plotarg in zip(xrange(len(ens)),ens,err,plotargs):
+      if len(ens) > len(err) and isinstance(err,(list,tuple)): 
+        err = list(err) + [None]*(len(ens)-len(err)) # extend error fields, so that 
+      for n,vards,plotarg in zip(xrange(len(ens)),ens,plotargs):
         lmaster = vards.name == master if isinstance(master, basestring) else n == imaster
         plotarg.pop('label',None) # that was just a dummy to get the length right
         if isinstance(err, Ensemble):
           assert err.idkey == 'name', err
           errds = err[vards.name] if vards.name in err else None # find appropriate error dataset (order may not be the same)
+        else:
+          errds = err[n] if n < len(err) else None
         bards = errds if lerrbar else None # draw as many bars as datasets
         bndds = errds if lerrbnd and lmaster else None # only draw bands for last dataset
         if any(var in vards for var in varlist):
@@ -180,8 +184,8 @@ if __name__ == '__main__':
   from projects.GreatLakes.analysis_settings import climFigAx, exps_rc, loadShapeEnsemble, loadShapeObservations
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
-#   test = 'simple_climatology'
-  test = 'advanced_climatology'
+  test = 'simple_climatology'
+#   test = 'advanced_climatology'
   
   
   # test load function for basin ensemble time-series
