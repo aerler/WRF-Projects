@@ -47,8 +47,12 @@ annotation_dict['lcc-glb'] = dict(scale=(-90.5, 39.5, -82.5, 46, 400), lat_full=
 ## Lambert Conic Conformal - Larger Map with Great Lakes region
 annotation_dict['lcc-ongl'] = dict(scale=(-95, 38, -82.5, 46, 600), lat_full=[30,40,50,60], lat_half=[45,55,65], 
                              lon_full=[-70,-80,-90,-100], lon_half=[-75,-85,-95])
-## Lambert Conic Conformal - Continental-Scale North America/Canada
-annotation_dict['lcc-can'] = dict(scale=(-125, 17.5, -82.5, 46, 2000), 
+## Lambert Conic Conformal - Continental-Scale Canada
+annotation_dict['lcc-can'] = dict(scale=(-131, 29, -82.5, 46, 2000), 
+                                  lat_full=[20,40,60,80], lat_half=[30,50,70], 
+                                  lon_full=[-180,-150,-120,-90,-60,-30], lon_half=[-165,-135,-105,-75,-45,])
+## Lambert Conic Conformal - Continental-Scale North America
+annotation_dict['lcc-NA'] = dict(scale=(-125, 17.5, -82.5, 46, 2000), 
                                   lat_full=[10,20,30,40,50,60,70,80], lat_half=[5,15,25,35,45,55,65,75], 
                                   lon_full=[-180,-160,-140,-120,-100,-80,-60,-40,-20,0], lon_half=[-170,-150,-130,-110,-90,-70,-50,-30,-10])
 ## Orthographic Projection
@@ -79,8 +83,11 @@ projection_dict['lcc-glb'] = dict(projection='lcc', lat_0=46, lon_0=-83, lat_1=4
 ## Lambert Conic Conformal - Larger Map with Great Lakes region
 projection_dict['lcc-ongl'] = dict(projection='lcc', lat_0=48, lon_0=-85, lat_1=45, rsphere=rsphere,
               width=270*10e3, height=265*10e3, area_thresh = 1e3, resolution='l')
-## Lambert Conic Conformal - Continental-Scale North America/Canada
-projection_dict['lcc-can'] = dict(projection='lcc', lat_0=45.5, lon_0=-106.5, lat_1=50, rsphere=rsphere,
+## Lambert Conic Conformal - Continental-Scale Canada
+projection_dict['lcc-can'] = dict(projection='lcc', lat_0=53, lon_0=-106.5, lat_1=53, rsphere=rsphere,
+              width=7.77e6, height=6.2e6, area_thresh = 1e8, resolution='l')
+## Lambert Conic Conformal - Continental-Scale North America
+projection_dict['lcc-NA'] = dict(projection='lcc', lat_0=45.5, lon_0=-106.5, lat_1=50, rsphere=rsphere,
               width=7.77e6, height=7.77e6, area_thresh = 1e8, resolution='l')
 ## Orthographic Projection
 projection_dict['ortho-can'] = dict(projection='ortho', lat_0 = 45, lon_0 = -107, resolution = 'l', area_thresh = 1000.)

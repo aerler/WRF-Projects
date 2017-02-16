@@ -27,7 +27,8 @@ project_folder_pattern = '{PROJECT_FOLDER:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s
 # plotting parameters for HGS simulations
 hgs_plotargs = dict() 
 hgs_plotargs['Observations'] = dict(color='#959595') # gray
-hgs_plotargs['NRCan']        = dict(color='green') # gray
+hgs_plotargs['NRCan']        = dict(color='green')
+hgs_plotargs['NRCan (old)']  = dict(color='green', linestyle='--')
 # hgs_plotargs['Observations'] = dict(color='#68615E') # dark gray
 hgs_plotargs['Transient']    = dict(color='#62A1C6') # blue
 hgs_plotargs['Steady-State'] = dict(color='#AAA2D8') # purple

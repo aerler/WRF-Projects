@@ -66,7 +66,7 @@ if __name__ == '__main__':
   outlinewidth = 1.; outlinecolor = 'k'
   cbn = None # colorbar levels
   figuretype = None
-  lsamesize = True
+  lsamesize = False # same figure size, regardless of panels (square)
   l3pan = False # make a single column of a three-column figure
   lminor = True # draw minor tick mark labels
   locean = False # mask continent in white and omit country borders
@@ -95,7 +95,7 @@ if __name__ == '__main__':
 #   WRFfiletypes += ['aux']
 #   WRFfiletypes += ['hydro']
 #   WRFfiletypes += ['lsm']
-  WRFfiletypes += ['srfc']
+#   WRFfiletypes += ['srfc']
 #   WRFfiletypes += ['xtrm']
 #   WRFfiletypes += ['plev3d']
   ## select variables and seasons
@@ -161,7 +161,7 @@ if __name__ == '__main__':
   
   ## case settings
     
-  folder = figure_folder
+  folder = figure_folder; lsamesize = False
   lpickle = True # load projection from file or recompute
   lprint = True # write plots to disk using case as a name tag
 #   maptype = 'lcc-grw'; lstations = False; lbasins = True; domain = 2
@@ -203,23 +203,31 @@ if __name__ == '__main__':
 # #   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
 # #   case = tag+'val_narr'; reflist = 'NARR'
 
-# ERA-Interim validation
-  explist = ['erai-v36','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]
-#   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
-  domain = 1; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag
-#   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
-#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
-  exptitles = ['ERA-I V3.6','ERA-I G', 'ERA-I T']*2; res = '30km' if domain == 1 else '10km'
-#   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
-#   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
-  exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
-#   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
-  variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-#   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
-#   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
-  period = H10; refprd = H10; case = tag+'val_new'; variable_settings = None; reflist = 'Unity' # validation 
-#   case = tag+'val_narr'; reflist = 'NARR'
+# # ERA-Interim validation
+#   explist = ['erai-v36','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]
+# #   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
+#   domain = 1; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag
+# #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
+# #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+#   exptitles = ['ERA-I V3.6','ERA-I G', 'ERA-I T']*2; res = '30km' if domain == 1 else '10km'
+# #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
+# #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
+#   exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
+# #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
+#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
+# #   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
+#   period = H10; refprd = H10; case = tag+'val_new'; variable_settings = None; reflist = 'Unity' # validation 
+# #   case = tag+'val_narr'; reflist = 'NARR'
 
+# snow observations
+  explist = ['NRCan']*2; maptype = 'lcc-can'; period = '1980-2010'
+  #ldiff = True; reflist = ['Unity']; 
+  exptitles = ['NRCan Snow 1960-1990','CMC SWE 1998-2015',]
+  variables = [('snow','snow_CMC',)]; seasons = ['annual']
+#   variables = [('liqwatflx','liqwatflx_CMC')]; seasons = ['spring']
+#   seasons = ['summer','fall','winter','spring']
+  case = 'CMC'; lbasins = False; lprovinces = False; figtitle = ''
 
 # single-panel validation with larger map
 # #   case = 'ongl'; maptype = 'lcc-ongl'; lstations = False; lbasins = False; lprovinces = False

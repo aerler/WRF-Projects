@@ -104,7 +104,8 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(0,1,26)
     elif var == 'snow': # snow (liquid water equivalent) 
       lmskocn = True; clbl = '%2.0f' # kg/m^2
-      clevs = np.linspace(0,200,41)
+      if season in ('winter',): clevs = np.linspace(0,200,41)
+      else: clevs = np.linspace(0,100,41)
     elif var == 'snowh': # snow (depth/height) 
       lmskocn = True; clbl = '%2.1f' # m
       clevs = np.linspace(0,2,41)
@@ -161,8 +162,8 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(0,100,41); clbl = '%2.0f'
     elif var in ('snwmlt', 'runoff', 'ugroff', 'sfroff'): # moisture fluxes (kg /(m^2 s))
       # clevs = np.linspace(-3,22,51); clbl = '%02.1f'
-      clevs = np.linspace(0,5,25); clbl = '%02.1f'; cmap = mpl.cm.YlGnBu
-    elif var in ('precip','precipnc') or var[:7] in ('dryprec','wetprec'): # total precipitation
+      clevs = np.linspace(0,5,26); clbl = '%02.1f'; cmap = mpl.cm.YlGnBu
+    elif var in ('precip','precipnc','liqwatflx') or var[:7] in ('dryprec','wetprec'): # total precipitation
 #       if season in ('winter','fall'): clevs = np.linspace(0,20,41); clbl = '%2.1f' # mm/day
 #       elif season in ('summer','spring'): clevs = np.linspace(0,8,17); clbl = '%2.0f' # mm/day
       clevs = np.linspace(0,5,26); clbl = '%2.0f' # mm/day
@@ -296,8 +297,8 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
           margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05)
           caxpos = [0.91, 0.05, 0.02, 0.9]
         if cbo == 'horizontal': 
-          margins = dict(bottom=0.075, left=0.07, right=.97, top=.95, hspace=0.05, wspace=0.05)
-          caxpos = [0.05, 0.05, 0.9, 0.03]
+          margins = dict(bottom=0.085, left=0.07, right=.97, top=.91, hspace=0.05, wspace=0.1)
+          caxpos = [0.05, 0.065, 0.9, 0.03]
       else:
         margins = dict(bottom=0.055, left=0.085, right=.975, top=.95, hspace=0.05, wspace=0.05)
     elif subplot == (2,1):
