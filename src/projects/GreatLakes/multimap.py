@@ -224,10 +224,12 @@ if __name__ == '__main__':
   explist = ['NRCan']*2; maptype = 'lcc-can'; period = '1980-2010'
   #ldiff = True; reflist = ['Unity']; 
   exptitles = ['NRCan Snow 1960-1990','CMC SWE 1998-2015',]
-  variables = [('snow','snow_CMC',)]; seasons = ['annual']
+  case = 'CMC'; lbasins = False; lprovinces = False
+  grid = 'glb1_d01'; case += '_30km'
+  variables = [('snow','snow_CMC',)]; seasons = ['annual']; 
+  aggregation = 'max'; variable_settings = ['snow_max',]*2; case += '_max'
 #   variables = [('liqwatflx','liqwatflx_CMC')]; seasons = ['spring']
 #   seasons = ['summer','fall','winter','spring']
-  case = 'CMC'; lbasins = False; lprovinces = False; figtitle = ''
 
 # single-panel validation with larger map
 # #   case = 'ongl'; maptype = 'lcc-ongl'; lstations = False; lbasins = False; lprovinces = False
@@ -695,6 +697,12 @@ if __name__ == '__main__':
           if lfrac: figtitle += ' [%]'
           else: figtitle += ' [{:s}]'.format(plat.units) 
       if comments[fn]: figtitle += comments[fn]
+      # add aggregation
+      if aggregation.lower() not in figtitle.lower():
+        if aggregation.upper() == 'SEM': agg_str = "SEM of "  
+        elif aggregation.lower() == 'mean': agg_str = "Average "
+        else: agg_str = aggregation.title()+'. '
+        figtitle = agg_str + figtitle
       
       # feedback
       print('\n\n   ***  %s %s (%s)   ***   \n'%(plottype,plat.title,varstr))

@@ -106,6 +106,10 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       lmskocn = True; clbl = '%2.0f' # kg/m^2
       if season in ('winter',): clevs = np.linspace(0,200,41)
       else: clevs = np.linspace(0,100,41)
+    elif var == 'snow_max': # snow (liquid water equivalent) 
+      lmskocn = True; clbl = '%2.0f' # kg/m^2
+      if season in ('winter',): clevs = np.linspace(0,600,41)
+      else: clevs = np.linspace(0,300,41)
     elif var == 'snowh': # snow (depth/height) 
       lmskocn = True; clbl = '%2.1f' # m
       clevs = np.linspace(0,2,41)
