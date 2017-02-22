@@ -220,14 +220,25 @@ if __name__ == '__main__':
 #   period = H10; refprd = H10; case = tag+'val_new'; variable_settings = None; reflist = 'Unity' # validation 
 # #   case = tag+'val_narr'; reflist = 'NARR'
 
-# snow observations
-  explist = ['NRCan']*2; maptype = 'lcc-can'; period = '1980-2010'
+# # snow observations
+#   explist = ['NRCan']*2; maptype = 'lcc-can'; period = '1980-2010'
+#   #ldiff = True; reflist = ['Unity']; 
+#   exptitles = ['NRCan Snow 1960-1990','CMC SWE 1998-2015',]
+#   case = 'CMC'; lbasins = False; lprovinces = False
+#   grid = 'glb1_d01'; case += '_30km'
+#   variables = [('snow','snow_CMC',)]; seasons = ['annual']; 
+#   aggregation = 'max'; variable_settings = ['snow_max',]*2; case += '_max'
+# #   variables = [('liqwatflx','liqwatflx_CMC')]; seasons = ['spring']
+# #   seasons = ['summer','fall','winter','spring']
+
+# snow observations (single-panel)
+  explist = ['NRCan']; maptype = 'lcc-can'; period = '1980-2010'
   #ldiff = True; reflist = ['Unity']; 
-  exptitles = ['NRCan Snow 1960-1990','CMC SWE 1998-2015',]
+  exptitles = ['NRCan Snow 1960-1990',]
   case = 'CMC'; lbasins = False; lprovinces = False
-  grid = 'glb1_d01'; case += '_30km'
-  variables = [('snow','snow_CMC',)]; seasons = ['annual']; 
-  aggregation = 'max'; variable_settings = ['snow_max',]*2; case += '_max'
+#   grid = 'glb1_d01'; case += '_30km'
+  variables = ['ratio',]; seasons = ['annual']; 
+#   aggregation = 'max'; variable_settings = ['snow_max',]*2; case += '_max'
 #   variables = [('liqwatflx','liqwatflx_CMC')]; seasons = ['spring']
 #   seasons = ['summer','fall','winter','spring']
 

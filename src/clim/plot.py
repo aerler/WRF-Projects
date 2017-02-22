@@ -108,7 +108,6 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
     plts = [] # meant to be added to list 
     if ens is not None and len(ens) > 0:
       if err is None: err = [None]*len(ens)      
-      imaster = master if isinstance(master, (int,np.int)) else len(ens)-1 
       # prepare plotargs
       if plotargs:
         plotargs = axes._expandArgumentList(labels=[None]*len(ens), plotargs=plotargs, expand_list=[], lproduct='inner')
@@ -118,7 +117,10 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
       if len(ens) > len(err) and isinstance(err,(list,tuple)): 
         err = list(err) + [None]*(len(ens)-len(err)) # extend error fields, so that 
       for n,vards,plotarg in zip(xrange(len(ens)),ens,plotargs):
-        lmaster = vards.name == master if isinstance(master, basestring) else n == imaster
+        # if master dataset is defined, only show error bands for master dataset
+        if isinstance(master, (int,np.int)): lmaster = n == master
+        elif isinstance(master, basestring): lmaster = vards.name == master
+        else: lmaster = True # i.e. always show error bands
         plotarg.pop('label',None) # that was just a dummy to get the length right
         if isinstance(err, Ensemble):
           assert err.idkey == 'name', err

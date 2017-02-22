@@ -99,7 +99,10 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
   else:
     #cmap = mpl.cm.gist_ncar; cmap.set_over('white'); cmap.set_under('black')
     cmap = cm.coolavhrrmap # cmap.set_over('white'); cmap.set_under('black')
-    if var in ('wetfrq','frzfrq'): # snow (liquid water equivalent) 
+    if var in ('ratio',): # snow (liquid water equivalent) 
+      lmskocn = True; clbl = '%3.2f' # kg/m^2
+      clevs = np.linspace(0,2,26)
+    elif var in ('wetfrq','frzfrq'): # snow (liquid water equivalent) 
       lmskocn = True; clbl = '%3.2f' # kg/m^2
       clevs = np.linspace(0,1,26)
     elif var == 'snow': # snow (liquid water equivalent) 
@@ -287,8 +290,8 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
           margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05) 
           caxpos = [0.91, 0.05, 0.03, 0.9]
         if cbo == 'horizontal': 
-          margins = dict(bottom=0.125, left=0.1, right=0.95, top=0.925, hspace=0.0, wspace=0.0)
-          caxpos = [0.05, 0.05, 0.9, 0.03]
+          margins = dict(bottom=0.125, left=0.11, right=0.95, top=0.925, hspace=0.0, wspace=0.0)
+          caxpos = [0.05, 0.06, 0.9, 0.03]
       else:
         margins = dict(bottom=0.085, left=0.1, right=0.975, top=0.94, hspace=0.05, wspace=0.05)
     elif subplot == (1,2):
