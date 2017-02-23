@@ -55,7 +55,16 @@ exp_aliases = {'erai-g_d00':'erai-g3_d01','erai-t_d00':'erai-t3_d01',
                'g-ensemble_d00':'g3-ensemble_d01','t-ensemble_d00':'t3-ensemble_d01',
                'g-ensemble-2050_d00':'g3-ensemble-2050_d01','t-ensemble-2050_d00':'t3-ensemble-2050_d01',
                'g-ensemble-2100_d00':'g3-ensemble-2100_d01','t-ensemble-2100_d00':'t3-ensemble-2100_d01'}
-obs_datasets = ['NRCan','CRU']
+obs_datasets = ('NRCan','CRU')
+gage_datasets = ('wsc','obs','observations')
+# ensemble definitions for GRW project 
+ensemble_list = {'g-mean':('g-ctrl','g-ens-A','g-ens-B','g-ens-C'),
+                 't-mean':('t-ctrl','t-ens-A','t-ens-B','t-ens-C')}
+for name,members in ensemble_list.items():
+    for prd in ('-2050','-2100'):
+        ensemble_list[name+prd] = tuple(member+prd for member in members)
+    
+
 ## wrapper functions to load HGS station timeseries with GRW parameters
 
 # simple dataset loader
@@ -187,11 +196,10 @@ def loadGageStation_TS(station=main_gage, name=None, title=None, basin=main_basi
 def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None, name=None, title=None, 
                    period=None, domain=None, exp_aliases=exp_aliases, run_period=15, clim_mode=None,
                    folder=project_folder_pattern, project_folder=None, obs_period=None, 
-                   ensemble_list=None, ensemble_args=None, observation_list=None, # ensemble and obs lists for project
+                   ensemble_list=ensemble_list, ensemble_args=None, observation_list=gage_datasets, # ensemble and obs lists for project
                    project=project_name, grid=main_grid, task=main_task, prefix=project_prefix, 
                    WSC_station=None, basin=main_basin, basin_list=None, **kwargs):
-  ''' a wrapper for the regular HGS loader that can also load gage stations and assemble ensembles '''
-  if observation_list is None: observation_list = ('wsc','obs','observations')
+  ''' a wrapper for the regular HGS loader that can also load gage stations and assemble ensembles '''  
   return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
                             period=period, run_period=run_period, folder=folder, obs_period=obs_period,  
                             ensemble_list=ensemble_list, ensemble_args=ensemble_args, observation_list=observation_list, 
@@ -229,10 +237,15 @@ if __name__ == '__main__':
     
   elif test_mode == 'ensemble':
     
+    print('')
+    print(ensemble_list)
+    print('')
+    
     # load an esemble of datasets
-    ens = loadHGS_StnEns(ensemble=['g-ensemble','t-ensemble'], domain=0, clim_mode='clim', 
+    ens = loadHGS_StnEns(ensemble=['g-mean','t-mean'], domain=1, clim_mode='clim', 
                          name='{EXP_NAME:s}_{RESOLUTION:s}', title='{Name:s}',
                          period=[(1984,1994),(2050,2060),(2090,2100)], obs_period=(1974,2004),
+                         lskipNaN=True, lcheckComplete=True,
                          outer_list=['ensemble','period'], lensemble=True)
     # N.B.: all need to have unique names... whihc is a problem with obs...
     print(ens)
