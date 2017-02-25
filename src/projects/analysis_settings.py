@@ -71,6 +71,7 @@ variables_rc['spei']            = VL(vars=('precip','evap','pet',), files=('aux'
 variables_rc['wrfpet']          = VL(vars=('pet','pet_wrf','evap',), files=('aux','hydro',), label='Water Flux')
 variables_rc['pet']             = VL(vars=('pet','petrad','petwnd'), files=('aux',), label='Water Flux')
 variables_rc['rad']             = VL(vars=('SWDNB','netrad',), files=('aux','rad'), label='Radiative Flux')
+variables_rc['vap']             = VL(vars=('Q2','vapdef',), files=('srfc','aux'), label='Vapor Pressure')
 # variables_rc['rad']             = VL(vars=('SWD','netrad',), files=('aux','srfc'), label='Radiative Flux')
 variables_rc['Q2']              = VL(vars=('Q2',),files=('srfc',), label='2m Humidity')
 variables_rc['aSM']             = VL(vars=('aSM',),files=('lsm',), label='Soil Moisture') 
@@ -225,6 +226,11 @@ variable_plotargs_rc['aSM']            = AttrDict(color = 'coral')
 variable_plotargs_rc['rSM']            = AttrDict(color = 'green')
 variable_plotargs_rc['CNWD']           = AttrDict(color = 'green')
 variable_plotargs_rc['CNDD']           = AttrDict(color = 'green')
+variable_plotargs_rc['petrad']         = AttrDict(color = 'red')
+variable_plotargs_rc['petwnd']         = AttrDict(color = 'dodgerblue')
+variable_plotargs_rc['vapdef']         = AttrDict(color = 'magenta')
+variable_plotargs_rc['netrad']         = AttrDict(color = 'crimson')
+variable_plotargs_rc['SWDNB']          = AttrDict(color = 'orange')
 # add wet-day threshold dependent variables    
 wetday_colors = ['steelblue', 'purple', 'crimson', 'orange']   
 for wdext,color in zip(clim_load.wetday_extensions,wetday_colors):

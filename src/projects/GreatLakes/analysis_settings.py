@@ -60,6 +60,9 @@ exps_rc['cesm-mal']  = EX(name='cesm-ensa', exps=['Observations', 'MEns','MEns-2
 exps_rc['cesm-prj']  = EX(name='cesm-ens', exps=['MEns','MEns-2050','MEns-2100'],  
                          master='MEns', reference='MEns', target='MEns', title='CESM Projection')
 # initial condition ensembles (including observations)
+exps_rc['val']     = EX(name='val',exps=['observations', 'g-ens','t-ens',], 
+                          styles=['-','-.','--'], title='G &T Ensemble Average (Validation)',
+                          master='observations', reference='observations', target=None)
 exps_rc['g-all']     = EX(name='g-all',exps=['Observations', 'g-ens','g-ens-2050','g-ens-2100'], 
                           styles=['-','-.','--'], title='G Ensemble Average (Hist., Mid-, End-Century)',
                           master='g-ens', reference='Observations', target='g-ens')
