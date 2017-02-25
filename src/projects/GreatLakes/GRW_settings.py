@@ -163,6 +163,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   if clim_mode.lower() in ('timeseries','transient'): clim_dir = 'timeseries'
   elif clim_mode.lower() in ('clim','climatology','periodic'): clim_dir = 'clim_{:02d}'.format(run_period)
   elif clim_mode.lower() in ('mean','annual','steady-state'): clim_dir = 'annual_{:02d}'.format(run_period)
+  else: raise ArgumentError(clim_mode)
   # call load function from HGS module
   dataset = hgs.loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, ENSEMBLE=ENSEMBLE, 
                               folder=folder, experiment=experiment, period=period, start_date=start_date,
