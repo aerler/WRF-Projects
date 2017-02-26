@@ -9,7 +9,7 @@ Utility functions related to loading basin-averaged data to support hydrological
 # internal imports
 from geodata.base import Ensemble, Dataset
 from utils.misc import defaultNamedtuple
-from datasets.common import loadEnsembleTS, BatchLoad, loadDataset, shp_params, stn_params
+from datasets.common import loadEnsembleTS, BatchLoad, shp_params, stn_params
 from geodata.misc import ArgumentError, EmptyDatasetError, VariableError
 from datasets.WSC import GageStationError, loadGageStation
 
@@ -64,7 +64,7 @@ def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=Non
 @BatchLoad
 def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shapes=None, varlist=None, slices=None,
                           aggregation='mean', dataset_mode='time-series', shapetype=None, period=None, lWSC=True, 
-                          variable_list=None, basin_list=None, lforceList=True, **kwargs):
+                          variable_list=None, basin_list=None, lforceList=True, obs_ts=None, obs_clim=None, **kwargs):
   ''' convenience function to load shape observations; the main function is to select sensible defaults 
       based on 'varlist', if no 'obs' are specified '''
   # resolve variable list (no need to maintain order)
@@ -80,10 +80,11 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
   lUnity = False
   if obs[:3].lower() == 'obs':    
     if any(var in CRU_vars for var in variables): 
-      if ( aggregation == 'mean' and seasons is None ) or (): 
-        lUnity = True; obs = []
+      if aggregation == 'mean' and seasons is None: 
+        lUnity = True; obs = [obs_clim]; dataset_mode = 'climatology'; aggregation = None
+      else: obs = [obs_ts]
   # load stream gage data from WSC; should not interfere with anything else
-  lWSC = basins and any([var in WSC_vars for var in variables]) and ( obs[:3].lower() in ('obs','wsc') or lWSC )
+  lWSC = basins and any([var in WSC_vars for var in variables]) and lWSC
   if not isinstance(obs,(list,tuple)): obs = (obs,)
   # configure slicing (extract basin/province/shape and period)
   slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, period=period)
@@ -97,11 +98,11 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
                                 shape=shapetype, ldataset=False, dataset_mode=dataset_mode, **kwargs)
       for ens in ensemble: obsens += ens
     except EmptyDatasetError: pass 
-  if lUnity: # load Unity data instead of averaging CRU data
-    if period is None: period = (1979,1994)
-    dataset = loadDataset(name='Unity', varlist=variables, mode=dataset_mode, period=period, shape=shapetype)
-    if slices is not None: dataset = dataset(**noyears) # slice immediately
-    obsens += dataset.load() 
+#   if lUnity: # load Unity data instead of averaging CRU data
+#     if period is None: period = (1979,1994)
+#     dataset = loadDataset(name='Unity', varlist=variables, mode=dataset_mode, period=period, shape=shapetype)
+#     if slices is not None: dataset = dataset(**noyears) # slice immediately
+#     obsens += dataset.load() 
   if lWSC: # another special case: river hydrographs
     try:
       if aggregation is not None and seasons is None: dataset_mode = 'climatology' # handled differently with gage data
@@ -128,13 +129,14 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
 def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, shapes=None, varlist=None, 
                       aggregation='mean', slices=None, shapetype=None, filetypes=None, period=None, 
                       variable_list=None, WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, 
-                      basin_list=None, lforceList=True, **kwargs):
+                      basin_list=None, lforceList=True, obs_list=None, obs_ts=None, obs_clim=None, **kwargs):
   ''' convenience function to load shape ensembles (in Ensemble container) or observations; kwargs are passed to loadEnsembleTS '''
   names = list(names) # make a new list (copy)
   # separate observations
   obs = None; iobs = None
+  if obs_list is None: obs_list = ('obs','Obs','observations','Observations')
   for i,name in enumerate(names):
-    if name[:3].lower() == 'obs':
+    if name in obs_list:
       assert obs is None, obs
       obs = name; iobs = i
   if obs is not None: 
@@ -142,7 +144,8 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, shapes=
     del names[iobs] # remove from main ensemble
     # load observations by redirecting to appropriate loader function
     obsens = loadShapeObservations(obs=obs, seasons=seasons, basins=basins, provs=provs, shapes=shapes, varlist=varlist, 
-                                   slices=slices, aggregation=aggregation, shapetype=shapetype, period=period, 
+                                   slices=slices, aggregation=aggregation, shapetype=shapetype, period=period,
+                                   obs_ts=obs_ts, obs_clim=obs_clim, 
                                    variable_list=variable_list, basin_list=basin_list, **kwargs)
     assert len(obsens)==0 or len(obsens)==1, obsens
   if len(names): # has to be a list
@@ -244,15 +247,15 @@ if __name__ == '__main__':
   if test == 'obs_timeseries':
     
     # some settings for tests
-    basins = ['SSR'] #; period = (1979,1994)
-    varlist = [['precip','runoff',]]; aggregation = 'SEM'
+    basins = ['GRW'] #; period = (1979,1994)
+    varlist = [['precip','runoff',]]
 
-    shpens = loadShapeObservations(obs='CRU', basins=basins, varlist=varlist, 
-                                   aggregation=aggregation, load_list=['basins','varlist'],)
+    shpens = loadShapeObservations(obs='Observations', basins=basins, varlist=varlist, #obs_clim='NRCan', obs_ts='CRU',
+                                   aggregation='mean', load_list=['basins','varlist'],)
     # print diagnostics
     print shpens[0]; print ''
     assert len(shpens) == len(basins)*len(varlist)
-    print shpens[0][-1]
+    print shpens[0][0]
     for i,basin in enumerate(basins): 
       #for ds in shpens[i]: print ds.atts.shape_name
 #       for ds in shpens[i]: print ds.atts.shape_name
@@ -264,14 +267,14 @@ if __name__ == '__main__':
     
     # some settings for tests
 #     exp = 'ctrl-obs'; basins = ['SSR'] 
-    exp = 'g-prj'; basins = ['GRW'] 
+    exp = 'val'; basins = ['GRW'] 
     exps = exps_rc[exp].exps; #exps = ['Unity']
     seasons = ['summer','winter']
     varlist = ['precip']; aggregation = 'mean'; red = dict(i_s='mean')
     
     shpens = loadShapeEnsemble(names=exps, basins=basins, seasons=seasons, varlist=varlist, 
                                aggregation=aggregation, filetypes=None, reduction=red, 
-                               load_list=['basins','seasons',], lproduct='outer', domain=2,)
+                               load_list=['basins','seasons'], lproduct='outer', domain=1,)
     # print diagnostics
     print shpens[0]; print ''
     assert len(shpens) == len(basins)*len(seasons)

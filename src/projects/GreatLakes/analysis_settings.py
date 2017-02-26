@@ -60,9 +60,9 @@ exps_rc['cesm-mal']  = EX(name='cesm-ensa', exps=['Observations', 'MEns','MEns-2
 exps_rc['cesm-prj']  = EX(name='cesm-ens', exps=['MEns','MEns-2050','MEns-2100'],  
                          master='MEns', reference='MEns', target='MEns', title='CESM Projection')
 # initial condition ensembles (including observations)
-exps_rc['val']     = EX(name='val',exps=['observations', 'g-ens','t-ens',], 
+exps_rc['val']     = EX(name='val',exps=['Observations', 'g-ens','t-ens',], 
                           styles=['-','-.','--'], title='G &T Ensemble Average (Validation)',
-                          master='observations', reference='observations', target=None)
+                          master='Observations', reference='Observations', target=None)
 exps_rc['g-all']     = EX(name='g-all',exps=['Observations', 'g-ens','g-ens-2050','g-ens-2100'], 
                           styles=['-','-.','--'], title='G Ensemble Average (Hist., Mid-, End-Century)',
                           master='g-ens', reference='Observations', target='g-ens')
@@ -154,11 +154,13 @@ exps_rc['t-ctrl']  = EX(name='t-ctrl',  exps=['t-ctrl', 't-ctrl-2050'],
 # set default variable atts for load functions from clim_load
 def loadShapeObservations(variable_list=variables_rc, shapetype=default_shapetype, basin_list=wsc_basins.basin_list, **kwargs):
   ''' wrapper for clim.load.loadShapeObservations that sets variable lists '''
-  return clim_load.loadShapeObservations(variable_list=variable_list, shapetype=shapetype, basin_list=basin_list, **kwargs)
+  return clim_load.loadShapeObservations(variable_list=variable_list, shapetype=shapetype, basin_list=basin_list, 
+                                         obs_clim='NRCan', obs_ts='CRU', **kwargs)
 def loadShapeEnsemble(variable_list=variables_rc, shapetype=default_shapetype, basin_list=wsc_basins.basin_list, **kwargs):
   ''' wrapper for clim.load.loadShapeEnsemble that sets experiment and variable lists '''
   return clim_load.loadShapeEnsemble(variable_list=variable_list, shapetype=shapetype, WRF_exps=WRF_exps, 
-                                     CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, basin_list=basin_list, **kwargs)
+                                     CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, basin_list=basin_list, 
+                                     obs_clim='NRCan', obs_ts='CRU', **kwargs)
 def loadStationEnsemble(variable_list=variables_rc, stationtype=default_stationtype, **kwargs):
   ''' wrapper for clim.load.loadStationEnsemble that sets experiment and variable lists '''
   return clim_load.loadStationEnsemble(variable_list=variable_list, stationtype=stationtype, WRF_exps=WRF_exps, 
