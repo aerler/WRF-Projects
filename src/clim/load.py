@@ -79,10 +79,10 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
   if obs is None: obs = 'Observations'
   lUnity = False
   if obs[:3].lower() == 'obs':    
-    if any(var in CRU_vars for var in variables): 
-      if aggregation == 'mean' and seasons is None: 
-        lUnity = True; obs = [obs_clim]; dataset_mode = 'climatology'; aggregation = None
-      else: obs = [obs_ts]
+    #if any(var in CRU_vars for var in variables): 
+    if aggregation == 'mean' and seasons is None: 
+      lUnity = True; obs = [obs_clim]; dataset_mode = 'climatology'; aggregation = None
+    else: obs = [obs_ts]
   # load stream gage data from WSC; should not interfere with anything else
   lWSC = basins and any([var in WSC_vars for var in variables]) and lWSC
   if not isinstance(obs,(list,tuple)): obs = (obs,)

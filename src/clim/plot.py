@@ -90,7 +90,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
         if lauto:
           for exp in expens[:]+obsens[:]: # make sure to copy lists or convert ensembles to lists, otherwise the list grows!
             if var in exp:
-              if expens[0][var].units: tmp_varlist.append(var)
+              if exp[var].units: tmp_varlist.append(var)
               else: tmp_scalevars.append(var)
               break
         else: 
