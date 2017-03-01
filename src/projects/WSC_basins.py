@@ -8,9 +8,24 @@ This module contains meta data for all available WSC river basins in Canada.
 
 from collections import OrderedDict
 from datasets.common import addLoadFcts
-from datasets.WSC import BasinSet, Basin, LakeSet, Lake, Nation, Province, province_names
+from datasets.WSC import BasinSet, Basin, LakeSet, Lake, Nation, Province
 
-
+# expand province names
+province_names = OrderedDict() # make sure they are sorted alphabetically
+province_names['AB'] = 'Alberta'
+province_names['BC'] = 'British Columbia'
+province_names['MB'] = 'Manitoba'
+province_names['NB'] = 'New Brunswick'
+province_names['NL'] = 'Newfoundland and Labrador'
+province_names['NS'] = 'Nova Scotia'
+province_names['NT'] = 'Northwest Territories'
+province_names['NU'] = 'Nunavut'
+province_names['PE'] = 'Prince Edward Island'
+province_names['ON'] = 'Ontario'
+province_names['QC'] = 'Quebec'
+province_names['SK'] = 'Saskatchewan'
+province_names['YT'] = 'Yukon Territory'
+province_names['CAN'] = 'Canada'
 # generate province info objects
 province_list = OrderedDict() # just provinces
 provinces = OrderedDict() # include nation for shape averages
@@ -113,7 +128,7 @@ for name,lake in great_lakes.items(): # do not iter, since dict is changes in fo
   
 
 ## generate loadGageStation* versions with these basins
-from datasets.WSC import loadGageStation, loadGageStation_TS
+from datasets.WSC import loadGageStation, loadWSC_Shp, loadWSC_ShpTS, loadWSC_Stn, loadWSC_StnTS
 addLoadFcts(locals(), locals(), basins=basins, basin_list=basin_list)
 
 

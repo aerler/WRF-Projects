@@ -34,7 +34,7 @@ from projects.CESM_experiments import CESM_exps, CESM_ens
 from projects.CESM_experiments import loadCESM, loadCESM_Shp, loadCESM_Stn, loadCESM_TS, loadCESM_ShpTS, loadCESM_StnTS, loadCESM_Ensemble, loadCESM_ShpEns, loadCESM_StnEns
 
 # add relevant experiments to general load functions
-from datasets.common import loadDataset, loadClim, loadShpTS, loadStnTS, loadEnsembleTS, addLoadFcts
+from datasets.common import loadDataset, loadEnsembleTS, addLoadFcts
 from datasets.Unity import loadUnity, loadUnity_Shp, loadUnity_Stn, loadUnity_ShpTS, loadUnity_StnTS # loadUnity_TS doesn't exist
 unity_grid = 'glb1_d02' # Unified Dataset default grid
 # N.B.: it is recommended to import Unity load fcts. from here

@@ -28,7 +28,7 @@ CRU_vars = ('T2','Tmin','Tmax','dTd','Q2','pet','precip','cldfrc','wetfrq','frzf
 WSC_vars = ('runoff','sfroff','ugroff')
 
 # internal method for do slicing for Ensembles and Obs
-def _configSlices(slices=None, basins=None, provs=None, shapes=None, period=None):
+def _configSlices(slices=None, basins=None, provs=None, shapes=None, station=None, period=None):
   ''' configure slicing based on basin/province/shape and period arguments '''
   if isinstance(slices,(list,tuple)):
       # handle slice and period lists recursively
@@ -46,6 +46,8 @@ def _configSlices(slices=None, basins=None, provs=None, shapes=None, period=None
       if provs  is not None: 
           if not ( basins is None and shapes is None ): raise ArgumentError
           slices['shape_name'] = provs
+      if station is not None:
+          slices['station_name'] = station
       if period is not None:
           slices['years'] = period
   return slices
@@ -71,7 +73,7 @@ def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=Non
 def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shapes=None, varlist=None, slices=None,
                           aggregation='mean', dataset_mode='time-series', lWSC=True, WSC_period=None, shapetype=None, 
                           variable_list=None, basin_list=None, lforceList=True, obs_ts=None, obs_clim=None, 
-                          obs_list=default_obs_list, **kwargs):
+                          obs_list=default_obs_list, ensemble_list=None, ensemble_product='inner', **kwargs):
   ''' convenience function to load shape observations based on 'aggregation' and 'varlist' (mainly add WSC gage data) '''
   # variables for which ensemble expansion is not supported
   not_supported = ('season','seasons','varlist','mode','dataset_mode','provs','basins','shapes',) 
@@ -84,14 +86,22 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
       else: variables.add(name)
   variables = list(variables)
   # determine if we need gage dataset
-  lWSC = basins and any([var in WSC_vars for var in variables]) and lWSC
+  lWSC = isinstance(basins,basestring) and any([var in WSC_vars for var in variables]) and lWSC # doesn't work if multiple basins are loaded
   # default obs list
   if obs is None: obs = ['Observations',]
   elif isinstance(obs,basestring): obs = [obs]
   elif isinstance(obs,tuple): obs = list(obs)
   elif not isinstance(obs,list): raise TypeError(obs)
   # configure slicing (extract basin/province/shape and period)
-  slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, period=None)
+  if basins and ensemble_list and 'basins' in ensemble_list:
+      if ensemble_product.lower() != 'inner': raise NotImplementedError(ensemble_product)
+      if 'slices' in ensemble_list:
+          slices = [_configSlices(slices=slc, basins=bsn, provs=provs, shapes=shapes,) for slc,bsn in zip(slices,basins)]
+      else:
+          slices = [_configSlices(slices=slices, basins=bsn, provs=provs, shapes=shapes,) for bsn in basins]
+          ensemble_list[ensemble_list.index('basins')] = 'slices'
+  else:
+      slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, station=None, period=None)
   # substitute default observational dataset and seperate aggregation methods
   iobs = None; clim_ens = None
   for i,obs_name in enumerate(obs):
@@ -102,8 +112,6 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
               del obs[i]; iobs = i # remember position of default obs in ensemble              
               clim_args = kwargs.copy(); slc = slices; shp = shapetype
               # clean up variables for ensemble expansion, if necessary
-              ensemble_list = clim_args.pop('ensemble_list',None)
-              ensemble_product= clim_args.pop('ensemble_product','inner')
               if ensemble_list and ensemble_product.lower() == 'inner':
                   if 'names' in ensemble_list:
                       obs_names = [obs_clim]
@@ -144,7 +152,7 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
                   clim_ens = loadEnsembleTS(names=obs_names, season=seasons, aggregation=None, slices=slc, varlist=variables, 
                                             ldataset=False, dataset_mode='climatology', shape=shp,
                                             ensemble_list=ensemble_list, ensemble_product=ensemble_product, 
-                                            obs_list=obs_list, **clim_args)
+                                            obs_list=obs_list, basin_list=basin_list, **clim_args)
                   assert len(clim_ens) == clim_len, clim_ens
               except EmptyDatasetError: pass
           else: 
@@ -152,10 +160,12 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
               if lWSC: slc = slices[iobs] if isinstance(slices,list) else slices
   # prepare and load ensemble of observations
   if len(obs) > 0:
+      if len(obs) == 1 and ensemble_list and 'names' not in ensemble_list: obs = obs[0]
       try:
           obsens = loadEnsembleTS(names=obs, season=seasons, aggregation=aggregation, slices=slices,
-                                  varlist=variables, ldataset=False, dataset_mode=dataset_mode, shape=shapetype, 
-                                  obs_list=obs_list, **kwargs)          
+                                  varlist=variables, ldataset=False, dataset_mode=dataset_mode, 
+                                  shape=shapetype, obs_list=obs_list, basin_list=basin_list, 
+                                  ensemble_list=ensemble_list, ensemble_product=ensemble_product, **kwargs)          
       except EmptyDatasetError:
           obsens = Ensemble(name=kwargs.get('name','obs'),title=kwargs.get('title','Observations'), basetype=Dataset)
   else: 
@@ -292,8 +302,8 @@ if __name__ == '__main__':
   from projects.GreatLakes.analysis_settings import loadShapeEnsemble, loadStationEnsemble
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
-  test = 'obs_timeseries'
-#   test = 'basin_timeseries'
+#   test = 'obs_timeseries'
+  test = 'basin_timeseries'
 #   test = 'station_timeseries'
 #   test = 'province_climatology'
   
@@ -302,19 +312,22 @@ if __name__ == '__main__':
   if test == 'obs_timeseries':
     
     # some settings for tests
-    basins = ['GRW'] #; period = (1979,1994)
+    basins = ['GRW','GRW'] #; period = (1979,1994)
     varlist = [['precip','runoff',]]
 
-    shpens = loadShapeObservations(obs=None, basins=basins, varlist=varlist, period=(1970,2000), WSC_period=(1860,2020), #obs_clim='NRCan', obs_ts='CRU',
-                                   aggregation='mean', load_list=['basins','varlist'],)
+    shpens = loadShapeObservations(obs='WSC', name_tags=['GRW_1970','GRW_1980'], basins=basins, varlist=varlist, 
+                                   period=[(1970,2000),(1980,2010)], ensemble_list=['basins','name_tags','period'], 
+                                   #WSC_period=(1970,2000), lWSC=True, #obs_clim='NRCan', obs_ts='CRU',
+                                   aggregation='mean', load_list=['varlist'],)
     # print diagnostics
-    print shpens[0]; print ''
-    assert len(shpens) == len(basins)*len(varlist)
-    print shpens[0][0]
-    for i,basin in enumerate(basins): 
+    print(shpens[0]); print('')
+    assert len(shpens) == len(varlist)
+    print(shpens[0].name); print('')
+    print(shpens[0][0])
+#     for i,basin in enumerate(basins): 
       #for ds in shpens[i]: print ds.atts.shape_name
 #       for ds in shpens[i]: print ds.atts.shape_name
-      assert all(ds.atts.shape_name == basin for ds in shpens[i])
+#       assert all(ds.atts.shape_name == basin for ds in shpens[i])
   
   
   # test load function for basin ensemble time-series
@@ -322,7 +335,7 @@ if __name__ == '__main__':
     
     # some settings for tests
 #     exp = 'ctrl-obs'; basins = ['SSR'] 
-    exp = 'val'; basins = ['GRW'] 
+    exp = 'val'; basins = ['GRW',] 
     exps = exps_rc[exp].exps; #exps = ['Unity']
     seasons = ['summer','winter']
     varlist = ['precip']; aggregation = 'mean'; red = dict(i_s='mean')
