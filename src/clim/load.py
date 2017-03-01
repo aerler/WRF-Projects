@@ -8,7 +8,7 @@ Utility functions related to loading basin-averaged data to support hydrological
 
 # internal imports
 from geodata.base import Ensemble, Dataset
-from utils.misc import defaultNamedtuple
+from utils.misc import defaultNamedtuple, reverse_enumerate
 from datasets.common import loadEnsembleTS, BatchLoad, shp_params, stn_params
 from geodata.misc import ArgumentError, EmptyDatasetError, VariableError
 from datasets.WSC import GageStationError, loadGageStation
@@ -104,7 +104,8 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
       slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, station=None, period=None)
   # substitute default observational dataset and seperate aggregation methods
   iobs = None; clim_ens = None
-  for i,obs_name in enumerate(obs):
+  for i,obs_name in reverse_enumerate(obs):
+      # N.B.: we need to iterate in reverse order, so that deleting items does not interfere with the indexing
       if obs_name in obs_list:
           if iobs is not None: raise ArgumentError("Can only resolve one default dataset: {}".format(obs))
           if aggregation == 'mean' and seasons is None and obs_clim is not None: 
@@ -203,33 +204,49 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, shapes=
   names = list(names) # make a new list (copy)
   # separate observations
   if obs_list is None: obs_list = default_obs_list
-  obs_names = []; iobs = []
+  obs_names = []; iobs = []; ens_names = []; iens = []
   for i,name in enumerate(names):
       if name in obs_list:
-          obs_names.append(name); iobs.append(i)
-          del names[i] # remove from main ensemble
+          obs_names.append(name); iobs.append(i)          
+      else: 
+          ens_names.append(name); iens.append(i)
+  assert len(iens) == len(ens_names) and len(iobs) == len(obs_names) 
   if len(obs_names) > 0:       
-      if ensemble_list and ensemble_product == 'inner' and 'names' in ensemble_list: 
-          raise NotImplementedError
+      # assemble arguments
+      obs_args = dict(obs=obs_names, seasons=seasons, basins=basins, provs=provs, 
+                      shapes=shapes, varlist=varlist, slices=slices, aggregation=aggregation, 
+                      shapetype=shapetype, period=obs_period, obs_ts=obs_ts, obs_clim=obs_clim, 
+                      variable_list=variable_list, basin_list=basin_list, WSC_period=WSC_period,
+                      ensemble_list=ensemble_list, ensemble_product=ensemble_product, **kwargs)
+      # check if we have to modify to preserve ensemble_list expansion
+      if ensemble_list and ensemble_product == 'inner' and 'names' in ensemble_list and len(ensemble_list) > 1: 
+          for key in ensemble_list:
+              if key != 'names':
+                  ens_list = obs_args[key]
+                  obs_args[key] = [ens_list[i] for i in iobs]
       # observations for basins require special treatment to merge basin averages with gage values
       # load observations by redirecting to appropriate loader function
       obs_period = obs_period or period
-      obsens = loadShapeObservations(obs=obs_names, seasons=seasons, basins=basins, provs=provs, 
-                                     shapes=shapes, varlist=varlist, slices=slices, aggregation=aggregation, 
-                                     shapetype=shapetype, period=obs_period, obs_ts=obs_ts, obs_clim=obs_clim, 
-                                     variable_list=variable_list, basin_list=basin_list, WSC_period=WSC_period,
-                                     ensemble_list=ensemble_list, ensemble_product=ensemble_product, **kwargs)
-  if len(names) > 0: # has to be a list
+      obsens = loadShapeObservations(**obs_args)
+  if len(ens_names) > 0: # has to be a list
       # prepare arguments
       variables, filetypes = _resolveVarlist(varlist=varlist, filetypes=filetypes, 
                                             params=shp_params, variable_list=variable_list, lforceList=lforceList)
       # configure slicing (extract basin/province/shape and period)
       slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, period=period)
+      # assemble arguments
+      ens_args = dict(names=ens_names, season=seasons, slices=slices, varlist=variables, shape=shapetype, 
+                      aggregation=aggregation, filetypes=filetypes, 
+                      WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
+                      ensemble_list=ensemble_list, ensemble_product=ensemble_product, **kwargs)
+      # check if we have to remove obs datasets to preserve ensemble_list expansion
+      if ensemble_list and ensemble_product == 'inner' and 'names' in ensemble_list and len(ensemble_list) > 1: 
+          for key in ensemble_list:
+              if key != 'names':
+                  ens_list = ens_args[key]
+                  ens_args[key] = [ens_list[i] for i in iens]
       # load ensemble (no iteration here)
-      shpens = loadEnsembleTS(names=names, season=seasons, slices=slices, varlist=variables, shape=shapetype, 
-                              aggregation=aggregation, filetypes=filetypes, 
-                              WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
-                              ensemble_list=ensemble_list, ensemble_product=ensemble_product, **kwargs)
+      shpens = loadEnsembleTS(**ens_args)
   # return ensembles (will be wrapped in a list, if BatchLoad is used)
   if len(obsens) > 0:
       for name,i in zip(obs_names,iobs): 
