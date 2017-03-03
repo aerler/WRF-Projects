@@ -227,14 +227,14 @@ if __name__ == '__main__':
 #  seasons = ['annual','winter','summer','fall','spring']
 #  #loutline = True; case += '_outline'; lcontour = False
 
-## four-panel validation
-  maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
-#  explist = ['PCIC']; figtitles = ['Precipitation Climatology (PRISM & GPCC)']; exptitles = ['']; period = None
-  explist = ['erai-3km','Ens','erai-3km','erai-3km']; domain = [3,None,2,1]; period = H15
-  exptitles = ['WRF 3km (15yr, ERA-I)','CESM 100km ','WRF 10km (15yr, ERA-I)','WRF 30km (15yr, ERA-I)']; case = 'valobs'; figtitles = [None]; cbo = 'horizontal'
-#  #explist = ['max-3km']; domain = 3; figtitles = ['WRF 3km (1979-1992, CESM)']; exptitles = ['']; period = H12
-  variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual']; lcontour = False; loutline = False
-#   seasons = ['annual','winter','summer','fall','spring']
+# ## four-panel validation
+#   maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
+# #  explist = ['PCIC']; figtitles = ['Precipitation Climatology (PRISM & GPCC)']; exptitles = ['']; period = None
+#   explist = ['erai-3km','Ens','erai-3km','erai-3km']; domain = [3,None,2,1]; period = H15
+#   exptitles = ['WRF 3km (15yr, ERA-I)','CESM 100km ','WRF 10km (15yr, ERA-I)','WRF 30km (15yr, ERA-I)']; case = 'valobs'; figtitles = [None]; cbo = 'horizontal'
+# #  #explist = ['max-3km']; domain = 3; figtitles = ['WRF 3km (1979-1992, CESM)']; exptitles = ['']; period = H12
+#   variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual']; lcontour = False; loutline = False
+# #   seasons = ['annual','winter','summer','fall','spring']
 
 ## four-panel validation
 #  maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
@@ -534,31 +534,31 @@ if __name__ == '__main__':
 #   lfrac = True; variables = ['precip']; variable_settings = ['precip_prj']
 #   ldiff = True; variables = ['precip']; variable_settings = ['precip_prj']
 
-## large map for all domains
-#  variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True
-#  lbasins = True; lprovinces = True; provlist = ['AB']
-#  #lstations = False; lbasins = False; lprovinces = True; # provlist = ('AB',) 
-## figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']; exptitles = ' '
-##  maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
-##  explist = ['max']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
-##  case = 'arb2_basins'; #basinlist = ('FRB','ARB','CRB','NRB'); primary_basins = ('FRB','ARB')
-## smaller map for western Canada
-#  explist = ['max-3km']; domain = (1,2,3); exptitles = ['Terrain Height [km]']; figtitles = ' ' 
-#  period = H10; lWRFnative = True; lframe = False; loutline = False
-#  maptype = 'lcc-prairies'
-#  #maptype = 'lcc-arb3_d02'; case = 'large'
-#  #maptype = 'lcc-arb3_d03'; case = 'small'
-#  #maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']
-#  #domain = (1,); case += '_d01'
-#  #domain = (1,2); case += '_d02'
-#  #domain = (1,2,3); case += '_d03'
-#  #maptype = 'ortho-NA'; case = 'global'
-#  #domain = (0,1,); case += '_d01'
-#  #domain = (0,1,2); case += '_d02'
-##  maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']; domain = (3,) # ; explist = ['col1-const']
-##  case = 'frb'; basins = ('FRB',)
-##  case = 'arb'; basins = ('ARB',)
-#  case = 'ssr'; basinlist = ('SSR',)
+# large map for all domains
+  variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True; WRFfiletypes = []
+  lbasins = True; lprovinces = True; provlist = ['AB']
+  #lstations = False; lbasins = False; lprovinces = True; # provlist = ('AB',) 
+# figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']; exptitles = ' '
+#  maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
+#  explist = ['max']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
+#  case = 'arb2_basins'; #basinlist = ('FRB','ARB','CRB','NRB'); primary_basins = ('FRB','ARB')
+# smaller map for western Canada
+  explist = ['max-3km']; domain = (1,2,3); exptitles = ['Terrain Height [km]']; figtitles = ' ' 
+  period = H10; lWRFnative = True; lframe = True; loutline = False
+#   maptype = 'lcc-prairies'
+  #maptype = 'lcc-arb3_d02'; case = 'large'
+  #maptype = 'lcc-arb3_d03'; case = 'small'
+  #maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']
+  maptype = 'ortho-NA'; case = 'global'; basinlist = []
+  #domain = (1,); case += '_d01'
+  #domain = (1,2); case += '_d02'
+#   domain = (0,1,); case += '_d01'
+#   domain = (0,1,2); case += '_d02'
+  domain = (0,1,2,3); case += '_d03'
+#  maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']; domain = (3,) # ; explist = ['col1-const']
+#  case = 'frb'; basins = ('FRB',)
+#  case = 'arb'; basins = ('ARB',)
+#   case = 'ssr'; basinlist = ('SSR',)
 
     
   if not case: raise ValueError, 'Need to define a \'case\' name!'
