@@ -227,14 +227,14 @@ if __name__ == '__main__':
 #  seasons = ['annual','winter','summer','fall','spring']
 #  #loutline = True; case += '_outline'; lcontour = False
 
-### four-panel validation
-#  maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
-##  explist = ['PCIC']; figtitles = ['Precipitation Climatology (PRISM & GPCC)']; exptitles = ['']; period = None
-#  explist = ['erai-3km','PCIC','erai-3km','erai-3km']; domain = [3,None,2,1]; period = H15
-#  exptitles = ['WRF 3km (15yr, ERA-I)','PRISM & GPCC','WRF 10km (15yr, ERA-I)','WRF 30km (15yr, ERA-I)']; case = 'valobs'; figtitles = [None]; cbo = 'horizontal'
-##  #explist = ['max-3km']; domain = 3; figtitles = ['WRF 3km (1979-1992, CESM)']; exptitles = ['']; period = H12
-#  variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual']; lcontour = True; loutline = False
-#  seasons = ['annual','winter','summer','fall','spring']
+## four-panel validation
+  maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
+#  explist = ['PCIC']; figtitles = ['Precipitation Climatology (PRISM & GPCC)']; exptitles = ['']; period = None
+  explist = ['erai-3km','Ens','erai-3km','erai-3km']; domain = [3,None,2,1]; period = H15
+  exptitles = ['WRF 3km (15yr, ERA-I)','CESM 100km ','WRF 10km (15yr, ERA-I)','WRF 30km (15yr, ERA-I)']; case = 'valobs'; figtitles = [None]; cbo = 'horizontal'
+#  #explist = ['max-3km']; domain = 3; figtitles = ['WRF 3km (1979-1992, CESM)']; exptitles = ['']; period = H12
+  variables = ['precip']; WRFfiletypes = ['hydro']; seasons = ['annual']; lcontour = False; loutline = False
+#   seasons = ['annual','winter','summer','fall','spring']
 
 ## four-panel validation
 #  maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
@@ -311,18 +311,18 @@ if __name__ == '__main__':
 # #   exptitles = ['Merged Observations (10 km)']
 #   variables = ['Ts']; seasons = ['annual']; WRFfiletypes = ['srfc'] 
 
-## observations
-  variables = ['precip']; seasons = ['annual']
-  explist = ['Unity']; period = H15
-#   ldiff = True; reflist = ['Unity']; maptype = 'lcc-small'
-  exptitles = 'Annual Total Precipitation [mm/day]'; figtitles = '' # ['Merged Observations (10 km)']
-  case = 'unity'; grid = 'arb2_d02'
-  lsamesize = False; lcontour = True 
-  lprovinces = True; provlist = ('AB',)
-  lbasins = True; basinlist = ('FRB','SSR'); maptype = 'lcc-prairies'
-#  cluster_name = 'cluster_historical'; cluster_symbols = {i:'o' for i in xrange(10)} # '^','s'
-#  cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.iteritems()}
-#  lbasins = False; lstations = True; stations = 'EC'; case += '_stations'
+# ## observations
+#   variables = ['precip']; seasons = ['annual']
+#   explist = ['Unity']; period = H15
+# #   ldiff = True; reflist = ['Unity']; maptype = 'lcc-small'
+#   exptitles = 'Annual Total Precipitation [mm/day]'; figtitles = '' # ['Merged Observations (10 km)']
+#   case = 'unity'; grid = 'arb2_d02'
+#   lsamesize = False; lcontour = True 
+#   lprovinces = True; provlist = ('AB',)
+#   lbasins = True; basinlist = ('FRB','SSR'); maptype = 'lcc-prairies'
+# #  cluster_name = 'cluster_historical'; cluster_symbols = {i:'o' for i in xrange(10)} # '^','s'
+# #  cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.iteritems()}
+# #  lbasins = False; lstations = True; stations = 'EC'; case += '_stations'
   
 ## single panel plot
 #  explist = ['max-ens-2100']; maptype = 'lcc-new'; period = B15

@@ -323,8 +323,8 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
           margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05)
           caxpos = [0.91, 0.05, 0.03, 0.9]
         if cbo == 'horizontal':
-          margins = dict(bottom=0.09, left=0.055, right=.975, top=.91, hspace=0.1, wspace=0.02) 
-          caxpos = [0.05, 0.0275, 0.9, 0.03]
+          margins = dict(bottom=0.1, left=0.055, right=.99, top=.9, hspace=0.12, wspace=0.02) 
+          caxpos = [0.05, 0.04, 0.9, 0.02]
       else:
         margins = dict(bottom=0.06, left=0.09, right=.985, top=.95, hspace=0.13, wspace=0.02)
     elif subplot == (2,3):

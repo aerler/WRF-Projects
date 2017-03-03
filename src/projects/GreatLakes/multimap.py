@@ -1,5 +1,5 @@
 '''
-Created on 2012-11-05, adapted for PyGeoDat on 2013-10-10
+Created on 2012-11-05, adapted for GeoPy on 2013-10-10
 
 A simple script that mushroomed into a complex module... reads a Datasets and displays them in a proper 
 geographic projection.
@@ -50,7 +50,7 @@ if __name__ == '__main__':
   # period shortcuts
   H01 = '1979-1980'; H02 = '1979-1981'; H03 = '1979-1982'; H30 = '1979-2009' # for tests 
   H05 = '1979-1984'; H10 = '1979-1989'; H15 = '1979-1994'; H60 = '1949-2009' # historical validation periods
-  G10 = '1969-1979'; I10 = '1989-1999'; J10 = '1999-2009' # additional historical periods
+  G10 = '1969-1979'; I10 = '1989-1999'; J10 = '1999-2009'; NRC70 = '1970-2000'; NRC80 = '1980-2010' # additional historical periods
   A03 = '2045-2048'; A05 = '2045-2050'; A09 = '2045-2054'; A10 = '2045-2055'; A15 = '2045-2060' # mid-21st century
   B03 = '2085-2088'; B05 = '2085-2900'; B10 = '2085-2095'; B15 = '2085-2100' # late 21st century  
   ltitle = True # plot/figure title
@@ -58,7 +58,7 @@ if __name__ == '__main__':
   subplot = None # subplot layout (or defaults based on number of plots)
   lbackground = True
   lcontour = False # contour or pcolor plot
-  shading = 'flat' # shading for pixel plot: 'flat' | 'gouraud'
+  shading = 'gouraud' # shading for pixel plot: 'flat' | 'gouraud'
   laddContour = False # add black contour lines
   lframe = True # draw domain boundary
   framewidths = 1.5; framecolor = 'k' # line width for domain outline
@@ -93,9 +93,9 @@ if __name__ == '__main__':
   # WRF file types
   WRFfiletypes = [] # WRF data source
 #   WRFfiletypes += ['aux']
-#   WRFfiletypes += ['hydro']
+  WRFfiletypes += ['hydro']
 #   WRFfiletypes += ['lsm']
-#   WRFfiletypes += ['srfc']
+  WRFfiletypes += ['srfc']
 #   WRFfiletypes += ['xtrm']
 #   WRFfiletypes += ['plev3d']
   ## select variables and seasons
@@ -183,24 +183,32 @@ if __name__ == '__main__':
 
 
 # # # validation and projection for the Great Lakes region
+# #   explist = ['NRCan','GPCC',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = [NRC70,None]*2; case = 'gpcc025'
+# #   explist = ['NRCan','GPCC',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = NRC70; case = 'gpcc05'
+# #   explist = ['NRCan','CRU',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = NRC70; case = 'cru'
+# #   exptitles = [exptitle+', {S:s}' for exptitle in explist]; #grid = ['glb1_d02','glb1_d02']*2
 # #   explist = ['CFSR','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]; tag = 'd01'; domain = 2
 # #   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
-# #   explist = ['g-ens','Ens','g-ens','Ens']; seasons = [['summer']*2+['winter']*2]; tag = 'd02'
-# #   exptitles = ['WRF Ensemble (30km)','CESM Ensemble']*2; grid = ['glb1_d02','glb1_d02']*2
-#   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['winter']*2]
-#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+#   explist = ['g-ens','Ens','g-ens','Ens']; seasons = [['summer']*2+['winter']*2]; domain = 1
+#   exptitles = ['WRF Ensemble ({RES:s}), {S:s}','CESM Ensemble, {S:s}']*2; grid = ['glb1_d01','glb1_d01']*2
+# #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['winter']*2]
+# #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
 # #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
 # #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
-#   exptitles = ['G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
+# #   exptitles = ['G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
 # #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
 # #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
-#   exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
-# #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
+#   res = '30km' if domain == 1 else '10km' if domain == 2 else ''; case = '{}_{}'.format(explist[0],res)
+#   exptitles = [ t.format(RES=res,S=s.title()) for t,s in zip(exptitles,seasons[0]) ]
+# #   variables = ['precip']; cbn = 7 # precip without diffs
+# #   variables = ['T2']; cbn = 5 # T2 without diffs
+#   variables = ['T2']; cbn = 6; ldiff = True; variable_settings = ['T2_prj'] # T2
 # #   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-#   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
+# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
 # #   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
 # #   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-# #   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
+# #   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation
+#   period = H15; refprd = NRC70; variable_settings = None; reflist = 'NRCan' # validation  
 # #   case = tag+'val_narr'; reflist = 'NARR'
 
 # # ERA-Interim validation
@@ -231,32 +239,38 @@ if __name__ == '__main__':
 # #   variables = [('liqwatflx','liqwatflx_CMC')]; seasons = ['spring']
 # #   seasons = ['summer','fall','winter','spring']
 
-# snow observations (single-panel)
-  explist = ['NRCan']; maptype = 'lcc-can'; period = '1980-2010'
-  #ldiff = True; reflist = ['Unity']; 
-  exptitles = ['NRCan Snow 1960-1990',]
-  case = 'CMC'; lbasins = False; lprovinces = False
-#   grid = 'glb1_d01'; case += '_30km'
-  variables = ['ratio',]; seasons = ['annual']; 
-#   aggregation = 'max'; variable_settings = ['snow_max',]*2; case += '_max'
-#   variables = [('liqwatflx','liqwatflx_CMC')]; seasons = ['spring']
-#   seasons = ['summer','fall','winter','spring']
+# # snow observations (single-panel)
+#   explist = ['NRCan']; maptype = 'lcc-can'; period = '1980-2010'
+#   #ldiff = True; reflist = ['Unity']; 
+#   exptitles = ['NRCan Snow 1960-1990',]
+#   case = 'CMC'; lbasins = False; lprovinces = False
+# #   grid = 'glb1_d01'; case += '_30km'
+#   variables = ['ratio',]; seasons = ['annual']; 
+# #   aggregation = 'max'; variable_settings = ['snow_max',]*2; case += '_max'
+# #   variables = [('liqwatflx','liqwatflx_CMC')]; seasons = ['spring']
+# #   seasons = ['summer','fall','winter','spring']
 
 # single-panel validation with larger map
-# #   case = 'ongl'; maptype = 'lcc-ongl'; lstations = False; lbasins = False; lprovinces = False
-# #   variables = ['aSM']; WRFfiletypes = ['lsm']; seasons = ['jas']; figtitles = ['Summer Soil Moisture Change [%]']
-#   variables = ['Tlake',]; WRFfiletypes = ['srfc']; seasons = ['summer']; figtitles = ['Lake Surface']
-# #   variables = ['MaxPrecip_1d']; WRFfiletypes = ['srfc']; seasons = ['annual']; aggregation = 'max'
-# #   figtitles = ['Annual Max. Daily Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
-# #   variables = ['MaxPrecip_5d']; WRFfiletypes = ['hydro']; seasons = ['annual']; aggregation = 'max'
-# #   figtitles = ['Annual Max. Pendat Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
-#   lWRFnative = True; loutline = False; lframe = True; lcontour = True; period = H15
-# #   explist = ['erai-t']; case = 'tval'; figtitles = None; domain = (1,2)
-#   explist = ['g-ens',]; case = 'lake'; domain = 1
-# #   explist = [('g-ens','g-ens',)]; exptitles = 'WRF Ensemble (10km)'; case = 'prj12'; domain = (1,2)
-# #   explist = ['g-ens']; exptitles = 'WRF Ensemble (30km)'; case = 'prj'; domain = 1
-# #   explist = ['g3-ens']; exptitles = 'WRF Ensemble (90km)'; case = 'g3prj'; domain = 1
-# #   lfrac = True; refprd = H15; period = B15; reflist = explist
+  lsamesize = True
+#   case = 'ongl'; maptype = 'lcc-ongl'; lstations = False; lbasins = False; lprovinces = False
+#   variables = ['aSM']; WRFfiletypes = ['lsm']; seasons = ['jas']; figtitles = ['Summer Soil Moisture Change [%]']
+  variables = ['T2',]; WRFfiletypes = ['srfc']; seasons = ['winter']; season_settings = 'annual'
+  figtitles = ['{:s} Surface Air Temperature [K]'.format(seasons[0].title())]
+#   variables = ['precip',]; WRFfiletypes = ['hydro']; seasons = ['winter']; season_settings = 'None'
+#   variables = ['Tlake',]; WRFfiletypes = ['srfc']; seasons = ['summer']; figtitles = ['Lake Surface Temperature']; case = 'lake'
+#   variables = ['MaxPrecip_1d']; WRFfiletypes = ['srfc']; seasons = ['annual']; aggregation = 'max'
+#   figtitles = ['Annual Max. Daily Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
+#   variables = ['MaxPrecip_5d']; WRFfiletypes = ['hydro']; seasons = ['annual']; aggregation = 'max'
+#   figtitles = ['Annual Max. Pendat Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
+  lWRFnative = True; loutline = False; lframe = True; lcontour = True; period = H15
+#   explist = ['erai-t']; case = 'tval'; figtitles = None; domain = (1,2)
+#   explist = ['g-ens',]; domain = 1; case = 'g-ens'
+#   explist = ['Ens',]; case = 'cesm'
+  explist = ['NRCan',]; period = NRC70; case = 'nrcan'
+#   explist = [('g-ens','g-ens',)]; exptitles = 'WRF Ensemble (10km)'; case = 'prj12'; domain = (1,2)
+#   explist = ['g-ens']; exptitles = 'WRF Ensemble (30km)'; case = 'prj'; domain = 1
+#   explist = ['g3-ens']; exptitles = 'WRF Ensemble (90km)'; case = 'g3prj'; domain = 1
+#   lfrac = True; refprd = H15; period = B15; reflist = explist
   
 # # validation over Great Lakes region
 #   explist = ['g-ctrl','g-ens','g-ens-A','g-ens-B','NARR','g-ens-C']
