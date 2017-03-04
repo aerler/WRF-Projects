@@ -54,10 +54,13 @@ basin_list['CRB'] = BasinSet(name='CRB', long_name='Columbia River Basin', river
 basin_list['FRB'] = BasinSet(name='FRB', long_name='Fraser River Basin', rivers=['Fraser'], data_source='WSC',
                              stations=dict(Fraser=['PortMann','Mission']),
                              subbasins=['WholeFRB','UpperFRB','LowerFRB'])
-basin_list['GLB'] = BasinSet(name='GLB', long_name='Great Lakes Basin', rivers=['Upper Saint Lawrence'], data_source='WSC',
-                             stations=dict(), subbasins=['WholeGLB','LandGLB'])
+basin_list['GLB'] = BasinSet(name='GLB', long_name='Great Lakes Basin', rivers=['St. Lawrence'], data_source='WSC',
+                             stations={'St. Lawrence':['Cornwall']}, subbasins=['WholeGLB','LandGLB'])
 basin_list['GRW'] = BasinSet(name='GRW', long_name='Grand River Watershed', rivers=['Grand River'], data_source='Aquanty',
-                             stations={'Grand River':['Brantford']}, subbasins=['WholeGRW','UpperGRW','LowerGRW','NorthernGRW','SouthernGRW','WesternGRW'])
+                             stations={'Grand River':['Brantford','Marsville'], 'Conestogo River':['Glen Allen'],
+                                       'Fairchild Creek':['Brantford'],'Speed River':['Guelph'],
+                                       'Whitemans Creek':['Mount Vernon']}, 
+                             subbasins=['WholeGRW','UpperGRW','LowerGRW','NorthernGRW','SouthernGRW','WesternGRW'])
 basin_list['GSL'] = BasinSet(name='GSL', long_name='Great Slave Lake', rivers=[], data_source='WSC',
                              stations=dict(), subbasins=['WholeGSL'])
 basin_list['LS']  = BasinSet(name='LS', long_name='Labrador Sea', rivers=[], data_source='WSC',
@@ -96,7 +99,7 @@ for name,basin in basin_list.items():
       basins[subname] = subbasin # list with all Basin instances
       basin_list[subname] = subbasin # list with all basins, BasinSet and Basin instances
 
-# N.B.: to add new gage stations add the name to the statins-dict and download the CSV files for monthly values and meta data
+# N.B.: to add new gage stations add the name to the stations dict and download the CSV files for monthly values and meta data
 #       from the WSC historical archive (no missing days): http://wateroffice.ec.gc.ca/search/search_e.html?sType=h2oArc
 #       all shapefiles for basins were obtained from the Water Survey of Canada; shapefiles for the lakes were optained from
 #       the Natural Earth website (http://www.naturalearthdata.com/http//www.naturalearthdata.com/download/10m/physical/ne_10m_lakes.zip)
