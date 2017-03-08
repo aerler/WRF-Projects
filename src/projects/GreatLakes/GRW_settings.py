@@ -69,7 +69,7 @@ for name,members in ensemble_list.items():
 
 # simple dataset loader
 def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varatts=None, name=None, title=None, 
-                  exp_aliases=exp_aliases, run_period=15, clim_mode=None, station=main_gage, 
+                  exp_aliases=exp_aliases, run_period=15, clim_mode=None, station=main_gage, bias_correction=None,
                   folder=project_folder_pattern, project_folder=None, project=project_name, 
                   grid=main_grid, task=main_task, prefix=project_prefix, WSC_station=None, 
                   basin=main_basin, basin_list=None, lpad=True, ENSEMBLE=None, **kwargs):
@@ -164,6 +164,9 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   elif clim_mode.lower() in ('clim','climatology','periodic'): clim_dir = 'clim_{:02d}'.format(run_period)
   elif clim_mode.lower() in ('mean','annual','steady-state'): clim_dir = 'annual_{:02d}'.format(run_period)
   else: raise ArgumentError(clim_mode)
+  # select bias-correction method, if applicable
+  if bias_correction is not None:
+      clim_dir = '{:s}_{:s}'.format(bias_correction,clim_dir)
   # call load function from HGS module
   dataset = hgs.loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, ENSEMBLE=ENSEMBLE, 
                               folder=folder, experiment=experiment, period=period, start_date=start_date,
@@ -182,15 +185,14 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
 
 
 # custom gage station loader
-def loadGageStation_TS(station=main_gage, name=None, title=None, basin=main_basin, basin_list=None,
-                       varlist=None, varatts=None, period=None, filetype='monthly'):
+def loadWSC_StnTS(station=main_gage, name=None, title=None, basin=main_basin, basin_list=None,
+                  varlist=None, varatts=None, period=None, filetype='monthly'):
   ''' a wrapper to load gage stations for the GRW with appropriate default values'''
   # load gage station
-  if station in station_list: station = station_list[station].WSC # get WSC name for gage (different from HGS name...)
+  if station in station_list: station = station_list[station].WSC # get WSC name for gage station (different from HGS name...)
   if basin_list is None: basin_list = wsc.basin_list # default basin list
-  return wsc.loadGageStation_TS(basin=basin, station=station, varlist=varlist, varatts=varatts, 
-                                filetype=filetype, folder=None, name=name, basin_list=basin_list,
-                                period=period)
+  return wsc.loadWSC_StnTS(basin=basin, station=station, varlist=varlist, varatts=varatts, 
+                       filetype=filetype, folder=None, name=name, basin_list=basin_list, period=period)
   
 
 # wrapper to load HGS ensembles, otherwise the same
@@ -204,7 +206,7 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
   return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
                             period=period, run_period=run_period, folder=folder, obs_period=obs_period,  
                             ensemble_list=ensemble_list, ensemble_args=ensemble_args, observation_list=observation_list, 
-                            loadHGS_StnTS=loadHGS_StnTS, loadGageStation_TS=loadGageStation_TS, # use local versions of loaders
+                            loadHGS_StnTS=loadHGS_StnTS, loadGageStation_TS=loadWSC_StnTS, # use local versions of loaders
                             prefix=prefix, WSC_station=WSC_station, basin=basin, basin_list=basin_list, 
                             domain=domain, project_folder=project_folder, project=project, grid=grid, 
                             clim_mode=clim_mode, exp_aliases=exp_aliases, task=task, **kwargs)  
@@ -214,20 +216,20 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
 if __name__ == '__main__':
     
 #   test_mode = 'gage_station'
-#   test_mode = 'dataset'
-  test_mode = 'ensemble'
+  test_mode = 'dataset'
+#   test_mode = 'ensemble'
 
   if test_mode == 'gage_station':
     
     # load single dataset
-    ds = loadGageStation_TS(period=(1974,2004), )
+    ds = loadWSC_StnTS(period=(1974,2004), )
     print(ds)
     
   elif test_mode == 'dataset':
 
     # load single dataset
-    ds = loadHGS_StnTS(experiment='NRCan', domain=None, period=(1984,1994), 
-                       clim_mode='periodic', lpad=True)
+    ds = loadHGS_StnTS(experiment='erai-g', domain=2, period=(1984,1994), 
+                       clim_mode='periodic', lpad=True, bias_correction='AABC')
     print(ds)
     print(ds.discharge.mean(), ds.discharge.max(), ds.discharge.min(),)
     
