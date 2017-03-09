@@ -64,29 +64,29 @@ exps_rc['val']     = EX(name='val',exps=['Observations', 'g-ens','t-ens',],
                           styles=['-','-.','--'], title='G &T Ensemble Average (Validation)',
                           master='Observations', reference='Observations', target=None)
 exps_rc['g-all']     = EX(name='g-all',exps=['Observations', 'g-ens','g-ens-2050','g-ens-2100'], 
-                          styles=['-','-.','--'], title='G Ensemble Average (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='G Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                           master='g-ens', reference='Observations', target='g-ens')
 exps_rc['t-all']     = EX(name='t-all',exps=['Observations', 't-ens','t-ens-2050','t-ens-2100'], 
-                          styles=['-','-.','--'], title='T Ensemble Average (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='T Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                           master='t-ens', reference='Observations', target='g-ens')
 exps_rc['g3-all']    = EX(name='g3-all',exps=['Observations', 'g3-ens','g3-ens-2050','g3-ens-2100'], 
-                         styles=['-','-.','--'], title='G Ens. Avg. (90km, Hist., Mid-, End-Century)',
+                         styles=['-','-.','--'], title='G Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                          master='g3-ens', reference='Observations', target='g-ens')
 exps_rc['t3-all']    = EX(name='t3-all',exps=['Observations', 't3-ens','t3-ens-2050','t3-ens-2100'], 
-                         styles=['-','-.','--'], title='T Ens. Avg. (90km, Hist., Mid-, End-Century)',
+                         styles=['-','-.','--'], title='T Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                          master='t3-ens', reference='Observations', target='g-ens')
 # initial condition ensembles (projection)
 exps_rc['g-prj']     = EX(name='g-prj',exps=['g-ens','g-ens-2050','g-ens-2100'], 
-                          styles=['-','-.','--'], title='G Ensemble Average (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='G Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                           master='g-ens', reference=None, target=None)
 exps_rc['t-prj']     = EX(name='t-prj',exps=['t-ens','t-ens-2050','t-ens-2100'], 
-                          styles=['-','-.','--'], title='T Ensemble Average (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='T Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                           master='t-ens', reference=None, target=None)
 exps_rc['g3-prj']    = EX(name='g3-prj',exps=['g3-ens','g3-ens-2050','g3-ens-2100'], 
-                         styles=['-','-.','--'], title='G Ens. Avg. (90km, Hist., Mid-, End-Century)',
+                         styles=['-','-.','--'], title='G Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                          master='g3-ens', reference=None, target=None)
 exps_rc['t3-prj']    = EX(name='t3-prj',exps=['t3-ens','t3-ens-2050','t3-ens-2100'], 
-                         styles=['-','-.','--'], title='T Ens. Avg. (90km, Hist., Mid-, End-Century)',
+                         styles=['-','-.','--'], title='T Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                          master='t3-ens', reference=None, target=None)
 # G ensemble members
 exps_rc['g-Z']       = EX(name='g-Z',exps=['g-ctrl','g-ctrl-2050','g-ctrl-2100'], 
