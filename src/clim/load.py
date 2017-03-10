@@ -238,7 +238,7 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, shapes=
   if len(ens_names) > 0: # has to be a list
       # prepare arguments
       variables, filetypes = _resolveVarlist(varlist=varlist, filetypes=filetypes, 
-                                            params=shp_params, variable_list=variable_list, lforceList=lforceList)
+                                             params=shp_params, variable_list=variable_list, lforceList=lforceList)
       # configure slicing (extract basin/province/shape and period)
       slices = _configSlices(slices=slices, basins=basins, provs=provs, shapes=shapes, period=period)
       # assemble arguments
@@ -393,13 +393,13 @@ if __name__ == '__main__':
     
     # some settings for tests
 #     exp = 'ctrl-obs'; basins = ['SSR'] 
-    exp = 'val'; basins = ['GLB','GRW',] 
+    exp = 'val'; basins = ['GLB','GRW',]; grid = 'grw2'
     exps = exps_rc[exp].exps; #exps = ['Unity']
-    seasons = ['summer','winter']; domain = 1
+    seasons = ['summer','winter']; domain = 1; bias_correction = 'AABC'
     varlist = ['precip','runoff']; aggregation = 'mean'; red = dict(i_s='mean')
     
-    shpens = loadShapeEnsemble(names=exps, basins=basins, seasons=seasons, varlist=varlist, 
-                               aggregation=aggregation, filetypes=None, reduction=red, 
+    shpens = loadShapeEnsemble(names=exps, basins=basins, seasons=seasons, varlist=varlist, grid=grid,
+                               aggregation=aggregation, filetypes=None, reduction=red, bias_correction=bias_correction,
                                load_list=['basins','seasons'], lproduct='outer', domain=domain,)
     assert shpens[0].resolution == ( '10km' if domain == 2 else '30km' ), shpens.resolution
     # print diagnostics
