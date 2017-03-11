@@ -393,22 +393,21 @@ if __name__ == '__main__':
     
     # some settings for tests
 #     exp = 'ctrl-obs'; basins = ['SSR'] 
-    exp = 'val'; basins = ['GLB','GRW',]; grid = 'grw2'
+    exp = 'erai'; basins = ['GLB','GRW',] 
     exps = exps_rc[exp].exps; #exps = ['Unity']
-    seasons = ['summer','winter']; domain = 1; bias_correction = 'AABC'
-    varlist = ['precip','runoff']; aggregation = 'mean'; red = dict(i_s='mean')
+    aggregation = 'mean'
+    grid = 'grw2'; period = (1979,1994); bias_correction = 'AABC'; aggregation = None; dataset_mode = 'climatology'
+    varlists = ['precip','runoff','pet']; red = dict(i_s='mean'); domain = 1
     
-    shpens = loadShapeEnsemble(names=exps, basins=basins, seasons=seasons, varlist=varlist, grid=grid,
-                               aggregation=aggregation, filetypes=None, reduction=red, bias_correction=bias_correction,
-                               load_list=['basins','seasons'], lproduct='outer', domain=domain,)
+    shpens = loadShapeEnsemble(names=exps, basins=basins, varlist=varlists, reduction=red, 
+                               grid=grid, period=period, bias_correction=bias_correction, 
+                               dataset_mode=dataset_mode, aggregation=aggregation,
+                               load_list=['basins','varlist'], lproduct='outer', domain=domain,)
     assert shpens[0].resolution == ( '10km' if domain == 2 else '30km' ), shpens.resolution
     # print diagnostics
     print shpens[0]; print ''
-    assert len(shpens) == len(basins)*len(seasons)
+    assert len(shpens) == len(basins)*len(varlists)
     print shpens[0][1]
-    for i,basin in enumerate(basins):
-      i0 = i*len(seasons); ie = len(seasons)*(i+1)
-      assert all(all(ds.atts.shape_name == basin for ds in ens) for ens in shpens[i0:ie])
       
 
   # test load function for station ensemble
