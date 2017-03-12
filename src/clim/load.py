@@ -9,7 +9,8 @@ Utility functions related to loading basin-averaged data to support hydrological
 # internal imports
 from geodata.base import Ensemble, Dataset
 from utils.misc import defaultNamedtuple, reverse_enumerate, expandArgumentList
-from datasets.common import loadEnsembleTS, BatchLoad, shp_params, stn_params, observational_datasets
+from datasets.common import loadEnsembleTS, BatchLoad, shp_params, stn_params, observational_datasets,\
+  timeseries_datasets
 from geodata.misc import ArgumentError, EmptyDatasetError, VariableError
 from datasets.WSC import GageStationError, loadGageStation
 
@@ -23,7 +24,7 @@ wetday_thresholds = [0.2,1,10,20]
 wetday_extensions = ['_{:03.0f}'.format(threshold*10) for threshold in wetday_thresholds]
 
 # dataset variables
-default_obs_list = ['obs','Obs','observations','Observations'] + observational_datasets
+obs_aliases = ['obs','Obs','observations','Observations']
 CRU_vars = ('T2','Tmin','Tmax','dTd','Q2','pet','precip','cldfrc','wetfrq','frzfrq')
 WSC_vars = ('runoff','sfroff','ugroff')
 
@@ -75,7 +76,7 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
                           variable_list=None, basin_list=None, lforceList=True, obs_ts=None, obs_clim=None, 
                           name=None, title=None, obs_list=None, ensemble_list=None, ensemble_product='inner', **kwargs):
   ''' convenience function to load shape observations based on 'aggregation' and 'varlist' (mainly add WSC gage data) '''
-  if obs_list is None: obs_list = default_obs_list
+  if obs_list is None: obs_list = observational_datasets
   if name is None: name = 'obs'
   if title is None: title = 'Observations'
   # variables for which ensemble expansion is not supported
@@ -112,7 +113,7 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
   iobs = None; clim_ens = None
   for i,obs_name in reverse_enumerate(obs):
       # N.B.: we need to iterate in reverse order, so that deleting items does not interfere with the indexing
-      if obs_name in obs_list:
+      if obs_name in obs_aliases or obs_name not in timeseries_datasets:
           if iobs is not None: raise ArgumentError("Can only resolve one default dataset: {}".format(obs))
           if aggregation == 'mean' and seasons is None and obs_clim is not None: 
               # remove dataset entry from list (and all the arguments)
@@ -210,10 +211,10 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, shapes=
   ''' convenience function to load shape ensembles (in Ensemble container) or observations; kwargs are passed to loadEnsembleTS '''
   names = list(names) # make a new list (copy)
   # separate observations
-  if obs_list is None: obs_list = default_obs_list
+  if obs_list is None: obs_list = observational_datasets
   obs_names = []; iobs = []; ens_names = []; iens = []
   for i,name in enumerate(names):
-      if name in obs_list:
+      if name in obs_list or name in obs_aliases:
           obs_names.append(name); iobs.append(i)          
       else: 
           ens_names.append(name); iens.append(i)
@@ -280,10 +281,11 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, shapes=
 def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, varlist=None, aggregation='mean', 
                         constraints=None, filetypes=None, cluster_name=None, stationtype=None, 
                         load_list=None, lproduct='outer', WRF_exps=None, CESM_exps=None, WRF_ens=None, 
-                        CESM_ens=None, variable_list=None, default_constraints=None, lforceList=True, **kwargs):
+                        CESM_ens=None, variable_list=None, default_constraints=None, lforceList=True, 
+                        obs_list=None, obs_ts=None, master=None, **kwargs):
   ''' convenience function to load station data for ensembles (in Ensemble container); kwargs are passed to loadEnsembleTS '''
+  if obs_list is None: obs_list = observational_datasets
   if load_list: load_list = load_list[:] # use a copy, since the list may be modified
- 
   # figure out varlist  
   if isinstance(varlist,basestring) and not stationtype:
       if varlist.lower().find('prec') >= 0: 
@@ -296,6 +298,9 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
   params = stn_params  + [cluster_name] if cluster_name else stn_params # need to load cluster_name!
   variables, filetypes =  _resolveVarlist(varlist=varlist, filetypes=filetypes, 
                                           params=params, variable_list=variable_list, lforceList=lforceList)
+  # replace default observations
+  names = [obs_ts if name in obs_aliases else name for name in names]
+  if master in obs_aliases: master = obs_ts
   # prepare arguments
   if provs or clusters:
     constraints = default_constraints.copy() if constraints is None else constraints.copy()
@@ -332,7 +337,7 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
   stnens = loadEnsembleTS(names=names, season=seasons, prov=provs, station=stationtype, varlist=variables, 
                           aggregation=aggregation, constraints=constraints, filetypes=filetypes, 
                           WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
-                          load_list=load_list, lproduct=lproduct, lcheckVar=False, **kwargs)
+                          load_list=load_list, lproduct=lproduct, lcheckVar=False, master=master, **kwargs)
   # get resolution tag (will be added below)
   res = None
   for member in stnens:

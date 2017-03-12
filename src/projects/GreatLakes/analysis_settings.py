@@ -164,7 +164,7 @@ def loadShapeEnsemble(variable_list=variables_rc, shapetype=default_shapetype, b
 def loadStationEnsemble(variable_list=variables_rc, stationtype=default_stationtype, **kwargs):
   ''' wrapper for clim.load.loadStationEnsemble that sets experiment and variable lists '''
   return clim_load.loadStationEnsemble(variable_list=variable_list, stationtype=stationtype, WRF_exps=WRF_exps, 
-                                       CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+                                       CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, obs_ts='EC', **kwargs)
 def loadShapeFit(variable_list=variables_rc, shapetype=default_shapetype, basin_list=wsc_basins.basin_list, **kwargs):
   ''' wrapper for eva.load.loadShapeEnsemble that sets experiment and variable lists '''
   return eva_load.loadShapeFit(variable_list=variable_list, shapetype=shapetype, WRF_exps=WRF_exps, 
@@ -259,7 +259,7 @@ climds_plotargs_rc = dict()
 # observational datasets
 obs_args = default.obs_args.copy()
 climds_plotargs_rc['Observations'] =  obs_args
-climds_plotargs_rc['Elora']        =  obs_args
+climds_plotargs_rc['Elora']        =  AttrDict(marker='^', linestyle=' ')
 climds_plotargs_rc['NRCan']        =  obs_args
 climds_plotargs_rc['WSC']          =  obs_args
 climds_plotargs_rc['Unity']        =  obs_args
