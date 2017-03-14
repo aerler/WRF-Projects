@@ -70,11 +70,11 @@ if __name__ == '__main__':
   l3pan = False # make a single column of a three-column figure
   lminor = True # draw minor tick mark labels
   locean = False # mask continent in white and omit country borders
-  lstations = False; stations = 'EC'; cluster_symbols = {2:'o',5:'^',8:'s'}; cluster_name = 'cluster_projection'
-  cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.iteritems()}
-  lbasins = False; primary_basins = ('ARB','FRB','GLB'); subbasins = ('WholeARB','UpperARB','LowerCentralARB',) #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
+  lstations = False; stations = 'EC'; #cluster_symbols = {2:'o',5:'^',8:'s'}; cluster_name = 'cluster_projection'
+  #cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.iteritems()}
+  lbasins = False; primary_basins = ('GLB',); subbasins = tuple()
   basin_args = dict(linewidth = 1., color='k'); subbasin_args = dict(linewidth = 0.5, color='k')
-  lprovinces = True; provlist = ('BC','AB','ON')
+  lprovinces = True; provlist = ('ON',)
   cbo = None # default based on figure type
   resolution = None # only for GPCC (None = default/highest)
   exptitles = None
@@ -170,8 +170,8 @@ if __name__ == '__main__':
 #   maptype = 'lcc-can'; lstations = False; domain = 1
 #   lbasins = True; basinlist = ('ARB','FRB','CRB','NRB','PSB'); lprovinces = False; provlist = ['BC','AB','ON']
 #   lbasins = False; basinlist = ('ARB','FRB','GLB'); lprovinces = False; provlist = ['BC','AB','ON']
-#   lbasins = True; basinlist = ('GLB','GRW'); lprovinces = False; provlist = ['ON']
-  lbasins = True; basinlist = ('GLB',); lprovinces = False; provlist = ['ON']
+  lbasins = True; basinlist = ('GLB','GRW'); lprovinces = False; provlist = ['ON']
+#   lbasins = True; basinlist = ('GLB',); lprovinces = False; provlist = ['ON']
 
 
 ## PET validation for GRW
@@ -254,9 +254,14 @@ if __name__ == '__main__':
   lsamesize = True
 #   case = 'ongl'; maptype = 'lcc-ongl'; lstations = False; lbasins = False; lprovinces = False
 #   variables = ['aSM']; WRFfiletypes = ['lsm']; seasons = ['jas']; figtitles = ['Summer Soil Moisture Change [%]']
-  variables = ['T2',]; WRFfiletypes = ['srfc']; seasons = ['winter']; season_settings = 'annual'
-  figtitles = ['{:s} Surface Air Temperature [K]'.format(seasons[0].title())]
+#   variables = ['T2',]; WRFfiletypes = ['srfc']; seasons = ['winter']; season_settings = 'annual'
+#   figtitle = '{:s} Surface Air Temperature [K]'
 #   variables = ['precip',]; WRFfiletypes = ['hydro']; seasons = ['winter']; season_settings = 'None'
+#   figtitle = '{:s} Precipitation Rate [mm/day]'
+  variables = ['snow',]; WRFfiletypes = ['hydro']; seasons = ['winter']; aggregation = 'max'
+  figtitle = '{:s} Snow Water Equivalent [$kg/m^2$]'
+#   variables = ['snwmlt',]; WRFfiletypes = ['hydro']; seasons = ['winter']; season_settings = 'None'
+#   figtitle = '{:s} Snowmelt Rate [mm/day]'
 #   variables = ['Tlake',]; WRFfiletypes = ['srfc']; seasons = ['summer']; figtitles = ['Lake Surface Temperature']; case = 'lake'
 #   variables = ['MaxPrecip_1d']; WRFfiletypes = ['srfc']; seasons = ['annual']; aggregation = 'max'
 #   figtitles = ['Annual Max. Daily Precip. Extremes [%]']; cbn = 7; variable_settings = ['MaxPrecip_prj']
@@ -271,6 +276,8 @@ if __name__ == '__main__':
 #   explist = ['g-ens']; exptitles = 'WRF Ensemble (30km)'; case = 'prj'; domain = 1
 #   explist = ['g3-ens']; exptitles = 'WRF Ensemble (90km)'; case = 'g3prj'; domain = 1
 #   lfrac = True; refprd = H15; period = B15; reflist = explist
+  seasons = ['summer','fall','winter','spring','annual']; figtitles = [figtitle.format(season.title()) for season in seasons]
+#   seasons = ['annual']; figtitles = [figtitle.format(season.title()) for season in seasons]
   
 # # validation over Great Lakes region
 #   explist = ['g-ctrl','g-ens','g-ens-A','g-ens-B','NARR','g-ens-C']
