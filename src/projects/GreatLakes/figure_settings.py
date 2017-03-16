@@ -84,7 +84,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
 #     elif var in ('evap','pet','p-et','precip','precipc','precipnc','waterflx',):
 # #       clevs = np.linspace(-100,100,41); clbl = '%2.0f'  
 #       clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr
-    elif var in ('evap','pet','p-et','precip','precipc','precipnc','waterflx',):
+    elif var in ('evap','pet','p-et','precip','preccu','precnc','waterflx',):
 #       clevs = np.linspace(-100,100,41); clbl = '%2.0f'  
       clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = mpl.cm.BrBG # Spectral
     elif var in ('WaterTransport_U','WaterTransport_V','ColumnWater','cqwu','cqwv','cqw'):
@@ -204,12 +204,13 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('T',): # moisture fluxes (kg /(m^2 s))
       clevs = np.linspace(200,300,26); clbl = '%02.1f' # mpl.cm.PuOr
     elif var == 'zs': # surface elevation / topography
-      zsmax = 1.5 # or 2.5
       if season == 'topo':
+        zsmax = 1.5 # or 2.5
         lmskocn = True; clim = (-1.,zsmax); # nice geographic map feel
         clevs = np.hstack((np.array((-1.5,-1,-0.5)), np.linspace(-0,zsmax,31))); clbl = '%02.1f' # km
         cmap = mpl.cm.gist_earth; cmap.set_over('white'); cmap.set_under('blue') # topography
       elif season == 'hidef': 
+        zsmax = 0.8 # or 2.5
         lmskocn = True; clim = (-0.5,zsmax); # good contrast for high elevation
         clevs = np.hstack((np.array((-.5,)), np.linspace(0,zsmax,31))); clbl = '%02.1f' # km
         cmap = mpl.cm.gist_ncar; cmap.set_over('white'); cmap.set_under('blue')
@@ -348,12 +349,12 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
           margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05)
           caxpos = [0.91, 0.05, 0.03, 0.9]
         if cbo == 'horizontal': 
-          margins = dict(bottom=0.09, left=0.05, right=.97, top=.92, hspace=0.1, wspace=0.05)
-          caxpos = [0.05, 0.0275, 0.9, 0.03]
+          margins = dict(bottom=0.09, left=0.05, right=.98, top=.92, hspace=0.05, wspace=0.05)
+          caxpos = [0.05, 0.035, 0.9, 0.025]
       else:
         margins = dict(bottom=0.025, left=0.05, right=.97, top=.92, hspace=0.1, wspace=0.05)
     elif subplot == (2,4):
-      # 6 panel
+      # 8 panel
       figsize = (9.25,5.5) # width, height (inches)
       if cbar:
         cbo = cbo or 'horizontal'
