@@ -6,6 +6,7 @@ This module contains a meta data for HGS simulations for the GRW and a wrapper t
 @author: Andre R. Erler, GPL v3
 '''
 import numpy as np
+from collections import OrderedDict
 import hgs.HGS as hgs # need to prevent name collisions here
 import projects.WSC_basins as wsc
 from projects.GreatLakes.WRF_experiments import WRF_exps
@@ -26,6 +27,7 @@ project_folder_pattern = '{PROJECT_FOLDER:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s
 # plotting parameters for HGS simulations
 hgs_plotargs = dict() 
 hgs_plotargs['Observations'] = dict(color='#959595') # gray
+hgs_plotargs['WSC']          = dict(color='#959595') # gray
 hgs_plotargs['NRCan']        = dict(color='green')
 hgs_plotargs['NRCan (old)']  = dict(color='green', linestyle='--')
 # hgs_plotargs['Observations'] = dict(color='#68615E') # dark gray
@@ -44,11 +46,28 @@ hgs_plotargs['2045-2060']    = dict(color='#AAA2D8') # purple
 hgs_plotargs['2050-2060']    = dict(color='#AAA2D8') # purple
 hgs_plotargs['2085-2100']    = dict(color='#E24B34') # red
 hgs_plotargs['2090-2100']    = dict(color='#E24B34') # red
+# extended color scheme for ensemble
+color_args = {'Ctrl':'blue', 'Ens-A':'purple', 'Ens-B':'green','Ens-C':'coral','90km':'purple','30km':'red','10km':'blue'}
+for key,value in color_args.items(): hgs_plotargs[key] = dict(color=value)
+hgs_plotargs['Ensemble'] = dict(color='red',linewidth=1)
+hgs_plotargs['Mean'] = dict(color='black',linewidth=1)
 
 # mapping of WSC station names to HGS hydrograph names
-Station = namedtuple('Station', ('HGS','WSC'),)
-station_list = dict(Brantford=Station(HGS='GR_Brantford',WSC='Grand River_Brantford') ) # this is the main gage of the GRW
+Station = namedtuple('Station', ('HGS','WSC','ylim'),)
+station_list = OrderedDict() # this is the main gage of the GRW
+station_list['Grand River at Brantford']  = Station(HGS='GR_Brantford',WSC='Grand River_Brantford',ylim=20)
+station_list['Grand River at Marsville']  = Station(HGS='GR_Marsville_(near_it)',WSC='Grand River_Marsville',ylim=4)
+station_list['Conestogo at Glen Allan']   = Station(HGS='Conestogo_River_at_Glen_Allan',WSC='Conestogo River_Glen Allan',ylim=3)
+station_list['Speed River at Guelph']     = Station(HGS='Speed_River_near_Guelph(moved_North)',WSC='Speed River_Guelph',ylim=2)
+station_list['Whitemans at Mount Vernon'] = Station(HGS='Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=2)
+station_list['Fairchild at Brantford']    = Station(HGS='Fairchild_Creek_near_Brantford',WSC='Fairchild Creek_Brantford',ylim=1.2 )
+# look-up tables for WSC/HGS station name conversion                           
+WSC_station_list = {stn.WSC:stn.HGS for stn in station_list.values()}
+HGS_station_list = {stn.HGS:stn.WSC for stn in station_list.values()}
 # short names for gages in this basin and their HGS/WSC names
+station_list_etal = dict(**station_list) # not ordered
+station_list_etal['Brantford']  = station_list['Grand River at Brantford'] # alias
+
 
 # experiment aliases (for more systematic access)
 exp_aliases = {'erai-g_d00':'erai-g3_d01','erai-t_d00':'erai-t3_d01',
@@ -81,9 +100,15 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
       experiment = ENSEMBLE # use as experiment name, but also pass on as kwarg to HGS loader
   if experiment is None or clim_mode is None: raise ArgumentError(experiment,clim_mode)
   # resolve station name
-  if station in station_list: 
-      if WSC_station is None: WSC_station = station_list[station].WSC
-      station = station_list[station].HGS; 
+  if station in station_list_etal: 
+      if WSC_station is None: WSC_station = station_list_etal[station].WSC
+      station = station_list_etal[station].HGS
+  elif station is None and WSC_station in WSC_station_list:
+      station = WSC_station_list[station]
+  elif station in WSC_station_list and WSC_station is None:
+      WSC_station = station; station = WSC_station_list[station]
+  elif station in HGS_station_list and WSC_station is None: 
+      WSC_station =  HGS_station_list[station]
   if basin_list is None: basin_list = wsc.basin_list # default basin list
   # resolve folder arguments
   if project_folder is None and project is not None: 
@@ -215,14 +240,14 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
 # abuse for testing
 if __name__ == '__main__':
     
-#   test_mode = 'gage_station'
-  test_mode = 'dataset'
+  test_mode = 'gage_station'
+#   test_mode = 'dataset'
 #   test_mode = 'ensemble'
 
   if test_mode == 'gage_station':
     
     # load single dataset
-    ds = loadWSC_StnTS(period=(1974,2004), )
+    ds = loadWSC_StnTS(period=(1974,2004), station='Speed River at Guelph')
     print(ds)
     
   elif test_mode == 'dataset':

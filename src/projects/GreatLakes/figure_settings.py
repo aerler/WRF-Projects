@@ -170,7 +170,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('snwmlt', 'runoff', 'ugroff', 'sfroff'): # moisture fluxes (kg /(m^2 s))
       # clevs = np.linspace(-3,22,51); clbl = '%02.1f'
       clevs = np.linspace(0,5,26); clbl = '%02.1f'; cmap = mpl.cm.YlGnBu
-    elif var in ('precip','precipnc','liqwatflx') or var[:7] in ('dryprec','wetprec'): # total precipitation
+    elif var in ('precip','precnc','preccu','liqwatflx') or var[:7] in ('dryprec','wetprec'): # total precipitation
 #       if season in ('winter','fall'): clevs = np.linspace(0,20,41); clbl = '%2.1f' # mm/day
 #       elif season in ('summer','spring'): clevs = np.linspace(0,8,17); clbl = '%2.0f' # mm/day
       clevs = np.linspace(0,5,26); clbl = '%2.0f' # mm/day
@@ -179,8 +179,6 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('MaxPrecip_1d'): # total precipitation for north america
       clevs = np.linspace(0,80,21); clbl = '%2.0f' # mm/day
       if season in ('summer','spring'): clevs /= 2.
-    elif var in ('precipc',): # convective precipitation 
-      clevs = np.linspace(0,5,26); clbl = '%02.1f' # mm/day
     elif var == 'Q2':
       clevs = np.linspace(0,20,21); clbl = '%02.1f' # mm/day
     elif var in ('SST','Ts','Tlake'): # skin temperature (SST)
@@ -291,8 +289,8 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
           margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05) 
           caxpos = [0.91, 0.05, 0.03, 0.9]
         if cbo == 'horizontal': 
-          margins = dict(bottom=0.125, left=0.11, right=0.95, top=0.925, hspace=0.0, wspace=0.0)
-          caxpos = [0.05, 0.06, 0.9, 0.03]
+          margins = dict(bottom=0.135, left=0.1, right=0.97, top=0.92, hspace=0.0, wspace=0.0)
+          caxpos = [0.05, 0.06, 0.9, 0.025]
       else:
         margins = dict(bottom=0.085, left=0.1, right=0.975, top=0.94, hspace=0.05, wspace=0.05)
     elif subplot == (1,2):
