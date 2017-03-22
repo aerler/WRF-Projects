@@ -16,6 +16,7 @@ from geodata.misc import ArgumentError, DatasetError
 project_name = 'GRW'
 project_prefix = 'grw_omafra'
 # some parameters
+gage_scalefactors = 1e-4 # default scalefactor for discharge plots
 main_gage  = 'Brantford' # gage station(see station_list for proper HGS/WSC names)
 main_basin = 'GRW' # main basin name
 main_grid  = 'grw2' # climate data grid
@@ -89,9 +90,9 @@ for name,members in ensemble_list.items():
 # simple dataset loader
 def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varatts=None, name=None, title=None, 
                   exp_aliases=exp_aliases, run_period=15, clim_mode=None, station=main_gage, bias_correction=None,
-                  folder=project_folder_pattern, project_folder=None, project=project_name, 
-                  grid=main_grid, task=main_task, prefix=project_prefix, WSC_station=None, 
-                  basin=main_basin, basin_list=None, lpad=True, ENSEMBLE=None, **kwargs):
+                  folder=project_folder_pattern, project_folder=None, project=project_name, grid=main_grid, 
+                  task=main_task, prefix=project_prefix, WSC_station=None, basin=main_basin, basin_list=None, 
+                  lpad=True, ENSEMBLE=None, scalefactors=gage_scalefactors, **kwargs):
   ''' Get a properly formatted HGS dataset with a regular time-series at station locations; as in
       the hgsrun module, the capitalized kwargs can be used to construct folders and/or names '''
   experiment = experiment or ENSEMBLE # an alias to support the ensemble loader
@@ -196,8 +197,8 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   dataset = hgs.loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, ENSEMBLE=ENSEMBLE, 
                               folder=folder, experiment=experiment, period=period, start_date=start_date,
                               project_folder=project_folder, project=project, grid=grid, task=task, 
-                              prefix=prefix, clim_dir=clim_dir, WSC_station=WSC_station, basin=basin, 
-                              basin_list=basin_list, filename=hgs.station_file, lpad=lpad, **kwargs)
+                              prefix=prefix, clim_dir=clim_dir, WSC_station=WSC_station, basin=basin, lpad=lpad,  
+                              basin_list=basin_list, filename=hgs.station_file, scalefactors=scalefactors, **kwargs)
   # slice time axis for period
   if start_year is not None and end_year is not None:
     dataset = dataset(years=(start_year,end_year))
@@ -210,14 +211,14 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
 
 
 # custom gage station loader
-def loadWSC_StnTS(station=main_gage, name=None, title=None, basin=main_basin, basin_list=None,
-                  varlist=None, varatts=None, period=None, filetype='monthly'):
+def loadWSC_StnTS(station=main_gage, name=None, title=None, basin=main_basin, basin_list=None, varlist=None, 
+                  varatts=None, period=None, filetype='monthly', scalefactors=gage_scalefactors, **kwargs):
   ''' a wrapper to load gage stations for the GRW with appropriate default values'''
   # load gage station
   if station in station_list: station = station_list[station].WSC # get WSC name for gage station (different from HGS name...)
   if basin_list is None: basin_list = wsc.basin_list # default basin list
-  return wsc.loadWSC_StnTS(basin=basin, station=station, varlist=varlist, varatts=varatts, 
-                       filetype=filetype, folder=None, name=name, basin_list=basin_list, period=period)
+  return wsc.loadWSC_StnTS(basin=basin, station=station, varlist=varlist, varatts=varatts, filetype=filetype,
+                           name=name, basin_list=basin_list, period=period, scalefactors=scalefactors, **kwargs)
   
 
 # wrapper to load HGS ensembles, otherwise the same
@@ -226,15 +227,15 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
                    folder=project_folder_pattern, project_folder=None, obs_period=None, 
                    ensemble_list=ensemble_list, ensemble_args=None, observation_list=gage_datasets, # ensemble and obs lists for project
                    project=project_name, grid=main_grid, task=main_task, prefix=project_prefix, 
-                   WSC_station=None, basin=main_basin, basin_list=None, **kwargs):
+                   WSC_station=None, basin=main_basin, basin_list=None, scalefactors=gage_scalefactors, **kwargs):
   ''' a wrapper for the regular HGS loader that can also load gage stations and assemble ensembles '''  
   return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
                             period=period, run_period=run_period, folder=folder, obs_period=obs_period,  
                             ensemble_list=ensemble_list, ensemble_args=ensemble_args, observation_list=observation_list, 
                             loadHGS_StnTS=loadHGS_StnTS, loadGageStation_TS=loadWSC_StnTS, # use local versions of loaders
                             prefix=prefix, WSC_station=WSC_station, basin=basin, basin_list=basin_list, 
-                            domain=domain, project_folder=project_folder, project=project, grid=grid, 
-                            clim_mode=clim_mode, exp_aliases=exp_aliases, task=task, **kwargs)  
+                            domain=domain, project_folder=project_folder, project=project, grid=grid, clim_mode=clim_mode, 
+                            exp_aliases=exp_aliases, task=task, scalefactors=scalefactors, **kwargs)  
 
 
 # abuse for testing
