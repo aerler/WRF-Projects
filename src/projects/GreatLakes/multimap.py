@@ -56,6 +56,7 @@ if __name__ == '__main__':
   ltitle = True # plot/figure title
   figtitles = None; comments = None
   subplot = None # subplot layout (or defaults based on number of plots)
+  figsize = None
   lbackground = True
   lcontour = False # contour or pcolor plot
   shading = 'gouraud' # shading for pixel plot: 'flat' | 'gouraud'
@@ -366,22 +367,15 @@ if __name__ == '__main__':
 # #   exptitles = ['Merged Observations (10 km)']
 #   variables = ['Ts']; seasons = ['annual']; WRFfiletypes = ['srfc'] 
 
-# # observations
-#   variables = ['precip']; seasons = ['annual']
-#   explist = ['Unity']; maptype = 'lcc-bcab'; period = H15
-# #   ldiff = True; reflist = ['Unity']; maptype = 'lcc-small'
-#   exptitles = 'Annual Total Precipitation [mm/day]'; figtitles = '' # ['Merged Observations (10 km)']
-#   case = 'unity'; lsamesize = False; grid = 'arb2_d02'
-#   cluster_name = 'cluster_historical'; cluster_symbols = {i:'o' for i in xrange(10)} # '^','s'
-#   cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.iteritems()}
-#   lbasins = False; lstations = True; stations = 'EC'; case += '_stations'
-  
-# single panel plot
-#   explist = ['max-ens-2100']; maptype = 'lcc-new'; period = B15
-#   lfrac = True; reflist = ['max-ens']; refprd = H15
-#   case = 'sum'; lsamesize = False; figtitles = ''; primary_basins = ['FRB','ARB']
-#   variables = ['aSM']; seasons = ['jas']; exptitles = 'Soil Moisture Change [%]'
-#   variable_settings = ['asm_red']
+# observations and models side-by-side
+  seasons = [['summer']*3+['winter']*3]; season_settings = ['annual']
+  variables = ['precip',]; figtitles = ['Average Total Precipitation [mm/day]']
+#   variables = ['T2',]; figtitles = ['Average 2m Air Temperature [K]']
+  explist = ['NRCan','Ens','g-ens']*2; domain = 1
+  exptitles = ['NRCan Observations', 'CESM Ensemble', 'G Ensemble (30 km)']*2
+  period = [NRC70,H15,H15]*2; case = 'nrcan'
+  exptitles = ['{}, {}'.format(exp,season.title()) for exp,season in zip(exptitles,seasons[0])]
+  lsamesize = False; lbasins = True; lstations = False; lcontour = False
 
 # GPCC stations
 #   variables = ['stations']; seasons = ['annual']
@@ -389,45 +383,6 @@ if __name__ == '__main__':
 #   exptitles = ['GPCC Station Density']; figtitles = [''] 
 #   case = 'gpcc'; lsamesize = False; #grid = 'arb2_d02'
 #   variables = ['stations']; seasons = ['annual']; shading = 'flat'
-
-# # ERA-Interim validation
-# #   explist = ['max-ens']; seasons = ['annual']; period = H15; domain = 2
-#   explist = ['Unity','erai-max','max-ens']*2
-#   seasons = [('summer',)*3+('winter',)*3]
-#   period = H15; domain = 2
-# #   maptype = 'lcc-can'; lstations = False; lbasins = True; domain = 1
-# #   lfrac = True; reflist = ['max-ens',]; refprd = H15;
-#   case = 'erai'; lsamesize = True
-
-# # differences to historical period
-# #   reflist = ['max-ens-2050','max-ens-2100']*2; case = 'max-seaice'; # l3pan = True (left column of 6-panel figure)
-# #   explist = [case+'-2050',case+'-2100']*2
-# #   seasons = [('summer',)*2+('winter',)*2]; period = [A15,B15]*2
-#   seasons = [('summer',)*3+('winter',)*3]; period = B15; refprd = H15
-#   exptitles = ['{:s}, CESM', '{:s}, WRF (IC)', '{:s}, WRF (AE)']*2  
-#   exptitles = [title.format(season.title())  for season,title in zip(seasons[0],exptitles)]
-#   explist = ['Ens-2100','max-ens-2100','ctrl-ens-2100']*2; case = 'xtrm'
-#   reflist = ['Ens','max-ens','ctrl-ens']*2; #grid = 'arb2_d02'
-# #  exptitles = ['Historical, {:s}', 'Mid-century, {:s}', 'End-century, {:s}']*2
-# #  exptitles = [model.format(season.title()) for model,season in zip(exptitles,seasons[0])]
-#   domain = 2; maptype = 'lcc-new'; lstations = True; lbasins = False
-# #   lsamesize = False; cbo = 'horizontal'  
-# #   variables = ['precip']; ldiff = True
-# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; lfrac = True
-# #   variables = ['precip']; lfrac = True 
-#   variables = ['T2']; variable_settings = ['T2_prj']; ldiff = True 
-
-# # differences to Obs
-# #   reflist = ['max-ens-2050','max-ens-2100']*2; case = 'max-seaice'; # l3pan = True (left column of 6-panel figure)
-# #   explist = [case+'-2050',case+'-2100']*2
-# #   seasons = [('summer',)*2+('winter',)*2]; period = [A15,B15]*2
-# #   exptitles = ['Mid-century, {:s}', 'End-century, {:s}']*2  
-#   case = 'mc_val'; explist = ['ctrl-ens','max-ens']*2; reflist = 'Unity'
-#   seasons = [('summer',)*2+('winter',)*2]; period = H15
-#   domain = 1; maptype = 'lcc-can'; lstations = False; lbasins = True; grid = 'arb2_d01'
-# #   lsamesize = False; cbo = 'horizontal'  
-#   variables = ['precip']; ldiff = True
-# #   variables = ['MaxPrecip_1d']; domain = 2; cbo = 'vertical'; lfrac = True
 
 # # historical state (continental; vertical orientation)
 #   refexp = 'max-ctrl'; case = refexp; exptitles = ['Historical, {:s}',]*2; l3pan = True
@@ -514,108 +469,6 @@ if __name__ == '__main__':
 # #   lfrac = True; reflist = ['max-ens',]; refprd = H15;
 #   case = 'wetdays'; lsamesize = True
 
-# ensemble projection
-#   seasons = [('summer',)*2+('winter',)*2]; period = [A15,B15]*2
-# #   explist = ['phys-ens-2050','phys-ens-2100']*2; reflist = ['phys-ens']; case = 'phys-prj'; period = [A15,B10]*2
-# #   explist = ['ctrl-2050','ctrl-2100']*2; reflist = ['ctrl-1']; case = 'ctrl-prj'
-#   explist = ['max-ens-2050','max-ens-2100']*2; reflist = ['max-ens']; case = 'ens-prj'
-# #   explist = ['max-ctrl-2050','max-ctrl-2100']*2; reflist = ['max-ctrl']; case = 'max-prj'
-# #   explist = ['max-ens-A-2050','max-ens-A-2100']*2; reflist = ['max-ens-A']; case = 'ens-A-prj';
-# #   explist = ['max-ens-B-2050','max-ens-B-2100']*2; reflist = ['max-ens-B']; case = 'ens-B-prj';
-# #   explist = ['max-ens-C-2050','max-ens-C-2100']*2; reflist = ['max-ens-C']; case = 'ens-C-prj';   
-#   periodstrs = ('Mid-Century','End-Century')
-#   exptitles = ['{:s}, {:s}'.format(season.title(),prdstr) for season in seasons[0][::2] for prdstr in periodstrs]
-#   maptype = 'lcc-bcab'; lstations = True; stations = 'EC'; 
-#   lprovinces = True; provlist = ['BC','AB'][1:]
-#   lbasins = True; lsamesize = False; basinlist = ['FRB','ARB']
-#   lfrac = True; refprd = H15
-# #   variables = ['precip']
-#   variables = ['MaxPrecip_1d']
-# #   ldiff = True; refprd = H15
-# #   variables = ['SST']; variable_settings = ['T2_prj'] # parallel execution
-
-# surface sensitivity test
-#   maptype = 'lcc-intermed'; lstations = False; lbasins = True
-#   explist = ['max-grass','max-ens','max-ctrl','max-1deg']; period = H05; domain = 1
-#   ldiff = True; reflist = ['Unity']; refprd = None; 
-#   grid = ['arb2_d01']*4 
-#   case = 'srfc'; lsamesize = True
-
-# # resolution sensitivity test
-#   explist = ['max-ctrl','max-ctrl','max-1deg','max-1deg']; period = H15; domain = [1,2]*2
-#   ldiff = True; reflist = ['Unity']; refprd = None; 
-#   grid = ['arb2_d01','arb2_d02']*2 
-#   case = '1deg'; lsamesize = True
-
-# # max sensitivity experiments
-#   explist = ['max-nmp','max-ctrl','max-nosub','max-kf','max-hilev','new-ctrl']; period = H15
-#   ldiff = True; reflist = ['Unity']; refprd = None; grid = ['arb2_d02']*5+['arb3_d02'] 
-#   case = 'max'; lsamesize = True
-
-# # v361 validation
-#   explist = ['new-v361','new-ctrl','max-ctrl','erai-v361','erai-v361-noah','erai-max']; period = H10 
-#   domain = 1; grid = ['arb3_d01','arb3_d01','arb2_d01']*2
-# #   domain = 2; grid = ['arb3_d02','arb3_d02','arb2_d02']*2
-#   ldiff = True; reflist = ['Unity']; refprd = None 
-#   case = 'v361'; lsamesize = True
-
-# # v361 projection
-#   explist = ['new-v361-2050','new-ctrl-2050','max-ctrl-2050','new-v361-2100','new-ctrl-2100','max-ctrl-2100']  
-#   ldiff = True; reflist = ['new-v361','new-ctrl','max-ctrl']*2; refprd = H10 
-#   domain = 1; grid = ['arb3_d01','arb3_d01','arb2_d01']*2; period = [A10]*3+[B10]*3
-# #   domain = 2; grid = ['arb3_d02','arb3_d02','arb2_d02']*2
-# #   ldiff = True; reflist = ['Unity']; refprd = None 
-#   case = 'p361'; lsamesize = True
-
-# physics ensemble validation
-#   explist = ['new-ctrl','old-ctrl','ctrl-1','max-ctrl']; period = H15; domain = 2
-#   ldiff = True; reflist = ['Unity']; refprd = None; grid = ['arb3_d02', 'arb2_d02', 'arb2_d02', 'arb2_d02'] 
-#   case = 'phys'; lsamesize = True
-#   explist = ['erai-v361','erai-v361-noah','erai-3km','erai-max']; period = H05; domain = [2,2,3,2]
-#   ldiff = True; reflist = ['Unity']; refprd = None; grid = ['arb3_d02']*2 + ['arb2_d02']*2 
-#   case = 'erai'; lsamesize = True
-
-# hires validation
-#   maptype = 'lcc-col'; lstations = False; lbasins = True
-# #   explist = ['erai-wc2-rocks',]; period = [1,]; domain = [2,]
-#   ldiff = True; reflist = ['PCIC']; refprd = None; grid = 'wc2_d02' 
-# #   grid = ['wc2_d02','arb2_d02','col2_d02','wc2_d02']
-#   explist = ['erai-wc2-2013','erai-max','erai-3km','erai-wc2-2010']
-#   period = [1,15,5,1]; domain = [2, 2, 3, 2]
-# #   explist = ['erai-wc2-bugaboo','PCIC','erai-3km','erai-wc2-rocks']
-# #   period = [1,None,3,1]; domain = [(1,2), None, (2,3), (1,2)]
-# #   exptitles = ['CESM (80 km)','Merged Observations (10 km)', 'Outer WRF Domain (30 km)', 'Inner WRF Domain (10 km)']
-#   case = 'wc2'; lsamesize = True
-
-# water transport
-#   explist = ['max-1deg']; domain = [1,]; period = H15
-#   explist = ['max-1deg', 'max-1deg', 'max-ctrl', 'max-ctrl']; period = H15; domain = [1, 2, 1, 2]
-#   exptitles = ['CESM (80 km)','WRF Max-1deg (10 km)', 'WRF Max-Ctrl (30 km)', 'WRF Max-Ctrl (10 km)']
-#   explist = ['max-1deg', 'max-1deg', 'max-ctrl', 'max-ctrl']; period = H15; domain = [1, 2, 1, 2]
-#   exptitles = ['WRF Max-1deg (30 km)','WRF Max-1deg (10 km)', 'WRF Max-Ctrl (30 km)', 'WRF Max-Ctrl (10 km)']
-#   case = 'val1deg'; lsamesize = True; # grid = 'arb2_d02'
-
-# Validation: differences to obs (T2, precip, annual, summer, winter)
-#   explist = ['max-ens','Ens',]*2; grid = ['arb2_d02','cesm1x1',]*2
-#   seasons = ['summer']*2+['winter']*2; period = H15
-#   exptitles = ['WRF, 10 km ({:s} Average)','CESM ({:s} Average)']*2
-#   exptitles = [model.format(season.title()) for model,season in zip(exptitles,seasons)]
-#   case = 'val'; reflist = 'Unity'; refprd = H15; lsamesize = True
-#   ldiff = True;  variables = ['T2','precip']; seasons = [seasons] # only make one plot with all seasons!
-# #   lfrac = True; variables = ['precip']; seasons = [seasons] # only make one plot with all seasons!
-
-# Projection: T2 and pecip diffs
-#   explist = ['max-ens-2100','Ens-2100',]*2; period = B15
-#   seasons = ['summer']*2+['winter']*2
-#   exptitles = ['WRF, 10 km ({:s} Average)','CESM ({:s} Average)']*2
-#   exptitles = [model.format(season.title()) for model,season in zip(exptitles,seasons)]
-#   case = 'prj'; lbasins = True; lsamesize = True
-#   reflist = ['max-ens','Ens',]*2; refprd = H15
-#   seasons = [seasons] # only make one plot with all seasons!
-#   ldiff = True; variables = ['T2']; variable_settings = ['T2_prj'] # parallel execution
-#   lfrac = True; variables = ['precip']; variable_settings = ['precip_prj']
-#   ldiff = True; variables = ['precip']; variable_settings = ['precip_prj']
-
 ## large map for all domains
 #   maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
 #   lstations = False; lbasins = True; lprovinces = False
@@ -679,7 +532,7 @@ if __name__ == '__main__':
   subplot = subplot or nlen
   tmp = getFigureSettings(subplot, cbar=True, cbo=cbo, figuretype=figuretype, 
                           sameSize=lsamesize, l3pan=l3pan)
-  sf, figformat, margins, caxpos, subplot, figsize, cbo = tmp # distribute output to variables  
+  sf, figformat, margins, caxpos, subplot, fs, cbo = tmp # distribute output to variables  
   if not ltitle: margins['top'] += 0.05
   
   # get projections settings
@@ -842,7 +695,7 @@ if __name__ == '__main__':
       #print(' - setting up figure\n') 
       nax = subplot[0]*subplot[1] # number of panels
       # make figure and axes
-      f = plt.figure(facecolor='white', figsize=figsize)
+      f = plt.figure(facecolor='white', figsize=fs if figsize is None else figsize)
       ax = []
       for n in xrange(nax):
         ax.append(f.add_subplot(subplot[0],subplot[1],n+1, axisbg='blue'))
