@@ -48,9 +48,9 @@ if __name__ == '__main__':
 
   ## general settings and shortcuts
   # period shortcuts
-  H01 = '1979-1980'; H02 = '1979-1981'; H03 = '1979-1982'; H04 = '1979-1983'; H05 = '1979-1984' # preliminary analysis
-  H10 = '1979-1989'; H12 = '1979-1991'; H15 = '1979-1994'; H30 = '1979-2009'; H60 = '1949-2009' # historical validation periods
-  G10 = '1969-1979'; I10 = '1989-1999'; J10 = '1999-2009' # additional historical periods
+  H01 = '1979-1980'; H02 = '1979-1981'; H03 = '1979-1982'; H30 = '1979-2009' # for tests 
+  H05 = '1979-1984'; H10 = '1979-1989'; H15 = '1979-1994'; H60 = '1949-2009' # historical validation periods
+  G10 = '1969-1979'; I10 = '1989-1999'; J10 = '1999-2009'; NRC70 = '1970-2000'; NRC80 = '1980-2010' # additional historical periods
   A03 = '2045-2048'; A05 = '2045-2050'; A09 = '2045-2054'; A10 = '2045-2055'; A15 = '2045-2060' # mid-21st century
   B03 = '2085-2088'; B05 = '2085-2900'; B10 = '2085-2095'; B15 = '2085-2100' # late 21st century  
   ltitle = True # plot/figure title
@@ -93,9 +93,9 @@ if __name__ == '__main__':
   # WRF file types
   WRFfiletypes = [] # WRF data source
 #   WRFfiletypes += ['aux']
-  WRFfiletypes += ['hydro']
+#   WRFfiletypes += ['hydro']
 #   WRFfiletypes += ['lsm']
-#  WRFfiletypes += ['srfc']
+  WRFfiletypes += ['srfc']
 #   WRFfiletypes += ['xtrm']
 #   WRFfiletypes += ['plev3d']
   ## select variables and seasons
@@ -171,24 +171,28 @@ if __name__ == '__main__':
   lbasins = True; basinlist = ('ARB','FRB',); lprovinces = False; provlist = ['BC','AB']
 
 
-### validation and projection for the Paper
-#  explist = ['Ens','max-ens','ctrl-ens']*2; seasons = [['summer']*3+['winter']*3]
-#  domain = 2; tag = 'd{:02d}'.format(domain); grid = 2*( ['cesm1x1']+2*['arb2_'+tag] ) # 'arb2_'+tag; 
-##  seasons = [['spring']*3+['fall']*3]
-##  seasons = ['annual']; # grid = 'arb2_d02'; # to get stats
-##   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
-##   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
-#  exptitles = ['CESM','1st WRF Ens.','Alt. WRF Ens.']*2; res = '30km' if domain == 1 else '10km'
-##   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
-##   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
-#  exptitles = [ 'CESM Ensemble, {}'.format(s.title()) if e == 'CESM' else '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
-##  variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
-#  variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-##   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
-##  variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
-#  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-##  period = A15; refprd = H15; reflist = explist; case = tag+'prjA' # projection 
-##  period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
+## validation and projection for the Paper
+  explist = ['Ens','max-ens','ctrl-ens']*2; seasons = [['summer']*3+['winter']*3]
+  domain = 2; tag = 'd{:02d}'.format(domain); grid = 2*( ['cesm1x1']+2*['arb2_'+tag] ) # 'arb2_'+tag; 
+#   seasons = [['summer']*3+['annual']*3]
+#  seasons = [['spring']*3+['fall']*3]
+#  seasons = ['annual']; # grid = 'arb2_d02'; # to get stats
+#   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
+#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+  exptitles = ['CESM','1st WRF Ens.','Alt. WRF Ens.']*2; res = '30km' if domain == 1 else '10km'
+#   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
+#   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
+  exptitles = [ 'CESM Ensemble, {}'.format(s.title()) if e == 'CESM' else '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
+  variables = ['SWDNB']; cbn = 5; lfrac = True
+#   variables = ['LWDNB']; cbn = 5; lfrac = False
+#   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
+#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+#   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
+#   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
+#   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+#   period = A15; refprd = H15; reflist = explist; case = tag+'prjA' # projection 
+  period = H15; case = tag+'val'; variable_settings = None; refprd = H15; reflist = 'Unity' # validation
+  refprd = NRC70; reflist = 'NRCan'; case += '_nrcan' # validation using NRCan instead of Unity
 ##   case = tag+'val_narr'; reflist = 'NARR'
 
 ### 2x2-panel projection for the Paper
@@ -534,31 +538,31 @@ if __name__ == '__main__':
 #   lfrac = True; variables = ['precip']; variable_settings = ['precip_prj']
 #   ldiff = True; variables = ['precip']; variable_settings = ['precip_prj']
 
-# large map for all domains
-  variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True; WRFfiletypes = []
-  lbasins = True; lprovinces = True; provlist = ['AB']
-  #lstations = False; lbasins = False; lprovinces = True; # provlist = ('AB',) 
-# figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']; exptitles = ' '
-#  maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
-#  explist = ['max']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
-#  case = 'arb2_basins'; #basinlist = ('FRB','ARB','CRB','NRB'); primary_basins = ('FRB','ARB')
-# smaller map for western Canada
-  explist = ['max-3km']; domain = (1,2,3); exptitles = ['Terrain Height [km]']; figtitles = ' ' 
-  period = H10; lWRFnative = True; lframe = True; loutline = False
-#   maptype = 'lcc-prairies'
-  #maptype = 'lcc-arb3_d02'; case = 'large'
-  #maptype = 'lcc-arb3_d03'; case = 'small'
-  #maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']
-  maptype = 'ortho-NA'; case = 'global'; basinlist = []
-  #domain = (1,); case += '_d01'
-  #domain = (1,2); case += '_d02'
-#   domain = (0,1,); case += '_d01'
-#   domain = (0,1,2); case += '_d02'
-  domain = (0,1,2,3); case += '_d03'
-#  maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']; domain = (3,) # ; explist = ['col1-const']
-#  case = 'frb'; basins = ('FRB',)
-#  case = 'arb'; basins = ('ARB',)
-#   case = 'ssr'; basinlist = ('SSR',)
+# # large map for all domains
+#   variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True; WRFfiletypes = []
+#   lbasins = True; lprovinces = True; provlist = ['AB']
+#   #lstations = False; lbasins = False; lprovinces = True; # provlist = ('AB',) 
+# # figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']; exptitles = ' '
+# #  maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
+# #  explist = ['max']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
+# #  case = 'arb2_basins'; #basinlist = ('FRB','ARB','CRB','NRB'); primary_basins = ('FRB','ARB')
+# # smaller map for western Canada
+#   explist = ['max-3km']; domain = (1,2,3); exptitles = ['Terrain Height [km]']; figtitles = ' ' 
+#   period = H10; lWRFnative = True; lframe = True; loutline = False
+# #   maptype = 'lcc-prairies'
+#   #maptype = 'lcc-arb3_d02'; case = 'large'
+#   #maptype = 'lcc-arb3_d03'; case = 'small'
+#   #maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']
+#   maptype = 'ortho-NA'; case = 'global'; basinlist = []
+#   #domain = (1,); case += '_d01'
+#   #domain = (1,2); case += '_d02'
+# #   domain = (0,1,); case += '_d01'
+# #   domain = (0,1,2); case += '_d02'
+#   domain = (0,1,2,3); case += '_d03'
+# #  maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']; domain = (3,) # ; explist = ['col1-const']
+# #  case = 'frb'; basins = ('FRB',)
+# #  case = 'arb'; basins = ('ARB',)
+# #   case = 'ssr'; basinlist = ('SSR',)
 
     
   if not case: raise ValueError, 'Need to define a \'case\' name!'

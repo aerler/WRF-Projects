@@ -82,9 +82,8 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('Z',):
       clevs = np.linspace(-15,15,31); clbl = '%2.1f'  
     elif var in ('evap','pet','p-et','precip','precipc','precipnc','waterflx',):
-      clevs = np.linspace(-100,100,41); clbl = '%2.0f'; #cmap = mpl.cm.BrBG
-      #clevs = np.linspace(-60,60,41); clbl = '%2.0f'; cmap = mpl.cm.BrBG #cmap = mpl.cm.PuOr
-      cmap = cm.redblue_light_r
+#       clevs = np.linspace(-100,100,41); clbl = '%2.0f'; cmap = cm.redblue_light_r
+      clevs = np.linspace(-60,60,41); clbl = '%2.0f'; cmap = mpl.cm.BrBG #cmap = mpl.cm.PuOr      
     elif var in ('WaterTransport_U','WaterTransport_V','ColumnWater','cqwu','cqwv','cqw'):
       clevs = np.linspace(-50,50,41); clbl = '%2.0f'
     elif var in ('aSM',):
@@ -111,12 +110,12 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       if var == 'qtfx': clevs = clevs * 2
       if season == 'winter': clevs = clevs - 30
       elif season == 'summer': clevs = clevs + 30
-    elif var=='GLW': # heat fluxes (W / m^2)
-      clevs = np.linspace(200,320,41); clbl = '%03.0f'
+    elif var in ('GLW','SWD','SWN','LWDNB','SWDNB',): # heat fluxes (W / m^2)
+      clevs = np.linspace(200,360,41); clbl = '%03.0f'
       if season == 'winter': clevs = clevs - 40
       elif season == 'summer': clevs = clevs + 40
-    elif var=='OLR': # heat fluxes (W / m^2)
-      clevs = np.linspace(190,240,31); clbl = '%03.0f'
+    elif var in ('OLR','LWUPT'): # heat fluxes (W / m^2)
+      clevs = np.linspace(200,320,31); clbl = '%03.0f'
       if season == 'winter': clevs = clevs - 20
       elif season == 'summer': clevs = clevs + 30
     elif var=='rfx': # heat fluxes (W / m^2)
@@ -336,8 +335,8 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
           margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05)
           caxpos = [0.91, 0.05, 0.03, 0.9]
         if cbo == 'horizontal': 
-          margins = dict(bottom=0.09, left=0.05, right=.97, top=.92, hspace=0.1, wspace=0.05)
-          caxpos = [0.05, 0.0275, 0.9, 0.03]
+          margins = dict(bottom=0.09, left=0.05, right=.98, top=.91, hspace=0.1, wspace=0.05)
+          caxpos = [0.05, 0.035, 0.9, 0.0175]
       else:
         margins = dict(bottom=0.025, left=0.05, right=.97, top=.92, hspace=0.1, wspace=0.05)    
   #   # figure out colorbar placement

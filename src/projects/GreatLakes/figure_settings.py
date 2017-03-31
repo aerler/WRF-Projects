@@ -121,11 +121,11 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       if var == 'qtfx': clevs = clevs * 2
       if season == 'winter': clevs = clevs - 30
       elif season == 'summer': clevs = clevs + 30
-    elif var=='GLW': # heat fluxes (W / m^2)
-      clevs = np.linspace(200,320,41); clbl = '%03.0f'
+    elif var in ('GLW','SWD','SWN','LWDNB','SWDNB',): # heat fluxes (W / m^2)
+      clevs = np.linspace(200,360,41); clbl = '%03.0f'
       if season == 'winter': clevs = clevs - 40
       elif season == 'summer': clevs = clevs + 40
-    elif var=='OLR': # heat fluxes (W / m^2)
+    elif var in ('OLR','LWUPT'): # heat fluxes (W / m^2)
       clevs = np.linspace(190,240,31); clbl = '%03.0f'
       if season == 'winter': clevs = clevs - 20
       elif season == 'summer': clevs = clevs + 30
