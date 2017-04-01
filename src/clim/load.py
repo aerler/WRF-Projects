@@ -9,8 +9,8 @@ Utility functions related to loading basin-averaged data to support hydrological
 # internal imports
 from geodata.base import Ensemble, Dataset
 from utils.misc import defaultNamedtuple, reverse_enumerate, expandArgumentList
-from datasets.common import loadEnsembleTS, BatchLoad, shp_params, stn_params, observational_datasets,\
-  timeseries_datasets
+from datasets.common import loadEnsemble, loadEnsembles, BatchLoad, shp_params, stn_params
+from datasets.common import observational_datasets, timeseries_datasets
 from geodata.misc import ArgumentError, EmptyDatasetError, VariableError
 from datasets.WSC import GageStationError, loadGageStation
 
@@ -157,10 +157,10 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
                   obs_names = [obs_clim]; clim_len = 1
               # now load climtology instead of time-series and skip aggregation
               try:
-                  clim_ens = loadEnsembleTS(names=obs_names, season=seasons, aggregation=None, slices=slc, varlist=variables, 
-                                            ldataset=False, dataset_mode='climatology', shape=shp,
-                                            ensemble_list=ensemble_list, ensemble_product=ensemble_product, 
-                                            obs_list=obs_list, basin_list=basin_list, **clim_args)
+                  clim_ens = loadEnsemble(names=obs_names, season=seasons, aggregation=None, slices=slc, varlist=variables, 
+                                          ldataset=False, dataset_mode='climatology', shape=shp,
+                                          ensemble_list=ensemble_list, ensemble_product=ensemble_product, 
+                                          obs_list=obs_list, basin_list=basin_list, **clim_args)
                   assert len(clim_ens) == clim_len, clim_ens
               except EmptyDatasetError: pass
           else: 
@@ -169,10 +169,10 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
   if len(obs) > 0:
       if len(obs) == 1 and ensemble_list and 'names' not in ensemble_list: obs = obs[0]
       try:
-          obsens = loadEnsembleTS(names=obs, season=seasons, aggregation=aggregation, slices=slices,
-                                  varlist=variables, ldataset=False, dataset_mode=dataset_mode, 
-                                  shape=shapetype, obs_list=obs_list, basin_list=basin_list, 
-                                  ensemble_list=ensemble_list, ensemble_product=ensemble_product, **kwargs)          
+          obsens = loadEnsemble(names=obs, season=seasons, aggregation=aggregation, slices=slices,
+                                varlist=variables, ldataset=False, dataset_mode=dataset_mode, 
+                                shape=shapetype, obs_list=obs_list, basin_list=basin_list, 
+                                ensemble_list=ensemble_list, ensemble_product=ensemble_product, **kwargs)          
       except EmptyDatasetError:
           obsens = Ensemble(name=name, title=title, obs_list=obs_list, basetype=Dataset)
   else: 
@@ -254,7 +254,7 @@ def loadShapeEnsemble(names=None, seasons=None, basins=None, provs=None, shapes=
                   ens_list = ens_args[key]
                   ens_args[key] = [ens_list[i] for i in iens]
       # load ensemble (no iteration here)
-      shpens = loadEnsembleTS(name=name, title=title, obs_list=obs_list, **ens_args)
+      shpens = loadEnsemble(name=name, title=title, obs_list=obs_list, **ens_args)
   else: shpens = Ensemble(name=name, title=title, basetype='Dataset')
   # get resolution tag (will be added below)
   res = None
@@ -334,10 +334,10 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
         load_list[load_list.index('cluster')] = 'constraints'
         constraints = constraint_list; clusters = None
   # load ensemble (no iteration here)
-  stnens = loadEnsembleTS(names=names, season=seasons, prov=provs, station=stationtype, varlist=variables, 
-                          aggregation=aggregation, constraints=constraints, filetypes=filetypes, 
-                          WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
-                          load_list=load_list, lproduct=lproduct, lcheckVar=False, master=master, **kwargs)
+  stnens = loadEnsembles(names=names, season=seasons, prov=provs, station=stationtype, varlist=variables, 
+                         aggregation=aggregation, constraints=constraints, filetypes=filetypes, 
+                         WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
+                         load_list=load_list, lproduct=lproduct, lcheckVar=False, master=master, **kwargs)
   # get resolution tag (will be added below)
   res = None
   for member in stnens:

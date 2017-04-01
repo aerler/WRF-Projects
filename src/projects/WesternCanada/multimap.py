@@ -174,8 +174,9 @@ if __name__ == '__main__':
 ## validation and projection for the Paper
   explist = ['Ens','max-ens','ctrl-ens']*2; seasons = [['summer']*3+['winter']*3]
   domain = 2; tag = 'd{:02d}'.format(domain); grid = 2*( ['cesm1x1']+2*['arb2_'+tag] ) # 'arb2_'+tag; 
+#   grid = 'arb2_'+tag # for bias estimates across the inner domain
 #   seasons = [['summer']*3+['annual']*3]
-#  seasons = [['spring']*3+['fall']*3]
+#   seasons = [['spring']*3+['fall']*3]
 #  seasons = ['annual']; # grid = 'arb2_d02'; # to get stats
 #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
 #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
@@ -183,16 +184,16 @@ if __name__ == '__main__':
 #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
 #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
   exptitles = [ 'CESM Ensemble, {}'.format(s.title()) if e == 'CESM' else '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
-  variables = ['SWDNB']; cbn = 5; lfrac = True
+#   variables = ['SWDNB']; cbn = 5; lfrac = True
 #   variables = ['LWDNB']; cbn = 5; lfrac = False
-#   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
+  variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
 #   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
 #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
 #   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
 #   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-#   period = A15; refprd = H15; reflist = explist; case = tag+'prjA' # projection 
-  period = H15; case = tag+'val'; variable_settings = None; refprd = H15; reflist = 'Unity' # validation
-  refprd = NRC70; reflist = 'NRCan'; case += '_nrcan' # validation using NRCan instead of Unity
+  period = A15; refprd = H15; reflist = explist; case = tag+'prjA' # projection 
+#   period = H15; case = tag+'val'; variable_settings = None; refprd = H15; reflist = 'Unity' # validation
+#   refprd = NRC70; reflist = 'NRCan'; case += '_nrcan' # validation using NRCan instead of Unity
 ##   case = tag+'val_narr'; reflist = 'NARR'
 
 ### 2x2-panel projection for the Paper
