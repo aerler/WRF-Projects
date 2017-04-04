@@ -352,8 +352,8 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
     subplot = (1,1) # rows, columns
     figsize = (9.25,6.5) # width, height (inches)
     if cbar:
-      margins = dict(bottom=0.09, left=0.05, right=.97, top=.93, hspace=0.1, wspace=0.05)
-      cbo = cbo or 'horizontal'; caxpos = [0.05, 0.0275, 0.9, 0.03]
+      margins = dict(bottom=0.0925, left=0.05, right=.97, top=.94, hspace=0, wspace=0)
+      cbo = cbo or 'horizontal'; caxpos = [0.05, 0.0325, 0.9, 0.0175]
     else:
       margins = dict(bottom=0.025, left=0.05, right=.97, top=.92, hspace=0.1, wspace=0.05)        
   # return values

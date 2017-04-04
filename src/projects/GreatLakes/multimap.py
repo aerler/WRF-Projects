@@ -473,21 +473,15 @@ if __name__ == '__main__':
 # #   lfrac = True; reflist = ['max-ens',]; refprd = H15;
 #   case = 'wetdays'; lsamesize = True
 
-## large map for all domains
-#   maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
+# # large map for all domains
+#   maptype = 'lcc-can'; figuretype = 'largemap'; loutline = False; lframe = True
 #   lstations = False; lbasins = True; lprovinces = False
-#   explist = ['max']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
+#   explist = ['g-ctrl']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
 #   case = 'arb2_basins'; basinlist = ('FRB','ARB','CRB','NRB'); primary_basins = ('FRB','ARB')
-# #   lprovinces = True; provlist = ('BC','AB') 
+# # lprovinces = True; provlist = ('BC','AB') 
 #   variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True
 #   figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']
-## smaller map for western Canada
-#   maptype = 'lcc-new'; lstations = False; lbasins = True
-#   case = 'arb'; period = None; lWRFnative = True; lframe = False; loutline = False
-#   explist = ['columbia']; exptitles = ' '; domain = (2,3)
-#   case = 'frb'; basins = ('FRB',)
-#   case = 'arb'; basins = ('ARB',)
-
+#    
     
   if not case: raise ValueError, 'Need to define a \'case\' name!'
 

@@ -61,7 +61,7 @@ if __name__ == '__main__':
   shading = 'gouraud' # shading for pixel plot: 'flat' | 'gouraud'
   laddContour = False # add black contour lines
   lframe = True # draw domain boundary
-  framewidths = 1.5; framecolor = 'k' # line width for domain outline
+  framewidths = 2.; framecolor = 'k' # line width for domain outline
   loutline = True # draw boundaries around valid (non-masked) data
   outlinewidth = 1.; outlinecolor = 'k'
   cbn = None # colorbar levels
@@ -75,6 +75,7 @@ if __name__ == '__main__':
   lbasins = False; primary_basins = ('ARB','FRB','GLB'); subbasins = ('WholeARB','UpperARB','LowerCentralARB',) #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
   basin_args = dict(linewidth = 1., color='k'); subbasin_args = dict(linewidth = 0.5, color='k')
   lprovinces = True; provlist = ('BC','AB','ON')
+  prov_args = dict(linewidth = 0.5, color='k')
   cbo = None # default based on figure type
   resolution = None # only for GPCC (None = default/highest)
   exptitles = None
@@ -171,30 +172,30 @@ if __name__ == '__main__':
   lbasins = True; basinlist = ('ARB','FRB',); lprovinces = False; provlist = ['BC','AB']
 
 
-## validation and projection for the Paper
-  explist = ['Ens','max-ens','ctrl-ens']*2; seasons = [['summer']*3+['winter']*3]
-  domain = 2; tag = 'd{:02d}'.format(domain); grid = 2*( ['cesm1x1']+2*['arb2_'+tag] ) # 'arb2_'+tag; 
+# ## validation and projection for the Paper
+#   explist = ['Ens','max-ens','ctrl-ens']*2; seasons = [['summer']*3+['winter']*3]
+#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 2*( ['cesm1x1']+2*['arb2_'+tag] ) # 'arb2_'+tag; 
 #   grid = 'arb2_'+tag # for bias estimates across the inner domain
-#   seasons = [['summer']*3+['annual']*3]
-#   seasons = [['spring']*3+['fall']*3]
-#  seasons = ['annual']; # grid = 'arb2_d02'; # to get stats
-#   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
-#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
-  exptitles = ['CESM','1st WRF Ens.','Alt. WRF Ens.']*2; res = '30km' if domain == 1 else '10km'
-#   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
-#   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
-  exptitles = [ 'CESM Ensemble, {}'.format(s.title()) if e == 'CESM' else '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
-#   variables = ['SWDNB']; cbn = 5; lfrac = True
-#   variables = ['LWDNB']; cbn = 5; lfrac = False
-  variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
-#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-#   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
-#   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
-#   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-  period = A15; refprd = H15; reflist = explist; case = tag+'prjA' # projection 
+# #   seasons = [['summer']*3+['annual']*3]
+# #   seasons = [['spring']*3+['fall']*3]
+# #  seasons = ['annual']; # grid = 'arb2_d02'; # to get stats
+# #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
+# #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+#   exptitles = ['CESM','1st WRF Ens.','Alt. WRF Ens.']*2; res = '30km' if domain == 1 else '10km'
+# #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
+# #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
+#   exptitles = [ 'CESM Ensemble, {}'.format(s.title()) if e == 'CESM' else '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
+# #   variables = ['SWDNB']; cbn = 5; lfrac = True
+# #   variables = ['LWDNB']; cbn = 5; lfrac = False
+#   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
+# #   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
+# #   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
+# #   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+# #   period = A15; refprd = H15; reflist = explist; case = tag+'prjA' # projection 
 #   period = H15; case = tag+'val'; variable_settings = None; refprd = H15; reflist = 'Unity' # validation
-#   refprd = NRC70; reflist = 'NRCan'; case += '_nrcan' # validation using NRCan instead of Unity
-##   case = tag+'val_narr'; reflist = 'NARR'
+# #   refprd = NRC70; reflist = 'NRCan'; case += '_nrcan' # validation using NRCan instead of Unity
+# ##   case = tag+'val_narr'; reflist = 'NARR'
 
 ### 2x2-panel projection for the Paper
 #  explist = ['max-ens','ctrl-ens']*2; seasons = [['summer']*2+['winter']*2]
@@ -539,31 +540,32 @@ if __name__ == '__main__':
 #   lfrac = True; variables = ['precip']; variable_settings = ['precip_prj']
 #   ldiff = True; variables = ['precip']; variable_settings = ['precip_prj']
 
-# # large map for all domains
-#   variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True; WRFfiletypes = []
-#   lbasins = True; lprovinces = True; provlist = ['AB']
-#   #lstations = False; lbasins = False; lprovinces = True; # provlist = ('AB',) 
-# # figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']; exptitles = ' '
-# #  maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
-# #  explist = ['max']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
-# #  case = 'arb2_basins'; #basinlist = ('FRB','ARB','CRB','NRB'); primary_basins = ('FRB','ARB')
-# # smaller map for western Canada
+# large map for all domains
+  variables = ['zs']; seasons = ['topo']; lcontour = True
+  lbasins = True; lprovinces = True; provlist = ['AB']; basinlist = ['FRB','ARB']; case = 'basins'
+  framewidths = 2; basin_args = dict(linewidth = 1.5, color='k'); case += '_fat'
+  #lstations = False; lbasins = False; lprovinces = True; # provlist = ('AB',) 
+  figtitles = ['Topography [km]' + ' and Domain/Basin Outlines' if lframe else '']; exptitles = ' '
+  maptype = 'lcc-large'; figuretype = 'largemap'; loutline = False; lframe = True
+  explist = ['max']; exptitles = ' '; domain = (0,1,2); lWRFnative = True; period = H15 
+#  case = 'arb2_basins'; #basinlist = ('FRB','ARB','CRB','NRB'); primary_basins = ('FRB','ARB')
+# smaller map for western Canada
 #   explist = ['max-3km']; domain = (1,2,3); exptitles = ['Terrain Height [km]']; figtitles = ' ' 
-#   period = H10; lWRFnative = True; lframe = True; loutline = False
-# #   maptype = 'lcc-prairies'
-#   #maptype = 'lcc-arb3_d02'; case = 'large'
-#   #maptype = 'lcc-arb3_d03'; case = 'small'
-#   #maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']
+  period = H10; lWRFnative = True; lframe = True; loutline = False
+#   maptype = 'lcc-prairies'
+  #maptype = 'lcc-arb3_d02'; case = 'large'
+  #maptype = 'lcc-arb3_d03'; case = 'small'
+  #maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']
 #   maptype = 'ortho-NA'; case = 'global'; basinlist = []
-#   #domain = (1,); case += '_d01'
-#   #domain = (1,2); case += '_d02'
-# #   domain = (0,1,); case += '_d01'
-# #   domain = (0,1,2); case += '_d02'
+  #domain = (1,); case += '_d01'
+  #domain = (1,2); case += '_d02'
+#   domain = (0,1,); case += '_d01'
+#   domain = (0,1,2); case += '_d02'
 #   domain = (0,1,2,3); case += '_d03'
-# #  maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']; domain = (3,) # ; explist = ['col1-const']
-# #  case = 'frb'; basins = ('FRB',)
-# #  case = 'arb'; basins = ('ARB',)
-# #   case = 'ssr'; basinlist = ('SSR',)
+#  maptype = 'lcc-arb3_d03'; case = 'hidef'; seasons = ['hidef']; domain = (3,) # ; explist = ['col1-const']
+#  case = 'frb'; basins = ('FRB',)
+#  case = 'arb'; basins = ('ARB',)
+#   case = 'ssr'; basinlist = ('SSR',)
 
     
   if not case: raise ValueError, 'Need to define a \'case\' name!'
@@ -933,7 +935,7 @@ if __name__ == '__main__':
             for province in provlist:    
               provinfo = provinces[province]
               bmap.readshapefile(provinfo.shapefile[:-4], province, 
-                                 drawbounds=True, linewidth = .5, color='k')            
+                                 drawbounds=True, **prov_args)            
 
       # save figure to disk
       if lprint:
