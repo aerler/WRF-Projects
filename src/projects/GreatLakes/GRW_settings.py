@@ -24,6 +24,9 @@ main_task  = 'hgs_run' # HGS run folder
 # project folders
 project_folder = '{:s}/{:s}/'.format(hgs.root_folder,project_name) # the dataset root folder
 project_folder_pattern = '{PROJECT_FOLDER:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s}/{TASK:s}/'
+station_file_v1 = '{PREFIX:s}o.hydrograph.Station_{STATION:s}.dat' # general HGS naming convention
+station_file_v2 = '{PREFIX:s}o.hydrograph.{WSC_ID0:s}.dat' # general HGS naming convention
+
 
 # plotting parameters for HGS simulations
 hgs_plotargs = dict() 
@@ -92,7 +95,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
                   exp_aliases=exp_aliases, run_period=15, clim_mode=None, station=main_gage, bias_correction=None,
                   folder=project_folder_pattern, project_folder=None, project=project_name, grid=main_grid, 
                   task=main_task, prefix=project_prefix, WSC_station=None, basin=main_basin, basin_list=None, 
-                  lpad=True, ENSEMBLE=None, scalefactors=gage_scalefactors, **kwargs):
+                  lpad=True, ENSEMBLE=None, scalefactors=gage_scalefactors, lWSCID=False, **kwargs):
   ''' Get a properly formatted HGS dataset with a regular time-series at station locations; as in
       the hgsrun module, the capitalized kwargs can be used to construct folders and/or names '''
   experiment = experiment or ENSEMBLE # an alias to support the ensemble loader
@@ -145,6 +148,8 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   elif isinstance(period, (tuple,list)) and isinstance(run_period, (int,np.integer)):
       end_year = period[1]
       start_year = end_year - run_period
+  elif period is None and isinstance(run_period, (int,np.integer)):
+      start_year = 1979; end_year = start_year + run_period
   else: start_year = end_year = None # not used
   # append conventional period name to name, if it appears to be missing
   if start_year is not None:
@@ -193,12 +198,14 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   # select bias-correction method, if applicable
   if bias_correction is not None:
       clim_dir = '{:s}_{:s}'.format(bias_correction,clim_dir)
+  # select station file pattern
+  station_file = station_file_v2 if 'v2' in task or lWSCID else station_file_v1
   # call load function from HGS module
   dataset = hgs.loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, ENSEMBLE=ENSEMBLE, 
                               folder=folder, experiment=experiment, period=period, start_date=start_date,
                               project_folder=project_folder, project=project, grid=grid, task=task, 
                               prefix=prefix, clim_dir=clim_dir, WSC_station=WSC_station, basin=basin, lpad=lpad,  
-                              basin_list=basin_list, filename=hgs.station_file, scalefactors=scalefactors, **kwargs)
+                              basin_list=basin_list, filename=station_file, scalefactors=scalefactors, **kwargs)
   # slice time axis for period
   if start_year is not None and end_year is not None:
     dataset = dataset(years=(start_year,end_year))
@@ -241,8 +248,8 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
 # abuse for testing
 if __name__ == '__main__':
     
-  test_mode = 'gage_station'
-#   test_mode = 'dataset'
+#   test_mode = 'gage_station'
+  test_mode = 'dataset'
 #   test_mode = 'ensemble'
 
   if test_mode == 'gage_station':
@@ -254,8 +261,10 @@ if __name__ == '__main__':
   elif test_mode == 'dataset':
 
     # load single dataset
-    ds = loadHGS_StnTS(experiment='erai-g', domain=2, period=(1984,1994), 
-                       clim_mode='periodic', lpad=True, bias_correction='AABC')
+#     ds = loadHGS_StnTS(experiment='erai-g', domain=2, period=(1984,1994), 
+#                        clim_mode='periodic', lpad=True, bias_correction='AABC')
+    ds = loadHGS_StnTS(experiment='NRCan', task='hgs_run_v2', 
+                       clim_mode='periodic', lpad=True)
     print(ds)
     print(ds.discharge.mean(), ds.discharge.max(), ds.discharge.min(),)
     
