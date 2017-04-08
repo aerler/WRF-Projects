@@ -249,8 +249,8 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
 if __name__ == '__main__':
     
 #   test_mode = 'gage_station'
-  test_mode = 'dataset'
-#   test_mode = 'ensemble'
+#   test_mode = 'dataset'
+  test_mode = 'ensemble'
 
   if test_mode == 'gage_station':
     
@@ -261,13 +261,13 @@ if __name__ == '__main__':
   elif test_mode == 'dataset':
 
     # load single dataset
-#     ds = loadHGS_StnTS(experiment='erai-g', domain=2, period=(1984,1994), 
-#                        clim_mode='periodic', lpad=True, bias_correction='AABC')
-    ds = loadHGS_StnTS(experiment='NRCan', task='hgs_run_v2', 
-                       clim_mode='periodic', lpad=True)
+    ds = loadHGS_StnTS(experiment='erai-g', domain=2, period=(1984,1994), 
+                       clim_mode='periodic', lpad=True, bias_correction='AABC')
+#     ds = loadHGS_StnTS(experiment='NRCan', task='hgs_run_v2', 
+#                        clim_mode='periodic', lpad=True)
     print(ds)
     print(ds.discharge.mean(), ds.discharge.max(), ds.discharge.min(),)
-    
+    print(ds.discharge.plot.units)
 #     # load single dataset
 #     ds = loadHGS_StnTS(experiment='erai-g', domain=0, period=(1984,1994), clim_mode='periodic', )
 #     print(ds)
@@ -289,3 +289,4 @@ if __name__ == '__main__':
     print(ens)
     print('\n')
     print(ens[0])
+    print(ens[0].discharge.plot.units)
