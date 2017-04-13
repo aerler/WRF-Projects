@@ -47,6 +47,8 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(-1.5,1.5,31); clbl = '%2.1f'; cmap = mpl.cm.PuOr # mm/day    
     elif var in ('T2','Ts','Tmin','Tmax','Tmean'):
       clevs = np.linspace(-5,5,41); clbl = '%3.1f' # K
+    elif var in ('T2_obs',):
+      clevs = np.linspace(-2.5,2.5,26); clbl = '%3.1f' # K
     elif var == 'Q2':
       clevs = np.linspace(-5,5,26); clbl = '%02.1f' # mm/day
     elif var == 'wetfrq':
@@ -86,7 +88,11 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
 #       clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr
     elif var in ('evap','pet','p-et','precip','preccu','precnc','waterflx',):
 #       clevs = np.linspace(-100,100,41); clbl = '%2.0f'  
-      clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = mpl.cm.BrBG # Spectral
+      clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = mpl.cm.BrBG # brown-green
+    elif var in ('precip_obs',):
+      clevs = np.linspace(-20,20,41); clbl = '%2.0f'; cmap = mpl.cm.BrBG # brown-green
+    elif var in ('pet_obs',):
+      clevs = np.linspace(-90,30,26); clbl = '%2.0f'; cmap = mpl.cm.PuOr # yellow-blue
     elif var in ('WaterTransport_U','WaterTransport_V','ColumnWater','cqwu','cqwv','cqw'):
       clevs = np.linspace(-50,50,41); clbl = '%2.0f'
     elif var in ('aSM',):
@@ -334,7 +340,7 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
           margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05)
           caxpos = [0.91, 0.05, 0.03, 0.9]
         if cbo == 'horizontal':
-          margins = dict(bottom=0.1, left=0.055, right=.99, top=.9, hspace=0.12, wspace=0.02) 
+          margins = dict(bottom=0.1, left=0.07, right=.98, top=.9, hspace=0.12, wspace=0.05) 
           caxpos = [0.05, 0.04, 0.9, 0.02]
       else:
         margins = dict(bottom=0.06, left=0.09, right=.985, top=.95, hspace=0.13, wspace=0.02)

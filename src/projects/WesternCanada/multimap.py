@@ -934,8 +934,7 @@ if __name__ == '__main__':
           if lprovinces: 
             for province in provlist:    
               provinfo = provinces[province]
-              bmap.readshapefile(provinfo.shapefile[:-4], province, 
-                                 drawbounds=True, **prov_args)            
+              bmap.readshapefile(provinfo.shapefile[:-4], province, drawbounds=True, **prov_args)            
 
       # save figure to disk
       if lprint:
