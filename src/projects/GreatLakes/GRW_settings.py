@@ -34,8 +34,10 @@ hgs_plotargs['Observations'] = dict(color='#959595') # gray
 hgs_plotargs['WSC']          = dict(color='#959595') # gray
 hgs_plotargs['NRCan']        = dict(color='green')
 hgs_plotargs['NRCan (old)']  = dict(color='green', linestyle='--')
-hgs_plotargs['NRCan (V2)']   = dict(color='coral')
 hgs_plotargs['NRCan (V1)']   = dict(color='green')
+hgs_plotargs['NRCan (V2)']   = dict(color='coral')
+hgs_plotargs['NRCan (V2k)']  = dict(color='#AAA2D8') # purple
+hgs_plotargs['NRCan (V2s)']  = dict(color='#E24B34') # red
 # hgs_plotargs['Observations'] = dict(color='#68615E') # dark gray
 hgs_plotargs['Steady-State (V1)'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic (V1)']     = dict(color='green') # red

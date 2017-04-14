@@ -57,6 +57,9 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(-4,4,41); clbl = '%3.1f' # mm/day
     elif var in ('snwmlt', 'runoff', 'ugroff', 'sfroff','p-et','waterflx'): # moisture fluxes (kg /(m^2 s))
       clevs = np.linspace(-1.2,1.2,41); clbl = '%3.2f' # mm/day  
+    elif var in ('pet_obs','precip_obs'): # moisture fluxes (kg /(m^2 s))
+      clevs = np.linspace(-1.2,1.2,25); clbl = '%2.1f' # mm/day
+      cmap = mpl.cm.PuOr if var in ('pet_obs',) else mpl.cm.BrBG
     elif var == 'zs':
       clevs = np.linspace(-0.5,0.5,21); clbl = '%3.1f' # mm/day
     elif var in ('Z',):
@@ -92,7 +95,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('precip_obs',):
       clevs = np.linspace(-20,20,41); clbl = '%2.0f'; cmap = mpl.cm.BrBG # brown-green
     elif var in ('pet_obs',):
-      clevs = np.linspace(-90,30,26); clbl = '%2.0f'; cmap = mpl.cm.PuOr # yellow-blue
+      clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr # yellow-blue
     elif var in ('WaterTransport_U','WaterTransport_V','ColumnWater','cqwu','cqwv','cqw'):
       clevs = np.linspace(-50,50,41); clbl = '%2.0f'
     elif var in ('aSM',):
@@ -179,7 +182,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('precip','precnc','preccu','liqwatflx') or var[:7] in ('dryprec','wetprec'): # total precipitation
 #       if season in ('winter','fall'): clevs = np.linspace(0,20,41); clbl = '%2.1f' # mm/day
 #       elif season in ('summer','spring'): clevs = np.linspace(0,8,17); clbl = '%2.0f' # mm/day
-      clevs = np.linspace(0,5,26); clbl = '%2.0f' # mm/day
+      clevs = np.linspace(0,5,26); clbl = '%2.1f' # mm/day
     elif var in ('precip_hist'): # total precipitation for north america
       clevs = np.linspace(0,8,25); clbl = '%2.0f' # mm/day
     elif var in ('MaxPrecip_1d'): # total precipitation for north america

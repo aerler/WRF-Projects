@@ -242,11 +242,13 @@ if __name__ == '__main__':
   basinlist = []; lprovinces = True; provlist = ['AB','SK','MB','ON']
   seasons = [['summer','winter','spring','fall']]; exptitles = [s.title() for s in seasons[0]]
   explist = ['NRCan']*len(exptitles); reflist = ['Unity']; period = H30
-#   variables = ['precip']; variable_settings = 'waterflx'; ldiff = True
-  variables = ['precip']; variable_settings = 'precip_obs'; cbn = 9; lfrac = True
-#   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 9; lfrac = True
+#   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 9; lfrac = True
+#   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 7; ldiff = True
+#   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; lfrac = True
+  variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; ldiff = True
 #   variables = ['T2']; variable_settings = 'T2_obs'; cbn = 11; ldiff = True
-  reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
+#   reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
+  reflist = None; ldiff = False; lfrac = False; variable_settings = None; cbn = 6
 
 # # ERA-Interim validation
 #   explist = ['erai-v36','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]
