@@ -9,17 +9,12 @@ A package that contains settings for the GreatLakes region projects for use with
 # import figure settings
 from figure_settings import getVariableSettings, getFigureSettings, figure_folder
 
-# import figure with hydro settings
-from analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations  # load datasets 
-from analysis_settings import loadStationFit, loadShapeFit
-from analysis_settings import exps_rc, variables_rc, constraints_rc
-from analysis_settings import climFigAx, climPlot, evaFigAx, distPlot, quantPlot # plotting
-
 # import map projection settings (basemap)
 try: 
   from map_settings import getSetup, map_folder
 except ImportError:
   print("Error importing map settings - 'basemap' is likely not installed.")
+
 
 ## import load functions with GreatLakes experiments into local namespace
 
@@ -42,5 +37,13 @@ unity_grid = 'glb1_d02' # Unified Dataset default grid
 addLoadFcts(locals(), locals(), unity_grid=unity_grid , WRF_exps=WRF_exps, WRF_ens=WRF_ens, 
             CESM_exps=CESM_exps, CESM_ens=CESM_ens)
 
+
+
 ## import shape dictionaries
 from projects.WSC_basins import basins, provinces, great_lakes # import the dicts with unique entries
+
+# import figure with hydro settings
+from analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations  # load datasets 
+from analysis_settings import loadStationFit, loadShapeFit
+from analysis_settings import exps_rc, variables_rc, constraints_rc
+from analysis_settings import climFigAx, climPlot, evaFigAx, distPlot, quantPlot # plotting

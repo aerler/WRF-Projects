@@ -175,6 +175,7 @@ if __name__ == '__main__':
 #   lbasins = False; basinlist = ('ARB','FRB','GLB'); lprovinces = False; provlist = ['BC','AB','ON']
   lbasins = True; basinlist = ('GLB','GRW'); lprovinces = False; provlist = ['ON']
 #   lbasins = True; basinlist = ('GLB',); lprovinces = False; provlist = ['ON']
+  isoline = None
 
 
 ## PET validation for GRW
@@ -237,18 +238,26 @@ if __name__ == '__main__':
 # #   case = tag+'val_narr'; reflist = 'NARR'
 # #   period = H15; ldiff = lfrac = False; variable_settings = None
 
-## comparison of NRCan and GPCC/CRU
-  case = 'nrcan_val'; maptype = 'lcc-can'; grid = 'glb1_d01'; 
-  basinlist = []; lprovinces = True; provlist = ['AB','SK','MB','ON']
-  seasons = [['summer','winter','spring','fall']]; exptitles = [s.title() for s in seasons[0]]
-  explist = ['NRCan']*len(exptitles); reflist = ['Unity']; period = H30
-#   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 9; lfrac = True
-#   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 7; ldiff = True
-#   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; lfrac = True
-  variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; ldiff = True
-#   variables = ['T2']; variable_settings = 'T2_obs'; cbn = 11; ldiff = True
-#   reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
-  reflist = None; ldiff = False; lfrac = False; variable_settings = None; cbn = 6
+# ## comparison of NRCan and GPCC/CRU
+#   case = 'nrcan_val'; maptype = 'lcc-can'; grid = 'glb1_d01'; 
+#   basinlist = []; lprovinces = True; provlist = ['AB','SK','MB','ON']
+#   seasons = [['summer','winter','spring','fall']]; exptitles = [s.title() for s in seasons[0]]
+#   explist = ['NRCan']*len(exptitles); reflist = ['Unity']; period = H30
+# #   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 9; lfrac = True
+# #   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 7; ldiff = True
+# #   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; lfrac = True
+#   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; ldiff = True
+# #   variables = ['T2']; variable_settings = 'T2_obs'; cbn = 11; ldiff = True
+# #   reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
+#   reflist = None; ldiff = False; lfrac = False; variable_settings = None; cbn = 6
+
+## GRW maps
+  case = 'GRW'; maptype = 'lcc-grw'; cbo = 'vertical'; lcontour = True
+  seasons = [['November','December','January','February','March','April']]; exptitles = [s.title() for s in seasons[0]]
+  explist = ['NRCan']*len(exptitles); period = NRC70
+#   explist = ['g-ensemble']*len(exptitles); period = H15
+#   variables = ['T2']; isoline = 273.5; cbn = 11
+  variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
 
 # # ERA-Interim validation
 #   explist = ['erai-v36','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]
@@ -780,6 +789,9 @@ if __name__ == '__main__':
           if laddContour:
             cd.append(maps[n].contour(x[n][m],y[n][m],data[n][m],clevs,ax=ax[n],
                                       colors='k', linewidths=0.5))
+          if isoline is not None:
+            cd.append(maps[n].contour(x[n][m],y[n][m],data[n][m],[isoline],ax=ax[n],
+                                      colors='w', linewidths=1.))
       # add colorbar
       #TODO: use utils.sharedColorbar
       cax = f.add_axes(caxpos)

@@ -9,12 +9,6 @@ A package that contains settings for the WesternCanada region projects for use w
 # import figure settings
 from figure_settings import getVariableSettings, getFigureSettings, figure_folder
 
-# import figure with hydro settings
-from analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations  # load datasets 
-from analysis_settings import loadStationFit, loadShapeFit
-from analysis_settings import exps_rc, variables_rc, constraints_rc
-from analysis_settings import climFigAx, climPlot, evaFigAx, distPlot, quantPlot # plotting
-
 # import map projection settings (basemap)
 try: 
   from map_settings import getSetup, map_folder
@@ -41,6 +35,13 @@ unity_grid = 'arb2_d02' # Unified Dataset default grid
 # modify functions (wont affect modified WRF/CESM functions)
 addLoadFcts(locals(), locals(), unity_grid=unity_grid , WRF_exps=WRF_exps, WRF_ens=WRF_ens, 
             CESM_exps=CESM_exps, CESM_ens=CESM_ens)
+
+
+# import figure with hydro settings
+from analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations  # load datasets 
+from analysis_settings import loadStationFit, loadShapeFit
+from analysis_settings import exps_rc, variables_rc, constraints_rc
+from analysis_settings import climFigAx, climPlot, evaFigAx, distPlot, quantPlot # plotting
 
 ## import shape dictionaries
 from projects.WSC_basins import basins, provinces # import the dicts with unique entries

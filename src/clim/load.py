@@ -355,14 +355,14 @@ if __name__ == '__main__':
   
 #   from projects.WesternCanada.analysis_settings import exps_rc, variables_rc, loadShapeObservations
 #   from projects.WesternCanada.analysis_settings import loadShapeEnsemble, loadStationEnsemble
-  from projects.GreatLakes.analysis_settings import exps_rc, variables_rc, loadShapeObservations
-  from projects.GreatLakes.analysis_settings import loadShapeEnsemble, loadStationEnsemble
+  from projects.GreatLakes import exps_rc, variables_rc, loadShapeObservations
+  from projects.GreatLakes import loadShapeEnsemble, loadStationEnsemble
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #   test = 'obs_timeseries'
-  test = 'basin_timeseries'
+#   test = 'basin_timeseries'
 #   test = 'station_timeseries'
-#   test = 'province_climatology'
+  test = 'province_climatology'
   
   
   # test load function for basin ensemble time-series
@@ -381,7 +381,7 @@ if __name__ == '__main__':
 #     assert len(shpens) == len(varlist)
     shpens = loadShapeObservations(obs='Obs', lWSC=True, name_tags=None, basins=basins, varlist=varlist, 
                                    obs_period=(1970,2000), WSC_period=(1970,2000), 
-                                   aggregation='mean', load_list=['varlist','basins'],)
+                                   aggregation='std', load_list=['varlist','basins'],)
     assert len(shpens) == len(varlist)*len(basins)
     # print diagnostics
     print(shpens[0]); print('')

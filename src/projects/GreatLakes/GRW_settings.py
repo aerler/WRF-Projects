@@ -38,6 +38,7 @@ hgs_plotargs['NRCan (V1)']   = dict(color='green')
 hgs_plotargs['NRCan (V2)']   = dict(color='coral')
 hgs_plotargs['NRCan (V2k)']  = dict(color='#AAA2D8') # purple
 hgs_plotargs['NRCan (V2s)']  = dict(color='#E24B34') # red
+hgs_plotargs['NRCan (V3s)']  = dict(color='magenta') # red
 # hgs_plotargs['Observations'] = dict(color='#68615E') # dark gray
 hgs_plotargs['Steady-State (V1)'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic (V1)']     = dict(color='green') # red
@@ -207,7 +208,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   if bias_correction is not None:
       clim_dir = '{:s}_{:s}'.format(bias_correction,clim_dir)
   # select station file pattern
-  station_file = station_file_v2 if 'v2' in task or lWSCID else station_file_v1
+  station_file = station_file_v2 if ('v2' in task or 'v3' in task) or lWSCID else station_file_v1
   # call load function from HGS module
   dataset = hgs.loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, ENSEMBLE=ENSEMBLE, 
                               folder=folder, experiment=experiment, period=period, start_date=start_date,
