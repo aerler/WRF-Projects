@@ -37,8 +37,14 @@ hgs_plotargs['NRCan (old)']  = dict(color='green', linestyle='--')
 hgs_plotargs['NRCan (V1)']   = dict(color='green')
 hgs_plotargs['NRCan (V2)']   = dict(color='coral')
 hgs_plotargs['NRCan (V2k)']  = dict(color='#AAA2D8') # purple
-hgs_plotargs['NRCan (V2s)']  = dict(color='#E24B34') # red
-hgs_plotargs['NRCan (V3s)']  = dict(color='magenta') # red
+hgs_plotargs['NRCan (V2f)']  = dict(color='r') # red
+hgs_plotargs['NRCan (V3f)']  = dict(color='magenta')
+hgs_plotargs['NRCan (V3s)']  = dict(color='k') 
+hgs_plotargs['NRCan (V3w)']  = dict(color='green')
+hgs_plotargs['NRCan (V3m2)']  = dict(color='blue')
+hgs_plotargs['NRCan (V3m3)']  = dict(color='purple')
+hgs_plotargs['NRCan (V3m4)']  = dict(color='red')
+hgs_plotargs['NRCan (V3m5)']  = dict(color='green')
 # hgs_plotargs['Observations'] = dict(color='#68615E') # dark gray
 hgs_plotargs['Steady-State (V1)'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic (V1)']     = dict(color='green') # red
@@ -98,6 +104,8 @@ for name,members in ensemble_list.items():
     
 
 ## wrapper functions to load HGS station timeseries with GRW parameters
+
+#TODO: the function definitions should be moved into a separate module a la clim and eva, since they are pretty general
 
 # simple dataset loader
 def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varatts=None, name=None, title=None, 
