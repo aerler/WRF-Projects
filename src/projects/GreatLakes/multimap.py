@@ -257,7 +257,12 @@ if __name__ == '__main__':
   explist = ['NRCan']*len(exptitles); period = NRC70
 #   explist = ['g-ensemble']*len(exptitles); period = H15
 #   variables = ['T2']; isoline = 273.5; cbn = 11
-  variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
+#   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
+#   variables = ['snwmlt']; isoline = 1.; cbn = 11
+  variables = ['ratio']; isoline = 1.; cbn = 11 
+#   case = 'ephemeral'
+#   case = 'maritime'
+  case = 'prairies'
 
 # # ERA-Interim validation
 #   explist = ['erai-v36','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]

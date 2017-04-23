@@ -112,7 +112,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     cmap = cm.coolavhrrmap # cmap.set_over('white'); cmap.set_under('black')
     if var in ('ratio',): # snow (liquid water equivalent) 
       lmskocn = True; clbl = '%3.2f' # kg/m^2
-      clevs = np.linspace(0,2,26)
+      clevs = np.linspace(0.95,1.05,21); cmap = cm.redblue_light_r
     elif var in ('wetfrq','frzfrq'): # snow (liquid water equivalent) 
       lmskocn = True; clbl = '%3.2f' # kg/m^2
       clevs = np.linspace(0,1,26)
@@ -179,8 +179,8 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('RH',):
       clevs = np.linspace(0,100,41); clbl = '%2.0f'
     elif var in ('snwmlt', 'runoff', 'ugroff', 'sfroff', 'liqprec'): # moisture fluxes (kg /(m^2 s))
-      # clevs = np.linspace(-3,22,51); clbl = '%02.1f'
-      clevs = np.linspace(0,3,31); clbl = '%02.1f'; cmap = mpl.cm.YlGnBu
+      clevs = np.linspace(0,2,21); clbl = '%02.1f'
+#       clevs = np.linspace(0,3,31); clbl = '%02.1f'; cmap = mpl.cm.YlGnBu
     elif var in ('precip','precnc','preccu','liqwatflx') or var[:7] in ('dryprec','wetprec'): # total precipitation
 #       if season in ('winter','fall'): clevs = np.linspace(0,20,41); clbl = '%2.1f' # mm/day
 #       elif season in ('summer','spring'): clevs = np.linspace(0,8,17); clbl = '%2.0f' # mm/day
