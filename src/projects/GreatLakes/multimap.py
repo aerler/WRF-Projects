@@ -238,31 +238,33 @@ if __name__ == '__main__':
 # #   case = tag+'val_narr'; reflist = 'NARR'
 # #   period = H15; ldiff = lfrac = False; variable_settings = None
 
-# ## comparison of NRCan and GPCC/CRU
-#   case = 'nrcan_val'; maptype = 'lcc-can'; grid = 'glb1_d01'; 
-#   basinlist = []; lprovinces = True; provlist = ['AB','SK','MB','ON']
+## comparison of NRCan and GPCC/CRU
+  case = 'nrcan_val'; maptype = 'lcc-can'; grid = 'glb1_d01'; 
+  basinlist = []; lprovinces = True; provlist = ['AB','SK','MB','ON']
 #   seasons = [['summer','winter','spring','fall']]; exptitles = [s.title() for s in seasons[0]]
 #   explist = ['NRCan']*len(exptitles); reflist = ['Unity']; period = H30
-# #   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 9; lfrac = True
-# #   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 7; ldiff = True
-# #   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; lfrac = True
+  explist = ['NRCan']*2; period = H30; seasons = ['annual']
+  reflist = ['CRU','GPCC']; exptitles = reflist
+  variables = ['precip']; variable_settings = 'precip_obs'; cbn = 9; lfrac = True
+#   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 7; ldiff = True
+#   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; lfrac = True
 #   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; ldiff = True
-# #   variables = ['T2']; variable_settings = 'T2_obs'; cbn = 11; ldiff = True
-# #   reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
+#   variables = ['T2']; variable_settings = 'T2_obs'; cbn = 11; ldiff = True
+#   reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
 #   reflist = None; ldiff = False; lfrac = False; variable_settings = None; cbn = 6
 
-## GRW maps
-  case = 'GRW'; maptype = 'lcc-grw'; cbo = 'vertical'; lcontour = True
-  seasons = [['November','December','January','February','March','April']]; exptitles = [s.title() for s in seasons[0]]
-  explist = ['NRCan']*len(exptitles); period = NRC70
-#   explist = ['g-ensemble']*len(exptitles); period = H15
-#   variables = ['T2']; isoline = 273.5; cbn = 11
-#   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
-#   variables = ['snwmlt']; isoline = 1.; cbn = 11
-  variables = ['ratio']; isoline = 1.; cbn = 11 
-#   case = 'ephemeral'
-#   case = 'maritime'
-  case = 'prairies'
+# ## GRW maps
+#   case = 'GRW'; maptype = 'lcc-grw'; cbo = 'vertical'; lcontour = True
+#   seasons = [['November','December','January','February','March','April']]; exptitles = [s.title() for s in seasons[0]]
+#   explist = ['NRCan']*len(exptitles); period = NRC70
+# #   explist = ['g-ensemble']*len(exptitles); period = H15
+# #   variables = ['T2']; isoline = 273.5; cbn = 11
+# #   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
+# #   variables = ['snwmlt']; isoline = 1.; cbn = 11
+#   variables = ['ratio']; isoline = 1.; cbn = 11 
+# #   case = 'ephemeral'
+# #   case = 'maritime'
+#   case = 'prairies'
 
 # # ERA-Interim validation
 #   explist = ['erai-v36','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]

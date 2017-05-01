@@ -41,13 +41,14 @@ hgs_plotargs['NRCan (V2f)']  = dict(color='r') # red
 hgs_plotargs['NRCan (V3f)']  = dict(color='magenta')
 hgs_plotargs['NRCan (V3s)']  = dict(color='k') 
 hgs_plotargs['NRCan (V3w)']  = dict(color='green')
-hgs_plotargs['NRCan (V3m2)']  = dict(color='blue')
-hgs_plotargs['NRCan (V3m3)']  = dict(color='purple')
-hgs_plotargs['NRCan (V3m4)']  = dict(color='red')
-hgs_plotargs['NRCan (V3m5)']  = dict(color='green')
-hgs_plotargs['NRCan (Maritime)']  = dict(color='blue')
-hgs_plotargs['NRCan (Prairies)']  = dict(color='purple')
-hgs_plotargs['NRCan (Ephemeral)']  = dict(color='green')
+hgs_plotargs['NRCan (V3m2)'] = dict(color='blue')
+hgs_plotargs['NRCan (V3m3)'] = dict(color='purple')
+hgs_plotargs['NRCan (V3m4)'] = dict(color='red')
+hgs_plotargs['NRCan (V3m5)'] = dict(color='green')
+hgs_plotargs['NRCan (V3)']   = dict(color='blue')
+hgs_plotargs['NRCan (Prairies)']  = dict(color='green')
+hgs_plotargs['NRCan (Ephemeral)'] = dict(color='purple')
+hgs_plotargs['NRCan (hires)']     = dict(color='red')
 # hgs_plotargs['Observations'] = dict(color='#68615E') # dark gray
 hgs_plotargs['Steady-State (V1)'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic (V1)']     = dict(color='green') # red

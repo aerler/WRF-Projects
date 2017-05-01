@@ -93,7 +93,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
 #       clevs = np.linspace(-100,100,41); clbl = '%2.0f'  
       clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = mpl.cm.BrBG # brown-green
     elif var in ('precip_obs',):
-      clevs = np.linspace(-20,20,41); clbl = '%2.0f'; cmap = mpl.cm.BrBG # brown-green
+      clevs = np.linspace(-50,50,41); clbl = '%2.0f'; cmap = mpl.cm.BrBG # brown-green
     elif var in ('pet_obs',):
       clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr # yellow-blue
     elif var in ('WaterTransport_U','WaterTransport_V','ColumnWater','cqwu','cqwv','cqw'):
