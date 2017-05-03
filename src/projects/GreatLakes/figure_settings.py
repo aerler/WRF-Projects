@@ -192,11 +192,15 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       if season in ('summer','spring'): clevs /= 2.
     elif var == 'Q2':
       clevs = np.linspace(0,20,21); clbl = '%02.1f' # mm/day
-    elif var in ('SST','Ts','Tlake'): # skin temperature (SST)
-      clevs = np.linspace(240,305,66); clbl = '%03.0f' # K
+    elif var in ('SST','Ts','Tlake','Tslb'): # skin temperature (SST)
+      clevs = np.linspace(260,300,41); clbl = '%03.0f' # K
       cmap = mpl.cm.gist_ncar; cmap.set_over('white'); cmap.set_under('blue') # different from T2
       if var=='SST': lmsklnd = True # mask land for SST      
-    elif var=='T2' or var=='Tmin' or var=='Tmax' or var=='Tmean': # 2m or skin temperature (SST)
+    elif var in ('T_freeze','T_ice'): # soil/lake temperature
+      clevs = np.linspace(258,288,31); clbl = '%03.0f'; cmap = cm.redblue_light_r
+      if var=='T_freeze': lmskocn = True # mask land for SST
+      if var=='T_ice': lmsklnd = True # mask land for SST      
+    elif var in ('T2','Tmin','Tmax','Tmean'): # 2m or skin temperature (SST)
       clevs = np.linspace(260,300,41); clbl = '%03.0f' # K
       if season == 'winter': clevs -= 10
       elif season == 'summer': clevs += 10

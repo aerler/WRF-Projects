@@ -90,7 +90,7 @@ if __name__ == '__main__':
   variable_settings = None
   season_settings = None
   aggregation = 'mean'
-  level_agg = dict(p=2,s='mean',soil_layers_stag='mean')
+  level_agg = dict(p=2,s='mean',soil_layers_stag='mean',i_s='mean')
     
   # WRF file types
   WRFfiletypes = [] # WRF data source
@@ -238,32 +238,41 @@ if __name__ == '__main__':
 # #   case = tag+'val_narr'; reflist = 'NARR'
 # #   period = H15; ldiff = lfrac = False; variable_settings = None
 
-## comparison of NRCan and GPCC/CRU
-  case = 'nrcan_val'; maptype = 'lcc-can'; grid = 'glb1_d01'; 
-  basinlist = []; lprovinces = True; provlist = ['AB','SK','MB','ON']
-#   seasons = [['summer','winter','spring','fall']]; exptitles = [s.title() for s in seasons[0]]
-#   explist = ['NRCan']*len(exptitles); reflist = ['Unity']; period = H30
-  explist = ['NRCan']*2; period = H30; seasons = ['annual']
-  reflist = ['CRU','GPCC']; exptitles = reflist
-  variables = ['precip']; variable_settings = 'precip_obs'; cbn = 9; lfrac = True
-#   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 7; ldiff = True
-#   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; lfrac = True
-#   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; ldiff = True
-#   variables = ['T2']; variable_settings = 'T2_obs'; cbn = 11; ldiff = True
-#   reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
-#   reflist = None; ldiff = False; lfrac = False; variable_settings = None; cbn = 6
+# ## comparison of NRCan and GPCC/CRU
+#   case = 'nrcan_val'; maptype = 'lcc-can'; grid = 'glb1_d01'; 
+#   basinlist = []; lprovinces = True; provlist = ['AB','SK','MB','ON']
+# #   seasons = [['summer','winter','spring','fall']]; exptitles = [s.title() for s in seasons[0]]
+# #   explist = ['NRCan']*len(exptitles); reflist = ['Unity']; period = H30
+# #   explist = ['NRCan']*2; period = H30; seasons = ['annual']
+# #   variables = [('precip','pet')]; variable_settings = 'precip'; cbn = 9
+# #   figtitles = ['Annual Averages from {} [mm/day]'.format(explist[0])]
+# #   exptitles = ['Precipitation','PET']
+#   explist = ['CRU']; figtitles = ['{} Precipitation - PET [mm/day]'.format(explist[0])]; case = explist[0].lower() 
+#   exptitles = ['']; lsamesize = True; variable_settings = 'precip'; cbn = 9; lfrac = True
+#   period = H30; seasons = ['annual']; reflist = explist; variables = ['precip',]; refvars = ['pet'] 
+# #   reflist = ['CRU','GPCC']; exptitles = reflist
+# #   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 9; lfrac = True
+# #   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 7; ldiff = True
+# #   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; lfrac = True
+# #   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; ldiff = True
+# #   variables = ['T2']; variable_settings = 'T2_obs'; cbn = 11; ldiff = True
+# #   reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
+# #   reflist = None; ldiff = False; lfrac = False; variable_settings = None; cbn = 6
 
-# ## GRW maps
-#   case = 'GRW'; maptype = 'lcc-grw'; cbo = 'vertical'; lcontour = True
-#   seasons = [['November','December','January','February','March','April']]; exptitles = [s.title() for s in seasons[0]]
+## GRW maps
+  case = 'GRW'; maptype = 'lcc-grw'; cbo = 'vertical'; lcontour = True
+  seasons = [['November','December','January','February','March','April']]; exptitles = [s.title() for s in seasons[0]]
 #   explist = ['NRCan']*len(exptitles); period = NRC70
-# #   explist = ['g-ensemble']*len(exptitles); period = H15
-# #   variables = ['T2']; isoline = 273.5; cbn = 11
-# #   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
-# #   variables = ['snwmlt']; isoline = 1.; cbn = 11
+  reflist = ['NRCan']*len(exptitles); refprd = NRC70; grid = 'glb1_d01'; domain = 1
+#   explist = ['erai-t']*len(exptitles); period = H30
+  explist = ['t3-ensemble']*len(exptitles); period = H15
+  variables = ['T2']; isoline = 273.5; cbn = 11; ldiff = True
+#   variables = ['Tslb']; variable_settings = 'T_freeze'; level_agg = dict(i_s=0); isoline = 273.5; cbn = 11
+#   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
+#   variables = ['snwmlt']; isoline = 1.; cbn = 11
 #   variables = ['ratio']; isoline = 1.; cbn = 11 
-# #   case = 'ephemeral'
-# #   case = 'maritime'
+#   case = 'ephemeral'
+#   case = 'maritime'
 #   case = 'prairies'
 
 # # ERA-Interim validation

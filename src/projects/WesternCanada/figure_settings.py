@@ -176,6 +176,10 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(240,305,66); clbl = '%03.0f' # K
       cmap = mpl.cm.gist_ncar; cmap.set_over('white'); cmap.set_under('blue') # different from T2
       if var=='SST': lmsklnd = True # mask land for SST      
+    elif var in ('T_freeze','T_ice'): # soil/lake temperature
+      clevs = np.linspace(258,288,31); clbl = '%03.0f'; cmap = cm.redblue_light_r
+      if var=='T_freeze': lmskocn = True # mask land for SST
+      if var=='T_ice': lmsklnd = True # mask land for SST      
     elif var=='T2' or var=='Tmin' or var=='Tmax' or var=='Tmean': # 2m or skin temperature (SST)
       clevs = np.linspace(255,290,36); clbl = '%03.0f' # K
       if season == 'winter': clevs -= 10

@@ -86,6 +86,7 @@ if __name__ == '__main__':
   ldiff = False # compute differences
   lfrac = False # compute fraction
   domain = (2,)
+  isoline = None
   variable_settings = None
   season_settings = None
   aggregation = 'mean'
@@ -171,6 +172,24 @@ if __name__ == '__main__':
 #   lbasins = False; basinlist = ('ARB','FRB','GLB'); lprovinces = False; provlist = ['BC','AB','ON']
   lbasins = True; basinlist = ('ARB','FRB',); lprovinces = False; provlist = ['AB']; l60 = True
 
+## GRW maps
+  # map setup
+  maptype = 'lcc-grw'; basinlist = ('GLB','GRW')
+  # figure settings
+  case = 'GRW'; maptype = 'lcc-grw'; cbo = 'vertical'; lcontour = True
+  seasons = [['November','December','January','February','March','April']]; exptitles = [s.title() for s in seasons[0]]
+#   explist = ['NRCan']*len(exptitles); period = NRC70
+  reflist = ['NRCan']*len(exptitles); refprd = NRC70; domain = 1
+#   explist = ['erai-t']*len(exptitles); period = H30; grid = 'arb2_d01'
+  explist = ['max-ens']*len(exptitles); period = H15; grid = 'arb2_d01'
+#   explist = ['new-ctrl']*len(exptitles); period = H15; grid = 'arb3_d01'
+  case = explist[0]
+  variables = ['T2']; isoline = 273.5; cbn = 11; ldiff = True
+#   variables = ['Tslb']; variable_settings = 'T_freeze'; level_agg = dict(i_s=0); isoline = 273.5; cbn = 11
+#   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
+#   variables = ['snwmlt']; isoline = 1.; cbn = 11
+#   variables = ['ratio']; isoline = 1.; cbn = 11
+  if variables[0] == 'Tslb': case += '_{:d}'.format(level_agg['i_s'])
 
 # ## validation and projection for the Paper
 #   explist = ['Ens','max-ens','ctrl-ens']*2; seasons = [['summer']*3+['winter']*3]
@@ -211,19 +230,19 @@ if __name__ == '__main__':
 #  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
 ##   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
 
-## 2x1-panel projection for the Paper
-  explist = ['max-ens','ctrl-ens']; cbo = 'vertical'; lsamesize = False
-  domain = 2; tag = 'd{:02d}'.format(domain); grid = 'arb2_'+tag; 
-#   seasons = ['annual']; figtitles = ['Annual Water Supply Change [mm/day]']; ldiff = True 
-  variables = ['p-et']; WRFfiletypes = ['hydro']
-#   seasons = ['JAS']; figtitles = ['Late Summer Net Precipitation Change [%]']; lfrac = True
-  seasons = ['JAS']; figtitles = ['Late Summer Net Precipitation Change [mm/day]']; ldiff = True 
-#   seasons = ['JAS']; variables = ['aSM']; WRFfiletypes = ['lsm']; cbn = 7; lfrac = True
-#  figtitles = ['Late Summer Soil Moisture Change [%]']
-  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-  exptitles = ['1st WRF Ens.','Alt. WRF Ens.']; res = '30km' if domain == 1 else '10km'
-  exptitles = [ '{} ({})'.format(e,res) for e in exptitles ]
-  lbasins = True; basinlist = ['FRB','ARB']; lprovinces = True; provlist = ['AB']
+# ## 2x1-panel projection for the Paper
+#   explist = ['max-ens','ctrl-ens']; cbo = 'vertical'; lsamesize = False
+#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'arb2_'+tag; 
+# #   seasons = ['annual']; figtitles = ['Annual Water Supply Change [mm/day]']; ldiff = True 
+#   variables = ['p-et']; WRFfiletypes = ['hydro']
+# #   seasons = ['JAS']; figtitles = ['Late Summer Net Precipitation Change [%]']; lfrac = True
+#   seasons = ['JAS']; figtitles = ['Late Summer Net Precipitation Change [mm/day]']; ldiff = True 
+# #   seasons = ['JAS']; variables = ['aSM']; WRFfiletypes = ['lsm']; cbn = 7; lfrac = True
+# #  figtitles = ['Late Summer Soil Moisture Change [%]']
+#   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+#   exptitles = ['1st WRF Ens.','Alt. WRF Ens.']; res = '30km' if domain == 1 else '10km'
+#   exptitles = [ '{} ({})'.format(e,res) for e in exptitles ]
+#   lbasins = True; basinlist = ['FRB','ARB']; lprovinces = True; provlist = ['AB']
 
 ### single-panel Observations
 #  maptype = 'lcc-arb3_d03'; lstations = False; lbasins = False; lprovinces = True
@@ -848,6 +867,9 @@ if __name__ == '__main__':
           if laddContour:
             cd.append(maps[n].contour(x[n][m],y[n][m],data[n][m],clevs,ax=ax[n],
                                       colors='k', linewidths=0.5))
+          if isoline is not None:
+            cd.append(maps[n].contour(x[n][m],y[n][m],data[n][m],[isoline],ax=ax[n],
+                                      colors='w', linewidths=1.))
       
       ## highligh 60th parallel to delineate provinces and territories
       if l60:
