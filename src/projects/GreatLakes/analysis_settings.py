@@ -90,29 +90,29 @@ exps_rc['t3-prj']    = EX(name='t3-prj',exps=['t3-ens','t3-ens-2050','t3-ens-210
                          master='t3-ens', reference=None, target=None)
 # G ensemble members
 exps_rc['g-Z']       = EX(name='g-Z',exps=['g-ctrl','g-ctrl-2050','g-ctrl-2100'], 
-                          styles=['-','-.','--'], title='WRF-Z (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='WRF G-Z (Hist., Mid-, End-Century)',
                           master='g-ctrl', reference=None, target=None)
 exps_rc['g-A']       = EX(name='g-A',exps=['g-ens-A','g-ens-A-2050','g-ens-A-2100'], 
-                          styles=['-','-.','--'], title='WRF-A (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='WRF G-A (Hist., Mid-, End-Century)',
                           master='g-ens-A', reference=None, target=None)
 exps_rc['g-B']       = EX(name='g-B',exps=['g-ens-B','g-ens-B-2050','g-ens-B-2100'], 
-                          styles=['-','-.','--'], title='WRF-B (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='WRF G-B (Hist., Mid-, End-Century)',
                           master='g-ens-B', reference=None, target=None)
 exps_rc['g-C']       = EX(name='g-C',exps=['g-ens-C','g-ens-C-2050','g-ens-C-2100'], 
-                          styles=['-','-.','--'], title='WRF-C (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='WRF G-C (Hist., Mid-, End-Century)',
                           master='g-ens-C', reference=None, target=None)
 # T ensemble members
 exps_rc['t-Z']       = EX(name='t-Z',exps=['t-ctrl','t-ctrl-2050','t-ctrl-2100'], 
-                          styles=['-','-.','--'], title='WRF-Z (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='WRF T-Z (Hist., Mid-, End-Century)',
                           master='t-ctrl', reference=None, target=None)
 exps_rc['t-A']       = EX(name='t-A',exps=['t-ens-A','t-ens-A-2050','t-ens-A-2100'], 
-                          styles=['-','-.','--'], title='WRF-A (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='WRF T-A (Hist., Mid-, End-Century)',
                           master='t-ens-A', reference=None, target=None)
 exps_rc['t-B']       = EX(name='t-B',exps=['t-ens-B','t-ens-B-2050','t-ens-B-2100'], 
-                          styles=['-','-.','--'], title='WRF-B (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='WRF T-B (Hist., Mid-, End-Century)',
                           master='t-ens-B', reference=None, target=None)
 exps_rc['t-C']       = EX(name='t-C',exps=['t-ens-C','t-ens-C-2050','t-ens-C-2100'], 
-                          styles=['-','-.','--'], title='WRF-C (Hist., Mid-, End-Century)',
+                          styles=['-','-.','--'], title='WRF T-C (Hist., Mid-, End-Century)',
                           master='t-ens-C', reference=None, target=None)
 # physics ensemble  (withand without Observations)
 exps_rc['phys-all']  = EX(name='phys',exps=['phys-ens','phys-ens-2050','phys-ens-2100'], 
