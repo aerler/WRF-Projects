@@ -62,6 +62,8 @@ basin_list['GRW'] = BasinSet(name='GRW', long_name='Grand River Watershed', data
                                        'Fairchild Creek':['Brantford'],'Speed River':['Guelph'],
                                        'Whitemans Creek':['Mount Vernon']}, 
                              subbasins=['WholeGRW','UpperGRW','LowerGRW','NorthernGRW','SouthernGRW','WesternGRW'])
+basin_list['SNW'] = BasinSet(name='SNW', long_name='South Nation Watershed', rivers=['South Nation'], data_source='Aquanty',
+                             stations={'South Nation':['',]}, subbasins=['WholeSNW'])
 basin_list['GSL'] = BasinSet(name='GSL', long_name='Great Slave Lake', rivers=[], data_source='WSC',
                              stations=dict(), subbasins=['WholeGSL'])
 basin_list['LS']  = BasinSet(name='LS', long_name='Labrador Sea', rivers=[], data_source='WSC',

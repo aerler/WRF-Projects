@@ -153,7 +153,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var == 'evap': # moisture fluxes (kg /(m^2 s))
       clevs = np.linspace(-4,4,25); clbl = '%02.1f'
       cmap = mpl.cm.PuOr
-    elif var == 'pet': # potential evaporation
+    elif var in ('pet','pet_wrf'): # potential evaporation
       clevs = np.linspace(0,5,26); clbl = '%02.1f' # mm/day
       #if season == 'winter': clevs -= 2
       #elif season == 'summer': clevs += 2    
@@ -232,7 +232,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
         raise ValueError, 'No map color scheme defined (use \'season\' to select color scheme).'
       cbl = np.linspace(0,clim[-1],6)
     elif var in ('stns','stations'): # station density
-      clevs = np.linspace(1,7,7); clbl = '%2i' # stations per grid points  
+      clevs = np.linspace(1,5,5); clbl = '%2i' # stations per grid points  
       cmap.set_over('purple'); cmap.set_under('white')      
     elif var=='lndcls': # land use classes (works best with contour plot)
       clevs = np.linspace(0.5,24.5,25); cbl = np.linspace(4,24,6)  
