@@ -33,22 +33,22 @@ hgs_plotargs = dict()
 hgs_plotargs['Observations'] = dict(color='#959595') # gray
 hgs_plotargs['WSC']          = dict(color='#959595') # gray
 hgs_plotargs['NRCan']        = dict(color='green')
-hgs_plotargs['NRCan (old)']  = dict(color='green', linestyle='--')
-hgs_plotargs['NRCan (V1)']   = dict(color='green')
-hgs_plotargs['NRCan (V2)']   = dict(color='coral')
+hgs_plotargs['NRCan (old)']  = dict(color='gray', linestyle='--')
+hgs_plotargs['NRCan (V1)']   = dict(color='gray', linestyle='--')
+hgs_plotargs['NRCan (V2)']   = dict(color='gray')
 hgs_plotargs['NRCan (V2k)']  = dict(color='#AAA2D8') # purple
-hgs_plotargs['NRCan (V2f)']  = dict(color='r') # red
+hgs_plotargs['NRCan (V2f)']  = dict(color='red') # red
 hgs_plotargs['NRCan (V3f)']  = dict(color='magenta')
-hgs_plotargs['NRCan (V3s)']  = dict(color='k') 
+hgs_plotargs['NRCan (V3s)']  = dict(color='black') 
 hgs_plotargs['NRCan (V3w)']  = dict(color='green')
 hgs_plotargs['NRCan (V3m2)'] = dict(color='blue')
 hgs_plotargs['NRCan (V3m3)'] = dict(color='purple')
 hgs_plotargs['NRCan (V3m4)'] = dict(color='red')
 hgs_plotargs['NRCan (V3m5)'] = dict(color='green')
-hgs_plotargs['NRCan (V3)']   = dict(color='blue')
-hgs_plotargs['NRCan (Prairies)']  = dict(color='green')
-hgs_plotargs['NRCan (Ephemeral)'] = dict(color='purple')
-hgs_plotargs['NRCan (hires)']     = dict(color='red')
+hgs_plotargs['NRCan (V3)']   = dict(color='green')
+hgs_plotargs['NRCan (Prairies)']  = dict(color='cyan')
+hgs_plotargs['NRCan (Ephemeral)'] = dict(color='coral')
+hgs_plotargs['NRCan (hires)']     = dict(color='magenta')
 # hgs_plotargs['Observations'] = dict(color='#68615E') # dark gray
 hgs_plotargs['Steady-State (V1)'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic (V1)']     = dict(color='green') # red
@@ -60,6 +60,8 @@ hgs_plotargs['Periodic']     = dict(color='#E24B34') # red
 hgs_plotargs['WRF 90km']     = dict(color='#E24B34') # red
 hgs_plotargs['WRF 30km']     = dict(color='#AAA2D8') # purple
 hgs_plotargs['WRF 10km']     = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['WRF T 10km']       = dict(color='#E24B34') # red
+hgs_plotargs['WRF G 10km']       = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['1980']         = dict(color='#62A1C6') # blue
 hgs_plotargs['2050']         = dict(color='#AAA2D8') # purple
 hgs_plotargs['2100']         = dict(color='#E24B34') # red

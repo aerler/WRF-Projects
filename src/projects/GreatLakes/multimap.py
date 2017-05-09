@@ -73,8 +73,8 @@ if __name__ == '__main__':
   locean = False # mask continent in white and omit country borders
   lstations = False; stations = 'EC'; #cluster_symbols = {2:'o',5:'^',8:'s'}; cluster_name = 'cluster_projection'
   #cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.iteritems()}
-  lbasins = False; primary_basins = ('GLB',); subbasins = tuple()
-  basin_args = dict(linewidth = 1., color='k'); subbasin_args = dict(linewidth = 0.5, color='k')
+  lbasins = False; primary_basins = ('GLB',); subbasins = ('GRW','SNW')
+  basin_args = dict(linewidth = 1., color='k'); subbasin_args = basin_args.copy()
   lprovinces = True; provlist = ('ON',)
   prov_args = dict(linewidth = 0.5, color='k')
   cbo = None # default based on figure type
@@ -370,12 +370,15 @@ if __name__ == '__main__':
   lstations = False; lprovinces = True; provlist = ['ON'] 
   lbasins = True; basinlist = ['GLB','GRW','SNW']; basin_args = dict(linewidth = 1.5, color='k')  
 #   variables = ['precip']; seasons = ['annual']; figtitles = 'Precipitation [mm/day]'
-  variables = ['stations']; seasons = ['annual']; figtitles = 'Station Density'
-#   explist = ['g-ens']; period = H15; domain = (1,2); lframe = True; lWRFnative = True 
+#   variables = ['stations']; seasons = ['annual']; figtitles = 'Station Density'
+  explist = ['g-ens']; period = H15; domain = (1,2); lframe = True; lWRFnative = True 
 #   explist = ['NRCan']; period = NRC70
-  explist = ['GPCC']; period = None
+#   explist = ['GPCC']; period = None
   case = explist[0].lower(); exptitles = ' '
-#   variables = ['zs']; seasons = ['hidef']; figtitles = 'Topography [km]'; case = 'glb' 
+  variables = ['zs']; seasons = ['hidef']; figtitles = 'Topography [km]'; case = 'glb'
+  lsamesize = True; seasons = ['topo']
+  basinlist = ['GLB','GRW',]; case = 'grw'
+  basinlist = ['GLB','GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_white'
   
 # # larger map with river basins
 # #   lpickle = False; lprint = False
@@ -893,9 +896,11 @@ if __name__ == '__main__':
               basininfo = basins[basin]
               try:
                 if basin in subbasins:
-                  for subbasin in subbasins[basin]:		  
-                    bmap.readshapefile(basininfo.shapefiles[subbasin][:-4], subbasin, ax=axn, 
-                                       drawbounds=True, **subbasin_args)          
+                  bmap.readshapefile(basininfo.shapefiles[basininfo.outline][:-4], basin, ax=axn, 
+                                     drawbounds=True, **subbasin_args)
+#                   for subbasin in subbasins[basin]:		  
+#                     bmap.readshapefile(basininfo.shapefiles[subbasin][:-4], subbasin, ax=axn, 
+#                                        drawbounds=True, **subbasin_args)          
                 elif basin in primary_basins:
                   bmap.readshapefile(basininfo.shapefiles[basininfo.outline][:-4], basin, ax=axn, 
                                      drawbounds=True, **basin_args)            
