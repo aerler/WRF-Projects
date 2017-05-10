@@ -33,7 +33,6 @@ hgs_plotargs = dict()
 hgs_plotargs['Observations'] = dict(color='#959595') # gray
 hgs_plotargs['WSC']          = dict(color='#959595') # gray
 hgs_plotargs['NRCan']        = dict(color='green')
-hgs_plotargs['NRCan (old)']  = dict(color='gray', linestyle='--')
 hgs_plotargs['NRCan (V1)']   = dict(color='gray', linestyle='--')
 hgs_plotargs['NRCan (V2)']   = dict(color='gray')
 hgs_plotargs['NRCan (V2k)']  = dict(color='#AAA2D8') # purple
@@ -60,8 +59,10 @@ hgs_plotargs['Periodic']     = dict(color='#E24B34') # red
 hgs_plotargs['WRF 90km']     = dict(color='#E24B34') # red
 hgs_plotargs['WRF 30km']     = dict(color='#AAA2D8') # purple
 hgs_plotargs['WRF 10km']     = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['WRF T 10km']       = dict(color='#E24B34') # red
-hgs_plotargs['WRF G 10km']       = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['WRF T 10km']   = dict(color='#E24B34') # red
+hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['WRF T 10km']   = dict(color='#E24B34') # red
+hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['1980']         = dict(color='#62A1C6') # blue
 hgs_plotargs['2050']         = dict(color='#AAA2D8') # purple
 hgs_plotargs['2100']         = dict(color='#E24B34') # red
@@ -76,15 +77,21 @@ color_args = {'Ctrl':'blue', 'Ens-A':'purple', 'Ens-B':'green','Ens-C':'coral','
 for key,value in color_args.items(): hgs_plotargs[key] = dict(color=value)
 hgs_plotargs['Ensemble'] = dict(color='red',linewidth=1)
 hgs_plotargs['Mean'] = dict(color='black',linewidth=1)
+# add "old" versions
+for expname,plotarg in hgs_plotargs.items():
+    if expname[-1] != ')' and expname+' (old)' not in hgs_plotargs:
+        oldarg = plotarg.copy(); 
+        oldarg['linestyle'] = '--' 
+        hgs_plotargs[expname+' (old)'] = oldarg
 
 # mapping of WSC station names to HGS hydrograph names
 Station = namedtuple('Station', ('HGS','WSC','ylim'),)
 station_list = OrderedDict() # this is the main gage of the GRW
-station_list['Grand River at Brantford']  = Station(HGS='GR_Brantford',WSC='Grand River_Brantford',ylim=20)
-station_list['Grand River at Marsville']  = Station(HGS='GR_Marsville_(near_it)',WSC='Grand River_Marsville',ylim=4)
-station_list['Conestogo at Glen Allan']   = Station(HGS='Conestogo_River_at_Glen_Allan',WSC='Conestogo River_Glen Allan',ylim=3)
+station_list['Grand River at Brantford']  = Station(HGS='GR_Brantford',WSC='Grand River_Brantford',ylim=15)
+station_list['Grand River at Marsville']  = Station(HGS='GR_Marsville_(near_it)',WSC='Grand River_Marsville',ylim=3)
+station_list['Conestogo at Glen Allan']   = Station(HGS='Conestogo_River_at_Glen_Allan',WSC='Conestogo River_Glen Allan',ylim=2)
 station_list['Speed River at Guelph']     = Station(HGS='Speed_River_near_Guelph(moved_North)',WSC='Speed River_Guelph',ylim=2)
-station_list['Whitemans at Mount Vernon'] = Station(HGS='Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=2)
+station_list['Whitemans at Mount Vernon'] = Station(HGS='Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=1.2)
 station_list['Fairchild at Brantford']    = Station(HGS='Fairchild_Creek_near_Brantford',WSC='Fairchild Creek_Brantford',ylim=1.2 )
 # look-up tables for WSC/HGS station name conversion                           
 WSC_station_list = {stn.WSC:stn.HGS for stn in station_list.values()}

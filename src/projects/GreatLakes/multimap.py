@@ -377,8 +377,9 @@ if __name__ == '__main__':
   case = explist[0].lower(); exptitles = ' '
   variables = ['zs']; seasons = ['hidef']; figtitles = 'Topography [km]'; case = 'glb'
   lsamesize = True; seasons = ['topo']
-  basinlist = ['GLB','GRW',]; case = 'grw'
-  basinlist = ['GLB','GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_white'
+#   basinlist = ['GLB','GRW',]; case = 'grw'
+#   basinlist = ['GLB','GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_white'
+  maptype = 'lcc-grw'; basinlist = ['GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_local_white'
   
 # # larger map with river basins
 # #   lpickle = False; lprint = False
