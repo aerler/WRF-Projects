@@ -65,8 +65,12 @@ variables_rc['sfcflx']          = VL(vars=('p-et','snwmlt','waterflx',), files=(
 variables_rc['runoff']          = VL(vars=('waterflx','sfroff','runoff'), files=('lsm','hydro'), label='Runoff')
 variables_rc['runoff_flux']     = VL(vars=('runoff','snwmlt','p-et'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['runoff_snow']     = VL(vars=('runoff','snwmlt','waterflx'), files=('lsm','hydro'), label='Water Flux')
-variables_rc['hgs_forcing']     = VL(vars=('liqwatflx','pet_wrf',), files=('aux',), label='HGS Forcing')
-variables_rc['hgs_precip']      = VL(vars=('snwmlt','liqprec','pet_wrf'), files=('aux',), label='HGS Forcing')
+variables_rc['hgs_forcing_wrf'] = VL(vars=('liqwatflx','pet_wrf',), files=('aux',), label='HGS Forcing')
+variables_rc['hgs_precip_wrf']  = VL(vars=('snwmlt','liqprec','pet_wrf'), files=('aux',), label='HGS Forcing')
+variables_rc['hgs_snow_wrf']    = VL(vars=('solprec','liqprec','pet_wrf'), files=('aux',), label='HGS Forcing')
+variables_rc['hgs_forcing']     = VL(vars=('liqwatflx','pet',), files=('aux',), label='HGS Forcing')
+variables_rc['hgs_precip']      = VL(vars=('snwmlt','liqprec','pet'), files=('aux',), label='HGS Forcing')
+variables_rc['hgs_snow']        = VL(vars=('solprec','liqprec','pet'), files=('aux',), label='HGS Forcing')
 variables_rc['heat']            = VL(vars=('hfx','lhfx','rSM'),files=('srfc','lsm'), label='Energy Flux')
 variables_rc['evap']            = VL(vars=('p-et','evap','pet',), files=('hydro',), label='Water Flux')
 variables_rc['spei']            = VL(vars=('precip','evap','pet',), files=('aux','hydro',), label='Water Flux')
@@ -170,6 +174,7 @@ plot_labels_rc['evap']            = 'ET'
 plot_labels_rc['p-et']            = 'Net Precip.'    
 plot_labels_rc['pet']             = 'PET' 
 plot_labels_rc['waterflx']        = 'Water Flux'
+plot_labels_rc['liqwatflx']       = 'Water Forcing'
 plot_labels_rc['snwmlt']          = 'Snow Melt' 
 plot_labels_rc['runoff']          = 'Total Runoff' 
 plot_labels_rc['ugroff']          = 'Undergr. R\'off' 
@@ -207,14 +212,16 @@ variable_plotargs_rc['MaxWaterFlx_1d'] = AttrDict(color = 'blue')
 variable_plotargs_rc['T2']             = AttrDict(color = 'green')
 variable_plotargs_rc['precip']         = AttrDict(color = 'green')
 variable_plotargs_rc['liqprec']        = AttrDict(color = 'green')
-variable_plotargs_rc['solprec']        = AttrDict(color = 'blue')
+variable_plotargs_rc['solprec']        = AttrDict(color = 'dodgerblue')
 variable_plotargs_rc['dryprec']        = AttrDict(color = 'green')
 variable_plotargs_rc['preccu']         = AttrDict(color = 'magenta')
 variable_plotargs_rc['precnc']         = AttrDict(color = 'coral')
 variable_plotargs_rc['evap']           = AttrDict(color = 'red')
 variable_plotargs_rc['p-et']           = AttrDict(color = 'red')
 variable_plotargs_rc['pet']            = AttrDict(color = 'purple')
+variable_plotargs_rc['pet_wrf']        = AttrDict(color = 'purple')
 variable_plotargs_rc['waterflx']       = AttrDict(color = 'dodgerblue')
+variable_plotargs_rc['liqwatflx']      = AttrDict(color = 'blue')
 variable_plotargs_rc['snwmlt']         = AttrDict(color = 'orange')
 variable_plotargs_rc['runoff']         = AttrDict(color = 'purple')
 variable_plotargs_rc['ugroff']         = AttrDict(color = 'coral')

@@ -366,20 +366,23 @@ if __name__ == '__main__':
 
 # (topographic) map with river basins (single panel)
 #   lpickle = False; lprint = False
-  maptype = 'lcc-glb'; lcontour = True; loutline = False
+#   maptype = 'lcc-glb'; case = 'glb'; lcontour = True; loutline = False
+  maptype = 'lcc-grw'; case = 'grw'; lcontour = True; loutline = False
   lstations = False; lprovinces = True; provlist = ['ON'] 
-  lbasins = True; basinlist = ['GLB','GRW','SNW']; basin_args = dict(linewidth = 1.5, color='k')  
+  lbasins = True; basinlist = ['GLB','GRW','SNW']; subbasin_args = dict(linewidth = 2., color='k')  
 #   variables = ['precip']; seasons = ['annual']; figtitles = 'Precipitation [mm/day]'
+#   variables = ['pet']; seasons = ['annual']; figtitles = 'Potential Evapotranspiration [mm/day]'
+  variables = ['snwmlt']; seasons = ['annual']; figtitles = 'Snowmelt [mm/day]'
 #   variables = ['stations']; seasons = ['annual']; figtitles = 'Station Density'
-  explist = ['g-ens']; period = H15; domain = (1,2); lframe = True; lWRFnative = True 
-#   explist = ['NRCan']; period = NRC70
+#   explist = ['g-ens']; period = H15; domain = (1,2); lframe = True; lWRFnative = True 
+  explist = ['NRCan']; period = NRC70
 #   explist = ['GPCC']; period = None
-  case = explist[0].lower(); exptitles = ' '
-  variables = ['zs']; seasons = ['hidef']; figtitles = 'Topography [km]'; case = 'glb'
-  lsamesize = True; seasons = ['topo']
+  case = explist[0].lower(); exptitles = ' '; lsamesize = True
+#   variables = ['zs']; seasons = ['hidef']; figtitles = 'Topography [km]'
+#   lsamesize = True; seasons = ['topo']
 #   basinlist = ['GLB','GRW',]; case = 'grw'
 #   basinlist = ['GLB','GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_white'
-  maptype = 'lcc-grw'; basinlist = ['GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_local_white'
+#   maptype = 'lcc-grw'; basinlist = ['GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_local_white'
   
 # # larger map with river basins
 # #   lpickle = False; lprint = False

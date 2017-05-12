@@ -61,7 +61,7 @@ exps_rc['cesm-prj']  = EX(name='cesm-ens', exps=['MEns','MEns-2050','MEns-2100']
                          master='MEns', reference='MEns', target='MEns', title='CESM Projection')
 # initial condition ensembles (including observations)
 exps_rc['val']     = EX(name='val',exps=['Observations', 'g-ens','t-ens',], 
-                          styles=['-','-.','--'], title='G &T Ensemble Average (Validation)',
+                          styles=['-','-.','--'], title='WRF G &T Ensemble Average',
                           master='Observations', reference='Observations', target=None)
 exps_rc['g-all']     = EX(name='g-all',exps=['Observations', 'g-ens','g-ens-2050','g-ens-2100'], 
                           styles=['-','-.','--'], title='G Ensemble ({RES:s}; Hist., Mid-, End-Century)',
@@ -76,6 +76,12 @@ exps_rc['t3-all']    = EX(name='t3-all',exps=['Observations', 't3-ens','t3-ens-2
                          styles=['-','-.','--'], title='T Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                          master='t3-ens', reference='Observations', target='g-ens')
 # initial condition ensembles (projection)
+exps_rc['gt-val']    = EX(name='gt-val',exps=['g-ens','t-ens',], 
+                          styles=['-','--'], title='G &T Ensemble Average (Validation)',
+                          master='g-ens', reference=None, target=None)
+exps_rc['gt-prj']    = EX(name='gt-prj',exps=['g-ens-2100','t-ens-2100',], 
+                          styles=['-','--'], title='G &T Ensemble Average (Projection)',
+                          master='g-ens-2100', reference=None, target=None)
 exps_rc['g-prj']     = EX(name='g-prj',exps=['g-ens','g-ens-2050','g-ens-2100'], 
                           styles=['-','-.','--'], title='G Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                           master='g-ens', reference=None, target=None)
@@ -228,22 +234,23 @@ plot_labels_rc['wetprec_010']     = 'Precip. Intensity'
 plot_labels_rc['T2']              = 'T (2m)'   
 plot_labels_rc['Q2']              = 'Humidity (2m)'   
 plot_labels_rc['precip']          = 'Precip.'  
-plot_labels_rc['liqprec']         = 'Liquid' 
+plot_labels_rc['liqprec']         = 'Liq. Precip.' 
 plot_labels_rc['solprec']         = 'Snow' 
 plot_labels_rc['dryprec']         = 'dryprec' 
 plot_labels_rc['preccu']          = 'Conv.'  
 plot_labels_rc['precnc']          = 'NC'  
 plot_labels_rc['evap']            = 'ET'    
 plot_labels_rc['p-et']            = 'Net Precip.'    
-plot_labels_rc['pet']             = 'Pot. ET' 
-plot_labels_rc['pet_wrf']         = 'WRF PET' 
+plot_labels_rc['pet']             = 'PET' 
+plot_labels_rc['pet_wrf']         = 'PET (WRF)' 
 plot_labels_rc['petrad']          = 'Rad. Term' 
 plot_labels_rc['petwnd']          = 'Wind Term' 
 plot_labels_rc['vapdef']          = 'Vapor Deficit' 
 plot_labels_rc['netrad']          = 'Net Rad.' 
 plot_labels_rc['SWDNB']           = 'SW Rad.' 
 plot_labels_rc['waterflx']        = 'Water Flux'
-plot_labels_rc['snwmlt']          = 'Snow Melt' 
+plot_labels_rc['liqwatflx']       = 'Water Forcing'
+plot_labels_rc['snwmlt']          = 'Snowmelt' 
 plot_labels_rc['runoff']          = 'Total Runoff' 
 plot_labels_rc['ugroff']          = 'Undergr. R\'off' 
 plot_labels_rc['sfroff']          = 'Surface Runoff' 

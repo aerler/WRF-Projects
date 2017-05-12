@@ -32,6 +32,7 @@ station_file_v2 = '{PREFIX:s}o.hydrograph.{WSC_ID0:s}.dat' # general HGS naming 
 hgs_plotargs = dict() 
 hgs_plotargs['Observations'] = dict(color='#959595') # gray
 hgs_plotargs['WSC']          = dict(color='#959595') # gray
+hgs_plotargs['HGS (V1)']     = dict(color='green', linewidth=3)
 hgs_plotargs['NRCan']        = dict(color='green')
 hgs_plotargs['NRCan (V1)']   = dict(color='gray', linestyle='--')
 hgs_plotargs['NRCan (V2)']   = dict(color='gray')
@@ -45,6 +46,9 @@ hgs_plotargs['NRCan (V3m3)'] = dict(color='purple')
 hgs_plotargs['NRCan (V3m4)'] = dict(color='red')
 hgs_plotargs['NRCan (V3m5)'] = dict(color='green')
 hgs_plotargs['NRCan (V3)']   = dict(color='green')
+hgs_plotargs['V3 (Prairies)']  = dict(color='#AAA2D8')
+hgs_plotargs['V3 (Maritime)']  = dict(color='#62A1C6')
+hgs_plotargs['V3 (Ephemeral)'] = dict(color='#E24B34')
 hgs_plotargs['NRCan (Prairies)']  = dict(color='cyan')
 hgs_plotargs['NRCan (Ephemeral)'] = dict(color='coral')
 hgs_plotargs['NRCan (hires)']     = dict(color='magenta')

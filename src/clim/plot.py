@@ -35,9 +35,11 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
     varlist_name = varlist[0] # use first entry as name
   else: raise TypeError
   assert isinstance(varlist_name,basestring)
+  if expens is None: expens = []
+  if obsens is None: obsens = []
   # reference dataset (for meta data)
-  if expens is not None and len(expens) > 0: refds = expens[0]
-  elif obsens is not None and len(obsens) > 0: refds = obsens[0]
+  if len(expens) > 0: refds = expens[0]
+  elif len(obsens) > 0: refds = obsens[0]
   else: raise ArgumentError
   # x-axis
   xticks = axes.xaxis.get_ticklabels() # determine if labels are appropriate
