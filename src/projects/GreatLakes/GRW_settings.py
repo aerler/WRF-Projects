@@ -273,7 +273,7 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
   return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
                             period=period, run_period=run_period, folder=folder, obs_period=obs_period,  
                             ensemble_list=ensemble_list, ensemble_args=ensemble_args, observation_list=observation_list, 
-                            loadHGS_StnTS=loadHGS_StnTS, loadGageStation_TS=loadWSC_StnTS, # use local versions of loaders
+                            loadHGS_StnTS=loadHGS_StnTS, loadWSC_StnTS=loadWSC_StnTS, # use local versions of loaders
                             prefix=prefix, WSC_station=WSC_station, basin=basin, basin_list=basin_list, 
                             domain=domain, project_folder=project_folder, project=project, grid=grid, clim_mode=clim_mode, 
                             exp_aliases=exp_aliases, task=task, scalefactors=scalefactors, **kwargs)  
