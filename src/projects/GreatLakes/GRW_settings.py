@@ -32,7 +32,7 @@ station_file_v2 = '{PREFIX:s}o.hydrograph.{WSC_ID0:s}.dat' # general HGS naming 
 hgs_plotargs = dict() 
 hgs_plotargs['Observations'] = dict(color='#959595') # gray
 hgs_plotargs['WSC']          = dict(color='#959595') # gray
-hgs_plotargs['HGS (V1)']     = dict(color='green', linewidth=3)
+hgs_plotargs['HGS (V1)']     = dict(color='green') #, linewidth=3)
 hgs_plotargs['NRCan']        = dict(color='green')
 hgs_plotargs['NRCan (V1)']   = dict(color='gray', linestyle='--')
 hgs_plotargs['NRCan (V2)']   = dict(color='gray')
@@ -60,8 +60,8 @@ hgs_plotargs['Periodic (V2)']     = dict(color='coral') # red
 hgs_plotargs['Transient']    = dict(color='#62A1C6') # blue
 hgs_plotargs['Steady-State'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic']     = dict(color='#E24B34') # red
-hgs_plotargs['WRF 90km']     = dict(color='#E24B34') # red
-hgs_plotargs['WRF 30km']     = dict(color='#AAA2D8') # purple
+hgs_plotargs['WRF 90km']     = dict(color='#AAA2D8') # purple
+hgs_plotargs['WRF 30km']     = dict(color='#E24B34') # red
 hgs_plotargs['WRF 10km']     = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['WRF T 10km']   = dict(color='#E24B34') # red
 hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     

@@ -12,7 +12,6 @@ from utils.misc import defaultNamedtuple, reverse_enumerate, expandArgumentList
 from datasets.common import loadEnsemble, loadEnsembles, BatchLoad, shp_params, stn_params
 from datasets.common import observational_datasets, timeseries_datasets
 from geodata.misc import ArgumentError, EmptyDatasetError, VariableError
-from datasets.WSC import GageStationError, loadGageStation
 
 # some definitions
 VL = defaultNamedtuple('VarList', ('vars','files','label'))   
@@ -183,6 +182,7 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
           obsens.insertMember(iobs,clim_ds) # ... at the point where the name block starts
   # load stream gage data from WSC; should not interfere with anything else; append to ensemble
   if lWSC: # another special case: river hydrographs
+      from datasets.WSC import GageStationError, loadGageStation
       try:
           if aggregation is not None and seasons is None: dataset_mode = 'climatology' # handled differently with gage data
           if WSC_period is None: WSC_period = kwargs.get('obs_period',kwargs.get('period',None))
@@ -353,25 +353,26 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
 ## abuse main section for testing
 if __name__ == '__main__':
   
-#   from projects.WesternCanada.analysis_settings import exps_rc, variables_rc, loadShapeObservations
-#   from projects.WesternCanada.analysis_settings import loadShapeEnsemble, loadStationEnsemble
-  from projects.GreatLakes import exps_rc, variables_rc, loadShapeObservations
-  from projects.GreatLakes import loadShapeEnsemble, loadStationEnsemble
+  from projects.WesternCanada import exps_rc, variables_rc, loadShapeObservations
+  from projects.WesternCanada import loadShapeEnsemble, loadStationEnsemble
+#   from projects.GreatLakes import exps_rc, variables_rc, loadShapeObservations
+#   from projects.GreatLakes import loadShapeEnsemble, loadStationEnsemble
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #   test = 'obs_timeseries'
-#   test = 'basin_timeseries'
+  test = 'basin_timeseries'
 #   test = 'station_timeseries'
-  test = 'province_climatology'
+#   test = 'province_climatology'
   
   
   # test load function for basin ensemble time-series
   if test == 'obs_timeseries':
     
     # some settings for tests
-    basins = ['GRW','GLB'] #; period = (1979,1994)
-    stations = ['Brantford','Whitemans Creek_Mount Vernon']
-    names = [stn.split('_')[-1] for stn in stations]
+#     stations = ['Brantford','Whitemans Creek_Mount Vernon']
+#     names = [stn.split('_')[-1] for stn in stations]
+#     basins = ['GRW','GLB'] #; period = (1979,1994)
+    basins = ['FRB','ARB'] #; period = (1979,1994)
     varlist = ['precip','runoff',]
 
 #     shpens = loadShapeObservations(obs='WSC', lWSC=False, name_tags=names, basins=basins, varlist=varlist, 
@@ -397,11 +398,11 @@ if __name__ == '__main__':
   elif test == 'basin_timeseries':
     
     # some settings for tests
-#     exp = 'ctrl-obs'; basins = ['SSR'] 
-    exp = 'erai'; basins = ['GLB','GRW',] 
+    exp = 'ctrl-obs'; basins = ['SSR'] 
+#     exp = 'erai'; basins = ['GLB','GRW',] 
     exps = exps_rc[exp].exps; #exps = ['Unity']
-    aggregation = 'mean'
-    grid = 'grw2'; period = (1979,1994); bias_correction = 'AABC'; aggregation = None; dataset_mode = 'climatology'
+    aggregation = 'mean'; grid = None; period = None; bias_correction = None; dataset_mode = 'time-series'
+#     grid = 'grw2'; period = (1979,1994); bias_correction = 'AABC'; aggregation = None; dataset_mode = 'climatology'
     varlists = ['precip','runoff','pet']; red = dict(i_s='mean'); domain = 1
     
     shpens = loadShapeEnsemble(names=exps, basins=basins, varlist=varlists, reduction=red, 
