@@ -36,6 +36,7 @@ experiments['g-ctrl-2100-noflake'] = Exp(shortname='g-ctrl-2100-noflake', name='
 experiments['g-ctrl-shallow']      = Exp(shortname='g-ctrl-shallow', name='g-shallow', title='G (Shallow)', parent='Ctrl-1',)
 experiments['g-ctrl-2100-shallow'] = Exp(shortname='g-ctrl-2100-shallow', name='g-2100-shallow', title='G (2100, Shallow)', begindate='2085-01-01', parent='Ctrl-1-2100')
 # G-Ensemble
+experiments['erai-max'] = Exp(shortname='erai-max', name='erai-max', title='Max (ERA-I)', parent='ERAI', project='WesternCanada', grid='arb2')
 experiments['erai-g'] = Exp(shortname='erai-g', name='erai-g', title='G (ERA-I)', parent='ERAI')
 experiments['g-ctrl'] = Exp(shortname='g-ctrl', name='g-ctrl', title='G-Ctrl', parent='Ctrl-1', ensemble='g-ensemble')
 experiments['g-ctrl-2050'] = Exp(shortname='g-ctrl-2050', name='g-ctrl-2050', title='G-Ctrl (2050)', begindate='2045-01-01', parent='Ctrl-1-2050', ensemble='g-ensemble-2050')

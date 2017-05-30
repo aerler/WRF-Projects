@@ -364,25 +364,25 @@ if __name__ == '__main__':
 #   variables = ['precip']; WRFfiletypes = ['srfc']; domain = 1
 # #   variables = ['T2']; explist[1] = 'CRU'
 
-# (topographic) map with river basins (single panel)
-#   lpickle = False; lprint = False
-#   maptype = 'lcc-glb'; case = 'glb'; lcontour = True; loutline = False
-  maptype = 'lcc-grw'; case = 'grw'; lcontour = True; loutline = False
-  lstations = False; lprovinces = True; provlist = ['ON'] 
-  lbasins = True; basinlist = ['GLB','GRW','SNW']; subbasin_args = dict(linewidth = 2., color='k')  
-#   variables = ['precip']; seasons = ['annual']; figtitles = 'Precipitation [mm/day]'
-#   variables = ['pet']; seasons = ['annual']; figtitles = 'Potential Evapotranspiration [mm/day]'
-  variables = ['snwmlt']; seasons = ['annual']; figtitles = 'Snowmelt [mm/day]'
-#   variables = ['stations']; seasons = ['annual']; figtitles = 'Station Density'
-#   explist = ['g-ens']; period = H15; domain = (1,2); lframe = True; lWRFnative = True 
-  explist = ['NRCan']; period = NRC70
-#   explist = ['GPCC']; period = None
-  case = explist[0].lower(); exptitles = ' '; lsamesize = True
-#   variables = ['zs']; seasons = ['hidef']; figtitles = 'Topography [km]'
-#   lsamesize = True; seasons = ['topo']
-#   basinlist = ['GLB','GRW',]; case = 'grw'
-#   basinlist = ['GLB','GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_white'
-#   maptype = 'lcc-grw'; basinlist = ['GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_local_white'
+# # (topographic) map with river basins (single panel)
+# #   lpickle = False; lprint = False
+# #   maptype = 'lcc-glb'; case = 'glb'; lcontour = True; loutline = False
+#   maptype = 'lcc-grw'; case = 'grw'; lcontour = True; loutline = False
+#   lstations = False; lprovinces = True; provlist = ['ON'] 
+#   lbasins = True; basinlist = ['GLB','GRW','SNW']; subbasin_args = dict(linewidth = 2., color='k')  
+# #   variables = ['precip']; seasons = ['annual']; figtitles = 'Precipitation [mm/day]'
+# #   variables = ['pet']; seasons = ['annual']; figtitles = 'Potential Evapotranspiration [mm/day]'
+#   variables = ['snwmlt']; seasons = ['annual']; figtitles = 'Snowmelt [mm/day]'
+# #   variables = ['stations']; seasons = ['annual']; figtitles = 'Station Density'
+# #   explist = ['g-ens']; period = H15; domain = (1,2); lframe = True; lWRFnative = True 
+#   explist = ['NRCan']; period = NRC70
+# #   explist = ['GPCC']; period = None
+#   case = explist[0].lower(); exptitles = ' '; lsamesize = True
+# #   variables = ['zs']; seasons = ['hidef']; figtitles = 'Topography [km]'
+# #   lsamesize = True; seasons = ['topo']
+# #   basinlist = ['GLB','GRW',]; case = 'grw'
+# #   basinlist = ['GLB','GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_white'
+# #   maptype = 'lcc-grw'; basinlist = ['GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_local_white'
   
 # # larger map with river basins
 # #   lpickle = False; lprint = False
@@ -397,17 +397,18 @@ if __name__ == '__main__':
 #   lbasins = True; basin_args = dict(linewidth = 1.5, color='w'); case = 'ongl_glb_w'
 #   lprovinces = False; provlist = ('ON',); lsamesize = True
   
-# # continental-scale map with domains
-# #   lpickle = False; lprint = False
-#   case = 'can_wrf2'; figtitles = 'Topography and Domain Outline [km]'
-#   variables = ['zs']; seasons = ['topo']; lcontour = True; 
-#   lframe = True; framewidths = 2.; framecolor = 'w'
-#   loutline = True; outlinewidth = 1.; outlinecolor = 'k'
-#   maptype = 'ortho-can'; lstations = False; stations = 'EC'
-#   period = H15; lWRFnative = True; lbackground = False
-#   explist = [('Ctrl-1','erai-g3','erai-g','erai-g')]; exptitles = ' '; domain = (0,1,1,2)
-#   lbasins = False; basinlist = ('GRW',); primary_basins = basinlist; subbasins = {} #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
-#   lprovinces = False; provlist = ('ON',)
+# continental-scale map with domains
+#   lpickle = False; lprint = False
+  case = 'can_wrf3'; #figtitles = 'Topography and Domain Outline [km]'
+#   variables = ['zs']; seasons = ['topo']; framecolor = 'w' 
+  variables = ['T2']; seasons = ['annual']; framecolor = 'k'; variable_settings = 'T2_global'
+  lframe = True; framewidths = 2.; lcontour = True; lsamesize = True
+  loutline = False; outlinewidth = 1.; outlinecolor = 'k'
+  maptype = 'ortho-can'; lstations = False; stations = 'EC'
+  period = H15; lWRFnative = True; lbackground = False
+  explist = [('Ctrl-1','erai-g3','erai-g','erai-g','erai-max')]; exptitles = ' '; domain = (0,1,1,2,2)
+  lbasins = False; basinlist = ('GRW',); primary_basins = basinlist; subbasins = {} #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
+  lprovinces = False; provlist = ('ON',)
 
 # # larger map with river basins
 # #   lpickle = False; lprint = False
@@ -538,7 +539,7 @@ if __name__ == '__main__':
 # # lprovinces = True; provlist = ('BC','AB') 
 #   variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True
 #   figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']
-#    
+    
     
   if not case: raise ValueError, 'Need to define a \'case\' name!'
 
