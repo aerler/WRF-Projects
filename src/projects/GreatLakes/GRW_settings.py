@@ -65,8 +65,12 @@ hgs_plotargs['WRF 30km']     = dict(color='#E24B34') # red
 hgs_plotargs['WRF 10km']     = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['WRF T 10km']   = dict(color='#E24B34') # red
 hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['WRF T 10km']   = dict(color='#E24B34') # red
-hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['WRF T 30km']   = dict(color='#E24B34') # red
+hgs_plotargs['WRF G 30km']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['T Mean']       = dict(color='#E24B34') # red
+hgs_plotargs['G Mean']       = dict(color='black') # blue                                     
+hgs_plotargs['Ensemble']     = dict(color='red')
+hgs_plotargs['Mean']         = dict(color='black')
 hgs_plotargs['1980']         = dict(color='#62A1C6') # blue
 hgs_plotargs['2050']         = dict(color='#AAA2D8') # purple
 hgs_plotargs['2100']         = dict(color='#E24B34') # red
@@ -76,11 +80,12 @@ hgs_plotargs['2045-2060']    = dict(color='#AAA2D8') # purple
 hgs_plotargs['2050-2060']    = dict(color='#AAA2D8') # purple
 hgs_plotargs['2085-2100']    = dict(color='#E24B34') # red
 hgs_plotargs['2090-2100']    = dict(color='#E24B34') # red
+# adjust line thickness
+for plotargs in hgs_plotargs.values(): 
+  if 'linewidth' not in plotargs: plotargs['linewidth'] = 2.5
 # extended color scheme for ensemble
 color_args = {'Ctrl':'blue', 'Ens-A':'purple', 'Ens-B':'green','Ens-C':'coral','90km':'purple','30km':'red','10km':'blue'}
-for key,value in color_args.items(): hgs_plotargs[key] = dict(color=value)
-hgs_plotargs['Ensemble'] = dict(color='red',linewidth=1)
-hgs_plotargs['Mean'] = dict(color='black',linewidth=1)
+for key,value in color_args.items(): hgs_plotargs[key] = dict(color=value, linewidth=1.5)
 # add "old" versions
 for expname,plotarg in hgs_plotargs.items():
     if expname[-1] != ')' and expname+' (old)' not in hgs_plotargs:
