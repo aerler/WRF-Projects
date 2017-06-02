@@ -299,6 +299,7 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
   variables, filetypes =  _resolveVarlist(varlist=varlist, filetypes=filetypes, 
                                           params=params, variable_list=variable_list, lforceList=lforceList)
   # replace default observations
+  print names
   names = [obs_ts if name in obs_aliases else name for name in names]
   if master in obs_aliases: master = obs_ts
   # prepare arguments
@@ -360,8 +361,8 @@ if __name__ == '__main__':
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #   test = 'obs_timeseries'
-  test = 'basin_timeseries'
-#   test = 'station_timeseries'
+#   test = 'basin_timeseries'
+  test = 'station_timeseries'
 #   test = 'province_climatology'
   
   
@@ -424,14 +425,14 @@ if __name__ == '__main__':
     constraints_rc['min_len'] = 15 # for valid climatology
     constraints_rc['lat'] = (40,50) 
     constraints_rc['max_zerr'] = 100 # reduce sample size
-    constraints_rc['prov'] = ('ON')
+#     constraints_rc['prov'] = ('ON')
     constraints_rc['end_after'] = 1980
   
     # some settings for tests
     provs = None; clusters = None; lensembleAxis = False; sample_axis = None; lflatten = False
-#     exp = 'val'; exps = ['EC', 'erai-max', 'max-ctrl']; provs = ('BC','AB')
+    exp = 'val'; exps = ['EC', 'erai-max', 'max-ctrl']; provs = ('BC','AB')
 #     exp = 'max-all'; exps = exps_rc[exp]; provs = ('BC','AB')
-    exps = ['erai-g']; provs = ['ON']
+#     exps = ['erai-g']; provs = ['ON']
     seasons = ['summer']; lfit = True; lrescale = True; lbootstrap = False
     lflatten = False; lensembleAxis = True
     varlist = ['MaxPrecip_1d', 'MaxPrecip_5d','MaxPreccu_1d']; filetypes = ['hydro']
@@ -443,7 +444,7 @@ if __name__ == '__main__':
                                  load_list=['seasons','provs'], lproduct='outer', lforceList=False)
     # print diagnostics
     print stnens[0]; print ''
-    assert len(stnens) == len(seasons)
+    assert len(stnens) == len(seasons)*len(provs)
     print stnens[0][0]
     print stnens[0][0].MaxPrecip_1d.mean()
 

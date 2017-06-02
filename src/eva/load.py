@@ -231,7 +231,8 @@ def loadEnsembleFit(lfit=True, dist=None, dist_args=None, reference=None, target
                     lglobalScale=False, lrescale=False, lsourceScale=False, lflatten=True, 
                     sample_axis=None, lcrossval=False, ncv=0.2, lbootstrap=False, nbs=100,
                     WRF_exps=None, CESM_exps=None, WRF_ens=None, CESM_ens=None, variable_list=None, 
-                    load_list=None, lproduct='outer', lshort=True, datatype=None, **kwargs):
+                    load_list=None, lproduct='outer', lshort=True, datatype=None, 
+                    obs_list=None, obs_ts=None, lforceList=False, **kwargs):
   ''' convenience function to load ensemble time-series data and compute associated distribution ensembles '''
   if lrescale and not lfit: raise ArgumentError
   load_list = [] if load_list is None else load_list[:] # use a copy, since the list may be modified
@@ -239,10 +240,12 @@ def loadEnsembleFit(lfit=True, dist=None, dist_args=None, reference=None, target
   # load shape ensemble
   if datatype.lower() == 'shape':
     ensemble = loadShapeEnsemble(variable_list=variable_list, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
-                                 WRF_ens=WRF_ens, CESM_ens=CESM_ens, load_list=load_list, lproduct=lproduct, **kwargs)
+                                 WRF_ens=WRF_ens, CESM_ens=CESM_ens, load_list=load_list, lforceList=lforceList,
+                                 lproduct=lproduct, obs_list=obs_list, obs_ts=obs_ts, **kwargs)
   if datatype.lower() == 'station':
     ensemble = loadStationEnsemble(variable_list=variable_list, WRF_exps=WRF_exps, CESM_exps=CESM_exps, 
-                                   WRF_ens=WRF_ens, CESM_ens=CESM_ens, load_list=load_list, lproduct=lproduct, **kwargs)
+                                   WRF_ens=WRF_ens, CESM_ens=CESM_ens, load_list=load_list, lforceList=lforceList,
+                                   lproduct=lproduct, obs_list=obs_list, obs_ts=obs_ts, **kwargs)
   # N.B.: kwargs are first passed on to loadShapeEnsemble/loadStationEnsemble and then to loadEnsembleTS
 
   # generate matching datasets with fitted distributions
@@ -281,7 +284,8 @@ def loadStationFit(**kwargs):
 if __name__ == '__main__':
   
   from projects.WesternCanada.WRF_experiments import Exp, WRF_exps, ensembles
-  from projects.WesternCanada.analysis_settings import exps_rc, variables_rc
+  from projects.WesternCanada import exps_rc, variables_rc
+  from projects.WesternCanada import loadShapeFit, loadStationFit
   #from projects.GreatLakes.WRF_experiments import WRF_exps, ensembles
   #from projects.GreatLakes.settings import exps_rc
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
@@ -292,11 +296,11 @@ if __name__ == '__main__':
 
   # station selection criteria
   constraints_rc = dict()
-  constraints_rc['min_len'] = 15 # for valid climatology
-  constraints_rc['lat'] = (45,55) 
-  constraints_rc['max_zerr'] = 300 # reduce sample size
-  constraints_rc['prov'] = ('BC','AB')
-  constraints_rc['end_after'] = 1980
+#   constraints_rc['min_len'] = 15 # for valid climatology
+#   constraints_rc['lat'] = (45,55) 
+#   constraints_rc['max_zerr'] = 300 # reduce sample size
+#   constraints_rc['prov'] = ('BC','AB')
+#   constraints_rc['end_after'] = 1980
   
   # test load function for station ensemble
   if test == 'shape_ensemble':
@@ -309,7 +313,7 @@ if __name__ == '__main__':
     bsnens, fitens = loadShapeFit(names=exps.exps, basins=basins, seasons=seasons, varlist=['aSM'], 
                                        filetypes=['lsm'], lfit=True, aggregation='mean', dist='norm',
                                        load_list=load_list, lproduct='outer',
-                                       WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
+#                                        WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
                                        variable_list=variables_rc,)
     # print diagnostics
     print bsnens[0]; print ''
@@ -327,13 +331,13 @@ if __name__ == '__main__':
 #     exp = 'marc-prj'; exps = exps_rc[exp]; provs = 'ON'; clusters = None
 #     provs = ('BC','AB'); clusters = None
     provs = None; clusters = None; lensembleAxis = False; sample_axis = None; lflatten = False
-    exp = 'erai'; exps = exps_rc[exp]; provs = None; clusters = [2,6,8]; slices = None
+    exp = 'erai'; exps = exps_rc[exp]; provs = None; clusters = [1,8,]; slices = None
     seasons = ['summer','winter']; lfit = True; lrescale = True; lbootstrap = False
     lflatten = False; lensembleAxis = True; sample_axis = ('station','year')
     varlist = ['MaxPrecip_1d', 'MaxPrecip_5d','MaxPreccu_1d'][:1]; filetypes = ['hydro']
     slices = [dict(years=(1979,1995))]*3+[None]
     stnens, fitens, sclens  = loadStationFit(names=exps.exps, provs=provs, clusters=clusters, 
-                                             cluster_name='cluster_projection',
+                                             cluster_name='cluster_projection2', lforceList=False,
                                              seasons=seasons, lfit=lfit, master=None, stationtype='ecprecip',
                                              lrescale=lrescale, reference=exps.reference, target=exps.target,
                                              lflatten=lflatten, domain=None, lbootstrap=lbootstrap, nbs=10,
@@ -341,7 +345,7 @@ if __name__ == '__main__':
                                              varlist=varlist, filetypes=filetypes, slices=slices,
                                              ensemble_list=['names','slices'] if slices else None,
                                              variable_list=variables_rc, default_constraints=constraints_rc,
-                                             WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
+#                                              WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
                                              load_list=['seasons','clusters'], lproduct='outer', lcrossval=None,)
     # print diagnostics
     print stnens[0][0]; print ''
