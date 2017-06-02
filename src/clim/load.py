@@ -299,17 +299,16 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
   variables, filetypes =  _resolveVarlist(varlist=varlist, filetypes=filetypes, 
                                           params=params, variable_list=variable_list, lforceList=lforceList)
   # replace default observations
-  print names
   names = [obs_ts if name in obs_aliases else name for name in names]
   if master in obs_aliases: master = obs_ts
   # prepare arguments
-  if provs or clusters:
+  if provs is not None or clusters is not None:
     constraints = default_constraints.copy() if constraints is None else constraints.copy()
     constraint_list = []
     if load_list and 'provs' in load_list and 'clusters' in load_list: 
       raise ArgumentError, "Cannot expand 'provs' and 'clusters' at the same time."
     # figure out proper handling of provinces
-    if provs:
+    if provs is not None:
       if not load_list or 'prov' not in load_list: 
         constraints['prov'] = provs; provs = None
       else:  
@@ -321,7 +320,7 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
         load_list[load_list.index('prov')] = 'constraints'
         constraints = constraint_list; provs = None
     # and analogously, handling of clusters!
-    if clusters:
+    if clusters is not None:
       if not load_list or 'cluster' not in load_list: 
         constraints['cluster'] = clusters; clusters = None
         if cluster_name: constraints['cluster_name'] = cluster_name

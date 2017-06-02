@@ -583,33 +583,35 @@ if __name__ == '__main__':
 
     # some settings for tests
     clusters = None; provs = None; seasons = None
-    exps = ['EC', 'ctrl-ens', 'ctrl-ens-2050', 'ctrl-ens-2100'][:]
-#     exps = ['Observations', 'max-ens', 'max-ens-2050', 'max-ens-2100'][:]
-#     exps = ['Observations', 'Ens', 'Ens-2050', 'Ens-2100'][:2]
+#     exps = ['EC', 'ctrl-ens', 'ctrl-ens-2050', 'ctrl-ens-2100'][:]
+#     exps = ['EC', 'max-3km_d01', 'max-3km_d02', 'max-3km_d03',]
+    exps = ['EC', 'max-3km', 'max-3km-2100'][:]
+#     exps = ['EC', 'Ens', 'Ens-2050', 'Ens-2100'][:2]
 #     exps = ['MEns', 'MEns-2050', 'MEns-2100']    
 #     provs = ['BC','AB']; seasons = ['summer','winter']; load_list=['season','prov']
 #     prov = None; cluster = range(6); season = ['annual']; load_list=['season','cluster']
-    clusters = [3,]; seasons = ['summer',]; load_list=['seasons','cluster']
+    clusters = [8,]; seasons = ['summer',]; load_list=['seasons','clusters']
     varlist = ['MaxPrecip_1d']; filetypes = ['hydro']; cluster_name = 'cluster_projection'
-    lflatten = True; lfit = True; lrescale = True; lbootstrap = False
+    lflatten = True; lfit = True; lrescale = True; lbootstrap = True
     # station criteria (we don't want too many stations...)
-#     constraints['min_len'] = 15
+    constraints['min_len'] = 15
     constraints['lat'] = (45,55) 
-#     constraints['max_zerr'] = 500
+    constraints['max_zerr'] = 500
     obsslices = dict(years=(1952,2012))
 #     obsslices = [dict(years=(1950,1970)),dict(years=(1970,1990)),dict(years=(1990,2010))]
 #     name_tags = ['_1','_2','_3']
 #     cluster = [0,2,3]; constraints_rc['max_zerr'] = 1000; constraints_rc['lat'] = (45,60)  
     # load some data
     stnens,fitens,sclens = loadStationFit(names=exps, provs=provs, seasons=seasons, clusters=clusters, 
-                                          cluster_name=cluster_name, varlist=varlist,
+                                          cluster_name=cluster_name, varlist=varlist, lsourceScale=lrescale,
                                           stationtype='ecprecip', obsslices=obsslices, lshort=False,
                                           lensembleAxis=False, constraints=constraints, lall=True,
                                           sample_axis=None if lflatten else ('year','station'),
                                           lrescale=lrescale, reference=exps[0], target=exps[1],
-                                          filetypes=filetypes, domain=2, lflatten=lflatten, lfit=lfit,
+                                          filetypes=filetypes, domain=None, lflatten=lflatten, lfit=lfit,
 #                                           ensemble_list=['obsslices','name_tags'], name_tags=name_tags,
                                           lbootstrap=lbootstrap, nbs=10, load_list=load_list,)
+    print fitens[0][1]
     # set up plot    
     if len(seasons) == 1: subplot = len(clusters or prov)
     elif len(clusters or prov) == 1: subplot = len(seasons)
@@ -618,8 +620,8 @@ if __name__ == '__main__':
                       stylesheet='myggplot', lpresentation=False, lreduce=False)
     # make plots
     for n in xrange(len(stnens)):
-      distPlot(axes=ax.ravel()[n], varname=varlist[0], ens=stnens[n], fit=fitens[n], 
-               sample_axis= None if lflatten else ('ensemble','station'), band_vars=['Observations'],
+      distPlot(axes=ax.ravel()[n], varname=varlist[0], ens=stnens[n], fit=fitens[n], master=exps[1],
+               sample_axis= None if lflatten else ('ensemble','station'), band_vars=None,
                scl=sclens[n] if lrescale else None, lrescale=lrescale, lsample=not lflatten, lanno=True,
                lbootstrap=lbootstrap, legend= bool(n+1==len(stnens)), reference=0,
                annotation=dist_annotation, defaults=dist_defaults)
