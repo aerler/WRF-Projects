@@ -48,7 +48,7 @@ exps_rc['erai-3km']  = EX(name='erai-3km', exps=['EC', 'erai-3km_d01', 'erai-3km
 exps_rc['3km-prj']   = EX(name='3km-prj', exps=['max-3km', 'max-3km-2100'], styles=['--','-'], 
                           master='max-3km', reference='max-3km', title='WRF 3km Projections')
 exps_rc['max-3km']   = EX(name='max-3km', exps=['EC','max-3km', 'max-3km-2100'], styles=['--','-'], # obs are extra...
-                          master='max-3km', reference='EC', title='WRF 3km Projections')
+                          master='max-3km', reference='EC', target='max-3km', title='WRF 3km Projections')
 exps_rc['erai']      = EX(name='erai', exps=['EC', 'erai-max_d01', 'erai-max', 'erai-3km'], # ,'erai-max','ctrl-1','max-1deg' 
                           master='erai-3km', reference='EC', title='ERA-I Resolution')
 exps_rc['val-res']   = EX(name='val-res', exps=['EC', 'max-ens_d01', 'max-ens', 'Ens'], # ,'erai-max','ctrl-1','max-1deg' 

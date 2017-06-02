@@ -198,7 +198,7 @@ def selectDataset(ens, datasets):
 def distPlot(axes=None, varname=None, datasets=None, ens=None, fit=None, kde=None, scl=None, legend=True,
              shape_name=None, stnset_name=None, lsmall=False, axtitle=None, ylabel=False, xlabel=True,
              lbootstrap=False, bootstrap_axis='bootstrap', lsample=False, sample_axis='station',
-             lrescale=None, reference=None, rescale_line='--', lrescaleBand=False, band_vars=None,
+             lrescale=None, reference=None, master=None, rescale_line='--', lrescaleBand=False, band_vars=None,
              xlim=None, ylim=None, lanno='right', xfactor=None, lthinx=True, lcrossval=False,
              percentiles=(0.025,0.975), lmedian=None, median_fmt='', lmean=None, mean_fmt='', 
              lvar=False, lvarBand=False, lsmooth=None, lprint=False, mode='ratio', 
@@ -265,7 +265,7 @@ def distPlot(axes=None, varname=None, datasets=None, ens=None, fit=None, kde=Non
     # generate statistics string
     string = generateStatistics(varname, ens, fit, scl=scl if lrescale else fit, 
                                 lflatten=lflatstats, sample_axis=stats_axis, lcrossval=lcrossval,
-                                mode=mode, reference=reference, plot_labels=axes.plot_labels)
+                                mode=mode, reference=master or reference, plot_labels=axes.plot_labels)
     axes.addLabel(string, loc=ann, prop=dict(size='small', fontname='monospace'), borderpad=0.5)
   else: 
     string = ''
