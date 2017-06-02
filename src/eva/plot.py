@@ -608,9 +608,9 @@ if __name__ == '__main__':
                                           lensembleAxis=False, constraints=constraints, lall=True,
                                           sample_axis=None if lflatten else ('year','station'),
                                           lrescale=lrescale, reference=exps[0], target=exps[1],
-                                          filetypes=filetypes, domain=None, lflatten=lflatten, lfit=lfit,
+                                          filetypes=filetypes, domain=1, lflatten=lflatten, lfit=lfit,
 #                                           ensemble_list=['obsslices','name_tags'], name_tags=name_tags,
-                                          lbootstrap=lbootstrap, nbs=10, load_list=load_list,)
+                                          lbootstrap=lbootstrap, nbs=3, load_list=load_list,)
     print fitens[0][1]
     # set up plot    
     if len(seasons) == 1: subplot = len(clusters or prov)

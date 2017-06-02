@@ -71,10 +71,14 @@ exps_rc['max-all']   = EX(name='max-all', exps=['EC', 'max-ens','max-ens_d01','e
                           master='max-ens', reference='EC', target='auto', title='Validation & Projection')
 exps_rc['max-obs']   = EX(name='max', exps=['EC','max-ens','max-ens-2050','max-ens-2100'], styles=['--',':','-'], 
                           master='max-ens', reference='EC', target='max-ens', title='IC Ensemble')
+exps_rc['max-1-obs'] = EX(name='max-1', exps=['EC','max-ctrl', 'max-ctrl-2100'], styles=['--', '-'], 
+                          master='max-ctrl', reference='EC', target='max-ctrl', title='WRF-1 (G3)')
 exps_rc['max-sum']   = EX(name='maxs', exps=['EC','max-ens','max-ens-2100'], 
                           master='max-ens', reference='EC', target='max-ens', title='IC Ensemble')
 exps_rc['ctrl-obs']  = EX(name='ctrl', exps=['EC','ctrl-ens','ctrl-ens-2050','ctrl-ens-2100'], styles=['--',':','-'],
                           master='ctrl-ens', reference='EC', target='ctrl-ens', title='Alt. Ens.')
+exps_rc['ctrl-1-obs'] = EX(name='ctrl-1', exps=['EC','ctrl-1', 'ctrl-2100'], styles=['--', '-'], 
+                           master='ctrl-1', reference='EC', target='ctrl-1', title='WRF-1 (KF)')
 exps_rc['ctrl-sum']  = EX(name='ctrl-sum', exps=['EC','ctrl-ens','ctrl-ens-2100'], 
                           master='ctrl-ens', reference='EC', target='ctrl-ens', title='Alt. Ens.')
 exps_rc['ctrl-prj']  = EX(name='ctrl-prj', exps=['ctrl-ens','ctrl-ens-2050','ctrl-ens-2100'], 
@@ -194,6 +198,9 @@ plot_labels_rc['MEns-2100']       = 'CESM* 2100'
 plot_labels_rc['max-ens']         = 'IC Ens.'  
 plot_labels_rc['max-ens-2050']    = 'IC 2050' 
 plot_labels_rc['max-ens-2100']    = 'IC 2100' 
+plot_labels_rc['max-ctrl']        = 'WRF-A  (G3)'  
+plot_labels_rc['max-ctrl-2050']   = 'A 2050 (G3)' 
+plot_labels_rc['max-ctrl-2100']   = 'A 2100 (G3)' 
 plot_labels_rc['max-ens_d01']     = 'IC (D1)'
 plot_labels_rc['erai-max_d01']    = 'ERAI 30km'  
 plot_labels_rc['erai-max']        = 'ERAI 10km'  
@@ -205,13 +212,16 @@ plot_labels_rc['max-3km']         = 'WRF 3km'
 plot_labels_rc['max-3km_d01']     = 'WRF 30km'  
 plot_labels_rc['max-3km_d02']     = 'WRF 10km'  
 plot_labels_rc['max-3km_d03']     = 'WRF  3km'  
-plot_labels_rc['max-3km-2100']     = 'WRF (2100)'  
+plot_labels_rc['max-3km-2100']     = '2100 (3km)'  
 plot_labels_rc['max-3km-2100_d01'] = 'WRF 30km (2100)'  
 plot_labels_rc['max-3km-2100_d02'] = 'WRF 10km (2100)'  
 plot_labels_rc['max-3km-2100_d03'] = 'WRF  3km (2100)'  
 plot_labels_rc['ctrl-ens']        = 'Alt. Ens.'  
 plot_labels_rc['ctrl-ens-2050']   = 'AE 2050' 
-plot_labels_rc['ctrl-ens-2100']   = 'AE 2100' 
+plot_labels_rc['ctrl-ens-2100']   = 'AE 2100'
+plot_labels_rc['ctrl-1']          = 'WRF-A  (KF)'
+plot_labels_rc['ctrl-2050']       = 'A 2050 (KF)'
+plot_labels_rc['ctrl-2100']       = 'A 2100 (KF)'
 plot_labels_rc['ctrl-ens_d01']    = 'AE (D1)'
 plot_labels_rc['max-seaice-2050'] = 'SI 2050' 
 plot_labels_rc['max-seaice-2100'] = 'SI 2100' 
@@ -329,6 +339,9 @@ evads_plotargs_rc['erai-3km']        = AttrDict(color='red')
 evads_plotargs_rc['erai-3km_d01']    = AttrDict(color='blue')
 evads_plotargs_rc['erai-3km_d02']    = AttrDict(color='green')
 evads_plotargs_rc['erai-3km_d03']    = AttrDict(color='red')
+evads_plotargs_rc['max-3km_d01']     = AttrDict(color='blue')
+evads_plotargs_rc['max-3km_d02']     = AttrDict(color='green')
+evads_plotargs_rc['max-3km_d03']     = AttrDict(color='red')
 evads_plotargs_rc['cfsr-max']        = AttrDict(color='yellow')evads_plotargs_rc['new-v361']        = AttrDict(color='crimson')evads_plotargs_rc['new-v361-2050']   = AttrDict(color='royalblue')evads_plotargs_rc['new-v361-2100']   = AttrDict(color='darkorchid')evads_plotargs_rc['max-seaice-2050'] = AttrDict(color='darkorchid')evads_plotargs_rc['max-seaice-2100'] = AttrDict(color='crimson')evads_plotargs_rc['max-1deg']        = AttrDict(color='green')evads_plotargs_rc['max-hilev']       = AttrDict(color='purple') 
 # wrapper with custom defaults to figure creator (plotargs and label positions)def evaFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels=None, **kwargs):  if dataset_plotargs is None: dataset_plotargs = evads_plotargs_rc   if variable_plotargs is None: variable_plotargs = None  if plot_labels is None: plot_labels = plot_labels_rc  return figure.getFigAx(subplot, dataset_plotargs=dataset_plotargs, variable_plotargs=variable_plotargs,                          plot_labels=plot_labels, **kwargs)
 ## annotation for climatology plot
