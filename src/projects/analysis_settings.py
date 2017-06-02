@@ -191,7 +191,7 @@ plot_labels_rc['rSM']             = 'Soil Moist.'
 ## plot styles for climatology plots
 climds_plotargs_rc = dict()
 # observational datasets
-obs_args = AttrDict(marker='o', linestyle=' ') # 5*mpl.rcParams['lines.linewidth']
+obs_args = AttrDict(marker='o', linestyle=' ', markeredgecolor='k', markeredgewidth=0.5) # 5*mpl.rcParams['lines.linewidth']
 climds_plotargs_rc['Observations'] =  obs_args
 climds_plotargs_rc['WSC']          =  obs_args
 climds_plotargs_rc['Unity']        =  obs_args

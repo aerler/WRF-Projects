@@ -39,6 +39,7 @@ experiments['erai-wc1-2014'] = Exp(shortname='wc1-2014', name='erai-wc1-2014', t
 ## just to plot high-res topography
 #experiments['col1-const'] = Exp(shortname='col1', name='col1-const', title='Topography (1km)', begindate='1979-01-01', grid='col1', domains=3, parent='Ctrl-1')
 # Western Canada (3km)
+experiments['3km-ensemble'] = Exp(shortname='3km-ens', name='3km-ensemble', title='3km Ensemble', begindate='1979-09-01', grid='arb3', domains=3, parent='Ens')
 experiments['erai-3km'] = Exp(shortname='erai-3km', name='erai-3km', title='Max 3km (ERA-I)', begindate='1979-09-01', grid='arb3', domains=3, parent='ERA-I')
 experiments['max-3km'] = Exp(shortname='max-3km', name='max-3km', title='Max 3km (1990)', begindate='1979-09-01', grid='arb3', domains=3, parent='Ctrl-1')
 experiments['max-3km-2100'] = Exp(shortname='max-3km-2100', name='max-3km-2100', title='Max 3km (2100)', begindate='2085-09-01', grid='arb3', domains=3, parent='Ctrl-2100')
@@ -217,6 +218,8 @@ for suffix in '','2050','2100':
   suffix = '-'+suffix if suffix else ''
   ensembles['all-ens'+suffix] = ensembles['phys-ens'+suffix] + ensembles['mex-ens'+suffix][1:]
   # N.B.: omit max-ctrl the second time  
+# historical ensembles (no future periods)
+ensembles['3km-ens'] = ('erai-3km', 'max-3km')
 # replace names with experiment instances
 for ensname,enslist in ensembles.iteritems():
   ensembles[ensname] = tuple(experiments[expname] for expname in enslist)

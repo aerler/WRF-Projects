@@ -42,41 +42,41 @@ constraints_rc['end_after'] = 1990
 # dataset collections
 exps_rc = default.exps_rc.copy(); EX = clim_load.EX
 exps_rc['obs']       = EX(name='obs',exps=['CRU','WSC'], styles=['-','-.'], master='CRU', title='Observations')
-exps_rc['erai-3km']  = EX(name='erai-3km', exps=['Observations', 'erai-3km_d01', 'erai-3km_d02', 'erai-3km_d03'], # ,'erai-max','ctrl-1','max-1deg' 
-                          master='erai-3km_d03', reference='Observations', title='WRF 3km Validation',
+exps_rc['erai-3km']  = EX(name='erai-3km', exps=['EC', 'erai-3km_d01', 'erai-3km_d02', 'erai-3km_d03'], # ,'erai-max','ctrl-1','max-1deg' 
+                          master='erai-3km_d03', reference='EC', title='WRF 3km Validation',
                           styles=['--',':','-']) # obs are extra... only WRF
 exps_rc['3km-prj']   = EX(name='3km-prj', exps=['max-3km', 'max-3km-2100'], styles=['--','-'], 
                           master='max-3km', reference='max-3km', title='WRF 3km Projections')
-exps_rc['max-3km']   = EX(name='max-3km', exps=['Observations','max-3km', 'max-3km-2100'], styles=['--','-'], # obs are extra...
-                          master='max-3km', reference='Observations', title='WRF 3km Projections')
-exps_rc['erai']      = EX(name='erai', exps=['Observations', 'erai-max_d01', 'erai-max', 'erai-3km'], # ,'erai-max','ctrl-1','max-1deg' 
-                          master='erai-3km', reference='Observations', title='ERA-I Resolution')
-exps_rc['val-res']   = EX(name='val-res', exps=['Observations', 'max-ens_d01', 'max-ens', 'Ens'], # ,'erai-max','ctrl-1','max-1deg' 
-                          master='Observations', reference='Observations', title='Resolution')
-exps_rc['val-all']   = EX(name='val-all', exps=['Observations', 'Ens', 'max-ens', 'ctrl-ens'], # ,'erai-max','ctrl-1','max-1deg' 
-                          master='max-ens', reference='Observations', target=None, title='Resolution')
+exps_rc['max-3km']   = EX(name='max-3km', exps=['EC','max-3km', 'max-3km-2100'], styles=['--','-'], # obs are extra...
+                          master='max-3km', reference='EC', title='WRF 3km Projections')
+exps_rc['erai']      = EX(name='erai', exps=['EC', 'erai-max_d01', 'erai-max', 'erai-3km'], # ,'erai-max','ctrl-1','max-1deg' 
+                          master='erai-3km', reference='EC', title='ERA-I Resolution')
+exps_rc['val-res']   = EX(name='val-res', exps=['EC', 'max-ens_d01', 'max-ens', 'Ens'], # ,'erai-max','ctrl-1','max-1deg' 
+                          master='EC', reference='EC', title='Resolution')
+exps_rc['val-all']   = EX(name='val-all', exps=['EC', 'Ens', 'max-ens', 'ctrl-ens'], # ,'erai-max','ctrl-1','max-1deg' 
+                          master='max-ens', reference='EC', target=None, title='Resolution')
 exps_rc['val-mod']   = EX(name='val-mod', exps=['max-ens', 'max-ens_d01', 'Ens','ctrl-ens'],
                           master='max-ens', reference=None, target=None, title='Model Comparison')
-exps_rc['cesm-obs']  = EX(name='cesm-all', exps=['Observations', 'Ens','Ens-2050','Ens-2100'],  
-                         master='Ens', reference='Observations', target='Ens', title='CESM Validation & Projection')
-exps_rc['cesm-mal']  = EX(name='cesm-ensa', exps=['Observations', 'MEns','MEns-2050','MEns-2100'],  
-                         master='MEns', reference='Observations', target='MEns', title='CESM Validation & Projection')
+exps_rc['cesm-obs']  = EX(name='cesm-all', exps=['EC', 'Ens','Ens-2050','Ens-2100'],  
+                         master='Ens', reference='EC', target='Ens', title='CESM Validation & Projection')
+exps_rc['cesm-mal']  = EX(name='cesm-ensa', exps=['EC', 'MEns','MEns-2050','MEns-2100'],  
+                         master='MEns', reference='EC', target='MEns', title='CESM Validation & Projection')
 exps_rc['cesm-ens']  = EX(name='cesm-ens', exps=['MEns','MEns-2050','MEns-2100'],  
                          master='MEns', reference='MEns', target='MEns', title='CESM Projection')
-exps_rc['max-val']   = EX(name='max-val', exps=['Observations','max-ens_d01','max-ens','erai-max'], # ,'erai-max','ctrl-1','max-1deg' 
-                          master='max-ens', reference='Observations', target=None, title='Validation')
+exps_rc['max-val']   = EX(name='max-val', exps=['EC','max-ens_d01','max-ens','erai-max'], # ,'erai-max','ctrl-1','max-1deg' 
+                          master='max-ens', reference='EC', target=None, title='Validation')
 exps_rc['max-prj']   = EX(name='prj', exps=['max-ens','max-ens-2050','max-ens-2100'], 
                           master='max-ens', reference=None, target=None, title='Projection')
-exps_rc['max-all']   = EX(name='max-all', exps=['Observations', 'max-ens','max-ens_d01','erai-max','max-ens-2050','max-ens-2100'], # ,'erai-max','ctrl-1','max-1deg' 
-                          master='max-ens', reference='Observations', target='auto', title='Validation & Projection')
-exps_rc['max-obs']   = EX(name='max', exps=['Observations','max-ens','max-ens-2050','max-ens-2100'], styles=['--',':','-'], 
-                          master='max-ens', reference='Observations', target='max-ens', title='IC Ensemble')
-exps_rc['max-sum']   = EX(name='maxs', exps=['Observations','max-ens','max-ens-2100'], 
-                          master='max-ens', reference='Observations', target='max-ens', title='IC Ensemble')
-exps_rc['ctrl-obs']  = EX(name='ctrl', exps=['Observations','ctrl-ens','ctrl-ens-2050','ctrl-ens-2100'], styles=['--',':','-'],
-                          master='ctrl-ens', reference='Observations', target='ctrl-ens', title='Alt. Ens.')
-exps_rc['ctrl-sum']  = EX(name='ctrl-sum', exps=['Observations','ctrl-ens','ctrl-ens-2100'], 
-                          master='ctrl-ens', reference='Observations', target='ctrl-ens', title='Alt. Ens.')
+exps_rc['max-all']   = EX(name='max-all', exps=['EC', 'max-ens','max-ens_d01','erai-max','max-ens-2050','max-ens-2100'], # ,'erai-max','ctrl-1','max-1deg' 
+                          master='max-ens', reference='EC', target='auto', title='Validation & Projection')
+exps_rc['max-obs']   = EX(name='max', exps=['EC','max-ens','max-ens-2050','max-ens-2100'], styles=['--',':','-'], 
+                          master='max-ens', reference='EC', target='max-ens', title='IC Ensemble')
+exps_rc['max-sum']   = EX(name='maxs', exps=['EC','max-ens','max-ens-2100'], 
+                          master='max-ens', reference='EC', target='max-ens', title='IC Ensemble')
+exps_rc['ctrl-obs']  = EX(name='ctrl', exps=['EC','ctrl-ens','ctrl-ens-2050','ctrl-ens-2100'], styles=['--',':','-'],
+                          master='ctrl-ens', reference='EC', target='ctrl-ens', title='Alt. Ens.')
+exps_rc['ctrl-sum']  = EX(name='ctrl-sum', exps=['EC','ctrl-ens','ctrl-ens-2100'], 
+                          master='ctrl-ens', reference='EC', target='ctrl-ens', title='Alt. Ens.')
 exps_rc['ctrl-prj']  = EX(name='ctrl-prj', exps=['ctrl-ens','ctrl-ens-2050','ctrl-ens-2100'], 
                           master='ctrl-ens', reference=None, target=None, title='Alt. Ens.')
 exps_rc['mex-prj']   = EX(name='mex',exps=['mex-ens','mex-ens-2050','mex-ens-2100'], master='mex-ens',
@@ -104,16 +104,16 @@ exps_rc['cice-mid']  = EX(name='si25',exps=['max-ens','max-ens-2050','max-seaice
                           styles=[':','--','-'], title='WRF (Hist., Mid-Century; Ens. Avg., Sea-ice)')
 exps_rc['cice-end']  = EX(name='si21',exps=['max-ens','max-ens-2100','max-seaice-2100'], master='max-ens-2100',
                           styles=[':','--','-'], title='WRF (Hist., End-Century; Ens. Avg., Sea-ice)')
-exps_rc['sens-res']  = EX(name='sens-res', exps=['Observations', 'Ens', 'max-ctrl','max-ctrl_d01','max-1deg','max-lowres_d01'], 
-                          master='max-ctrl', reference='Observations', target=None, title='Sensitivity to Resolution')
+exps_rc['sens-res']  = EX(name='sens-res', exps=['EC', 'Ens', 'max-ctrl','max-ctrl_d01','max-1deg','max-lowres_d01'], 
+                          master='max-ctrl', reference='EC', target=None, title='Sensitivity to Resolution')
 exps_rc['sens-max']  = EX(name='sens-max',exps=['max-ctrl','max-nosub','max-kf','max-nmp','max-noflake'], 
                           master='max-ctrl', reference=None, target=None, title='Sensitivity Tests (Max)')
-exps_rc['sens-phy']  = EX(name='sens-phys',exps=['Observations','max-ctrl','old-ctrl','ctrl-1','new-ctrl','new-v361'], 
-                           master='max-ctrl', reference='Observations', target=None, title='Sensitivity (Phys. Ens.)')
+exps_rc['sens-phy']  = EX(name='sens-phys',exps=['EC','max-ctrl','old-ctrl','ctrl-1','new-ctrl','new-v361'], 
+                           master='max-ctrl', reference='EC', target=None, title='Sensitivity (Phys. Ens.)')
 exps_rc['sens-phy-2100'] = EX(name='sens-phys-2100',exps=['max-ctrl-2100','old-ctrl-2100','ctrl-2100','new-ctrl-2100','new-v361-2100'], 
                                master='max-ctrl-2100', reference=None, target=None, title='Sensitivity (Phys. Ens. 2100)')
-exps_rc['sens-ens']  = EX(name='sens-ens',exps=['Observations','max-ens', 'max-ctrl','max-ens-A','max-ens-B','max-ens-C','erai-max'], 
-                          master='max-ens', reference='Observations', target=None, title='Sensitivity (Phys. Ens.)')
+exps_rc['sens-ens']  = EX(name='sens-ens',exps=['EC','max-ens', 'max-ctrl','max-ens-A','max-ens-B','max-ens-C','erai-max'], 
+                          master='max-ens', reference='EC', target=None, title='Sensitivity (Phys. Ens.)')
 exps_rc['sens-cu']   = EX(name='sens-cu', exps=['grell-ens','kf-ens','grell-ens-2100','kf-ens-2100'], 
                           master=['grell-ens','grell-ens-2100'], reference=None, target=None, title='Grell vs. KF')
 exps_rc['kf-ens']    = EX(name='kf-ens', exps=['kf-ens','kf-ens-2050','kf-ens-2100'], 
@@ -122,26 +122,26 @@ exps_rc['max-phys']  = EX(name='max-phys', exps=['max-ens','phys-ens','max-ens-2
                         master=['max-ens','max-ens-2100'], reference=None, target=None, title='IC vs. Phys.')
 exps_rc['max-ctrl']  = EX(name='max-ctrl', exps=['max-ens','max-ctrl','max-ens-2050','max-ctrl-2050','max-ens-2100','max-ctrl-2100'], 
                         master=['max-ens','max-ens-2050','max-ens-2100'], reference=None, target=None, title='IC & Max')
-exps_rc['max-shape'] = EX(name='shape', exps=['Observations','max-ens','max-ens-2050','max-ens-2100'], 
-                          master='max-ens', reference='Observations', target=None, title='Projected Shape Change')
+exps_rc['max-shape'] = EX(name='shape', exps=['EC','max-ens','max-ens-2050','max-ens-2100'], 
+                          master='max-ens', reference='EC', target=None, title='Projected Shape Change')
 exps_rc['max-shape-cu'] = EX(name='shape-cu', exps=['max-ens','max-ens-2050','max-ens-2100'], 
                              master='max-ens', reference='max-ens', target=None, title='Projected Shape Change')
 exps_rc['new-val']       = EX(name='new', exps=['max-ctrl','new-v361','max-ctrl-2050','new-v361-2050','max-ctrl-2100','new-v361-2100'], 
                           master=['max-ctrl','max-ctrl-2050','max-ctrl-2100'], reference=None, target=None, title='New V3.6.1')
-exps_rc['mex']       = EX(name='mex', exps=['Observations','mex-ens','mex-ens-2050','mex-ens-2100'], 
-                          master='mex-ens', reference='Observations', target='mex-ens', title='IC Ensemble (Ext.)')
-exps_rc['phys-obs']      = EX(name='phys',exps=['Observations','phys-ens','phys-ens-2050','phys-ens-2100'], 
-                          master='phys-ens', reference='Observations', target='phys-ens', title='Physics Ensemble')
-exps_rc['phys-val']  = EX(name='phys-val',exps=['Observations','phys-ens','phys-ens_d01'], 
-                      master='phys-ens', reference='Observations', target=None, title='Physics Validation')
+exps_rc['mex']       = EX(name='mex', exps=['EC','mex-ens','mex-ens-2050','mex-ens-2100'], 
+                          master='mex-ens', reference='EC', target='mex-ens', title='IC Ensemble (Ext.)')
+exps_rc['phys-obs']      = EX(name='phys',exps=['EC','phys-ens','phys-ens-2050','phys-ens-2100'], 
+                          master='phys-ens', reference='EC', target='phys-ens', title='Physics Ensemble')
+exps_rc['phys-val']  = EX(name='phys-val',exps=['EC','phys-ens','phys-ens_d01'], 
+                      master='phys-ens', reference='EC', target=None, title='Physics Validation')
 exps_rc['phys-prj']  = EX(name='phys-prj',exps=['phys-ens','phys-ens-2050','phys-ens-2100'], 
                           master='phys-ens', reference=None, target=None, title='Physics Projection')
-exps_rc['phys-shape']  = EX(name='shape', exps=['Observations','phys-ens','phys-ens-2050','phys-ens-2100'], 
-                            master='phys-ens', reference='Observations', target=None, title='Projected Shape Change')
-exps_rc['ens-all']  = EX(name='ens-all', exps=['Observations','max-ens','max-ctrl','erai-max','phys-ens','max-ens-2050','max-ctrl-2050','max-seaice-2050','phys-ens-2050','max-ens-2100','max-ctrl-2100','max-seaice-2100','phys-ens-2100'], 
-                        master=['max-ens','max-ens-2050','max-ens-2100'], reference='Observations', target=None, title='Ensembles')
-exps_rc['ens-1980']  = EX(name='ens-1980', exps=['Observations','max-ens','max-ctrl','erai-max','phys-ens'], 
-                        master='max-ens', reference='Observations', target=None, title='Ensembles 1980')
+exps_rc['phys-shape']  = EX(name='shape', exps=['EC','phys-ens','phys-ens-2050','phys-ens-2100'], 
+                            master='phys-ens', reference='EC', target=None, title='Projected Shape Change')
+exps_rc['ens-all']  = EX(name='ens-all', exps=['EC','max-ens','max-ctrl','erai-max','phys-ens','max-ens-2050','max-ctrl-2050','max-seaice-2050','phys-ens-2050','max-ens-2100','max-ctrl-2100','max-seaice-2100','phys-ens-2100'], 
+                        master=['max-ens','max-ens-2050','max-ens-2100'], reference='EC', target=None, title='Ensembles')
+exps_rc['ens-1980']  = EX(name='ens-1980', exps=['EC','max-ens','max-ctrl','erai-max','phys-ens'], 
+                        master='max-ens', reference='EC', target=None, title='Ensembles 1980')
 exps_rc['ens-2050']  = EX(name='ens-2050', exps=['max-ens-2050','max-ctrl-2050','max-seaice-2050','phys-ens-2050'], 
                         master='max-ens-2050', reference=None, target=None, title='Ensembles 2050')
 exps_rc['ens-2100']  = EX(name='ens-2100', exps=['max-ens-2100','max-ctrl-2100','max-seaice-2100','phys-ens-2100'], 
@@ -161,15 +161,17 @@ def loadShapeEnsemble(variable_list=variables_rc, shapetype=default_shapetype, b
 def loadStationEnsemble(variable_list=variables_rc, stationtype=default_stationtype, **kwargs):
   ''' wrapper for clim.load.loadStationEnsemble that sets experiment and variable lists '''
   return clim_load.loadStationEnsemble(variable_list=variable_list, stationtype=stationtype, WRF_exps=WRF_exps, 
-                                       CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+                                       CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, obs_ts='EC', **kwargs)
 def loadShapeFit(variable_list=variables_rc, shapetype=default_shapetype, basin_list=wsc_basins.basin_list, **kwargs):
   ''' wrapper for eva.load.loadShapeEnsemble that sets experiment and variable lists '''
   return eva_load.loadShapeFit(variable_list=variable_list, shapetype=shapetype, WRF_exps=WRF_exps, 
-                               CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, basin_list=basin_list, **kwargs)
+                               CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
+                               basin_list=basin_list, obs_ts='Unity', **kwargs)
 def loadStationFit(variable_list=variables_rc, default_constraints=constraints_rc, stationtype=default_stationtype, **kwargs):
   ''' wrapper for eva.load.loadStationEnsemble that sets experiment and variable lists etc. '''
   return eva_load.loadStationFit(variable_list=variable_list, default_constraints=default_constraints, stationtype=stationtype,
-                                 WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+                                 WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
+                                 obs_ts='EC', **kwargs)
 
 
 ## settings for plotting 
@@ -179,6 +181,7 @@ plot_labels_rc = default.plot_labels_rc.copy()
 # datasets
 plot_labels_rc['Unity']           = 'Uni. Obs.'
 plot_labels_rc['Observations']    = 'EC Obs.'
+plot_labels_rc['EC']              = 'EC Obs.'
 plot_labels_rc['EC_1935']         = 'EC (1935)'
 plot_labels_rc['EC_1965']         = 'EC (1965)'
 plot_labels_rc['EC_1995']         = 'EC (1995)'
@@ -266,6 +269,7 @@ climds_plotargs_rc = default.climds_plotargs_rc.copy()
 # observational datasets
 obs_args = default.obs_args.copy()
 climds_plotargs_rc['Observations'] =  obs_args
+climds_plotargs_rc['EC']           =  obs_args
 climds_plotargs_rc['WSC']          =  obs_args
 climds_plotargs_rc['Unity']        =  obs_args
 climds_plotargs_rc['CRU']          =  obs_args

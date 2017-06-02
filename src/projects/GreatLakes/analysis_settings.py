@@ -174,11 +174,13 @@ def loadStationEnsemble(variable_list=variables_rc, stationtype=default_stationt
 def loadShapeFit(variable_list=variables_rc, shapetype=default_shapetype, basin_list=wsc_basins.basin_list, **kwargs):
   ''' wrapper for eva.load.loadShapeEnsemble that sets experiment and variable lists '''
   return eva_load.loadShapeFit(variable_list=variable_list, shapetype=shapetype, WRF_exps=WRF_exps, 
-                               CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, basin_list=basin_list, **kwargs)
+                               CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, basin_list=basin_list, 
+                               obs_ts='CRU', **kwargs)
 def loadStationFit(variable_list=variables_rc, default_constraints=constraints_rc, stationtype=default_stationtype, **kwargs):
   ''' wrapper for eva.load.loadStationEnsemble that sets experiment and variable lists etc. '''
   return eva_load.loadStationFit(variable_list=variable_list, default_constraints=default_constraints, stationtype=stationtype,
-                                 WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, **kwargs)
+                                 WRF_exps=WRF_exps, CESM_exps=CESM_exps, WRF_ens=WRF_ens, CESM_ens=CESM_ens, 
+                                 obs_ts='EC', **kwargs)
 
 
 ## settings for plotting 
