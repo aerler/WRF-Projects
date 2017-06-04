@@ -212,7 +212,7 @@ variable_plotargs_rc['MaxWaterFlx_1d'] = AttrDict(color = 'blue')
 variable_plotargs_rc['T2']             = AttrDict(color = 'green')
 variable_plotargs_rc['precip']         = AttrDict(color = 'green')
 variable_plotargs_rc['liqprec']        = AttrDict(color = 'green')
-variable_plotargs_rc['solprec']        = AttrDict(color = 'dodgerblue')
+variable_plotargs_rc['solprec']        = AttrDict(color = 'dodgerblue') # 'blue'
 variable_plotargs_rc['dryprec']        = AttrDict(color = 'green')
 variable_plotargs_rc['preccu']         = AttrDict(color = 'magenta')
 variable_plotargs_rc['precnc']         = AttrDict(color = 'coral')

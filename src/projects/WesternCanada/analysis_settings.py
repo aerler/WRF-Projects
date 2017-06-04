@@ -316,7 +316,7 @@ clim_specifics['SouthernPSB'] = AttrDict(temp=(255,295), water=(-2.,16.), precip
 clim_specifics['Pacific']     = AttrDict(temp=(265,300), water=(-2,10)   , precip=(-1,12)    , precip_xtrm=(0,60), precip_cesm=(0,60), precip_alt=(0,40), wetprec=(0,30), wetdays=(0,80), CWD=(0,25), CDD=(0,25))
 clim_specifics['Coast']       = AttrDict(temp=(265,300), water=(-4,6)    , precip=(-1,10)    , precip_xtrm=(0,50), precip_cesm=(0,40), precip_alt=(0,40), wetprec=(0,30), wetdays=(0,80), CWD=(0,20), CDD=(0,31))
 clim_specifics['Plateau']     = AttrDict(temp=(255,305), water=(-2.,2.)  , precip=(-0.5,2.5), precip_xtrm=(0,20), precip_cesm=(0,20), precip_alt=(0,20), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
-clim_specifics['Prairies']    = AttrDict(temp=(250,305), water=(-1.5,1.5), precip=(-0.5,4.), precip_xtrm=(0,30), precip_cesm=(0,30), precip_alt=(0,30), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
+clim_specifics['Prairies']    = AttrDict(temp=(250,305), water=(-1.5,1.5), precip=(-0.5,4.), precip_xtrm=(0,28), precip_cesm=(0,28), precip_alt=(0,30), wetprec=(0,30), wetdays=(0,80), CWD=(0,15), CDD=(0,25))
 # add defaults to specifics
 clim_annotation = default.mergeAnnotation(clim_specifics, clim_defaults)
   

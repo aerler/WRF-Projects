@@ -92,6 +92,9 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('evap','pet','p-et','precip','preccu','precnc','waterflx',):
 #       clevs = np.linspace(-100,100,41); clbl = '%2.0f'  
       clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = mpl.cm.BrBG # brown-green
+    elif var in ('precip_red','preccu_red','precnc_red',):
+#       clevs = np.linspace(-100,100,41); clbl = '%2.0f'  
+      clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = cm.redblue_light_r
     elif var in ('precip_obs',):
       clevs = np.linspace(-50,50,41); clbl = '%2.0f'; cmap = mpl.cm.BrBG # brown-green
     elif var in ('pet_obs',):
