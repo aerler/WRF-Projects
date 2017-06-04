@@ -319,7 +319,7 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
     elif subplot == (1,2):
       ## 2 panel, horizontal
       if sameSize: figsize = (6.25,6.25)
-      else: figsize = (6.25,3.25) # this used to be (*,3.75) but that doesn't work well 
+      else: figsize = (6.25,3.75) # this used to be (*,3.75) but that doesn't work well 
       if cbar:
         cbo = cbo or 'horizontal'
         if cbo == 'vertical': 
