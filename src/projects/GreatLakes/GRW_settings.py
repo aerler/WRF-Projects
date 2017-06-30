@@ -20,7 +20,6 @@ gage_scalefactors = 1e-4 # default scalefactor for discharge plots
 main_gage  = 'Brantford' # gage station(see station_list for proper HGS/WSC names)
 main_basin = 'GRW' # main basin name
 main_grid  = 'grw2' # climate data grid
-main_task  = 'hgs_run' # HGS run folder
 # project folders
 project_folder = '{:s}/{:s}/'.format(hgs.root_folder,project_name) # the dataset root folder
 project_folder_pattern = '{PROJECT_FOLDER:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s}/{TASK:s}/'
@@ -63,6 +62,8 @@ hgs_plotargs['Periodic']     = dict(color='#E24B34') # red
 hgs_plotargs['WRF 90km']     = dict(color='#AAA2D8') # purple
 hgs_plotargs['WRF 30km']     = dict(color='#E24B34') # red
 hgs_plotargs['WRF 10km']     = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['WRF (AABC)']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['WRF (Delta)']  = dict(color='#E24B34') # red
 hgs_plotargs['WRF T 10km']   = dict(color='#E24B34') # red
 hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['WRF T 30km']   = dict(color='#E24B34') # red
@@ -82,10 +83,10 @@ hgs_plotargs['2085-2100']    = dict(color='#E24B34') # red
 hgs_plotargs['2090-2100']    = dict(color='#E24B34') # red
 # adjust line thickness
 for plotargs in hgs_plotargs.values(): 
-  if 'linewidth' not in plotargs: plotargs['linewidth'] = 2.5
+  if 'linewidth' not in plotargs: plotargs['linewidth'] = 1.5
 # extended color scheme for ensemble
 color_args = {'Ctrl':'blue', 'Ens-A':'purple', 'Ens-B':'green','Ens-C':'coral','90km':'purple','30km':'red','10km':'blue'}
-for key,value in color_args.items(): hgs_plotargs[key] = dict(color=value, linewidth=1.5)
+for key,value in color_args.items(): hgs_plotargs[key] = dict(color=value, linewidth=.75)
 # add "old" versions
 for expname,plotarg in hgs_plotargs.items():
     if expname[-1] != ')' and expname+' (old)' not in hgs_plotargs:
@@ -131,10 +132,11 @@ for name,members in ensemble_list.items():
 
 # simple dataset loader
 def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varatts=None, name=None, title=None, 
-                  exp_aliases=exp_aliases, run_period=15, clim_mode=None, station=main_gage, bias_correction=None,
-                  folder=project_folder_pattern, project_folder=None, project=project_name, grid=main_grid, 
-                  task=main_task, prefix=project_prefix, WSC_station=None, basin=main_basin, basin_list=None, 
-                  lpad=True, ENSEMBLE=None, scalefactors=gage_scalefactors, lWSCID=False, **kwargs):
+                  exp_aliases=exp_aliases, run_period=None, clim_mode=None, clim_period=None, station=main_gage, 
+                  bias_correction=None, folder=project_folder_pattern, project_folder=None, project=project_name, 
+                  grid=main_grid, task=None, prefix=project_prefix, WSC_station=None, basin=main_basin, 
+                  basin_list=None, lpad=True, ENSEMBLE=None, scalefactors=gage_scalefactors, lWSCID=False, 
+                  lold=False, **kwargs):
   ''' Get a properly formatted HGS dataset with a regular time-series at station locations; as in
       the hgsrun module, the capitalized kwargs can be used to construct folders and/or names '''
   experiment = experiment or ENSEMBLE # an alias to support the ensemble loader
@@ -180,6 +182,17 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
       exp_name = experiment
       domain = WRF_exps[experiment].domains # innermost domain
       experiment = '{:s}_d{:02d}'.format(experiment,domain) # used to determine aliases
+  # set some defaults based on version
+  if lold:
+      station_file = station_file_v1
+      if task is None: task = 'hgs_run_wrfpet' if bias_correction else 'hgs_run' 
+      if run_period is None: run_period = 15 # in years
+      if clim_period is None: clim_period = 15 # in years
+  else:
+      station_file = station_file_v2
+      if task is None: task = 'hgs_run_v3_wrfpet' if lWRF else 'hgs_run_v3'
+      if run_period is None: run_period = 10 # in years
+      if clim_period is None: clim_period = 15 if lWRF else 30 # in years      
   # add period extensions of necessary/possible
   if isinstance(run_period, (tuple,list)):
       start_year, end_year = run_period
@@ -213,7 +226,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
         start_date = start_year  
   else:
       # assume observationa data, with time axis origin in Jan 1979
-      if start_year is None: start_year = 1979 
+      if start_year is None: start_year = 1979
       start_date = start_year
   if end_year is None: end_year = start_year + run_period # period length
   else: run_period = end_year - start_year
@@ -231,18 +244,16 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   if 'clim_mode' not in kwargs: kwargs['clim_mode'] = clim_mode # for name expansion
   # translate climate mode into path convention, while retaining clim_mode
   if clim_mode.lower() in ('timeseries','transient'): clim_dir = 'timeseries'
-  elif clim_mode.lower() in ('clim','climatology','periodic'): clim_dir = 'clim_{:02d}'.format(run_period)
-  elif clim_mode.lower() in ('mean','annual','steady-state'): clim_dir = 'annual_{:02d}'.format(run_period)
+  elif clim_mode.lower() in ('clim','climatology','periodic'): clim_dir = 'clim_{:02d}'.format(clim_period)
+  elif clim_mode.lower() in ('mean','annual','steady-state'): clim_dir = 'annual_{:02d}'.format(clim_period)
   else: raise ArgumentError(clim_mode)
   # select bias-correction method, if applicable
   if bias_correction is not None:
       clim_dir = '{:s}_{:s}'.format(bias_correction,clim_dir)
-  # select station file pattern
-  station_file = station_file_v2 if ('v2' in task or 'v3' in task) or lWSCID else station_file_v1
   # call load function from HGS module
   dataset = hgs.loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, ENSEMBLE=ENSEMBLE, 
-                              folder=folder, experiment=experiment, period=period, start_date=start_date,
-                              project_folder=project_folder, project=project, grid=grid, task=task, 
+                              folder=folder, experiment=experiment, period=period, start_date=start_date, grid=grid,
+                              project_folder=project_folder, project=project, task=task, BIAS_CORRECTION=bias_correction,
                               prefix=prefix, clim_dir=clim_dir, WSC_station=WSC_station, basin=basin, lpad=lpad,  
                               basin_list=basin_list, filename=station_file, scalefactors=scalefactors, **kwargs)
   # slice time axis for period
@@ -269,14 +280,14 @@ def loadWSC_StnTS(station=main_gage, name=None, title=None, basin=main_basin, ba
 
 # wrapper to load HGS ensembles, otherwise the same
 def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None, name=None, title=None, 
-                   period=None, domain=None, exp_aliases=exp_aliases, run_period=15, clim_mode=None,
-                   folder=project_folder_pattern, project_folder=None, obs_period=None, 
+                   period=None, domain=None, exp_aliases=exp_aliases, run_period=None, clim_mode=None,
+                   folder=project_folder_pattern, project_folder=None, obs_period=None, clim_period=None, 
                    ensemble_list=ensemble_list, ensemble_args=None, observation_list=gage_datasets, # ensemble and obs lists for project
-                   project=project_name, grid=main_grid, task=main_task, prefix=project_prefix, 
+                   project=project_name, grid=main_grid, task=None, prefix=project_prefix, 
                    WSC_station=None, basin=main_basin, basin_list=None, scalefactors=gage_scalefactors, **kwargs):
   ''' a wrapper for the regular HGS loader that can also load gage stations and assemble ensembles '''  
   return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
-                            period=period, run_period=run_period, folder=folder, obs_period=obs_period,  
+                            period=period, run_period=run_period, folder=folder, obs_period=obs_period, clim_period=clim_period, 
                             ensemble_list=ensemble_list, ensemble_args=ensemble_args, observation_list=observation_list, 
                             loadHGS_StnTS=loadHGS_StnTS, loadWSC_StnTS=loadWSC_StnTS, # use local versions of loaders
                             prefix=prefix, WSC_station=WSC_station, basin=basin, basin_list=basin_list, 
