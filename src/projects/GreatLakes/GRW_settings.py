@@ -83,7 +83,7 @@ hgs_plotargs['2085-2100']    = dict(color='#E24B34') # red
 hgs_plotargs['2090-2100']    = dict(color='#E24B34') # red
 # adjust line thickness
 for plotargs in hgs_plotargs.values(): 
-  if 'linewidth' not in plotargs: plotargs['linewidth'] = 1.5
+  if 'linewidth' not in plotargs: plotargs['linewidth'] = 1.
 # extended color scheme for ensemble
 color_args = {'Ctrl':'blue', 'Ens-A':'purple', 'Ens-B':'green','Ens-C':'coral','90km':'purple','30km':'red','10km':'blue'}
 for key,value in color_args.items(): hgs_plotargs[key] = dict(color=value, linewidth=.75)
@@ -232,14 +232,14 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   else: run_period = end_year - start_year
   assert isinstance(run_period,(np.integer,int)), run_period
   # construct period information  
-  prdstr = '{:04d}-{:04d}'.format(start_year, end_year)
-  if 'prdstr' not in kwargs: kwargs['prdstr'] = prdstr # for name expansion (will be capitalized)
   # append conventional period name to name, if it appears to be missing
-  if start_year > 2080: prdext = '2100'
-  elif start_year > 2040: prdext = '2050'
-  elif start_year < 1990: prdext = '1980'
-  else:  raise NotImplementedError("Unable to determine period extension for start date '{:d}'.".format(start_year))
+  if start_year < 1994 and end_year < 1995: prdext = '1980'; prdstr = '1979-1994'
+  elif start_year < 2015  and end_year < 2016: prdext = '2000'; prdstr = '1979-2015'
+  elif start_year < 2060 and end_year < 2061: prdext = '2050'; prdstr = '2045-2060'
+  elif start_year < 2100 and end_year < 2101: prdext = '2100'; prdstr = '2085-2100'
+  else: raise NotImplementedError("Unable to determine period extension for period '{:d}-{:d}'.".format(start_year,end_year))
   if 'prdext' not in kwargs: kwargs['prdext'] = prdext # for name expansion (will be capitalized)
+  if 'prdstr' not in kwargs: kwargs['prdstr'] = prdstr # for name expansion (will be capitalized)
   # resolve climate input mode (time aggregation; assuming period is just length, i.e. int;)
   if 'clim_mode' not in kwargs: kwargs['clim_mode'] = clim_mode # for name expansion
   # translate climate mode into path convention, while retaining clim_mode
