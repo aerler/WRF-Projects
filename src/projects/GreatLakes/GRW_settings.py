@@ -182,26 +182,39 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
       exp_name = experiment
       domain = WRF_exps[experiment].domains # innermost domain
       experiment = '{:s}_d{:02d}'.format(experiment,domain) # used to determine aliases
+  # resolve climate input mode (time aggregation; assuming period is just length, i.e. int;)
+  if 'clim_mode' not in kwargs: kwargs['clim_mode'] = clim_mode # for name expansion
+  # translate climate mode into path convention, while retaining clim_mode
+  if clim_mode.lower() in ('timeseries','transient'): clim_dir = 'timeseries'; lts = True
+  elif clim_mode.lower() in ('clim','climatology','periodic'): clim_dir = 'clim'; lts = False
+  elif clim_mode.lower() in ('mean','annual','steady-state'): clim_dir = 'annual'; lts = False
+  else: raise ArgumentError(clim_mode)
   # set some defaults based on version
   if lold:
       station_file = station_file_v1
       if task is None: task = 'hgs_run_wrfpet' if bias_correction else 'hgs_run' 
-      if run_period is None: run_period = 15 # in years
-      if clim_period is None: clim_period = 15 # in years
+      if run_period is None and not lts: run_period = 15 # in years
+      if clim_period is None and not lts: clim_period = 15 # in years
   else:
       station_file = station_file_v2
       if task is None: task = 'hgs_run_v3_wrfpet' if lWRF else 'hgs_run_v3'
-      if run_period is None: run_period = 10 # in years
-      if clim_period is None: clim_period = 15 if lWRF else 30 # in years      
+      if run_period is None and not lts: run_period = 10 # in years
+      if clim_period is None and not lts: clim_period = 15 if lWRF else 30 # in years
+  if not lts: clim_dir += '_{:02d}'.format(clim_period)
   # add period extensions of necessary/possible
+  # N.B.: period is the period we want to show, run_period is the actual begin/end/length of the run
+  if run_period is None: run_period = period
   if isinstance(run_period, (tuple,list)):
       start_year, end_year = run_period
       if isinstance(period, (int,np.integer)): period = (end_year-period,end_year)
-  elif isinstance(period, (tuple,list)) and isinstance(run_period, (int,np.integer)):
-      end_year = period[1]
-      start_year = end_year - run_period
-  elif period is None and isinstance(run_period, (int,np.integer)):
-      start_year = 1979; end_year = start_year + run_period
+  elif isinstance(run_period, (int,np.integer)):
+      if isinstance(period, (tuple,list)):
+          end_year = period[1]
+          start_year = end_year - run_period
+      elif period is None or isinstance(period, (int,np.integer)):
+          if period != run_period: raise ArgumentError(period,run_period)
+          start_year = 1979; end_year = start_year + run_period
+      else: raise ArgumentError
   else: start_year = end_year = None # not used
   # append conventional period name to name, if it appears to be missing
   if start_year is not None:
@@ -240,21 +253,14 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   else: raise NotImplementedError("Unable to determine period extension for period '{:d}-{:d}'.".format(start_year,end_year))
   if 'prdext' not in kwargs: kwargs['prdext'] = prdext # for name expansion (will be capitalized)
   if 'prdstr' not in kwargs: kwargs['prdstr'] = prdstr # for name expansion (will be capitalized)
-  # resolve climate input mode (time aggregation; assuming period is just length, i.e. int;)
-  if 'clim_mode' not in kwargs: kwargs['clim_mode'] = clim_mode # for name expansion
-  # translate climate mode into path convention, while retaining clim_mode
-  if clim_mode.lower() in ('timeseries','transient'): clim_dir = 'timeseries'
-  elif clim_mode.lower() in ('clim','climatology','periodic'): clim_dir = 'clim_{:02d}'.format(clim_period)
-  elif clim_mode.lower() in ('mean','annual','steady-state'): clim_dir = 'annual_{:02d}'.format(clim_period)
-  else: raise ArgumentError(clim_mode)
   # select bias-correction method, if applicable
   if bias_correction is not None:
       clim_dir = '{:s}_{:s}'.format(bias_correction,clim_dir)
   # call load function from HGS module
   dataset = hgs.loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, ENSEMBLE=ENSEMBLE, 
-                              folder=folder, experiment=experiment, period=period, start_date=start_date, grid=grid,
+                              folder=folder, experiment=experiment, period=period, run_period=run_period, start_date=start_date, 
                               project_folder=project_folder, project=project, task=task, BIAS_CORRECTION=bias_correction,
-                              prefix=prefix, clim_dir=clim_dir, WSC_station=WSC_station, basin=basin, lpad=lpad,  
+                              prefix=prefix, clim_dir=clim_dir, WSC_station=WSC_station, basin=basin, lpad=lpad, grid=grid,
                               basin_list=basin_list, filename=station_file, scalefactors=scalefactors, **kwargs)
   # slice time axis for period
   if start_year is not None and end_year is not None:
