@@ -68,7 +68,15 @@ hgs_plotargs['WRF T 10km']   = dict(color='#E24B34') # red
 hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['WRF T 30km']   = dict(color='#E24B34') # red
 hgs_plotargs['WRF G 30km']   = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['T Mean']       = dict(color='#E24B34') # red
+hgs_plotargs['WRF T 90km']   = dict(color='#E24B34') # red
+hgs_plotargs['WRF G 90km']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['WRF T']        = dict(color='#E24B34') # red
+hgs_plotargs['WRF G']        = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['T Ensemble']   = dict(color='#E24B34') # red
+hgs_plotargs['G Ensemble']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['ERAI-T']       = dict(color='#E24B34') # red
+hgs_plotargs['ERAI-G']       = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['T Mean']       = dict(color='red') # red
 hgs_plotargs['G Mean']       = dict(color='black') # blue                                     
 hgs_plotargs['Ensemble']     = dict(color='red')
 hgs_plotargs['Mean']         = dict(color='black')
@@ -185,9 +193,9 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   # resolve climate input mode (time aggregation; assuming period is just length, i.e. int;)
   if 'clim_mode' not in kwargs: kwargs['clim_mode'] = clim_mode # for name expansion
   # translate climate mode into path convention, while retaining clim_mode
-  if clim_mode.lower() in ('timeseries','transient'): clim_dir = 'timeseries'; lts = True
-  elif clim_mode.lower() in ('clim','climatology','periodic'): clim_dir = 'clim'; lts = False
-  elif clim_mode.lower() in ('mean','annual','steady-state'): clim_dir = 'annual'; lts = False
+  if clim_mode.lower() in ('ts','trans','timeseries','transient'): clim_dir = 'timeseries'; lts = True
+  elif clim_mode.lower() in ('mn','norm','clim','peri','normals','climatology','periodic'): clim_dir = 'clim'; lts = False
+  elif clim_mode.lower() in ('ss','const','mean','annual','steady-state'): clim_dir = 'annual'; lts = False
   else: raise ArgumentError(clim_mode)
   # set some defaults based on version
   if lold:
@@ -198,12 +206,13 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   else:
       station_file = station_file_v2
       if task is None: task = 'hgs_run_v3_wrfpet' if lWRF else 'hgs_run_v3'
-      if run_period is None and not lts: run_period = 10 # in years
+      if run_period is None and not lts: run_period = 10 if lWRF else 5 # in years
       if clim_period is None and not lts: clim_period = 15 if lWRF else 30 # in years
   if not lts: clim_dir += '_{:02d}'.format(clim_period)
   # add period extensions of necessary/possible
   # N.B.: period is the period we want to show, run_period is the actual begin/end/length of the run
   if run_period is None: run_period = period
+  elif period is None: period = run_period
   if isinstance(run_period, (tuple,list)):
       start_year, end_year = run_period
       if isinstance(period, (int,np.integer)): period = (end_year-period,end_year)
@@ -211,10 +220,10 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
       if isinstance(period, (tuple,list)):
           end_year = period[1]
           start_year = end_year - run_period
-      elif period is None or isinstance(period, (int,np.integer)):
-          if period != run_period: raise ArgumentError(period,run_period)
+      elif isinstance(period, (int,np.integer)):
           start_year = 1979; end_year = start_year + run_period
-      else: raise ArgumentError
+          period = (end_year-period,end_year)
+      else: raise ArgumentError(period,run_period)
   else: start_year = end_year = None # not used
   # append conventional period name to name, if it appears to be missing
   if start_year is not None:
@@ -225,6 +234,8 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
         if exp_name[-5:] != '-2050': exp_name += '-2050'
         if old_name[-5:] != '-2050': old_name += '-2050'
   if 'exp_name' not in kwargs: kwargs['exp_name'] = old_name # save for later use in name
+  if 'exp_title' not in kwargs: kwargs['exp_title'] = old_name.title() # save for later use in name
+  if 'exp_upper' not in kwargs: kwargs['exp_upper'] = old_name.upper() # save for later use in name
   # validate WRF experiment
   if lWRF: 
       # reassemble experiment name with domain extension
