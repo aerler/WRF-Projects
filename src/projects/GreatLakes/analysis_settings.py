@@ -76,6 +76,12 @@ exps_rc['t3-all']    = EX(name='t3-all',exps=['Observations', 't3-ens','t3-ens-2
                          styles=['-','-.','--'], title='T Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                          master='t3-ens', reference='Observations', target='g-ens')
 # initial condition ensembles (projection)
+exps_rc['g-clim']    = EX(name='g-clim',exps=['g-ensemble','g-ensemble-2050','g-ensemble-2100'], 
+                          styles=['-','-.','--'], title='G Ensemble ({RES:s}; Hist., Mid-, End-Century)',
+                          master='g-ensemble', reference=None, target=None)
+exps_rc['t-clim']    = EX(name='t-clim',exps=['t-ensemble','t-ensemble-2050','t-ensemble-2100'], 
+                          styles=['-','-.','--'], title='T Ensemble ({RES:s}; Hist., Mid-, End-Century)',
+                          master='t-ensemble', reference=None, target=None)
 exps_rc['gt-val']    = EX(name='gt-val',exps=['g-ens','t-ens',], 
                           styles=['-','--'], title='G &T Ensemble Average (Validation)',
                           master='g-ens', reference=None, target=None)
@@ -189,27 +195,18 @@ def loadStationFit(variable_list=variables_rc, default_constraints=constraints_r
 plot_labels_rc = dict()
 # datasets
 # plot_labels_rc['Unity']           = 'Uni. Obs.'
-plot_labels_rc['Unity']           = 'Observations'
-plot_labels_rc['Observations']    = 'EC Obs.'
-plot_labels_rc['EC_1935']         = 'EC (1935)'
-plot_labels_rc['EC_1965']         = 'EC (1965)'
-plot_labels_rc['EC_1995']         = 'EC (1995)'
-plot_labels_rc['Ens']             = 'CESM'  
-plot_labels_rc['Ens-2050']        = 'CESM 2050' 
-plot_labels_rc['Ens-2100']        = 'CESM 2100' 
-plot_labels_rc['MEns']            = 'CESM*'  
-plot_labels_rc['MEns-2050']       = 'CESM* 2050' 
-plot_labels_rc['MEns-2100']       = 'CESM* 2100' 
-plot_labels_rc['phys-ens']        = 'Phy Ens.' 
-plot_labels_rc['phys-ens-2050']   = 'Phy 2050' 
-plot_labels_rc['phys-ens-2100']   = 'Phy 2100' 
-plot_labels_rc['phys-ens_d01']    = 'Phy (D1)'
-plot_labels_rc['g-ens']           = 'G Ens.'  
-plot_labels_rc['g-ens-2050']      = 'G 2050' 
-plot_labels_rc['g-ens-2100']      = 'G 2100' 
-plot_labels_rc['g3-ens']          = 'G Ens. (90km)'  
-plot_labels_rc['g3-ens-2050']     = 'G 2050 (90km)' 
-plot_labels_rc['g3-ens-2100']     = 'G 2100 (90km)' 
+plot_labels_rc['g-ensemble']       = 'G Ens.'  
+plot_labels_rc['g-ensemble-2050']  = 'G 2050' 
+plot_labels_rc['g-ensemble-2100']  = 'G 2100' 
+plot_labels_rc['t-ensemble']       = 'T Ens.'  
+plot_labels_rc['t-ensemble-2050']  = 'T 2050' 
+plot_labels_rc['t-ensemble-2100']  = 'T 2100' 
+plot_labels_rc['g3-ensemble']      = 'G Ens. (90km)'  
+plot_labels_rc['g3-ensemble-2050'] = 'G 2050 (90km)' 
+plot_labels_rc['g3-ensemble-2100'] = 'G 2100 (90km)' 
+plot_labels_rc['t3-ensemble']      = 'T Ens. (90km)'  
+plot_labels_rc['t3-ensemble-2050'] = 'T 2050 (90km)' 
+plot_labels_rc['t3-ensemble-2100'] = 'T 2100 (90km)' 
 # plot_labels_rc['g-ens']          = 'WRF Ens.'  
 # plot_labels_rc['g-ens-2050']     = 'WRF 2050' 
 # plot_labels_rc['g-ens-2100']     = 'WRF 2100' 

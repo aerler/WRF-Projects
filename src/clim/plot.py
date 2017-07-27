@@ -195,17 +195,17 @@ if __name__ == '__main__':
   # test load function for basin ensemble time-series
   if test == 'simple_climatology':
     
-    varlist = ['precip','runoff']; obs = 'CRU'
+    varlist = ['precip','runoff']; obs = 'NRCan'
     exp = 'g-prj'; exps = exps_rc[exp]; basin = 'GRW'
 #     exp = 'max-prj'; exps = exps_rc[exp]; basin = 'ARB'
     period = 1979,1994
 #     period = 1979,2009
     # some settings for tests
     expens = None; experr = None; obsens = None; obserr = None
-    expens = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='mean',)
-    experr = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='std',)
-    obsens = loadShapeObservations(obs='NRCan', basins=basin, varlist=varlist, aggregation=None, dataset_mode='climatology', period=None)
-    obserr = loadShapeObservations(obs='CRU', basins=basin, varlist=varlist, aggregation='std')
+#     expens = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='mean',)
+#     experr = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='std',)
+    obsens = loadShapeObservations(obs=obs, basins=basin, varlist=varlist, aggregation='mean',)
+    obserr = loadShapeObservations(obs=obs, basins=basin, varlist=varlist, aggregation='std',)
 #     obsens = loadShapeObservations(obs='Unity', basins=basin, varlist=varlist, aggregation='mean')
 #     obserr = loadShapeObservations(obs='Unity', basins=basin, varlist=varlist, aggregation='std')
     # print diagnostics

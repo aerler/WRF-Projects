@@ -353,15 +353,15 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
 ## abuse main section for testing
 if __name__ == '__main__':
   
-  from projects.WesternCanada import exps_rc, variables_rc, loadShapeObservations
-  from projects.WesternCanada import loadShapeEnsemble, loadStationEnsemble
-#   from projects.GreatLakes import exps_rc, variables_rc, loadShapeObservations
-#   from projects.GreatLakes import loadShapeEnsemble, loadStationEnsemble
+#   from projects.WesternCanada import exps_rc, variables_rc, loadShapeObservations
+#   from projects.WesternCanada import loadShapeEnsemble, loadStationEnsemble
+  from projects.GreatLakes import exps_rc, variables_rc, loadShapeObservations
+  from projects.GreatLakes import loadShapeEnsemble, loadStationEnsemble
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
-#   test = 'obs_timeseries'
+  test = 'obs_timeseries'
 #   test = 'basin_timeseries'
-  test = 'station_timeseries'
+#   test = 'station_timeseries'
 #   test = 'province_climatology'
   
   
@@ -371,8 +371,8 @@ if __name__ == '__main__':
     # some settings for tests
 #     stations = ['Brantford','Whitemans Creek_Mount Vernon']
 #     names = [stn.split('_')[-1] for stn in stations]
-#     basins = ['GRW','GLB'] #; period = (1979,1994)
-    basins = ['FRB','ARB'] #; period = (1979,1994)
+    basins = ['GRW','GLB'] #; period = (1979,1994)
+#     basins = ['FRB','ARB'] #; period = (1979,1994)
     varlist = ['precip','runoff',]
 
 #     shpens = loadShapeObservations(obs='WSC', lWSC=False, name_tags=names, basins=basins, varlist=varlist, 
@@ -380,9 +380,9 @@ if __name__ == '__main__':
 #                                    #WSC_period=(1970,2000), lWSC=True, #obs_clim='NRCan', obs_ts='CRU',
 #                                    aggregation='mean', load_list=['varlist'],)
 #     assert len(shpens) == len(varlist)
-    shpens = loadShapeObservations(obs='Obs', lWSC=True, name_tags=None, basins=basins, varlist=varlist, 
+    shpens = loadShapeObservations(obs='NRCan', lWSC=True, name_tags=None, basins=basins, varlist=varlist, 
                                    obs_period=(1970,2000), WSC_period=(1970,2000), 
-                                   aggregation='std', load_list=['varlist','basins'],)
+                                   aggregation='mean', load_list=['varlist','basins'],)
     assert len(shpens) == len(varlist)*len(basins)
     # print diagnostics
     print(shpens[0]); print('')

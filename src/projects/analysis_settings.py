@@ -69,7 +69,7 @@ variables_rc['hgs_forcing_wrf'] = VL(vars=('liqwatflx','pet_wrf',), files=('aux'
 variables_rc['hgs_precip_wrf']  = VL(vars=('snwmlt','liqprec','pet_wrf'), files=('aux',), label='HGS Forcing')
 variables_rc['hgs_snow_wrf']    = VL(vars=('solprec','liqprec','pet_wrf'), files=('aux',), label='HGS Forcing')
 variables_rc['hgs_forcing']     = VL(vars=('liqwatflx','pet',), files=('aux',), label='HGS Forcing')
-variables_rc['hgs_precip']      = VL(vars=('snwmlt','liqprec','pet'), files=('aux',), label='HGS Forcing')
+variables_rc['hgs_precip']      = VL(vars=('liqprec','snwmlt','pet'), files=('aux',), label='HGS Forcing')
 variables_rc['hgs_snow']        = VL(vars=('solprec','liqprec','pet'), files=('aux',), label='HGS Forcing')
 variables_rc['heat']            = VL(vars=('hfx','lhfx','rSM'),files=('srfc','lsm'), label='Energy Flux')
 variables_rc['evap']            = VL(vars=('p-et','evap','pet',), files=('hydro',), label='Water Flux')
