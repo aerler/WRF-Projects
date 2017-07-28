@@ -106,6 +106,7 @@ for expname,plotarg in hgs_plotargs.items():
 Station = namedtuple('Station', ('HGS','WSC','ylim'),)
 station_list = OrderedDict() # this is the main gage of the GRW
 station_list['Grand River at Brantford']  = Station(HGS='GR_Brantford',WSC='Grand River_Brantford',ylim=15)
+station_list['Nith River at Canning']     = Station(HGS='Nith_River_near_Canning_(moved_upstrea',WSC='Nith River_Canning',ylim=3.5 )
 station_list['Grand River at Marsville']  = Station(HGS='GR_Marsville_(near_it)',WSC='Grand River_Marsville',ylim=3)
 station_list['Conestogo at Glen Allan']   = Station(HGS='Conestogo_River_at_Glen_Allan',WSC='Conestogo River_Glen Allan',ylim=2)
 station_list['Speed River at Guelph']     = Station(HGS='Speed_River_near_Guelph(moved_North)',WSC='Speed River_Guelph',ylim=2)
@@ -315,14 +316,14 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
 # abuse for testing
 if __name__ == '__main__':
     
-#   test_mode = 'gage_station'
+  test_mode = 'gage_station'
 #   test_mode = 'dataset'
-  test_mode = 'ensemble'
+#   test_mode = 'ensemble'
 
   if test_mode == 'gage_station':
     
     # load single dataset
-    ds = loadWSC_StnTS(period=(1974,2004), station='Speed River at Guelph')
+    ds = loadWSC_StnTS(period=(1974,2004), station='Nith River at Canning')
     print(ds)
     
   elif test_mode == 'dataset':

@@ -57,10 +57,10 @@ basin_list['FRB'] = BasinSet(name='FRB', long_name='Fraser River Basin', rivers=
 basin_list['GLB'] = BasinSet(name='GLB', long_name='Great Lakes Basin', rivers=['St. Lawrence'], data_source='WSC',
                              stations={'St. Lawrence':['Cornwall']}, subbasins=['WholeGLB','LandGLB'])
 basin_list['GRW'] = BasinSet(name='GRW', long_name='Grand River Watershed', data_source='Aquanty',
-                             rivers=['Grand River', 'Conestogo River', 'Fairchild Creek', 'Speed River', 'Whitemans Creek'], 
+                             rivers=['Grand River', 'Nith River', 'Conestogo River', 'Fairchild Creek', 'Speed River', 'Whitemans Creek'], 
                              stations={'Grand River':['Brantford','Marsville'], 'Conestogo River':['Glen Allan'],
                                        'Fairchild Creek':['Brantford'],'Speed River':['Guelph'],
-                                       'Whitemans Creek':['Mount Vernon']}, 
+                                       'Whitemans Creek':['Mount Vernon'], 'Nith River':['Canning']}, 
                              subbasins=['WholeGRW','UpperGRW','LowerGRW','NorthernGRW','SouthernGRW','WesternGRW'])
 basin_list['SNW'] = BasinSet(name='SNW', long_name='South Nation Watershed', rivers=['South Nation'], data_source='Aquanty',
                              stations={'South Nation':['',]}, subbasins=['WholeSNW'])
