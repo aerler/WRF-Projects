@@ -66,7 +66,7 @@ variables_rc['runoff']          = VL(vars=('waterflx','sfroff','runoff'), files=
 variables_rc['runoff_flux']     = VL(vars=('runoff','snwmlt','p-et'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['runoff_snow']     = VL(vars=('runoff','snwmlt','waterflx'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['hgs_forcing_wrf'] = VL(vars=('liqwatflx','pet_wrf',), files=('aux',), label='HGS Forcing')
-variables_rc['hgs_precip_wrf']  = VL(vars=('snwmlt','liqprec','pet_wrf'), files=('aux',), label='HGS Forcing')
+variables_rc['hgs_precip_wrf']  = VL(vars=('liqprec','snwmlt','pet_wrf'), files=('aux',), label='HGS Forcing')
 variables_rc['hgs_snow_wrf']    = VL(vars=('solprec','liqprec','pet_wrf'), files=('aux',), label='HGS Forcing')
 variables_rc['hgs_forcing']     = VL(vars=('liqwatflx','pet',), files=('aux',), label='HGS Forcing')
 variables_rc['hgs_precip']      = VL(vars=('liqprec','snwmlt','pet'), files=('aux',), label='HGS Forcing')
@@ -173,6 +173,7 @@ plot_labels_rc['precnc']          = 'NC'
 plot_labels_rc['evap']            = 'ET'    
 plot_labels_rc['p-et']            = 'Net Precip.'    
 plot_labels_rc['pet']             = 'PET' 
+plot_labels_rc['pet_wrf']         = 'PET (WRF)' 
 plot_labels_rc['waterflx']        = 'Water Flux'
 plot_labels_rc['liqwatflx']       = 'Water Forcing'
 plot_labels_rc['snwmlt']          = 'Snow Melt' 
