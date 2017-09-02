@@ -22,7 +22,7 @@ from geodata.base import Dataset
 @BatchLoad
 def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varlist=None, master=None, 
              scalevars='auto', legend=0, shape_name=None, stnset_name=None, ylim=None,
-             lperi=True, lparasiteMeans=True, axtitle=None, ylabel=True, xlabel=True, lyint=True,
+             lperi=True, lparasiteMeans=True, axtitle=None, ylabel=True, xlabel=True, lyint=False,
              lprint=True, dataset_legend=False, dataset_labels=None, variable_list=None,
              annotation=None, defaults=None, **plotargs):
   ''' plot the seasonal cycle over a basin ''' # linestyles=None, lineformats=None, colors=None, markers=None
@@ -195,15 +195,15 @@ if __name__ == '__main__':
   # test load function for basin ensemble time-series
   if test == 'simple_climatology':
     
-    varlist = ['precip','runoff']; obs = 'NRCan'
-    exp = 'g-prj'; exps = exps_rc[exp]; basin = 'GRW'
+    varlist = 'spei'; obs = 'NRCan'
+    exp = 'g3-prj'; exps = exps_rc[exp]; basin = 'GRW'
 #     exp = 'max-prj'; exps = exps_rc[exp]; basin = 'ARB'
     period = 1979,1994
 #     period = 1979,2009
     # some settings for tests
     expens = None; experr = None; obsens = None; obserr = None
-#     expens = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='mean',)
-#     experr = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='std',)
+    expens = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='mean',)
+    experr = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='std',)
     obsens = loadShapeObservations(obs=obs, basins=basin, varlist=varlist, aggregation='mean',)
     obserr = loadShapeObservations(obs=obs, basins=basin, varlist=varlist, aggregation='std',)
 #     obsens = loadShapeObservations(obs='Unity', basins=basin, varlist=varlist, aggregation='mean')
@@ -211,7 +211,7 @@ if __name__ == '__main__':
     # print diagnostics
     print expens[-1] if expens else obsens[-1]; print ''
     print experr[-1] if experr else obserr[-1]; print ''
-    
+        
     # set up plot    
     fig,ax = climFigAx((1,1), title=test, sharex=True, sharey=False, stylesheet='myggplot', lpresentation=False)    
     

@@ -82,12 +82,24 @@ exps_rc['g-clim']    = EX(name='g-clim',exps=['g-ensemble','g-ensemble-2050','g-
 exps_rc['t-clim']    = EX(name='t-clim',exps=['t-ensemble','t-ensemble-2050','t-ensemble-2100'], 
                           styles=['-','-.','--'], title='T Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                           master='t-ensemble', reference=None, target=None)
+exps_rc['g3-clim']   = EX(name='g3-clim',exps=['g3-ensemble','g3-ensemble-2050','g3-ensemble-2100'], 
+                          styles=['-','-.','--'], title='G Ensemble ({RES:s}; Hist., Mid-, End-Century)',
+                          master='g3-ensemble', reference=None, target=None)
+exps_rc['t3-clim']   = EX(name='t3-clim',exps=['t3-ensemble','t3-ensemble-2050','t3-ensemble-2100'], 
+                          styles=['-','-.','--'], title='T Ensemble ({RES:s}; Hist., Mid-, End-Century)',
+                          master='t3-ensemble', reference=None, target=None)
 exps_rc['gt-val']    = EX(name='gt-val',exps=['g-ens','t-ens',], 
-                          styles=['-','--'], title='G &T Ensemble Average (Validation)',
+                          styles=['-','--'], title='G & T Ensemble Average ({RES:s}; Validation)',
                           master='g-ens', reference=None, target=None)
 exps_rc['gt-prj']    = EX(name='gt-prj',exps=['g-ens-2100','t-ens-2100',], 
-                          styles=['-','--'], title='G &T Ensemble Average (Projection)',
+                          styles=['-','--'], title='G & T Ensemble Average ({RES:s}; Projection)',
                           master='g-ens-2100', reference=None, target=None)
+exps_rc['gt3-val']   = EX(name='gt3-val',exps=['g3-ens','t3-ens',], 
+                          styles=['-','--'], title='G & T Ensemble Average ({RES:s}; Validation)',
+                          master='g3-ens', reference=None, target=None)
+exps_rc['gt3-prj']   = EX(name='gt3-prj',exps=['g3-ens-2100','t3-ens-2100',], 
+                          styles=['-','--'], title='G & T Ensemble Average ({RES:s}; Projection)',
+                          master='g3-ens-2100', reference=None, target=None)
 exps_rc['g-prj']     = EX(name='g-prj',exps=['g-ens','g-ens-2050','g-ens-2100'], 
                           styles=['-','-.','--'], title='G Ensemble ({RES:s}; Hist., Mid-, End-Century)',
                           master='g-ens', reference=None, target=None)
