@@ -106,6 +106,7 @@ experiments['t3-ensemble-2050'] = Exp(shortname='t3-ens-2050', name='t3-ensemble
 experiments['t3-ensemble-2100'] = Exp(shortname='t3-ens-2100', name='t3-ensemble-2100', title='T-Ens. (2100, 90km)', begindate='2085-01-01', parent='Ens-2100', grid='glb1-90km', domains=1)
 # sensitivity experiments
 experiments['gg-ctrl'] = Exp(shortname='gg-ctrl', name='gg-ctrl', title='G-Ctrl (N-MP)')
+experiments['gg2-ctrl'] = Exp(shortname='gg-ctrl', name='gg-ctrl', title='G-Ctrl (N-MP)')
 experiments['gg-ctrl-2050'] = Exp(shortname='gg-ctrl-2050', name='gg-ctrl-2050', title='G-Ctrl (2050, N-MP)', begindate='2045-01-01')
 experiments['gg-ctrl-2100'] = Exp(shortname='gg-ctrl-2100', name='gg-ctrl-2100', title='G-Ctrl (2100, N-MP)', begindate='2085-01-01')
 experiments['gg2-ctrl-2100'] = Exp(shortname='gg2-ctrl-2100', name='gg2-ctrl-2100', title='G-Ctrl (2100, N-MP, 2nd)', begindate='2085-01-01')

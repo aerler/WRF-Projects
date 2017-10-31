@@ -41,7 +41,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
 #     cmap = cm.rscolmap
 #     cmap = mpl.cm.Oranges
 #     cmap = mpl.cm.PuOr
-    if var in ('T2_prj','Ts_prj','Tmin_prj','Tmax_prj','Tmean_prj'):
+    if var in ('T2_prj','Ts_prj','Tmin_prj','Tmax_prj','Tmean_prj','T_prj'):
       clevs = np.linspace(0,8,31); clbl = '%3.1f'; cmap = mpl.cm.Oranges # K
     elif var in ('evap_prj','pet_prj','precip_prj','precipc_prj','precipnc_prj'):
       clevs = np.linspace(-1.5,1.5,31); clbl = '%2.1f'; cmap = mpl.cm.PuOr # mm/day    
@@ -53,6 +53,8 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(-5,5,26); clbl = '%02.1f' # mm/day
     elif var == 'wetfrq':
       clevs = np.linspace(-1,1,41); clbl = '%02.1f' # mm/day            
+    elif var == 'ps':
+      clevs = np.linspace(-5,5,41); clbl = '%02.1f' # mm/day            
     elif var in ('evap','pet','precip','precipc','precipnc','wetprec','dryprec','MaxPrecip_1d'):
       clevs = np.linspace(-4,4,41); clbl = '%3.1f' # mm/day
     elif var in ('snwmlt', 'runoff', 'ugroff', 'sfroff','p-et','waterflx'): # moisture fluxes (kg /(m^2 s))
@@ -64,7 +66,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(-0.5,0.5,21); clbl = '%3.1f' # mm/day
     elif var in ('Z',):
       cmap = cm.coolavhrrmap # cmap.set_over('white'); cmap.set_under('black')
-      clevs = np.linspace(-0.0,0.12,21); clbl = '%3.2f'  
+      clevs = np.linspace(-0.0,0.2,21); clbl = '%3.2f'  
     elif var in ('u','U','v'):
       clevs = np.linspace(-5,5,21); clbl = '%2.1f'  
     elif var in ('RH',):
@@ -76,7 +78,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       raise VariableError, 'No settings found for differencing variable \'{0:s}\' found!'.format(var)
   elif lfrac:
     cmap = mycmap; cmap.set_over('red'); cmap.set_under('blue')
-    if var in ('T2_prj','Ts_prj','Tmin_prj','Tmax_prj','Tmean_prj'):
+    if var in ('T2_prj','Ts_prj','Tmin_prj','Tmax_prj','Tmean_prj','T_prj'):
       clevs = np.linspace(0,3,41); clbl = '%2.1f'; cmap = mpl.cm.Oranges
     elif var in ('evap_prj','pet_prj','precip_prj','precipc_prj','precipnc_prj'):
       clevs = np.linspace(-60.,60,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr
@@ -298,10 +300,11 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
     if isinstance(nexp,(int,np.integer)):
       if nexp == 1: subplot = (1,1) # rows, columns
       elif nexp == 2: subplot = (1,2)
+      elif nexp == 3: subplot = (1,3)
       elif nexp == 4: subplot = (2,2)
       elif nexp == 6: subplot = (2,3)
       elif nexp == 8: subplot = (2,4)
-      else: raise ValueError
+      else: raise NotImplementedError(nexp)
     else:
       if not ( isinstance(nexp,(tuple,list)) and len(nexp) == 2 ): raise TypeError  
       subplot = tuple(nexp)
@@ -364,6 +367,19 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
           caxpos = [0.05, 0.04, 0.9, 0.02]
       else:
         margins = dict(bottom=0.06, left=0.09, right=.985, top=.95, hspace=0.13, wspace=0.02)
+    elif subplot == (1,3):
+      # 6 panel
+      figsize = (9.25,3.75) # width, height (inches)
+      if cbar:
+        cbo = cbo or 'horizontal'
+        if cbo == 'vertical': 
+          margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05)
+          caxpos = [0.91, 0.05, 0.03, 0.9]
+        if cbo == 'horizontal': 
+          margins = dict(bottom=0.11, left=0.05, right=.98, top=.9, hspace=0.05, wspace=0.05)
+          caxpos = [0.05, 0.06, 0.9, 0.025]
+      else:
+        margins = dict(bottom=0.025, left=0.05, right=.97, top=.92, hspace=0.1, wspace=0.05)
     elif subplot == (2,3):
       # 6 panel
       figsize = (9.25,6.5) # width, height (inches)

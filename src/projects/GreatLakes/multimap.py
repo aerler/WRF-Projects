@@ -90,16 +90,16 @@ if __name__ == '__main__':
   variable_settings = None
   season_settings = None
   aggregation = 'mean'
-  level_agg = dict(p=2,s='mean',soil_layers_stag='mean',i_s='mean')
+  level_agg = dict(i_p=2,i_s='mean')
     
   # WRF file types
   WRFfiletypes = [] # WRF data source
 #   WRFfiletypes += ['aux']
 #   WRFfiletypes += ['rad']
-  WRFfiletypes += ['hydro']
-  WRFfiletypes += ['lsm']
+#   WRFfiletypes += ['hydro']
+#   WRFfiletypes += ['lsm']
   WRFfiletypes += ['srfc']
-  WRFfiletypes += ['xtrm']
+#   WRFfiletypes += ['xtrm']
 #   WRFfiletypes += ['plev3d']
   ## select variables and seasons
   variables = [] # variables
@@ -169,8 +169,8 @@ if __name__ == '__main__':
   lprint = True # write plots to disk using case as a name tag
 #   maptype = 'lcc-grw'; lstations = False; lbasins = True; domain = 2
 #   maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = 2
-  maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = None
-#   maptype = 'lcc-can'; lstations = False; domain = 1
+#   maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = None
+  maptype = 'lcc-NA'; lstations = False; domain = 1
 #   lbasins = True; basinlist = ('ARB','FRB','CRB','NRB','PSB'); lprovinces = False; provlist = ['BC','AB','ON']
 #   lbasins = False; basinlist = ('ARB','FRB','GLB'); lprovinces = False; provlist = ['BC','AB','ON']
   lbasins = True; basinlist = ('GLB','GRW'); lprovinces = False; provlist = ['ON']
@@ -187,7 +187,9 @@ if __name__ == '__main__':
 
 
 # validation and projection for the Great Lakes region
-  res = None; case = '{RES}'; domain = 1; wrftypes = None
+#   res = None; case = '{RES}'; domain = 1; wrftypes = None
+  maptype = 'lcc-NA'; lstations = False; lbasins = True; basinlist = ('GLB',); case = 'na'
+  domain = 1; grid = 'glb1_d{DOM:02d}'.format(DOM=domain); res = ['10km' if domain == 2 else '30km']*2
 #   explist = ['NRCan','GPCC',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = [NRC70,None]*2; case = 'gpcc025'
 #   explist = ['NRCan','GPCC',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = NRC70; case = 'gpcc05'
 #   explist = ['NRCan','CRU',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = NRC70; case = 'cru'
@@ -201,8 +203,8 @@ if __name__ == '__main__':
 #   explist = ['Ens','g3-ens','t3-ens',]*2; seasons = [['summer']*3+['winter']*3]
 #   domain = 1; grid = 'glb1-90km_d01'; res = '90km'
 #   exptitles = ['CESM Ensemble, {S:s}','WRF G Ens. ({RES:s}), {S:s}','WRF T Ens. ({RES:s}), {S:s}',]*2
-  explist = ['g-ens','t-ens',]; seasons = [['summer']*2]; wrftypes = ['']*2
-  domain = 1; grid = 'glb1_d{DOM:02d}'.format(DOM=domain); res = ['10km' if domain == 2 else '30km']*2
+#   explist = ['g-ctrl','gg-ctrl','gg2-ctrl']; seasons = [['summer']*len(explist)]; wrftypes = ['']*len(explist)
+  explist = ['g-ens','t-ens']; seasons = [['summer']*len(explist)]; wrftypes = ['']*len(explist); case = 'gt-ens'
   exptitles = ['WRF G Ensemble, {S:s}','WRF T Ensemble, {S:s}',]*2
 #   wrftypes = ['G']*3+['T']*3; seasons = [['summer']*6]; case = '{:s}-ens_res'.format('gt')
 #   wrftypes = ['G']*6; seasons = [['summer']*3+['winter']*3]; case = '{:s}-ens_res'.format(wrftypes[0].lower())
@@ -211,7 +213,7 @@ if __name__ == '__main__':
 #   domain = [1,1,2]*2; grid = ['glb1-90km_d01','glb1_d01','glb1_d02']*2 
 #   res = ['90km','30km','10km']*2; exptitles = ['WRF {TYPE:s} Ens. ({RES:s}), {S:s}',]*6
 #   seasons = [['summer']*3+['annual']*3]
-  exptitles = [ t.format(RES=r,S=s.title(),TYPE=wt.upper()) for t,s,r,wt in zip(exptitles,seasons[0],res,wrftypes) ]
+#   exptitles = [ t.format(RES=r,S=s.title(),TYPE=wt.upper()) for t,s,r,wt in zip(exptitles,seasons[0],res,wrftypes) ]
 #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['winter']*2]
 #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
 #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
@@ -224,13 +226,19 @@ if __name__ == '__main__':
 #   exptitles = [ t.format(RES=res,S=s.title(),TYPE=wrftype) for t,s in zip(exptitles,seasons[0]) ]
 #   variables = ['SWDNB']; cbn = 5; lfrac = True; WRFfiletypes = ['rad']
 #   variables = ['LWDNB']; cbn = 5; lfrac = False; WRFfiletypes = ['rad']
+#   variables = ['ps']; cbn = 5; ldiff = True; WRFfiletypes = ['srfc']; laddContour = False
+#   variables = ['PBLH']; cbn = 5; lfrac = True; WRFfiletypes = ['plev3d']
+#   variables = ['Z']; cbn = 5; ldiff = True; WRFfiletypes = ['plev3d']; level_agg['i_p'] = 2; laddContour = True
+#   variables = ['RH']; cbn = 5; ldiff = True; WRFfiletypes = ['plev3d']; level_agg['p'] = 85000
+#   variables = ['T']; cbn = 5; ldiff = True; WRFfiletypes = ['plev3d']; variable_settings = ['T_prj']; level_agg['p'] = 85000
 #   variables = ['T2']; cbn = 5 # T2 without diffs
 #   variables = ['precip']; cbn = 6 # precip without diffs
 #   variables = ['preccu']; cbn = 6
 #   variables = ['precnc']; cbn = 6
-  variables = ['preccu',]; cbn = 6; lfrac = True; variable_settings = ['precip_prj'] # precip
+#   variables = ['preccu',]; cbn = 6; lfrac = True; variable_settings = ['precip_prj'] # precip
 #   variables = ['T2']; cbn = 6; ldiff = True; variable_settings = ['T2_prj'] # T2
-#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+  variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+#   variables = ['evap']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
 #   variables = ['preccu']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
 #   variables = ['precnc']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
 #   variables = ['zs']; seasons = [['hidef']*6]; WRFfiletypes += ['const']; lcontour = True
@@ -707,8 +715,8 @@ if __name__ == '__main__':
                 expvar = getattr(expvar,la)(axis=ax, asVar=True)
               else: 
                 expvar = expvar(asVar=True, **{ax:la}) # slice axis (default rules)
-                if ax == 'p' and not figtitle.endswith(' hPa'): figtitle += " at {:3.0f} hPa".format((850,700,500,250,100)[la])
-                if ax == 's' and not figtitle.endswith(' soil layer)'): figtitle += " ({:s} soil layer)".format(('1st','2nd','3rd','4th')[la])
+                if ax == 'i_p' and not figtitle.endswith(' hPa'): figtitle += " at {:3.0f} hPa".format((850,700,500,250,100)[la])
+                if ax == 'i_s' and not figtitle.endswith(' soil layer)'): figtitle += " ({:s} soil layer)".format(('1st','2nd','3rd','4th')[la])
           # extract data field
           if expvar.hasAxis('time'):
             method = aggregation if aggregation.isupper() else aggregation.title() 

@@ -196,7 +196,7 @@ if __name__ == '__main__':
   if test == 'simple_climatology':
     
     varlist = 'spei'; obs = 'NRCan'
-    exp = 'g3-prj'; exps = exps_rc[exp]; basin = 'GRW'
+    exp = 't-prj'; exps = exps_rc[exp]; basin = 'GRW'
 #     exp = 'max-prj'; exps = exps_rc[exp]; basin = 'ARB'
     period = 1979,1994
 #     period = 1979,2009

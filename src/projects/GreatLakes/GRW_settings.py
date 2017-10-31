@@ -212,7 +212,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
       if clim_period is None and not lts: clim_period = 15 # in years
   else:
       station_file = station_file_v2
-      if task is None: task = 'hgs_run_v3_wrfpet' if lWRF else 'hgs_run_v3'
+      if task is None: task = 'hgs_run_v3_wrfpet' if bias_correction else 'hgs_run_v3'
       if run_period is None and not lts: run_period = 10 if lWRF else 5 # in years
       if clim_period is None and not lts: clim_period = 15 if lWRF else 30 # in years
   if not lts: clim_dir += '_{:02d}'.format(clim_period)
