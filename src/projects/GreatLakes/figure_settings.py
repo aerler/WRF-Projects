@@ -110,6 +110,8 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       cmap = cm.redblue_light; #cmap.set_over('blue'); cmap.set_under('red')
     elif var in ('negative_fraction',):
       clevs = np.linspace(-100,0,21); clbl = '%2.0f'; cmap = cm.coolavhrrmap
+    elif var in ('runoff_fraction',):
+      clevs = np.linspace(-100,-70,31); clbl = '%2.0f'; cmap = cm.coolavhrrmap
     else: 
       clevs = np.linspace(-50,50,21); clbl = '%2.0f'  
   else:

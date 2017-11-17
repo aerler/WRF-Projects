@@ -58,7 +58,7 @@ if __name__ == '__main__':
   subplot = None # subplot layout (or defaults based on number of plots)
   figsize = None
   lbackground = True
-  lcontour = False # contour or pcolor plot
+  lcontour = True # contour or pcolor plot
   shading = 'gouraud' # shading for pixel plot: 'flat' | 'gouraud'
   laddContour = False # add black contour lines
   lframe = True # draw domain boundary
@@ -189,7 +189,7 @@ if __name__ == '__main__':
 # validation and projection for the Great Lakes region
 #   res = None; case = '{RES}'; domain = 1; wrftypes = None
   maptype = 'lcc-NA'; lstations = False; lbasins = True; basinlist = ('GLB',); case = 'na'
-  domain = 1; grid = 'glb1_d{DOM:02d}'.format(DOM=domain); res = ['10km' if domain == 2 else '30km']*2
+  domain = 1; grid = 'glb1_d{DOM:02d}'.format(DOM=domain); res = ['10km' if domain == 2 else '30km']*4
 #   explist = ['NRCan','GPCC',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = [NRC70,None]*2; case = 'gpcc025'
 #   explist = ['NRCan','GPCC',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = NRC70; case = 'gpcc05'
 #   explist = ['NRCan','CRU',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = NRC70; case = 'cru'
@@ -204,7 +204,7 @@ if __name__ == '__main__':
 #   domain = 1; grid = 'glb1-90km_d01'; res = '90km'
 #   exptitles = ['CESM Ensemble, {S:s}','WRF G Ens. ({RES:s}), {S:s}','WRF T Ens. ({RES:s}), {S:s}',]*2
 #   explist = ['g-ctrl','gg-ctrl','gg2-ctrl']; seasons = [['summer']*len(explist)]; wrftypes = ['']*len(explist)
-  explist = ['g-ens','t-ens']; seasons = [['summer']*len(explist)]; wrftypes = ['']*len(explist); case = 'gt-ens'
+  explist = ['g-ens','t-ens']*2; seasons = [['summer']*2+['annual']*2]; wrftypes = ['']*len(explist); case = 'gt-ens'
   exptitles = ['WRF G Ensemble, {S:s}','WRF T Ensemble, {S:s}',]*2
 #   wrftypes = ['G']*3+['T']*3; seasons = [['summer']*6]; case = '{:s}-ens_res'.format('gt')
 #   wrftypes = ['G']*6; seasons = [['summer']*3+['winter']*3]; case = '{:s}-ens_res'.format(wrftypes[0].lower())
@@ -213,7 +213,7 @@ if __name__ == '__main__':
 #   domain = [1,1,2]*2; grid = ['glb1-90km_d01','glb1_d01','glb1_d02']*2 
 #   res = ['90km','30km','10km']*2; exptitles = ['WRF {TYPE:s} Ens. ({RES:s}), {S:s}',]*6
 #   seasons = [['summer']*3+['annual']*3]
-#   exptitles = [ t.format(RES=r,S=s.title(),TYPE=wt.upper()) for t,s,r,wt in zip(exptitles,seasons[0],res,wrftypes) ]
+  exptitles = [ t.format(RES=r,S=s.title(),TYPE=wt.upper()) for t,s,r,wt in zip(exptitles,seasons[0],res,wrftypes) ]
 #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['winter']*2]
 #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
 #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
@@ -233,18 +233,21 @@ if __name__ == '__main__':
 #   variables = ['T']; cbn = 5; ldiff = True; WRFfiletypes = ['plev3d']; variable_settings = ['T_prj']; level_agg['p'] = 85000
 #   variables = ['T2']; cbn = 5 # T2 without diffs
 #   variables = ['precip']; cbn = 6 # precip without diffs
+  variables = ['runoff']; cbn = 7; WRFfiletypes = ['lsm','hydro'] 
+  variable_settings = 'runoff_fraction'; refvars = ['precip']
+  lfrac = True; reflist = explist; period = H15; refprd = H15; case += '_frac'
 #   variables = ['preccu']; cbn = 6
 #   variables = ['precnc']; cbn = 6
 #   variables = ['preccu',]; cbn = 6; lfrac = True; variable_settings = ['precip_prj'] # precip
 #   variables = ['T2']; cbn = 6; ldiff = True; variable_settings = ['T2_prj'] # T2
-  variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
 #   variables = ['evap']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
 #   variables = ['preccu']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
 #   variables = ['precnc']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
 #   variables = ['zs']; seasons = [['hidef']*6]; WRFfiletypes += ['const']; lcontour = True
 #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
 #   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
-  period = B15; refprd = H15; reflist = reflist or explist; case += '_prj' # projection 
+#   period = B15; refprd = H15; reflist = reflist or explist; case += '_prj' # projection 
 #   period = H15; refprd = H15; case += '_val'; variable_settings = None; reflist = reflist or 'Unity' # validation
 #   period = H15; refprd = NRC70; variable_settings = None; reflist = 'NRCan' # validation  
 #   case = tag+'val_narr'; reflist = 'NARR'

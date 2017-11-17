@@ -16,7 +16,7 @@ from geodata.misc import ArgumentError, DatasetError
 project_name = 'GRW'
 project_prefix = 'grw_omafra'
 # some parameters
-gage_scalefactors = 1e-4 # default scalefactor for discharge plots
+gage_scalefactors = 1e-3 # default scalefactor for discharge plots
 main_gage  = 'Brantford' # gage station(see station_list for proper HGS/WSC names)
 main_basin = 'GRW' # main basin name
 main_grid  = 'grw2' # climate data grid
@@ -29,8 +29,12 @@ station_file_v2 = '{PREFIX:s}o.hydrograph.{WSC_ID0:s}.dat' # general HGS naming 
 
 # plotting parameters for HGS simulations
 hgs_plotargs = dict() 
+# stream observations
 hgs_plotargs['Observations'] = dict(color='#959595') # gray
+hgs_plotargs['Obs.']         = dict(color='#959595') # gray
+hgs_plotargs['WSC Obs.']     = dict(color='#959595') # gray
 hgs_plotargs['WSC']          = dict(color='#959595') # gray
+# NRCan forcing, different model versions
 hgs_plotargs['HGS (V1)']     = dict(color='green') #, linewidth=3)
 hgs_plotargs['NRCan']        = dict(color='green')
 hgs_plotargs['NRCan (V1)']   = dict(color='gray', linestyle='--')
@@ -51,7 +55,12 @@ hgs_plotargs['V3 (Ephemeral)'] = dict(color='#E24B34')
 hgs_plotargs['NRCan (Prairies)']  = dict(color='cyan')
 hgs_plotargs['NRCan (Ephemeral)'] = dict(color='coral')
 hgs_plotargs['NRCan (hires)']     = dict(color='magenta')
-# hgs_plotargs['Observations'] = dict(color='#68615E') # dark gray
+# Landuse scenarios
+hgs_plotargs['GRCA']         = dict(color='green')
+hgs_plotargs['LU 2000']      = dict(color='#62A1C6')
+hgs_plotargs['LU 2055']      = dict(color='#AAA2D8')
+hgs_plotargs['LU 2095']      = dict(color='#E24B34')
+# Temporal Aggregation
 hgs_plotargs['Steady-State (V1)'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic (V1)']     = dict(color='green') # 
 hgs_plotargs['Steady-State (V2)'] = dict(color='#E24B34') # red
@@ -59,6 +68,7 @@ hgs_plotargs['Periodic (V2)']     = dict(color='coral') # red
 hgs_plotargs['Transient']    = dict(color='#62A1C6') # blue
 hgs_plotargs['Steady-State'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic']     = dict(color='#E24B34') # red
+# WRF forcing
 hgs_plotargs['WRF 10km']     = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['WRF 30km']     = dict(color='#E24B34') # red
 hgs_plotargs['WRF 90km']     = dict(color='#AAA2D8') # purple
@@ -111,13 +121,13 @@ for expname,plotarg in hgs_plotargs.items():
 # mapping of WSC station names to HGS hydrograph names
 Station = namedtuple('Station', ('HGS','WSC','ylim'),)
 station_list = OrderedDict() # this is the main gage of the GRW
-station_list['Grand River at Brantford']  = Station(HGS='GR_Brantford',WSC='Grand River_Brantford',ylim=15)
-station_list['Nith River at Canning']     = Station(HGS='Nith_River_near_Canning_(moved_upstrea',WSC='Nith River_Canning',ylim=3.5 )
-station_list['Grand River at Marsville']  = Station(HGS='GR_Marsville_(near_it)',WSC='Grand River_Marsville',ylim=3)
-station_list['Conestogo at Glen Allan']   = Station(HGS='Conestogo_River_at_Glen_Allan',WSC='Conestogo River_Glen Allan',ylim=2)
-station_list['Speed River at Guelph']     = Station(HGS='Speed_River_near_Guelph(moved_North)',WSC='Speed River_Guelph',ylim=2)
-station_list['Whitemans at Mount Vernon'] = Station(HGS='Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=1.2)
-station_list['Fairchild at Brantford']    = Station(HGS='Fairchild_Creek_near_Brantford',WSC='Fairchild Creek_Brantford',ylim=1.2 )
+station_list['Grand River at Brantford']  = Station(HGS='GR_Brantford',WSC='Grand River_Brantford',ylim=150)
+station_list['Nith River at Canning']     = Station(HGS='Nith_River_near_Canning_(moved_upstrea',WSC='Nith River_Canning',ylim=35 )
+station_list['Grand River at Marsville']  = Station(HGS='GR_Marsville_(near_it)',WSC='Grand River_Marsville',ylim=30)
+station_list['Conestogo at Glen Allan']   = Station(HGS='Conestogo_River_at_Glen_Allan',WSC='Conestogo River_Glen Allan',ylim=20)
+station_list['Speed River at Guelph']     = Station(HGS='Speed_River_near_Guelph(moved_North)',WSC='Speed River_Guelph',ylim=20)
+station_list['Whitemans at Mount Vernon'] = Station(HGS='Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=12)
+station_list['Fairchild at Brantford']    = Station(HGS='Fairchild_Creek_near_Brantford',WSC='Fairchild Creek_Brantford',ylim=12 )
 # look-up tables for WSC/HGS station name conversion                           
 WSC_station_list = {stn.WSC:stn.HGS for stn in station_list.values()}
 HGS_station_list = {stn.HGS:stn.WSC for stn in station_list.values()}
