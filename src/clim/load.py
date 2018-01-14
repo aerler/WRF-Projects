@@ -371,7 +371,7 @@ if __name__ == '__main__':
     # some settings for tests
 #     stations = ['Brantford','Whitemans Creek_Mount Vernon']
 #     names = [stn.split('_')[-1] for stn in stations]
-    basins = ['GRW','GLB'] #; period = (1979,1994)
+    basins = ['PRW','GLB'] #; period = (1979,1994)
 #     basins = ['FRB','ARB'] #; period = (1979,1994)
     varlist = ['precip','runoff',]
 
