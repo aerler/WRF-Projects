@@ -121,13 +121,13 @@ for expname,plotarg in hgs_plotargs.items():
 # mapping of WSC station names to HGS hydrograph names
 Station = namedtuple('Station', ('HGS','WSC','ylim'),)
 station_list = OrderedDict() # this is the main gage of the GRW
-station_list['Grand River at Brantford']  = Station(HGS='GR_Brantford',WSC='Grand River_Brantford',ylim=150)
-station_list['Nith River at Canning']     = Station(HGS='Nith_River_near_Canning_(moved_upstrea',WSC='Nith River_Canning',ylim=35 )
-station_list['Grand River at Marsville']  = Station(HGS='GR_Marsville_(near_it)',WSC='Grand River_Marsville',ylim=30)
-station_list['Conestogo at Glen Allan']   = Station(HGS='Conestogo_River_at_Glen_Allan',WSC='Conestogo River_Glen Allan',ylim=20)
-station_list['Speed River at Guelph']     = Station(HGS='Speed_River_near_Guelph(moved_North)',WSC='Speed River_Guelph',ylim=20)
-station_list['Whitemans at Mount Vernon'] = Station(HGS='Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=12)
-station_list['Fairchild at Brantford']    = Station(HGS='Fairchild_Creek_near_Brantford',WSC='Fairchild Creek_Brantford',ylim=12 )
+station_list['Grand River at Brantford']  = Station(HGS='Station_GR_Brantford',WSC='Grand River_Brantford',ylim=150)
+station_list['Nith River at Canning']     = Station(HGS='Station_Nith_River_near_Canning_(moved_upstrea',WSC='Nith River_Canning',ylim=35 )
+station_list['Grand River at Marsville']  = Station(HGS='Station_GR_Marsville_(near_it)',WSC='Grand River_Marsville',ylim=30)
+station_list['Conestogo at Glen Allan']   = Station(HGS='Station_Conestogo_River_at_Glen_Allan',WSC='Conestogo River_Glen Allan',ylim=20)
+station_list['Speed River at Guelph']     = Station(HGS='Station_Speed_River_near_Guelph(moved_North)',WSC='Speed River_Guelph',ylim=20)
+station_list['Whitemans at Mount Vernon'] = Station(HGS='Station_Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=12)
+station_list['Fairchild at Brantford']    = Station(HGS='Station_Fairchild_Creek_near_Brantford',WSC='Fairchild Creek_Brantford',ylim=12 )
 # look-up tables for WSC/HGS station name conversion                           
 WSC_station_list = {stn.WSC:stn.HGS for stn in station_list.values()}
 HGS_station_list = {stn.HGS:stn.WSC for stn in station_list.values()}
@@ -172,7 +172,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   # resolve station name
   if station in station_list_etal: 
       if WSC_station is None: WSC_station = station_list_etal[station].WSC
-      station = station_list_etal[station].HGS
+      station = station_list_etal[station].HGS if lold else '{WSC_ID0:s}'
   elif station is None and WSC_station in WSC_station_list:
       station = WSC_station_list[station]
   elif station in WSC_station_list and WSC_station is None:
@@ -317,7 +317,7 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
                    period=None, domain=None, exp_aliases=exp_aliases, run_period=None, clim_mode=None,
                    folder=project_folder_pattern, project_folder=None, obs_period=None, clim_period=None, 
                    ensemble_list=ensemble_list, ensemble_args=None, observation_list=gage_datasets, # ensemble and obs lists for project
-                   project=project_name, grid=main_grid, task=None, prefix=project_prefix, 
+                   project=project_name, grid=main_grid, task=None, prefix=project_prefix, bias_correction=None,
                    WSC_station=None, basin=main_basin, basin_list=None, scalefactors=gage_scalefactors, **kwargs):
   ''' a wrapper for the regular HGS loader that can also load gage stations and assemble ensembles '''  
   return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
@@ -325,6 +325,7 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
                             ensemble_list=ensemble_list, ensemble_args=ensemble_args, observation_list=observation_list, 
                             loadHGS_StnTS=loadHGS_StnTS, loadWSC_StnTS=loadWSC_StnTS, # use local versions of loaders
                             prefix=prefix, WSC_station=WSC_station, basin=basin, basin_list=basin_list, 
+                            bias_correction=bias_correction,
                             domain=domain, project_folder=project_folder, project=project, grid=grid, clim_mode=clim_mode, 
                             exp_aliases=exp_aliases, task=task, scalefactors=scalefactors, **kwargs)  
 
@@ -332,14 +333,14 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
 # abuse for testing
 if __name__ == '__main__':
     
-  test_mode = 'gage_station'
+#   test_mode = 'gage_station'
 #   test_mode = 'dataset'
-#   test_mode = 'ensemble'
+  test_mode = 'ensemble'
 
   if test_mode == 'gage_station':
     
     # load single dataset
-    ds = loadWSC_StnTS(period=(1974,2004), station='Nith River at Canning')
+    ds = loadWSC_StnTS(period=(1979,2009),) # station='Nith River at Canning')
     print(ds)
     
   elif test_mode == 'dataset':
@@ -364,10 +365,10 @@ if __name__ == '__main__':
     print('')
     
     # load an esemble of datasets
-    ens = loadHGS_StnEns(ensemble=['g-mean','t-mean'], domain=1, clim_mode='clim', 
-                         name='{EXP_NAME:s}_{RESOLUTION:s}', title='{Name:s}',
+    ens = loadHGS_StnEns(ensemble=['g-mean','t-mean'], domain=2, clim_mode='clim', 
+                         name='{EXP_NAME:s}_{RESOLUTION:s}', title='{EXP_NAME:s}_{RESOLUTION:s}',
                          period=[(1984,1994),(2050,2060),(2090,2100)], obs_period=(1974,2004),
-                         lskipNaN=True, lcheckComplete=True,
+                         lskipNaN=True, lcheckComplete=True, lold=False, bias_correction='AABC',
                          outer_list=['ensemble','period'], lensemble=True)
     # N.B.: all need to have unique names... whihc is a problem with obs...
     print(ens)
