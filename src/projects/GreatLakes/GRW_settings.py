@@ -12,9 +12,11 @@ import projects.WSC_basins as wsc
 from projects.GreatLakes.WRF_experiments import WRF_exps
 from collections import namedtuple
 from geodata.misc import ArgumentError, DatasetError
+from hgs.PGMN import getWellName
 
 project_name = 'GRW'
 project_prefix = 'grw_omafra'
+conservation_authority = 'GRCA'
 # some parameters
 gage_scalefactors = 1e-3 # default scalefactor for discharge plots
 main_gage  = 'Brantford' # gage station(see station_list for proper HGS/WSC names)
@@ -156,9 +158,10 @@ for name,members in ensemble_list.items():
 #TODO: the function definitions should be moved into a separate module a la clim and eva, since they are pretty general
 
 # simple dataset loader
-def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varatts=None, name=None, title=None, 
-                  exp_aliases=exp_aliases, run_period=None, clim_mode=None, clim_period=None, station=main_gage, 
-                  bias_correction=None, folder=project_folder_pattern, project_folder=None, project=project_name, 
+def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varatts=None, name=None, 
+                  title=None, exp_aliases=exp_aliases, run_period=None, clim_mode=None, clim_period=None, 
+                  station=None, well=None, conservation_authority=None, bias_correction=None, 
+                  folder=project_folder_pattern, project_folder=None, project=project_name, 
                   grid=main_grid, task=None, prefix=project_prefix, WSC_station=None, basin=main_basin, 
                   basin_list=None, lpad=True, ENSEMBLE=None, scalefactors=gage_scalefactors, lWSCID=False, 
                   lold=False, **kwargs):
@@ -170,15 +173,22 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
       experiment = ENSEMBLE # use as experiment name, but also pass on as kwarg to HGS loader
   if experiment is None or clim_mode is None: raise ArgumentError(experiment,clim_mode)
   # resolve station name
-  if station in station_list_etal: 
-      if WSC_station is None: WSC_station = station_list_etal[station].WSC
-      station = station_list_etal[station].HGS if lold else '{WSC_ID0:s}'
-  elif station is None and WSC_station in WSC_station_list:
-      station = WSC_station_list[station]
-  elif station in WSC_station_list and WSC_station is None:
-      WSC_station = station; station = WSC_station_list[station]
-  elif station in HGS_station_list and WSC_station is None: 
-      WSC_station =  HGS_station_list[station]
+  if WSC_station and not station: station = WSC_station
+  if not station and not well: station = main_gage
+  if well and station: raise ArgumentError
+  elif station:
+      if station in station_list_etal: 
+          if WSC_station is None: WSC_station = station_list_etal[station].WSC
+          station = station_list_etal[station].HGS if lold else '{WSC_ID0:s}'
+      elif station in WSC_station_list:
+          WSC_station = station; station = WSC_station_list[station]
+      elif station in HGS_station_list: 
+          WSC_station =  HGS_station_list[station]
+  elif well:
+      # decompose well name...
+      well_id,well_no = getWellName(well)
+      well = 'W{WELL_ID:07d}_{WELL_NO:1d}'.format(WELL_ID=well_id, WELL_NO=well_no)
+      PGMN_well = 'W{WELL_ID:07d}-{WELL_NO:1d}'.format(WELL_ID=well_id, WELL_NO=well_no)
   if basin_list is None: basin_list = wsc.basin_list # default basin list
   # resolve folder arguments
   if project_folder is None and project is not None: 
@@ -285,11 +295,15 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   if bias_correction is not None:
       clim_dir = '{:s}_{:s}'.format(bias_correction,clim_dir)
   # call load function from HGS module
-  dataset = hgs.loadHGS_StnTS(station=station, varlist=varlist, varatts=varatts, name=name, title=title, ENSEMBLE=ENSEMBLE, 
-                              folder=folder, experiment=experiment, period=period, run_period=run_period, start_date=start_date, 
-                              project_folder=project_folder, project=project, task=task, BIAS_CORRECTION=bias_correction,
-                              prefix=prefix, clim_dir=clim_dir, WSC_station=WSC_station, basin=basin, lpad=lpad, grid=grid,
-                              basin_list=basin_list, filename=station_file, scalefactors=scalefactors, **kwargs)
+  dataset = hgs.loadHGS_StnTS(station=station, well=well, varlist=varlist, varatts=varatts, name=name, 
+                              title=title, ENSEMBLE=ENSEMBLE, folder=folder, experiment=experiment, 
+                              period=period, run_period=run_period, start_date=start_date, 
+                              project_folder=project_folder, project=project, task=task, 
+                              BIAS_CORRECTION=bias_correction, prefix=prefix, clim_dir=clim_dir, 
+                              WSC_station=WSC_station, PGMN_well=PGMN_well, basin=basin, lpad=lpad, 
+                              grid=grid, conservation_authority=conservation_authority,
+                              basin_list=basin_list, filename=station_file, scalefactors=scalefactors, 
+                              **kwargs)
   # slice time axis for period
   if start_year is not None and end_year is not None:
     dataset = dataset(years=(start_year,end_year))
@@ -313,11 +327,12 @@ def loadWSC_StnTS(station=main_gage, name=None, title=None, basin=main_basin, ba
   
 
 # wrapper to load HGS ensembles, otherwise the same
-def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None, name=None, title=None, 
+def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name=None, title=None, 
                    period=None, domain=None, exp_aliases=exp_aliases, run_period=None, clim_mode=None,
                    folder=project_folder_pattern, project_folder=None, obs_period=None, clim_period=None, 
                    ensemble_list=ensemble_list, ensemble_args=None, observation_list=gage_datasets, # ensemble and obs lists for project
-                   project=project_name, grid=main_grid, task=None, prefix=project_prefix, bias_correction=None,
+                   project=project_name, grid=main_grid, task=None, prefix=project_prefix, 
+                   bias_correction=None, conservation_authority=None,
                    WSC_station=None, basin=main_basin, basin_list=None, scalefactors=gage_scalefactors, **kwargs):
   ''' a wrapper for the regular HGS loader that can also load gage stations and assemble ensembles '''  
   return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
@@ -325,7 +340,7 @@ def loadHGS_StnEns(ensemble=None, station=main_gage, varlist=None, varatts=None,
                             ensemble_list=ensemble_list, ensemble_args=ensemble_args, observation_list=observation_list, 
                             loadHGS_StnTS=loadHGS_StnTS, loadWSC_StnTS=loadWSC_StnTS, # use local versions of loaders
                             prefix=prefix, WSC_station=WSC_station, basin=basin, basin_list=basin_list, 
-                            bias_correction=bias_correction,
+                            bias_correction=bias_correction, conservation_authority=conservation_authority,
                             domain=domain, project_folder=project_folder, project=project, grid=grid, clim_mode=clim_mode, 
                             exp_aliases=exp_aliases, task=task, scalefactors=scalefactors, **kwargs)  
 
@@ -347,16 +362,17 @@ if __name__ == '__main__':
 
     # load single dataset
     ds = loadHGS_StnTS(experiment='erai-g', domain=2, period=(1984,1994), 
+                       well='W424',
                        clim_mode='periodic', lpad=True, bias_correction='AABC')
 #     ds = loadHGS_StnTS(experiment='NRCan', task='hgs_run_v2', 
 #                        clim_mode='periodic', lpad=True)
     print(ds)
-    print(ds.discharge.mean(), ds.discharge.max(), ds.discharge.min(),)
-    print(ds.discharge.plot.units)
-#     # load single dataset
-#     ds = loadHGS_StnTS(experiment='erai-g', domain=0, period=(1984,1994), clim_mode='periodic', )
-#     print(ds)
-#     assert ds.time[0] == 60, ds.time[:]
+    if 'discharge' in ds:
+        print(ds.discharge.mean(), ds.discharge.max(), ds.discharge.min(),)
+        print(ds.discharge.plot.units)
+    if 'head' in ds:
+        print(ds.head.mean(), ds.head.max(), ds.head.min(),)
+        print(ds.head.plot.units)
     
   elif test_mode == 'ensemble':
     
@@ -366,6 +382,7 @@ if __name__ == '__main__':
     
     # load an esemble of datasets
     ens = loadHGS_StnEns(ensemble=['g-mean','t-mean'], domain=2, clim_mode='clim', 
+                         well='W424',
                          name='{EXP_NAME:s}_{RESOLUTION:s}', title='{EXP_NAME:s}_{RESOLUTION:s}',
                          period=[(1984,1994),(2050,2060),(2090,2100)], obs_period=(1974,2004),
                          lskipNaN=True, lcheckComplete=True, lold=False, bias_correction='AABC',
@@ -374,4 +391,3 @@ if __name__ == '__main__':
     print(ens)
     print('\n')
     print(ens[0])
-    print(ens[0].discharge.plot.units)
