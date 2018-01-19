@@ -130,6 +130,12 @@ station_list['Conestogo at Glen Allan']   = Station(HGS='Station_Conestogo_River
 station_list['Speed River at Guelph']     = Station(HGS='Station_Speed_River_near_Guelph(moved_North)',WSC='Speed River_Guelph',ylim=20)
 station_list['Whitemans at Mount Vernon'] = Station(HGS='Station_Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=12)
 station_list['Fairchild at Brantford']    = Station(HGS='Station_Fairchild_Creek_near_Brantford',WSC='Fairchild Creek_Brantford',ylim=12 )
+# list of groundwater observation wells
+grca_wells = ['W0000023_1', 'W0000024_2', 'W0000024_4', 'W0000035_5', 'W0000046_1',
+              'W0000065_4', 'W0000306_1', 'W0000307_1', 'W0000309_2', 'W0000309_3', 
+              'W0000347_2', 'W0000347_3', 'W0000421_1', 'W0000423_1', 'W0000424_1', 
+              'W0000425_1', 'W0000426_1', 'W0000427_1', 'W0000428_1', 'W0000476_1', ]
+other_wells = ['W0000003_1', 'W0000022_1', 'W0000178_1', 'W0000477_1', 'W0000478_1',]
 # look-up tables for WSC/HGS station name conversion                           
 WSC_station_list = {stn.WSC:stn.HGS for stn in station_list.values()}
 HGS_station_list = {stn.HGS:stn.WSC for stn in station_list.values()}
@@ -160,11 +166,11 @@ for name,members in ensemble_list.items():
 # simple dataset loader
 def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varatts=None, name=None, 
                   title=None, exp_aliases=exp_aliases, run_period=None, clim_mode=None, clim_period=None, 
-                  station=None, well=None, conservation_authority=None, bias_correction=None, 
+                  station=None, well=None, conservation_authority=conservation_authority, bias_correction=None, 
                   folder=project_folder_pattern, project_folder=None, project=project_name, 
-                  grid=main_grid, task=None, prefix=project_prefix, WSC_station=None, basin=main_basin, 
-                  basin_list=None, lpad=True, ENSEMBLE=None, scalefactors=gage_scalefactors, lWSCID=False, 
-                  lold=False, **kwargs):
+                  grid=main_grid, task=None, prefix=project_prefix, WSC_station=None, PGMN_well=None,
+                  basin=main_basin, basin_list=None, lpad=True, ENSEMBLE=None, scalefactors=gage_scalefactors, 
+                  lWSCID=False, lold=False, **kwargs):
   ''' Get a properly formatted HGS dataset with a regular time-series at station locations; as in
       the hgsrun module, the capitalized kwargs can be used to construct folders and/or names '''
   experiment = experiment or ENSEMBLE # an alias to support the ensemble loader
@@ -332,7 +338,7 @@ def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name
                    folder=project_folder_pattern, project_folder=None, obs_period=None, clim_period=None, 
                    ensemble_list=ensemble_list, ensemble_args=None, observation_list=gage_datasets, # ensemble and obs lists for project
                    project=project_name, grid=main_grid, task=None, prefix=project_prefix, 
-                   bias_correction=None, conservation_authority=None,
+                   bias_correction=None, conservation_authority=conservation_authority,
                    WSC_station=None, basin=main_basin, basin_list=None, scalefactors=gage_scalefactors, **kwargs):
   ''' a wrapper for the regular HGS loader that can also load gage stations and assemble ensembles '''  
   return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
@@ -382,7 +388,7 @@ if __name__ == '__main__':
     
     # load an esemble of datasets
     ens = loadHGS_StnEns(ensemble=['g-mean','t-mean'], domain=2, clim_mode='clim', 
-                         well='W424',
+                         well='W424', z_aggregation='max', z_layers='screen',
                          name='{EXP_NAME:s}_{RESOLUTION:s}', title='{EXP_NAME:s}_{RESOLUTION:s}',
                          period=[(1984,1994),(2050,2060),(2090,2100)], obs_period=(1974,2004),
                          lskipNaN=True, lcheckComplete=True, lold=False, bias_correction='AABC',
