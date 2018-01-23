@@ -24,7 +24,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
              scalevars='auto', legend=0, shape_name=None, stnset_name=None, ylim=None,
              lperi=True, lparasiteMeans=True, axtitle=None, ylabel=True, xlabel=True, lyint=False,
              lprint=True, dataset_legend=False, dataset_labels=None, variable_list=None,
-             annotation=None, defaults=None, **plotargs):
+             annotation=None, defaults=None, lzero=True, **plotargs):
   ''' plot the seasonal cycle over a basin ''' # linestyles=None, lineformats=None, colors=None, markers=None
   if axes is None: raise ArgumentError
   # define some meta data
@@ -176,8 +176,9 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
     axes.parasite_axes.yaxis.set_major_locator(mpl.ticker.MaxNLocator(integer=True))
     axes.yaxis.set_major_locator(mpl.ticker.MaxNLocator(integer=True))
   # add zero-line
-  if varlist_name.lower() == 'temp': axes.addHline(273.15, alpha=0.5) # freezing point 
-  else: axes.addHline(0, alpha=0.5) # actual zero (flux direction)
+  if lzero: 
+      if varlist_name.lower() == 'temp': axes.addHline(273.15, alpha=0.5) # freezing point 
+      else: axes.addHline(0, alpha=0.5) # actual zero (flux direction)
 
 
 if __name__ == '__main__':
