@@ -165,7 +165,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
       if expens: dataset_labels += [ds.name for ds in expens] # not always ensembles...
       if axes.plot_labels is not None: 
         dataset_labels = [axes.plot_labels.get(label,label) for label in dataset_labels]
-    elif not isinstance(dataset_labels,(list,tuple)): raise TypeError, dataset_labels
+    elif not isinstance(dataset_labels,(list,tuple)): raise TypeError(dataset_labels)
     axes.addLegend(handles=plts, labels=dataset_labels, **dataset_legend) # handles fontsize and passes kwargs to legend()
   
   # use month as labels
@@ -196,8 +196,8 @@ if __name__ == '__main__':
   # test load function for basin ensemble time-series
   if test == 'simple_climatology':
     
-    varlist = 'spei'; obs = 'NRCan'
-    exp = 't-prj'; exps = exps_rc[exp]; basin = 'GRW'
+    varlist = 'spei'
+    exp = 'g-prj'; exps = exps_rc[exp]; basin = 'GLB'
 #     exp = 'max-prj'; exps = exps_rc[exp]; basin = 'ARB'
     period = 1979,1994
 #     period = 1979,2009
@@ -205,10 +205,10 @@ if __name__ == '__main__':
     expens = None; experr = None; obsens = None; obserr = None
     expens = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='mean',)
     experr = loadShapeEnsemble(names=exps.exps, basins=basin, varlist=varlist, aggregation='std',)
-    obsens = loadShapeObservations(obs=obs, basins=basin, varlist=varlist, aggregation='mean',)
-    obserr = loadShapeObservations(obs=obs, basins=basin, varlist=varlist, aggregation='std',)
-#     obsens = loadShapeObservations(obs='Unity', basins=basin, varlist=varlist, aggregation='mean')
-#     obserr = loadShapeObservations(obs='Unity', basins=basin, varlist=varlist, aggregation='std')
+#     obsens = loadShapeObservations(obs='NRCan', basins=basin, varlist=varlist, aggregation=None, dataset_mode = 'climatology',)
+#     obserr = loadShapeObservations(obs='NRCan', basins=basin, varlist=varlist, aggregation='std',)
+    obsens = loadShapeObservations(obs='Unity', basins=basin, varlist=varlist, aggregation='mean')
+    obserr = loadShapeObservations(obs='Unity', basins=basin, varlist=varlist, aggregation='std')
     # print diagnostics
     print expens[-1] if expens else obsens[-1]; print ''
     print experr[-1] if experr else obserr[-1]; print ''

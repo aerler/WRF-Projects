@@ -204,7 +204,7 @@ def loadStationFit(variable_list=variables_rc, default_constraints=constraints_r
 ## settings for plotting 
 
 # plot labels: translate internal names to something more presentable
-plot_labels_rc = dict()
+plot_labels_rc = default.plot_labels_rc.copy()
 # datasets
 # plot_labels_rc['Unity']           = 'Uni. Obs.'
 plot_labels_rc['g-ensemble']       = 'G Ens.'  
@@ -271,6 +271,23 @@ plot_labels_rc['hfx']             = 'Sens. Heat'
 plot_labels_rc['lhfx']            = 'Latent Heat'    
 plot_labels_rc['aSM']             = 'aSM'     
 plot_labels_rc['rSM']             = 'Soil Moist.'       
+# HGS variables
+plot_labels_rc['infil']           = 'Infiltration'
+plot_labels_rc['exfil']           = 'Exfiltration'
+plot_labels_rc['delta_storage']   = 'Storage'
+plot_labels_rc['tot_et']          = 'Actual ET'
+plot_labels_rc['tot_pet']         = 'PET'
+plot_labels_rc['can_et']          = 'Canopy ET'
+plot_labels_rc['tot_precip']      = 'Water Flx.'
+plot_labels_rc['discharge']       = 'Discharge'
+plot_labels_rc['outflow']         = 'Outflow'
+plot_labels_rc['sfroff']          = 'Sfc. R\'off'
+plot_labels_rc['totroff']         = 'Runoff'
+plot_labels_rc['baseflow']        = 'Baseflow'
+plot_labels_rc['d_tot']           = 'Total Storage'
+plot_labels_rc['d_olf']           = 'Surface'
+plot_labels_rc['d_pm']           = 'Subsurface'
+
 
 ## plot styles for climatology plots
 climds_plotargs_rc = dict()
@@ -287,8 +304,29 @@ climds_plotargs_rc['GPCC']         =  obs_args
 rea_args = default.rea_args.copy()
 climds_plotargs_rc['CFSR']         =  rea_args
 climds_plotargs_rc['NARR']         =  rea_args
+
 # variable settings
 variable_plotargs_rc = default.variable_plotargs_rc.copy()
+# HGS variables
+# variable_plotargs_rc['baseflow']       = AttrDict(color = '#E24B34')
+# variable_plotargs_rc['exfil']          = AttrDict(color = '#AAA2D8')
+# variable_plotargs_rc['outflow']        = AttrDict(color = '#62A1C6')
+variable_plotargs_rc['baseflow']       = AttrDict(color = 'red')
+variable_plotargs_rc['infil']          = AttrDict(color = 'green')
+variable_plotargs_rc['exfil']          = AttrDict(color = 'purple')
+variable_plotargs_rc['outflow']        = AttrDict(color = 'red')
+variable_plotargs_rc['discharge']      = AttrDict(color = 'blue')
+variable_plotargs_rc['delta_storage']  = AttrDict(color = 'gold')
+variable_plotargs_rc['tot_et']         = AttrDict(color = 'red')
+variable_plotargs_rc['tot_pet']        = AttrDict(color = 'purple')
+variable_plotargs_rc['can_et']         = AttrDict(color = 'magenta')
+variable_plotargs_rc['tot_precip']     = AttrDict(color = 'blue')
+variable_plotargs_rc['sfroff']         = AttrDict(color = 'green')
+variable_plotargs_rc['totroff']        = AttrDict(color = 'blue')
+variable_plotargs_rc['d_tot']          = AttrDict(color = 'red')
+variable_plotargs_rc['d_olf']          = AttrDict(color = 'green')
+variable_plotargs_rc['d_pm']           = AttrDict(color = 'blue')
+
 
 # wrapper with custom defaults to figure creator (plotargs and label positions)
 def climFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels=None, xtop=None, yright=None, **kwargs):

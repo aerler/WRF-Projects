@@ -18,7 +18,7 @@ project_name = 'GRW'
 project_prefix = 'grw_omafra'
 conservation_authority = 'GRCA'
 # some parameters
-gage_scalefactors = 1e-3 # default scalefactor for discharge plots
+gage_scalefactors = 1. # default scalefactor for discharge plots
 main_gage  = 'Brantford' # gage station(see station_list for proper HGS/WSC names)
 main_basin = 'GRW' # main basin name
 main_grid  = 'grw2' # climate data grid
@@ -135,6 +135,9 @@ grca_wells = ['W0000023_1', 'W0000024_2', 'W0000024_4', 'W0000046_1',
               'W0000065_4', 'W0000306_1', 'W0000307_1', 'W0000309_2', 'W0000309_3', 
               'W0000347_2', 'W0000347_3', 'W0000421_1', 'W0000423_1', 'W0000424_1', 
               'W0000425_1', 'W0000427_1', 'W0000428_1', 'W0000476_1', ]
+sorted_grca_wells = ['W0000347-2','W0000307-1','W0000306-1','W0000347-3','W0000421-1','W0000046-1',
+                     'W0000065-4','W0000427-1','W0000024-2','W0000023-1','W0000309-2','W0000024-4',
+                     'W0000423-1','W0000428-1','W0000476-1','W0000309-3','W0000425-1','W0000424-1',]
 # N.B.: 'W0000035_5' and 'W0000426_1' are missing in the GRCA dataset  
 other_wells = ['W0000003_1', 'W0000022_1', 'W0000178_1', 'W0000477_1', 'W0000478_1',]
 # look-up tables for WSC/HGS station name conversion                           
