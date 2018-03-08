@@ -163,9 +163,116 @@ for name,members in ensemble_list.items():
         ensemble_list[name+prd] = tuple(member+prd for member in members)
     
 
-## wrapper functions to load HGS station timeseries with GRW parameters
 
 #TODO: the function definitions should be moved into a separate module a la clim and eva, since they are pretty general
+
+# helper function to determine experiment parameters
+def experimentParameters(experiment=None, domain=None, clim_mode=None, lold=None, task=None, kwargs=None,
+                         bias_correction=None, clim_period=None, run_period=None, period=None, ):
+    # figure out experiment name and domain
+    lWRF = False # likely not a WRF experiment
+    old_name = experiment # save for later
+    if domain is not None:
+        lWRF = True 
+        exp_name = experiment
+        experiment = '{:s}_d{:02d}'.format(experiment,domain) # used to determine aliases
+        # extract resolution for later use (before we convert aliases)
+        if domain == 0: resolution = '90km'
+        elif domain == 1: resolution = '30km'
+        elif domain == 2: resolution = '10km'
+        elif domain == 3: resolution = '3km'
+        else: raise NotImplementedError("Unsupported domain number '{:d}'.".format(domain))
+        if 'resolution' not in kwargs: kwargs['resolution'] = resolution # for name expansion (will be capitalized)
+    if experiment in exp_aliases:
+        lWRF = True 
+        # resolve aliases (always return full string format)
+        experiment = exp_aliases[experiment] # resolve alias
+        exp_name = experiment[:-4]; domain = int(experiment[-2:]) # always full string format
+    if experiment in WRF_exps: # i.e. if domain is None
+        lWRF = True
+        exp_name = experiment
+        domain = WRF_exps[experiment].domains # innermost domain
+        experiment = '{:s}_d{:02d}'.format(experiment,domain) # used to determine aliases
+    # resolve climate input mode (time aggregation; assuming period is just length, i.e. int;)
+    if 'clim_mode' not in kwargs: kwargs['clim_mode'] = clim_mode # for name expansion
+    # translate climate mode into path convention, while retaining clim_mode
+    if clim_mode.lower() in ('ts','trans','timeseries','transient'): clim_dir = 'timeseries'; lts = True
+    elif clim_mode.lower() in ('mn','norm','clim','peri','normals','climatology','periodic'): clim_dir = 'clim'; lts = False
+    elif clim_mode.lower() in ('ss','const','mean','annual','steady-state'): clim_dir = 'annual'; lts = False
+    else: raise ArgumentError(clim_mode)
+    # set some defaults based on version
+    if lold:
+        if task is None: task = 'hgs_run_wrfpet' if bias_correction else 'hgs_run' 
+        if clim_period is None and not lts: clim_period = 15 # in years
+    else:
+        if task is None: task = 'hgs_run_v3_wrfpet' if bias_correction else 'hgs_run_v3'
+        if clim_period is None and not lts: clim_period = 15 if lWRF else 30 # in years
+    if not lts: clim_dir += '_{:02d}'.format(clim_period)
+    # add period extensions of necessary/possible
+    # N.B.: period is the period we want to show, run_period is the actual begin/end/length of the run
+    if run_period is None: run_period = period
+    elif period is None: period = run_period
+    if isinstance(run_period, (tuple,list)):
+        start_year, end_year = run_period
+        if isinstance(period, (int,np.integer)): period = (end_year-period,end_year)
+    elif isinstance(run_period, (int,np.integer)):
+        if isinstance(period, (tuple,list)):
+            end_year = period[1]
+            start_year = end_year - run_period
+        elif isinstance(period, (int,np.integer)):
+            start_year = 1979; end_year = start_year + run_period
+            period = (end_year-period,end_year)
+        else: raise ArgumentError(period,run_period)
+    else: start_year = end_year = None # not used
+    # append conventional period name to name, if it appears to be missing
+    if start_year is not None:
+        if start_year > 2080:
+          if exp_name[-5:] != '-2100': exp_name += '-2100'
+          if old_name[-5:] != '-2100': old_name += '-2100'
+        elif start_year > 2040:
+          if exp_name[-5:] != '-2050': exp_name += '-2050'
+          if old_name[-5:] != '-2050': old_name += '-2050'
+    if 'exp_name' not in kwargs: kwargs['exp_name'] = old_name # save for later use in name
+    if 'exp_title' not in kwargs: kwargs['exp_title'] = old_name.title() # save for later use in name
+    if 'exp_upper' not in kwargs: kwargs['exp_upper'] = old_name.upper() # save for later use in name
+    # validate WRF experiment
+    if lWRF: 
+        # reassemble experiment name with domain extension
+        experiment = '{:s}_d{:02d}'.format(exp_name,domain)
+        exp = WRF_exps[exp_name]
+        if domain > exp.domains or domain < 1: raise DatasetError("Invalid domain number: {}".format(domain))
+        # get start date from experiment (if not defined in period)
+        if start_year is None: 
+          start_date = tuple(int(d) for d in exp.begindate.split('-')) # year,month,day tuple
+          start_year = start_date[0]
+        else:
+          start_date = start_year  
+    else:
+        # assume observationa data, with time axis origin in Jan 1979
+        if start_year is None: start_year = 1979
+        start_date = start_year
+    if end_year is None: end_year = start_year + run_period # period length
+    else: run_period = end_year - start_year
+    assert isinstance(run_period,(np.integer,int)), run_period
+    # construct period information  
+    # append conventional period name to name, if it appears to be missing
+    if start_year < 1994 and end_year < 1995: prdext = '1980'; prdstr = '1979-1994'
+    elif start_year < 2015  and end_year < 2016: prdext = '2000'; prdstr = '1979-2015'
+    elif start_year < 2060 and end_year < 2061: prdext = '2050'; prdstr = '2045-2060'
+    elif start_year < 2100 and end_year < 2101: prdext = '2100'; prdstr = '2085-2100'
+    else: raise NotImplementedError("Unable to determine period extension for period '{:d}-{:d}'.".format(start_year,end_year))
+    if 'prdext' not in kwargs: kwargs['prdext'] = prdext # for name expansion (will be capitalized)
+    if 'prdstr' not in kwargs: kwargs['prdstr'] = prdstr # for name expansion (will be capitalized)
+    # select bias-correction method, if applicable
+    if bias_correction is not None:
+        clim_dir = '{:s}_{:s}'.format(bias_correction,clim_dir)
+    
+    # return parameters
+    return ( lWRF, task,experiment,exp, clim_dir,lts, start_date,start_year,end_year, 
+             clim_period,run_period,period, kwargs )
+
+
+## wrapper functions to load HGS station timeseries with GRW parameters
 
 # simple dataset loader
 def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varatts=None, name=None, 
@@ -182,6 +289,10 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
       if experiment is not None and experiment != ENSEMBLE: raise ArgumentError(ENSEMBLE,experiment)
       experiment = ENSEMBLE # use as experiment name, but also pass on as kwarg to HGS loader
   if experiment is None or clim_mode is None: raise ArgumentError(experiment,clim_mode)
+  # resolve folder arguments
+  if project_folder is None and project is not None: 
+      project_folder = '{:s}/{:s}/'.format(hgs.root_folder,project)
+  
   # resolve station name
   if WSC_station and not station: station = WSC_station
   if not station and not well: station = main_gage
@@ -200,110 +311,22 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
       well = 'W{WELL_ID:07d}_{WELL_NO:1d}'.format(WELL_ID=well_id, WELL_NO=well_no)
       PGMN_well = 'W{WELL_ID:07d}-{WELL_NO:1d}'.format(WELL_ID=well_id, WELL_NO=well_no)
   if basin_list is None: basin_list = wsc.basin_list # default basin list
-  # resolve folder arguments
-  if project_folder is None and project is not None: 
-      project_folder = '{:s}/{:s}/'.format(hgs.root_folder,project)
-  # figure out experiment name and domain
-  lWRF = False # likely not a WRF experiment
-  old_name = experiment # save for later
-  if domain is not None:
-      lWRF = True 
-      exp_name = experiment
-      experiment = '{:s}_d{:02d}'.format(experiment,domain) # used to determine aliases
-      # extract resolution for later use (before we convert aliases)
-      if domain == 0: resolution = '90km'
-      elif domain == 1: resolution = '30km'
-      elif domain == 2: resolution = '10km'
-      elif domain == 3: resolution = '3km'
-      else: raise NotImplementedError("Unsupported domain number '{:d}'.".format(domain))
-      if 'resolution' not in kwargs: kwargs['resolution'] = resolution # for name expansion (will be capitalized)
-  if experiment in exp_aliases:
-      lWRF = True 
-      # resolve aliases (always return full string format)
-      experiment = exp_aliases[experiment] # resolve alias
-      exp_name = experiment[:-4]; domain = int(experiment[-2:]) # always full string format
-  if experiment in WRF_exps: # i.e. if domain is None
-      lWRF = True
-      exp_name = experiment
-      domain = WRF_exps[experiment].domains # innermost domain
-      experiment = '{:s}_d{:02d}'.format(experiment,domain) # used to determine aliases
-  # resolve climate input mode (time aggregation; assuming period is just length, i.e. int;)
-  if 'clim_mode' not in kwargs: kwargs['clim_mode'] = clim_mode # for name expansion
-  # translate climate mode into path convention, while retaining clim_mode
-  if clim_mode.lower() in ('ts','trans','timeseries','transient'): clim_dir = 'timeseries'; lts = True
-  elif clim_mode.lower() in ('mn','norm','clim','peri','normals','climatology','periodic'): clim_dir = 'clim'; lts = False
-  elif clim_mode.lower() in ('ss','const','mean','annual','steady-state'): clim_dir = 'annual'; lts = False
-  else: raise ArgumentError(clim_mode)
+
+  # determine various WRF/climatology related parameters
+  params = experimentParameters(experiment=experiment, domain=domain, clim_mode=clim_mode, lold=lold, 
+                                task=task, kwargs=kwargs, bias_correction=bias_correction, 
+                                clim_period=clim_period, run_period=run_period, period=period, )
+  ( lWRF, task,experiment,exp, clim_dir,lts, start_date,start_year,end_year, 
+                                      clim_period,run_period,period, kwargs ) = params
+      
   # set some defaults based on version
   if lold:
       station_file = station_file_v1
-      if task is None: task = 'hgs_run_wrfpet' if bias_correction else 'hgs_run' 
       if run_period is None and not lts: run_period = 15 # in years
-      if clim_period is None and not lts: clim_period = 15 # in years
   else:
       station_file = station_file_v2
-      if task is None: task = 'hgs_run_v3_wrfpet' if bias_correction else 'hgs_run_v3'
       if run_period is None and not lts: run_period = 10 if lWRF else 5 # in years
-      if clim_period is None and not lts: clim_period = 15 if lWRF else 30 # in years
-  if not lts: clim_dir += '_{:02d}'.format(clim_period)
-  # add period extensions of necessary/possible
-  # N.B.: period is the period we want to show, run_period is the actual begin/end/length of the run
-  if run_period is None: run_period = period
-  elif period is None: period = run_period
-  if isinstance(run_period, (tuple,list)):
-      start_year, end_year = run_period
-      if isinstance(period, (int,np.integer)): period = (end_year-period,end_year)
-  elif isinstance(run_period, (int,np.integer)):
-      if isinstance(period, (tuple,list)):
-          end_year = period[1]
-          start_year = end_year - run_period
-      elif isinstance(period, (int,np.integer)):
-          start_year = 1979; end_year = start_year + run_period
-          period = (end_year-period,end_year)
-      else: raise ArgumentError(period,run_period)
-  else: start_year = end_year = None # not used
-  # append conventional period name to name, if it appears to be missing
-  if start_year is not None:
-      if start_year > 2080:
-        if exp_name[-5:] != '-2100': exp_name += '-2100'
-        if old_name[-5:] != '-2100': old_name += '-2100'
-      elif start_year > 2040:
-        if exp_name[-5:] != '-2050': exp_name += '-2050'
-        if old_name[-5:] != '-2050': old_name += '-2050'
-  if 'exp_name' not in kwargs: kwargs['exp_name'] = old_name # save for later use in name
-  if 'exp_title' not in kwargs: kwargs['exp_title'] = old_name.title() # save for later use in name
-  if 'exp_upper' not in kwargs: kwargs['exp_upper'] = old_name.upper() # save for later use in name
-  # validate WRF experiment
-  if lWRF: 
-      # reassemble experiment name with domain extension
-      experiment = '{:s}_d{:02d}'.format(exp_name,domain)
-      exp = WRF_exps[exp_name]
-      if domain > exp.domains or domain < 1: raise DatasetError("Invalid domain number: {}".format(domain))
-      # get start date from experiment (if not defined in period)
-      if start_year is None: 
-        start_date = tuple(int(d) for d in exp.begindate.split('-')) # year,month,day tuple
-        start_year = start_date[0]
-      else:
-        start_date = start_year  
-  else:
-      # assume observationa data, with time axis origin in Jan 1979
-      if start_year is None: start_year = 1979
-      start_date = start_year
-  if end_year is None: end_year = start_year + run_period # period length
-  else: run_period = end_year - start_year
-  assert isinstance(run_period,(np.integer,int)), run_period
-  # construct period information  
-  # append conventional period name to name, if it appears to be missing
-  if start_year < 1994 and end_year < 1995: prdext = '1980'; prdstr = '1979-1994'
-  elif start_year < 2015  and end_year < 2016: prdext = '2000'; prdstr = '1979-2015'
-  elif start_year < 2060 and end_year < 2061: prdext = '2050'; prdstr = '2045-2060'
-  elif start_year < 2100 and end_year < 2101: prdext = '2100'; prdstr = '2085-2100'
-  else: raise NotImplementedError("Unable to determine period extension for period '{:d}-{:d}'.".format(start_year,end_year))
-  if 'prdext' not in kwargs: kwargs['prdext'] = prdext # for name expansion (will be capitalized)
-  if 'prdstr' not in kwargs: kwargs['prdstr'] = prdstr # for name expansion (will be capitalized)
-  # select bias-correction method, if applicable
-  if bias_correction is not None:
-      clim_dir = '{:s}_{:s}'.format(bias_correction,clim_dir)
+
   # call load function from HGS module
   dataset = hgs.loadHGS_StnTS(station=station, well=well, varlist=varlist, varatts=varatts, name=name, 
                               title=title, ENSEMBLE=ENSEMBLE, folder=folder, experiment=experiment, 
@@ -321,7 +344,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   if lWRF:
     for key,value in exp.__dict__.items():
       dataset.atts['WRF_'+key] = value
-    dataset.atts['WRF_resolution'] = resolution
+    dataset.atts['WRF_resolution'] = kwargs['resolution']
   return dataset
 
 
@@ -359,8 +382,8 @@ def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name
 if __name__ == '__main__':
     
 #   test_mode = 'gage_station'
-#   test_mode = 'dataset'
-  test_mode = 'ensemble'
+  test_mode = 'dataset'
+#   test_mode = 'ensemble'
 
   if test_mode == 'gage_station':
     
@@ -372,17 +395,25 @@ if __name__ == '__main__':
 
     # load single dataset
     ds = loadHGS_StnTS(experiment='erai-g', domain=2, period=(1984,1994), 
-                       well='W424',
+                       well='W424', z_aggregation=None, z_layers=None,
                        clim_mode='periodic', lpad=True, bias_correction='AABC')
 #     ds = loadHGS_StnTS(experiment='NRCan', task='hgs_run_v2', 
 #                        clim_mode='periodic', lpad=True)
     print(ds)
     if 'discharge' in ds:
+        print('\n')
+        print(ds.discharge)
         print(ds.discharge.mean(), ds.discharge.max(), ds.discharge.min(),)
         print(ds.discharge.plot.units)
     if 'head' in ds:
+        print('\n')
+        print(ds.head)
         print(ds.head.mean(), ds.head.max(), ds.head.min(),)
         print(ds.head.plot.units)
+    if ds.hasAxis('z'):
+        print('\n')
+        print(ds.z)
+        print(ds.z[:])
     
   elif test_mode == 'ensemble':
     
