@@ -107,7 +107,7 @@ for name,members in ensemble_list.items():
 # helper function to determine experiment parameters
 def experimentParameters(experiment=None, domain=None, clim_mode=None, bias_correction=None, 
                          clim_period=None, run_period=None, period=None, exp_aliases=exp_aliases,
-                         task='hgs_run', station_file=station_file, WRF_exps=None, **kwargs):
+                         task='hgs_run', WRF_exps=None, **kwargs):
     # figure out experiment name and domain
     lWRF = False # default: not a WRF experiment
     old_name = experiment # save for later
@@ -202,7 +202,7 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, bias_corr
         clim_dir = '{:s}_{:s}'.format(bias_correction,clim_dir)
     
     # return parameters
-    return ( lWRF, task,experiment,exp, clim_dir,station_file, start_date,start_year,end_year, 
+    return ( lWRF, task,experiment,exp, clim_dir, start_date,start_year,end_year, 
              clim_period,run_period,period, kwargs )
 
             
@@ -212,16 +212,12 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, bias_corr
 def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varatts=None, name=None, 
                   title=None, run_period=None, clim_mode=None, clim_period=None, 
                   station=None, well=None, bias_correction=None, project_folder=None, 
-                  task=None, WSC_station=None, Obs_well=None, lpad=True, ENSEMBLE=None, lWSCID=False,
-                  project=None, folder=project_folder_pattern, grid=None, prefix=None,  
-                  conservation_authority=None, basin=None, basin_list=None, scalefactors=None, 
+                  task=None, WSC_station=None, Obs_well=None, lpad=True, lWSCID=False,
+                  project=None, folder=project_folder_pattern, station_file=station_file,
+                  grid=None, conservation_authority=None, basin=None, basin_list=None, scalefactors=None, 
                   main_gage=None, station_list=None, experimentParameters=experimentParameters, **kwargs):
   ''' Get a properly formatted HGS dataset with a regular time-series at station locations; as in
       the hgsrun module, the capitalized kwargs can be used to construct folders and/or names '''
-  experiment = experiment or ENSEMBLE # an alias to support the ensemble loader
-  if ENSEMBLE is not None:
-      if experiment is not None and experiment != ENSEMBLE: raise ArgumentError(ENSEMBLE,experiment)
-      experiment = ENSEMBLE # use as experiment name, but also pass on as kwarg to HGS loader
   if experiment is None or clim_mode is None: raise ArgumentError(experiment,clim_mode)
   # resolve folder arguments
   if project_folder is None and project is not None: 
@@ -246,19 +242,20 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   params = experimentParameters(experiment=experiment, domain=domain, clim_mode=clim_mode, 
                                 bias_correction=bias_correction, task=task, 
                                 clim_period=clim_period, run_period=run_period, period=period, **kwargs)
-  ( lWRF, task,experiment,exp, clim_dir,station_file, start_date,start_year,end_year, 
+  ( lWRF, task,experiment,exp, clim_dir, start_date,start_year,end_year, 
                                       clim_period,run_period,period, kwargs ) = params
     
   # call load function from HGS module
   dataset = hgs.loadHGS_StnTS(station=station, well=well, varlist=varlist, varatts=varatts, name=name, 
-                              title=title, ENSEMBLE=ENSEMBLE, folder=folder, experiment=experiment, 
+                              title=title, folder=folder, EXPERIMENT=experiment, 
                               period=period, run_period=run_period, start_date=start_date, 
-                              project_folder=project_folder, project=project, task=task, 
-                              BIAS_CORRECTION=bias_correction, prefix=prefix, clim_dir=clim_dir, 
+                              PROJECT_FOLDER=project_folder, PROJECT=project, TASK=task, 
+                              BIAS_CORRECTION=bias_correction, CLIM_DIR=clim_dir, 
                               WSC_station=WSC_station, Obs_well=Obs_well, basin=basin, lpad=lpad, 
                               GRID=grid, conservation_authority=conservation_authority,
                               basin_list=basin_list, filename=station_file, scalefactors=scalefactors, 
                               **kwargs)
+  
   # slice time axis for period
   if start_year is not None and end_year is not None:
     dataset = dataset(years=(start_year,end_year))
@@ -287,17 +284,56 @@ def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name
                    folder=project_folder_pattern, project_folder=None, obs_period=None, clim_period=None, 
                    ensemble_list=ensemble_list, ensemble_args=None, observation_list=gage_datasets, # ensemble and obs lists for project
                    project=None, grid=None, task=None, bias_correction=None, conservation_authority=None,
-                   prefix=None, WSC_station=None, basin=None, basin_list=None, scalefactors=None, **kwargs):
+                   WSC_station=None, basin=None, basin_list=None, scalefactors=None, **kwargs):
   ''' a wrapper for the regular HGS loader that can also load gage stations and assemble ensembles '''  
   return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
                             period=period, run_period=run_period, folder=folder, obs_period=obs_period, clim_period=clim_period, 
                             ensemble_list=ensemble_list, ensemble_args=ensemble_args, observation_list=observation_list, 
                             loadHGS_StnTS=loadHGS_StnTS, loadWSC_StnTS=loadWSC_StnTS, # use local versions of loaders
-                            prefix=prefix, WSC_station=WSC_station, basin=basin, basin_list=basin_list, 
+                            WSC_station=WSC_station, basin=basin, basin_list=basin_list, 
                             bias_correction=bias_correction, conservation_authority=conservation_authority,
                             domain=domain, project_folder=project_folder, project=project, grid=grid, clim_mode=clim_mode, 
                             exp_aliases=exp_aliases, task=task, scalefactors=scalefactors, **kwargs)  
 
+
+# wrapper for HGS binary load function, which defines experiment folders based on WRF experiments
+def loadHGS(experiment=None, varlist=None, name=None, title=None, basin=None, lkgs=False,  
+            domain=1, clim_mode=None, clim_period=None, bias_correction=None, task='hgs_run', grid=None, 
+            mode='climatology', file_mode='last_12', file_pattern='{PREFIX}o.head_olf.????', t_list=None, 
+            varatts=None, constatts=None, project_folder=None, project=None, folder=project_folder_pattern,
+            basin_list=None, metadata=None, conservation_authority=None, WRF_exps=None, 
+            experimentParameters=experimentParameters, **kwargs):
+  ''' Get a properly formatted WRF dataset with monthly time-series at station locations; as in
+      the hgsrun module, the capitalized kwargs can be used to construct folders and/or names '''
+  
+  if experiment is None or clim_mode is None: raise ArgumentError(experiment,clim_mode)
+  # resolve folder arguments
+  if project_folder is None and project is not None: 
+      project_folder = '{:s}/{:s}/'.format(hgs.root_folder,project)
+
+  params = experimentParameters(experiment=experiment, domain=domain, clim_mode=clim_mode, 
+                                clim_period=clim_period, run_period=None, period=None, 
+                                bias_correction=bias_correction, exp_aliases=exp_aliases,
+                                task=task, WRF_exps=WRF_exps, **kwargs)
+  ( lWRF, task,experiment,exp, clim_dir, start_date,start_year,end_year, 
+                                      clim_period,run_period,period, kwargs ) = params
+  del start_date,start_year,end_year,run_period,period
+  if basin_list is None: basin_list = wsc.basin_list # default basin list                                      
+  # call load function from HGS module
+  dataset = hgs.loadHGS(varlist=varlist, folder=folder, name=name, title=title, basin=basin, 
+                        EXPERIMENT=experiment, PROJECT_FOLDER=project_folder, GRID=grid,
+                        PROJECT=project, TASK=task, BIAS_CORRECTION=bias_correction, CLIM_DIR=clim_dir,
+                        mode=mode, file_mode=file_mode, file_pattern=file_pattern, t_list=t_list, lkgs=lkgs, 
+                        varatts=varatts, constatts=constatts, basin_list=basin_list, metadata=metadata, 
+                        conservation_authority=conservation_authority)
+   
+  # add WRF attributes to dataset
+  if lWRF:
+    for key,value in exp.__dict__.items():
+      dataset.atts['WRF_'+key] = value
+    dataset.atts['WRF_resolution'] = kwargs['resolution']
+  return dataset
+                                  
 
 # abuse for testing
 if __name__ == '__main__':

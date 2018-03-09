@@ -206,12 +206,10 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, lold=None
     else: raise ArgumentError(clim_mode)
     # set some defaults based on version
     if lold:
-        station_file = station_file_v1
         if run_period is None and not lts: run_period = 15 # in years
         if task is None: task = 'hgs_run_wrfpet' if bias_correction else 'hgs_run' 
         if clim_period is None and not lts: clim_period = 15 # in years
     else:
-        station_file = station_file_v2
         if run_period is None and not lts: run_period = 10 if lWRF else 5 # in years
         if task is None: task = 'hgs_run_v3_wrfpet' if bias_correction else 'hgs_run_v3'
         if clim_period is None and not lts: clim_period = 15 if lWRF else 30 # in years
@@ -276,7 +274,7 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, lold=None
         clim_dir = '{:s}_{:s}'.format(bias_correction,clim_dir)
     
     # return parameters
-    return ( lWRF, task,experiment,exp, clim_dir,station_file, start_date,start_year,end_year, 
+    return ( lWRF, task,experiment,exp, clim_dir, start_date,start_year,end_year, 
              clim_period,run_period,period, kwargs )
 
   
@@ -290,7 +288,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
                   basin_list=None, project=project_name, folder=project_folder_pattern, 
                   conservation_authority=conservation_authority, basin=main_basin, main_gage=main_gage,
                   station_list=None, experimentParameters=experimentParameters, 
-                  grid=main_grid, prefix=project_prefix, scalefactors=gage_scalefactors, **kwargs):
+                  grid=main_grid, scalefactors=gage_scalefactors, **kwargs):
     ''' a wrapper for the HGS_settings functions, which sets some default values '''
     
     # resolve station and well names
@@ -310,16 +308,17 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
         well = 'W{WELL_ID:07d}_{WELL_NO:1d}'.format(WELL_ID=well_id, WELL_NO=well_no)
         Obs_well = 'W{WELL_ID:07d}-{WELL_NO:1d}'.format(WELL_ID=well_id, WELL_NO=well_no)
     if basin_list is None: basin_list = wsc.basin_list # default basin list
-    
+    station_file = station_file_v1 if lold else station_file_v2
+        
     # now call primary function
     return default.loadHGS_StnTS(
                   experiment=experiment, domain=domain, period=period, varlist=varlist, varatts=varatts, 
                   name=name, title=title, run_period=run_period, clim_mode=clim_mode, clim_period=clim_period, 
                   station=station, well=well, bias_correction=bias_correction, project_folder=project_folder, 
                   task=task, WSC_station=WSC_station, Obs_well=Obs_well, lpad=lpad, ENSEMBLE=ENSEMBLE, 
-                  lWSCID=lWSCID, project=project, folder=folder, grid=grid, prefix=prefix,  
-                  conservation_authority=conservation_authority, basin=basin, basin_list=basin_list, 
-                  scalefactors=scalefactors, main_gage=main_gage, station_list=station_list, 
+                  lWSCID=lWSCID, project=project, folder=folder, station_file=station_file, 
+                  grid=grid, conservation_authority=conservation_authority, basin_list=basin_list, 
+                  basin=basin, scalefactors=scalefactors, main_gage=main_gage, station_list=station_list, 
                   experimentParameters=experimentParameters, lold=lold, **kwargs)
 
 
@@ -339,24 +338,45 @@ def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name
                    period=None, domain=None, exp_aliases=exp_aliases, run_period=None, clim_mode=None,
                    folder=project_folder_pattern, project_folder=None, obs_period=None, clim_period=None, 
                    ensemble_list=ensemble_list, ensemble_args=None, observation_list=gage_datasets, # ensemble and obs lists for project
-                   project=project_name, grid=main_grid, task=None, prefix=project_prefix, 
+                   project=project_name, grid=main_grid, task=None, 
                    bias_correction=None, conservation_authority=conservation_authority,
                    WSC_station=None, basin=main_basin, basin_list=None, scalefactors=gage_scalefactors, **kwargs):
   ''' a wrapper for the regular HGS loader that can also load gage stations and assemble ensembles '''  
   if basin_list is None: basin_list = wsc.basin_list # default basin list
-  return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, title=title, 
-                            period=period, run_period=run_period, folder=folder, obs_period=obs_period, clim_period=clim_period, 
-                            ensemble_list=ensemble_list, ensemble_args=ensemble_args, observation_list=observation_list, 
+  return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, 
+                            title=title, period=period, run_period=run_period, folder=folder, domain=domain,  
+                            obs_period=obs_period, clim_period=clim_period, ensemble_list=ensemble_list, 
+                            ensemble_args=ensemble_args, observation_list=observation_list, 
                             loadHGS_StnTS=loadHGS_StnTS, loadWSC_StnTS=loadWSC_StnTS, # use local versions of loaders
-                            prefix=prefix, WSC_station=WSC_station, basin=basin, basin_list=basin_list, 
+                            WSC_station=WSC_station, basin=basin, basin_list=basin_list, 
                             bias_correction=bias_correction, conservation_authority=conservation_authority,
-                            domain=domain, project_folder=project_folder, project=project, grid=grid, clim_mode=clim_mode, 
+                            project_folder=project_folder, project=project, grid=grid, clim_mode=clim_mode, 
                             exp_aliases=exp_aliases, task=task, scalefactors=scalefactors, **kwargs)  
+
+
+## function to load HGS binary data
+def loadHGS(experiment=None, varlist=None, name=None, title=None, basin=None, lkgs=False, grid=main_grid,
+            domain=1, clim_mode=None, clim_period=None, bias_correction=None, task=None,
+            mode='climatology', file_mode='last_12', file_pattern='{PREFIX}o.head_olf.????', t_list=None, 
+            varatts=None, constatts=None, project_folder=project_folder, project=project_name, 
+            folder=project_folder_pattern, metadata=None, conservation_authority=conservation_authority, 
+            basin_list=None, WRF_exps=WRF_exps, experimentParameters=experimentParameters, **kwargs):
+    ''' a wrapper for the regular HGS binary load function '''
+    if basin_list is None: basin_list = wsc.basin_list # default basin list
+    return default.loadHGS(experiment=experiment, varlist=varlist, name=name, title=title, 
+                           basin=basin, lkgs=lkgs, domain=domain, clim_mode=clim_mode, grid=grid,
+                           clim_period=clim_period, bias_correction=bias_correction, task=task,    
+                           mode=mode, file_mode=file_mode, file_pattern=file_pattern, t_list=t_list, 
+                           varatts=varatts, constatts=constatts, project_folder=project_folder, 
+                           project=project, folder=folder, basin_list=basin_list, metadata=metadata, 
+                           conservation_authority=conservation_authority, WRF_exps=WRF_exps, 
+                           experimentParameters=experimentParameters, **kwargs)
 
 # abuse for testing
 if __name__ == '__main__':
     
-  test_mode = 'gage_station'
+#   test_mode = 'gage_station'
+  test_mode = 'binary_dataset'
 #   test_mode = 'dataset'
 #   test_mode = 'ensemble'
 
@@ -365,6 +385,20 @@ if __name__ == '__main__':
     # load single dataset
     ds = loadWSC_StnTS(period=(1979,2009),) # station='Nith River at Canning')
     print(ds)
+    
+  elif test_mode == 'binary_dataset':
+
+    # load single dataset
+    ds = loadHGS(varlist=[], experiment='erai-g', domain=2,  
+                 clim_mode='periodic', bias_correction='AABC')
+#     ds = loadHGS_StnTS(experiment='NRCan', task='hgs_run_v2', 
+#                        clim_mode='periodic', lpad=True)
+    print('\n')
+    print(ds)
+    if 'model_time' in ds:
+        print('\n')
+        print(ds.model_time)
+        print(ds.model_time[:])
     
   elif test_mode == 'dataset':
 
