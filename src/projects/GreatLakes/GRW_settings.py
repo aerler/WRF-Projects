@@ -257,6 +257,7 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, lold=None
         # assume observationa data, with time axis origin in Jan 1979
         if start_year is None: start_year = 1979
         start_date = start_year
+        exp = None
     if end_year is None: end_year = start_year + run_period # period length
     else: run_period = end_year - start_year
     assert isinstance(run_period,(np.integer,int)), run_period
@@ -356,7 +357,7 @@ def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name
 
 ## function to load HGS binary data
 def loadHGS(experiment=None, varlist=None, name=None, title=None, basin=None, lkgs=False, grid=main_grid,
-            domain=1, clim_mode=None, clim_period=None, bias_correction=None, task=None,
+            domain=None, clim_mode=None, clim_period=None, bias_correction=None, task=None,
             mode='climatology', file_mode='last_12', file_pattern='{PREFIX}o.head_olf.????', t_list=None, 
             varatts=None, constatts=None, project_folder=project_folder, project=project_name, 
             folder=project_folder_pattern, metadata=None, conservation_authority=conservation_authority, 
@@ -391,8 +392,8 @@ if __name__ == '__main__':
     # load single dataset
     ds = loadHGS(varlist=[], experiment='erai-g', domain=2,  
                  clim_mode='periodic', bias_correction='AABC')
-#     ds = loadHGS_StnTS(experiment='NRCan', task='hgs_run_v2', 
-#                        clim_mode='periodic', lpad=True)
+#     ds = loadHGS(experiment='NRCan', task='hgs_run_v3', 
+#                  clim_mode='periodic', varlist=[])
     print('\n')
     print(ds)
     if 'model_time' in ds:

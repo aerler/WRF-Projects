@@ -298,7 +298,7 @@ def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name
 
 # wrapper for HGS binary load function, which defines experiment folders based on WRF experiments
 def loadHGS(experiment=None, varlist=None, name=None, title=None, basin=None, lkgs=False,  
-            domain=1, clim_mode=None, clim_period=None, bias_correction=None, task='hgs_run', grid=None, 
+            domain=None, clim_mode=None, clim_period=None, bias_correction=None, task='hgs_run', grid=None, 
             mode='climatology', file_mode='last_12', file_pattern='{PREFIX}o.head_olf.????', t_list=None, 
             varatts=None, constatts=None, project_folder=None, project=None, folder=project_folder_pattern,
             basin_list=None, metadata=None, conservation_authority=None, WRF_exps=None, 
