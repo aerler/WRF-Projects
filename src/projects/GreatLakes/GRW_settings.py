@@ -377,7 +377,8 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, basin=None, lk
 if __name__ == '__main__':
     
 #   test_mode = 'gage_station'
-  test_mode = 'binary_dataset'
+  test_mode = 'dataset_regrid'
+#   test_mode = 'binary_dataset'
 #   test_mode = 'dataset'
 #   test_mode = 'ensemble'
 
@@ -386,6 +387,18 @@ if __name__ == '__main__':
     # load single dataset
     ds = loadWSC_StnTS(period=(1979,2009),) # station='Nith River at Canning')
     print(ds)
+    
+  elif test_mode == 'dataset_regrid':
+
+    # load single dataset
+#     ds = loadHGS(varlist=[], experiment='erai-g', domain=2,  
+#                  clim_mode='periodic', bias_correction='AABC')
+    ds = loadHGS(experiment='NRCan', task='hgs_run_v3', 
+                 clim_mode='periodic', varlist=['sat'])
+    ds = ds(sheet=18)
+    print('\n')
+    print(ds)
+    print('\n')
     
   elif test_mode == 'binary_dataset':
 
