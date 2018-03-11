@@ -297,11 +297,12 @@ def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name
 
 
 # wrapper for HGS binary load function, which defines experiment folders based on WRF experiments
-def loadHGS(experiment=None, varlist=None, name=None, title=None, basin=None, lkgs=False,  
+def loadHGS(experiment=None, varlist=None, name=None, title=None, lgrid=False, sheet=None, lstrip=True, 
+            griddef=None, basin=None, subbasin=None, grid_folder=None, shape_file=None, lkgs=False,  
             domain=None, clim_mode=None, clim_period=None, bias_correction=None, task='hgs_run', grid=None, 
             mode='climatology', file_mode='last_12', file_pattern='{PREFIX}o.head_olf.????', t_list=None, 
             varatts=None, constatts=None, project_folder=None, project=None, folder=project_folder_pattern,
-            basin_list=None, metadata=None, conservation_authority=None, WRF_exps=None, 
+            lxyt=True, basin_list=None, metadata=None, conservation_authority=None, WRF_exps=None, 
             experimentParameters=experimentParameters, **kwargs):
   ''' Get a properly formatted WRF dataset with monthly time-series at station locations; as in
       the hgsrun module, the capitalized kwargs can be used to construct folders and/or names '''
@@ -320,7 +321,9 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, basin=None, lk
   del start_date,start_year,end_year,run_period,period
   if basin_list is None: basin_list = wsc.basin_list # default basin list                                      
   # call load function from HGS module
-  dataset = hgs.loadHGS(varlist=varlist, folder=folder, name=name, title=title, basin=basin, 
+  dataset = hgs.loadHGS(varlist=varlist, folder=folder, name=name, title=title, lstrip=lstrip,
+                        lgrid=lgrid, sheet=sheet, griddef=griddef, basin=basin, subbasin=subbasin, 
+                        grid_folder=grid_folder, shape_file=shape_file, lxyt=lxyt,
                         EXPERIMENT=experiment, PROJECT_FOLDER=project_folder, GRID=grid,
                         PROJECT=project, TASK=task, BIAS_CORRECTION=bias_correction, CLIM_DIR=clim_dir,
                         mode=mode, file_mode=file_mode, file_pattern=file_pattern, t_list=t_list, lkgs=lkgs, 
@@ -338,54 +341,53 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, basin=None, lk
 # abuse for testing
 if __name__ == '__main__':
     
-#   test_mode = 'gage_station'
-  test_mode = 'dataset'
-#   test_mode = 'ensemble'
+  test_mode = 'create_grid'
 
-  if test_mode == 'gage_station':
+  ## create a new grid
+  if test_mode == 'create_grid':
     
-    # load single dataset
-    ds = loadWSC_StnTS(period=(1979,2009),) # station='Nith River at Canning')
-    print(ds)
+    import os
+    from geodata.gdal import GridDefinition, pickleGridDef, loadPickledGridDef, grid_folder
     
-  elif test_mode == 'dataset':
+    convention='Proj4'
+    ## parameters for UTM 17 Assiniboine River Basin grids
+# #     # Bird River, a subbasin of the Assiniboine River Basin
+# #     name = 'brd1' # 5km resolution 
+#     geotransform = [246749.8, 5.e3, 0., 5524545., 0., 5.e3]; size = ((438573.1-246749.8)/5.e3,(5682634.-5524545.)/5.e3)
+#     print size
+#     size = tuple(int(i) for i in size)
+#     print size
+# #     geotransform = (245.e3, 5.e3, 0., 5524.e3, 0., 5.e3); size = (39,32)
+# #      projection = "+proj=utm +zone=14 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+    ## Assiniboine River Basin
+#     name = 'asb1' # 5km resolution 
+# #     geotransform = [-158200.6 , 5.e3, 0., 5202386., 0., 5.e3]; size = ((791696.2 +158200.6)/5.e3,(5880695.-5202386.)/5.e3)
+# #     print size
+# #     size = tuple(int(i) for i in size)
+# #     print size
+#     geotransform = (-159.e3, 5.e3, 0., 5202.e3, 0., 5.e3); size = (191,135)
+#     projection = "+proj=utm +zone=14 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+    ## parameters for Canada-wide Lambert Azimuthal Equal-area
+    name = 'can1' # 5km resolution
+    llx = -3500000; lly = -425000; urx = 3000000; ury = 4000000; dx = dy = 5.e3
+    geotransform = [llx, dx, 0., lly, 0., dy]; size = ((urx-llx)/dx,(ury-lly)/dy)
+    size = tuple(int(i) for i in size)
+    projection = "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs"
+    # N.B.: (x_0, dx, 0, y_0, 0, dy); (xl,yl)
+    #       GT(0),GT(3) are the coordinates of the bottom left corner
+    #       GT(1) & GT(5) are pixel width and height
+    #       GT(2) & GT(4) are usually zero for North-up, non-rotated maps
+    # create grid
+    griddef = GridDefinition(name=name, projection=projection, geotransform=geotransform, size=size, 
+                             xlon=None, ylat=None, lwrap360=False, geolocator=True, convention='Proj4')
 
-    # load single dataset
-    ds = loadHGS_StnTS(experiment='erai-g', domain=2, period=(1984,1994), 
-                       well='W424', z_aggregation=None, z_layers=None,
-                       clim_mode='periodic', lpad=True, bias_correction='AABC')
-#     ds = loadHGS_StnTS(experiment='NRCan', task='hgs_run_v2', 
-#                        clim_mode='periodic', lpad=True)
-    print(ds)
-    if 'discharge' in ds:
-        print('\n')
-        print(ds.discharge)
-        print(ds.discharge.mean(), ds.discharge.max(), ds.discharge.min(),)
-        print(ds.discharge.plot.units)
-    if 'head' in ds:
-        print('\n')
-        print(ds.head)
-        print(ds.head.mean(), ds.head.max(), ds.head.min(),)
-        print(ds.head.plot.units)
-    if ds.hasAxis('z'):
-        print('\n')
-        print(ds.z)
-        print(ds.z[:])
-    
-  elif test_mode == 'ensemble':
-    
-    print('')
-    print(ensemble_list)
+    # save pickle to standard location
+    filepath = pickleGridDef(griddef, folder=grid_folder, filename=None, lfeedback=True)
+    assert os.path.exists(filepath)
     print('')
     
-    # load an esemble of datasets
-    ens = loadHGS_StnEns(ensemble=['g-mean','t-mean'], domain=2, clim_mode='clim', 
-                         well='W424', z_aggregation='max', z_layers='screen',
-                         name='{EXP_NAME:s}_{RESOLUTION:s}', title='{EXP_NAME:s}_{RESOLUTION:s}',
-                         period=[(1984,1994),(2050,2060),(2090,2100)], obs_period=(1974,2004),
-                         lskipNaN=True, lcheckComplete=True, lold=False, bias_correction='AABC',
-                         outer_list=['ensemble','period'], lensemble=True)
-    # N.B.: all need to have unique names... whihc is a problem with obs...
-    print(ens)
-    print('\n')
-    print(ens[0])
+    # load pickle to make sure it is right
+    del griddef
+    griddef = loadPickledGridDef(grid=name, res=None, folder=grid_folder)
+    print(griddef)
+

@@ -23,9 +23,10 @@ project_prefix = 'grw_omafra'
 conservation_authority = 'GRCA'
 # some parameters
 gage_scalefactors = 1. # default scalefactor for discharge plots
-main_gage  = 'Brantford' # gage station(see station_list for proper HGS/WSC names)
-main_basin = 'GRW' # main basin name
-main_grid  = 'grw2' # climate data grid
+main_gage   = 'Brantford' # gage station(see station_list for proper HGS/WSC names)
+main_basin  = 'GRW' # main basin name
+main_grid   = 'grw2' # climate data grid
+binary_grid = 'grw3' # grid used to interpolated binary output
 # project folders
 project_folder = '{:s}/{:s}/'.format(hgs.root_folder,project_name) # the dataset root folder
 project_folder_pattern = '{PROJECT_FOLDER:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s}/{TASK:s}/'
@@ -355,16 +356,30 @@ def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name
                             exp_aliases=exp_aliases, task=task, scalefactors=scalefactors, **kwargs)  
 
 
+## function to interpolate HGS binary output to regular grid
+def gridDataset(dataset, griddef=binary_grid, basin=main_basin, subbasin=None, shape_file=None,  
+                basin_list=None, grid_folder=None):
+    ''' interpolate nodal/elemental datasets to a regular grid, add GDAL, and mask to basin outlines,
+        using values for the GRW and the grw1 grid'''
+    if basin_list is None: basin_list = wsc.basin_list # default basin list
+    return hgs.gridDataset(dataset, griddef=griddef, basin=basin, subbasin=subbasin, shape_file=shape_file,  
+                           basin_list=basin_list, grid_folder=grid_folder)
+    
+  
 ## function to load HGS binary data
-def loadHGS(experiment=None, varlist=None, name=None, title=None, basin=None, lkgs=False, grid=main_grid,
-            domain=None, clim_mode=None, clim_period=None, bias_correction=None, task=None,
+def loadHGS(experiment=None, varlist=None, name=None, title=None, lstrip=True, lgrid=False, sheet=None, 
+            griddef=binary_grid, basin=main_basin, subbasin=None, grid_folder=None, shape_file=None, 
+            domain=None, clim_mode=None, clim_period=None, bias_correction=None, task=None, grid=main_grid,
             mode='climatology', file_mode='last_12', file_pattern='{PREFIX}o.head_olf.????', t_list=None, 
-            varatts=None, constatts=None, project_folder=project_folder, project=project_name, 
+            varatts=None, constatts=None, project_folder=project_folder, project=project_name, lxyt=True,
             folder=project_folder_pattern, metadata=None, conservation_authority=conservation_authority, 
-            basin_list=None, WRF_exps=WRF_exps, experimentParameters=experimentParameters, **kwargs):
+            lkgs=False, basin_list=None, WRF_exps=WRF_exps, experimentParameters=experimentParameters, **kwargs):
     ''' a wrapper for the regular HGS binary load function '''
     if basin_list is None: basin_list = wsc.basin_list # default basin list
-    return default.loadHGS(experiment=experiment, varlist=varlist, name=name, title=title, 
+    # load dataset with some default values
+    return default.loadHGS(experiment=experiment, varlist=varlist, name=name, title=title, lstrip=lstrip,
+                           lgrid=lgrid, griddef=griddef, subbasin=subbasin, 
+                           grid_folder=grid_folder, shape_file=shape_file, sheet=sheet, lxyt=lxyt,
                            basin=basin, lkgs=lkgs, domain=domain, clim_mode=clim_mode, grid=grid,
                            clim_period=clim_period, bias_correction=bias_correction, task=task,    
                            mode=mode, file_mode=file_mode, file_pattern=file_pattern, t_list=t_list, 
@@ -373,10 +388,12 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, basin=None, lk
                            conservation_authority=conservation_authority, WRF_exps=WRF_exps, 
                            experimentParameters=experimentParameters, **kwargs)
 
+
 # abuse for testing
 if __name__ == '__main__':
     
 #   test_mode = 'gage_station'
+#   test_mode = 'create_grid'
   test_mode = 'dataset_regrid'
 #   test_mode = 'binary_dataset'
 #   test_mode = 'dataset'
@@ -388,14 +405,51 @@ if __name__ == '__main__':
     ds = loadWSC_StnTS(period=(1979,2009),) # station='Nith River at Canning')
     print(ds)
     
+  ## create a new grid
+  elif test_mode == 'create_grid':
+    
+    import os
+    from geodata.gdal import GridDefinition, pickleGridDef, loadPickledGridDef, grid_folder
+    
+    convention='Proj4'
+    ## parameters for UTM 17 GRW grids
+#     name = 'grw1' # 1km resolution
+#     geotransform = [500.e3,1.e3,0,4740.e3,0,1.e3]; size = (132,162)
+#     name = 'grw2' # 5km resolution
+#     geotransform = [500.e3,5.e3,0,4740.e3,0,5.e3]; size = (27,33)
+    name = 'grw3' # 500m resolution
+    geotransform = [500.e3,500,0,4740.e3,0,500]; size = (264,324)
+    projection = "+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+#     name = 'son1' # 5km resolution
+#     # X 320919.7943000002 Y 4624073.9199, C 5890 R 4062 x 100m
+#     geotransform = [320920.,5.e3,0,4624073.,0,5.e3]; size = (118,82)
+#     projection = "+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+#     ## parameters for South Nation grids
+    # N.B.: (x_0, dx, 0, y_0, 0, dy); (xl,yl)
+    #       GT(0),GT(3) are the coordinates of the bottom left corner
+    #       GT(1) & GT(5) are pixel width and height
+    #       GT(2) & GT(4) are usually zero for North-up, non-rotated maps
+    # create grid
+    griddef = GridDefinition(name=name, projection=projection, geotransform=geotransform, size=size, 
+                             xlon=None, ylat=None, lwrap360=False, geolocator=True, convention='Proj4')
+
+    # save pickle to standard location
+    filepath = pickleGridDef(griddef, folder=grid_folder, filename=None, lfeedback=True)
+    assert os.path.exists(filepath)
+    print('')
+    
+    # load pickle to make sure it is right
+    del griddef
+    griddef = loadPickledGridDef(grid=name, res=None, folder=grid_folder)
+    print(griddef)
+
   elif test_mode == 'dataset_regrid':
 
     # load single dataset
 #     ds = loadHGS(varlist=[], experiment='erai-g', domain=2,  
 #                  clim_mode='periodic', bias_correction='AABC')
-    ds = loadHGS(experiment='NRCan', task='hgs_run_v3', 
-                 clim_mode='periodic', varlist=['sat'])
-    ds = ds(sheet=18)
+    ds = loadHGS(experiment='NRCan', task='hgs_run_v3', lgrid=True, 
+                 clim_mode='periodic', varlist=['zs'])
     print('\n')
     print(ds)
     print('\n')
