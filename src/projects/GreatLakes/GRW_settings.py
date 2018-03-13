@@ -394,8 +394,8 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, lstrip=True, l
 if __name__ == '__main__':
     
 #   test_mode = 'gage_station'
-#   test_mode = 'create_grid'
-  test_mode = 'dataset_regrid'
+  test_mode = 'create_grid'
+#   test_mode = 'dataset_regrid'
 #   test_mode = 'binary_dataset'
 #   test_mode = 'dataset'
 #   test_mode = 'ensemble'
@@ -419,7 +419,8 @@ if __name__ == '__main__':
 #     name = 'grw2' # 5km resolution
 #     geotransform = [500.e3,5.e3,0,4740.e3,0,5.e3]; size = (27,33)
     name = 'grw3' # 500m resolution
-    geotransform = [500.e3,500,0,4740.e3,0,500]; size = (264,324)
+    d = 500
+    geotransform = [500.e3-d/2,d,0,4740.e3-d/2,0,d]; size = (250+1,320+1)
     projection = "+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
 #     name = 'son1' # 5km resolution
 #     # X 320919.7943000002 Y 4624073.9199, C 5890 R 4062 x 100m
