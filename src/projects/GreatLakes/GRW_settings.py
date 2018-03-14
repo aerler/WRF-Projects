@@ -368,7 +368,7 @@ def gridDataset(dataset, griddef=binary_grid, basin=main_basin, subbasin=None, s
   
 ## function to load HGS binary data
 def loadHGS(experiment=None, varlist=None, name=None, title=None, lstrip=True, lgrid=False, sheet=None,
-            lkgs=False, season=None, 
+            lkgs=False, season=None, period=None,
             griddef=binary_grid, basin=main_basin, subbasin=None, grid_folder=None, shape_file=None, 
             domain=None, clim_mode=None, clim_period=None, bias_correction=None, task=None, grid=main_grid,
             mode='climatology', file_mode='last_12', file_pattern='{PREFIX}o.head_olf.????', t_list=None, 
@@ -379,7 +379,7 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, lstrip=True, l
     if basin_list is None: basin_list = wsc.basin_list # default basin list
     # load dataset with some default values
     return default.loadHGS(experiment=experiment, varlist=varlist, name=name, title=title, lstrip=lstrip,
-                           lgrid=lgrid, griddef=griddef, subbasin=subbasin, season=season,
+                           lgrid=lgrid, griddef=griddef, subbasin=subbasin, season=season, period=period,
                            grid_folder=grid_folder, shape_file=shape_file, sheet=sheet, lxyt=lxyt,
                            basin=basin, lkgs=lkgs, domain=domain, clim_mode=clim_mode, grid=grid,
                            clim_period=clim_period, bias_correction=bias_correction, task=task,    
