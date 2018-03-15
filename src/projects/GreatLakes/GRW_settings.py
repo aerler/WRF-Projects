@@ -368,7 +368,7 @@ def gridDataset(dataset, griddef=binary_grid, basin=main_basin, subbasin=None, s
   
 ## function to load HGS binary data
 def loadHGS(experiment=None, varlist=None, name=None, title=None, lstrip=True, lgrid=False, sheet=None,
-            lkgs=False, season=None, period=None,
+            lkgs=False, lflipdgw=False, season=None, period=None,
             griddef=binary_grid, basin=main_basin, subbasin=None, grid_folder=None, shape_file=None, 
             domain=None, clim_mode=None, clim_period=None, bias_correction=None, task=None, grid=main_grid,
             mode='climatology', file_mode='last_12', file_pattern='{PREFIX}o.head_olf.????', t_list=None, 
@@ -387,7 +387,7 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, lstrip=True, l
                            varatts=varatts, constatts=constatts, project_folder=project_folder, 
                            project=project, folder=folder, basin_list=basin_list, metadata=metadata, 
                            conservation_authority=conservation_authority, WRF_exps=WRF_exps, 
-                           experimentParameters=experimentParameters, **kwargs)
+                           lflipdgw=lflipdgw, experimentParameters=experimentParameters, **kwargs)
 
 
 # abuse for testing

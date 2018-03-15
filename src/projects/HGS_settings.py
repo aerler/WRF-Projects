@@ -9,6 +9,7 @@ import numpy as np
 import hgs.HGS as hgs # need to prevent name collisions here
 import projects.WSC_basins as wsc
 from collections import namedtuple
+from datasets.common import BatchLoad
 from geodata.misc import ArgumentError, DatasetError
 
 # project folders
@@ -303,13 +304,14 @@ def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name
 
 
 # wrapper for HGS binary load function, which defines experiment folders based on WRF experiments
+@BatchLoad
 def loadHGS(experiment=None, varlist=None, name=None, title=None, period=None, lgrid=False, sheet=None, 
             griddef=None, basin=None, subbasin=None, grid_folder=None, shape_file=None, season=None, 
             domain=None, clim_mode=None, clim_period=None, bias_correction=None, task='hgs_run', grid=None, 
             mode='climatology', file_mode='last_12', file_pattern='{PREFIX}o.head_olf.????', t_list=None, 
             varatts=None, constatts=None, project_folder=None, project=None, folder=project_folder_pattern,
             lxyt=True, basin_list=None, metadata=None, conservation_authority=None, WRF_exps=None, 
-            lstrip=True, lkgs=False, experimentParameters=experimentParameters, **kwargs):
+            lflipdgw=False, lstrip=True, lkgs=False, experimentParameters=experimentParameters, **kwargs):
   ''' Get a properly formatted WRF dataset with monthly time-series at station locations; as in
       the hgsrun module, the capitalized kwargs can be used to construct folders and/or names '''
   
@@ -333,7 +335,7 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, period=None, l
                         PROJECT=project, TASK=task, BIAS_CORRECTION=bias_correction, CLIM_DIR=clim_dir,
                         mode=mode, file_mode=file_mode, file_pattern=file_pattern, t_list=t_list, lkgs=lkgs, 
                         varatts=varatts, constatts=constatts, basin_list=basin_list, metadata=metadata, 
-                        conservation_authority=conservation_authority)
+                        lflipdgw=lflipdgw, conservation_authority=conservation_authority, **kwargs)
    
   # add WRF attributes to dataset
   if lWRF:
