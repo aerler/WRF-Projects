@@ -294,7 +294,9 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
     ''' a wrapper for the HGS_settings functions, which sets some default values '''
     
     # resolve station and well names
-    if well and station: raise ArgumentError
+    if station and station.lower() in ('water_balance','newton_info'): pass 
+    elif well and well.lower() in ('water_balance','newton_info'): pass
+    elif well and station: raise ArgumentError(station,well)
     elif station:
         if station_list is None: station_list = station_list_etal
         if station in station_list_etal: 

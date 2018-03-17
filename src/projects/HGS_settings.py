@@ -228,13 +228,15 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   # resolve station/well name
   if WSC_station and not station: station = WSC_station
   if not station and not well: station = main_gage
-  if well and station: raise ArgumentError
+  if station and station.lower() in ('water_balance','newton_info'): pass 
+  elif well and well.lower() in ('water_balance','newton_info'): pass
+  elif well and station: raise ArgumentError(station,well)
   elif station:
       if station_list and station in station_list: 
           if WSC_station is None: WSC_station = station_list[station].WSC
           station = station_list[station].HGS if hasattr(station_list[station], 'HGS') else '{WSC_ID0:s}'
       if WSC_station is None:
-          raise NotImplementedError
+          raise NotImplementedError, station
   elif well:
       if Obs_well is None:
           raise NotImplementedError
