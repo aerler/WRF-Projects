@@ -275,15 +275,16 @@ plot_labels_rc['rSM']             = 'Soil Moist.'
 plot_labels_rc['infil']           = 'Infiltration'
 plot_labels_rc['exfil']           = 'Exfiltration'
 plot_labels_rc['delta_storage']   = 'Storage'
-plot_labels_rc['tot_et']          = 'Actual ET'
-plot_labels_rc['tot_pet']         = 'PET'
-plot_labels_rc['can_et']          = 'Canopy ET'
-plot_labels_rc['tot_precip']      = 'Water Flx.'
+plot_labels_rc['et_tot']          = 'Actual ET'
+plot_labels_rc['pet_tot']         = 'PET'
+plot_labels_rc['et_can']          = 'Canopy ET'
+plot_labels_rc['precip_tot']      = 'Water Flx.'
 plot_labels_rc['discharge']       = 'Discharge'
 plot_labels_rc['outflow']         = 'Outflow'
 plot_labels_rc['sfroff']          = 'Sfc. R\'off'
 plot_labels_rc['totroff']         = 'Runoff'
 plot_labels_rc['baseflow']        = 'Baseflow'
+plot_labels_rc['recharge']        = 'Recharge'
 plot_labels_rc['d_tot']           = 'Total Storage'
 plot_labels_rc['d_olf']           = 'Surface'
 plot_labels_rc['d_pm']           = 'Subsurface'
@@ -312,15 +313,18 @@ variable_plotargs_rc = default.variable_plotargs_rc.copy()
 # variable_plotargs_rc['exfil']          = AttrDict(color = '#AAA2D8')
 # variable_plotargs_rc['outflow']        = AttrDict(color = '#62A1C6')
 variable_plotargs_rc['baseflow']       = AttrDict(color = 'red')
+variable_plotargs_rc['recharge']       = AttrDict(color = 'green')
 variable_plotargs_rc['infil']          = AttrDict(color = 'green')
 variable_plotargs_rc['exfil']          = AttrDict(color = 'purple')
 variable_plotargs_rc['outflow']        = AttrDict(color = 'red')
 variable_plotargs_rc['discharge']      = AttrDict(color = 'blue')
 variable_plotargs_rc['delta_storage']  = AttrDict(color = 'gold')
-variable_plotargs_rc['tot_et']         = AttrDict(color = 'red')
-variable_plotargs_rc['tot_pet']        = AttrDict(color = 'purple')
-variable_plotargs_rc['can_et']         = AttrDict(color = 'magenta')
-variable_plotargs_rc['tot_precip']     = AttrDict(color = 'blue')
+variable_plotargs_rc['pet_tot']        = AttrDict(color = 'purple')
+variable_plotargs_rc['et_tot']         = AttrDict(color = 'red')
+variable_plotargs_rc['et_can']         = AttrDict(color = 'magenta')
+variable_plotargs_rc['trans_pm']       = AttrDict(color = 'orchid')
+variable_plotargs_rc['evap_pm']        = AttrDict(color = 'coral')
+variable_plotargs_rc['precip_tot']     = AttrDict(color = 'blue')
 variable_plotargs_rc['sfroff']         = AttrDict(color = 'green')
 variable_plotargs_rc['totroff']        = AttrDict(color = 'blue')
 variable_plotargs_rc['d_tot']          = AttrDict(color = 'red')

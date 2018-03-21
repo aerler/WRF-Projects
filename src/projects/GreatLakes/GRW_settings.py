@@ -328,13 +328,15 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
 
 # custom gage station loader
 def loadWSC_StnTS(station=main_gage, name=None, title=None, basin=main_basin, basin_list=None, varlist=None, 
-                  varatts=None, period=None, filetype='monthly', scalefactors=gage_scalefactors, **kwargs):
+                  varatts=None, period=None, filetype='monthly', scalefactors=gage_scalefactors, lkgs=False, 
+                  **kwargs):
   ''' a wrapper to load gage stations for the GRW with appropriate default values'''
   # load gage station
   if station in station_list: station = station_list[station].WSC # get WSC name for gage station (different from HGS name...)
   if basin_list is None: basin_list = wsc.basin_list # default basin list
   return wsc.loadWSC_StnTS(basin=basin, station=station, varlist=varlist, varatts=varatts, filetype=filetype,
-                           name=name, basin_list=basin_list, period=period, scalefactors=scalefactors, **kwargs)
+                           name=name, basin_list=basin_list, period=period, scalefactors=scalefactors, 
+                           lkgs=lkgs, **kwargs)
   
 
 # wrapper to load HGS ensembles, otherwise the same
