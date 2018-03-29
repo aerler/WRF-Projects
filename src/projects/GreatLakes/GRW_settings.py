@@ -39,10 +39,10 @@ station_list = OrderedDict() # this is the main gage of the GRW
 station_list['Grand River at Brantford']  = Station(HGS='Station_GR_Brantford',WSC='Grand River_Brantford',ylim=150)
 station_list['Nith River at Canning']     = Station(HGS='Station_Nith_River_near_Canning_(moved_upstrea',WSC='Nith River_Canning',ylim=35 )
 station_list['Grand River at Marsville']  = Station(HGS='Station_GR_Marsville_(near_it)',WSC='Grand River_Marsville',ylim=30)
-station_list['Conestogo at Glen Allan']   = Station(HGS='Station_Conestogo_River_at_Glen_Allan',WSC='Conestogo River_Glen Allan',ylim=20)
+station_list['Conestogo River at Glen Allan']   = Station(HGS='Station_Conestogo_River_at_Glen_Allan',WSC='Conestogo River_Glen Allan',ylim=20)
 station_list['Speed River at Guelph']     = Station(HGS='Station_Speed_River_near_Guelph(moved_North)',WSC='Speed River_Guelph',ylim=20)
-station_list['Whitemans at Mount Vernon'] = Station(HGS='Station_Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=12)
-station_list['Fairchild at Brantford']    = Station(HGS='Station_Fairchild_Creek_near_Brantford',WSC='Fairchild Creek_Brantford',ylim=12 )
+station_list['Whiteman\'s Cr. at Mt. Vernon'] = Station(HGS='Station_Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=12)
+station_list['Fairchild River at Brantford']    = Station(HGS='Station_Fairchild_Creek_near_Brantford',WSC='Fairchild Creek_Brantford',ylim=12 )
 # look-up tables for WSC/HGS station name conversion                           
 WSC_station_list = {stn.WSC:stn.HGS for stn in station_list.values()}
 HGS_station_list = {stn.HGS:stn.WSC for stn in station_list.values()}

@@ -79,6 +79,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   # some default kwargs
   if 'bandalpha' not in plotargs: plotargs['bandalpha'] = 0.35
   if 'errorscale' not in plotargs: plotargs['errorscale'] = 0.5
+  errorscale = plotargs['errorscale']
   plotargs['parasite_axes'] = dict(offset=-0.5/(len(varlist)+1.))
   #if 'linestyles' not in plotargs: plotargs['linestyles'] = ('-','--','-.')
   
@@ -144,10 +145,10 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   plts = [] # collect representative line objects to create secondary legend (usually for datasets)
   if ylim is not None: axes.set_ylim(ylim) 
   if varlist:
-    plts += makePlots(obsens, obserr, varlist=varlist, lleg=False, lerrbar=True, lerrbnd=False)
+    plts += makePlots(obsens, obserr, varlist=varlist, lleg=False, lerrbar=True, lerrbnd=False, errorscale=errorscale)
     plts += makePlots(expens, experr, varlist=varlist, lleg=True, lerrbar=False, lerrbnd=True, **plotargs.copy())
   if scalevars:
-    plts += makePlots(obsens, obserr, scalevars=scalevars, lleg=False, lerrbar=True, lerrbnd=False)
+    plts += makePlots(obsens, obserr, scalevars=scalevars, lleg=False, lerrbar=True, lerrbnd=False, errorscale=errorscale)
     plts += makePlots(expens, experr, scalevars=scalevars, lleg=True, lerrbar=False, lerrbnd=True, **plotargs.copy())  
   
   # add dataset legend (if desired)
