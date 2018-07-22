@@ -814,7 +814,7 @@ if __name__ == '__main__':
       f = plt.figure(facecolor='white', figsize=figsize)
       ax = []
       for n in xrange(nax):
-        ax.append(f.add_subplot(subplot[0],subplot[1],n+1, axisbg='blue'))
+        ax.append(f.add_subplot(subplot[0],subplot[1],n+1, facecolor='blue'))
       f.subplots_adjust(**margins) # hspace, wspace
       if not maps:
         print(' - setting up map projection\n') 

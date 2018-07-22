@@ -167,9 +167,9 @@ if __name__ == '__main__':
   folder = figure_folder; lsamesize = False
   lpickle = True # load projection from file or recompute
   lprint = True # write plots to disk using case as a name tag
-#   maptype = 'lcc-grw'; lstations = False; lbasins = True; domain = 2
+  maptype = 'lcc-grw'; lstations = False; lbasins = True; domain = 2
 #   maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = 2
-  maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = None
+#   maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = None
 #   maptype = 'lcc-NA'; lstations = False; domain = 1
 #   lbasins = True; basinlist = ('ARB','FRB','CRB','NRB','PSB'); lprovinces = False; provlist = ['BC','AB','ON']
 #   lbasins = False; basinlist = ('ARB','FRB','GLB'); lprovinces = False; provlist = ['BC','AB','ON']
@@ -186,74 +186,74 @@ if __name__ == '__main__':
 #   variables = [['dryprec_010']*3+['precip']*3, 'precip']
 
 
-# validation and projection for the Great Lakes region
-  res = None; case = '{RES}'; domain = 1; wrftypes = None
-#   maptype = 'lcc-NA'; lstations = False; lbasins = True; basinlist = ('GLB',); case = 'na'
-  domain = 1; grid = 'glb1_d{DOM:02d}'.format(DOM=domain); res = ['10km' if domain == 2 else '30km']*4
-#   explist = ['NRCan','GPCC',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = [NRC70,None]*2; case = 'gpcc025'
-#   explist = ['NRCan','GPCC',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = NRC70; case = 'gpcc05'
-#   explist = ['NRCan','CRU',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = NRC70; case = 'cru'
-#   exptitles = [exptitle+', {S:s}' for exptitle in explist]; #grid = ['glb1_d02','glb1_d02']*2
-#   explist = ['CFSR','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]; tag = 'd01'; domain = 2
-#   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
-#   explist = ['g-ens','Ens','g-ens','Ens']; seasons = [['summer']*2+['winter']*2]; domain = 1; case = '{EXP0}_{RES}'
-#   exptitles = ['WRF Ensemble ({RES:s}), {S:s}','CESM Ensemble, {S:s}']*2; grid = ['glb1_d01','glb1_d01']*2
-#   explist = ['Ens','g-ens','t-ens',]*2; seasons = [['summer']*3+['winter']*3]; wrftypes = ['']*6
-#   domain = 1; grid = 'glb1_d{DOM:02d}'.format(DOM=domain); res = ['10km' if domain == 2 else '30km']*6
-#   explist = ['Ens','g3-ens','t3-ens',]*2; seasons = [['summer']*3+['winter']*3]
-#   domain = 1; grid = 'glb1-90km_d01'; res = '90km'
-#   exptitles = ['CESM Ensemble, {S:s}','WRF G Ens. ({RES:s}), {S:s}','WRF T Ens. ({RES:s}), {S:s}',]*2
-#   explist = ['g-ctrl','gg-ctrl','gg2-ctrl']; seasons = [['summer']*len(explist)]; wrftypes = ['']*len(explist)
-  explist = ['g-ens','t-ens']*2; seasons = [['annual']*2+['winter']*2]; wrftypes = ['']*len(explist); case = 'gt-ens'
-  exptitles = ['WRF G Ensemble, {S:s}','WRF T Ensemble, {S:s}',]*2
-#   wrftypes = ['G']*3+['T']*3; seasons = [['summer']*6]; case = '{:s}-ens_res'.format('gt')
-#   wrftypes = ['G']*6; seasons = [['summer']*3+['winter']*3]; case = '{:s}-ens_res'.format(wrftypes[0].lower())
-#   explist = [ wt.lower()+exp for wt,exp in zip(wrftypes,['3-ens','-ens','-ens',]*2) ]
-#   reflist = [ 'g'+exp for exp in ['3-ens','-ens','-ens',]*2 ]; wrftype = 'T/G'; case = 't_over_g'
-#   domain = [1,1,2]*2; grid = ['glb1-90km_d01','glb1_d01','glb1_d02']*2 
-#   res = ['90km','30km','10km']*2; exptitles = ['WRF {TYPE:s} Ens. ({RES:s}), {S:s}',]*6
-#   seasons = [['summer']*3+['annual']*3]
-  exptitles = [ t.format(RES=r,S=s.title(),TYPE=wt.upper()) for t,s,r,wt in zip(exptitles,seasons[0],res,wrftypes) ]
-#   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['winter']*2]
-#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
-#   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
-#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
-#   exptitles = ['G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
-#   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
-#   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
-#   if res is None: res = '30km' if domain == 1 else '10km' if domain == 2 else ''
-#   case = case.format(EXP0=explist[0],EXP1=explist[1],RES=res)
-#   exptitles = [ t.format(RES=res,S=s.title(),TYPE=wrftype) for t,s in zip(exptitles,seasons[0]) ]
-#   variables = ['SWDNB']; cbn = 5; lfrac = True; WRFfiletypes = ['rad']
-#   variables = ['LWDNB']; cbn = 5; lfrac = False; WRFfiletypes = ['rad']
-#   variables = ['ps']; cbn = 5; ldiff = True; WRFfiletypes = ['srfc']; laddContour = False
-#   variables = ['PBLH']; cbn = 5; lfrac = True; WRFfiletypes = ['plev3d']
-#   variables = ['Z']; cbn = 5; ldiff = True; WRFfiletypes = ['plev3d']; level_agg['i_p'] = 2; laddContour = True
-#   variables = ['RH']; cbn = 5; ldiff = True; WRFfiletypes = ['plev3d']; level_agg['p'] = 85000
-#   variables = ['T']; cbn = 5; ldiff = True; WRFfiletypes = ['plev3d']; variable_settings = ['T_prj']; level_agg['p'] = 85000
-#   variables = ['T2']; cbn = 5 # T2 without diffs
-#   variables = ['precip']; cbn = 6 # precip without diffs
-#   variables = ['runoff']; cbn = 7; WRFfiletypes = ['lsm','hydro'] 
-#   variable_settings = 'runoff_fraction'; refvars = ['precip']
-#   lfrac = True; reflist = explist; period = H15; refprd = H15; case += '_frac'
-#   variables = ['preccu']; cbn = 6
-#   variables = ['precnc']; cbn = 6
-#   variables = ['preccu',]; cbn = 6; lfrac = True; variable_settings = ['precip_prj'] # precip
-#   variables = ['T2']; cbn = 6; ldiff = True; variable_settings = ['T2_prj'] # T2
-#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-  variables = ['snow']; cbn = 7; lfrac = True; # variable_settings = ['precip_prj'] # snow
-#   variables = ['evap']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-#   variables = ['preccu']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-#   variables = ['precnc']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-#   variables = ['zs']; seasons = [['hidef']*6]; WRFfiletypes += ['const']; lcontour = True
-#   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
-#   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
-  period = B15; refprd = H15; reflist = reflist or explist; case += '_prj' # projection 
-#   period = H15; refprd = H15; case += '_val'; variable_settings = None; reflist = reflist or 'Unity' # validation
-#   period = H15; refprd = NRC70; variable_settings = None; reflist = 'NRCan' # validation  
-#   case = tag+'val_narr'; reflist = 'NARR'
-#   period = H15; ldiff = lfrac = False; variable_settings = None
-#   lfrac = False; ldiff = True
+# # validation and projection for the Great Lakes region
+#   res = None; case = '{RES}'; domain = 1; wrftypes = None
+# #   maptype = 'lcc-NA'; lstations = False; lbasins = True; basinlist = ('GLB',); case = 'na'
+#   domain = 1; grid = 'glb1_d{DOM:02d}'.format(DOM=domain); res = ['10km' if domain == 2 else '30km']*4
+# #   explist = ['NRCan','GPCC',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = [NRC70,None]*2; case = 'gpcc025'
+# #   explist = ['NRCan','GPCC',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = NRC70; case = 'gpcc05'
+# #   explist = ['NRCan','CRU',]*2; seasons = [['summer']*2+['winter']*2]; domain = None; period = NRC70; case = 'cru'
+# #   exptitles = [exptitle+', {S:s}' for exptitle in explist]; #grid = ['glb1_d02','glb1_d02']*2
+# #   explist = ['CFSR','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]; tag = 'd01'; domain = 2
+# #   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
+# #   explist = ['g-ens','Ens','g-ens','Ens']; seasons = [['summer']*2+['winter']*2]; domain = 1; case = '{EXP0}_{RES}'
+# #   exptitles = ['WRF Ensemble ({RES:s}), {S:s}','CESM Ensemble, {S:s}']*2; grid = ['glb1_d01','glb1_d01']*2
+# #   explist = ['Ens','g-ens','t-ens',]*2; seasons = [['summer']*3+['winter']*3]; wrftypes = ['']*6
+# #   domain = 1; grid = 'glb1_d{DOM:02d}'.format(DOM=domain); res = ['10km' if domain == 2 else '30km']*6
+# #   explist = ['Ens','g3-ens','t3-ens',]*2; seasons = [['summer']*3+['winter']*3]
+# #   domain = 1; grid = 'glb1-90km_d01'; res = '90km'
+# #   exptitles = ['CESM Ensemble, {S:s}','WRF G Ens. ({RES:s}), {S:s}','WRF T Ens. ({RES:s}), {S:s}',]*2
+# #   explist = ['g-ctrl','gg-ctrl','gg2-ctrl']; seasons = [['summer']*len(explist)]; wrftypes = ['']*len(explist)
+#   explist = ['g-ens','t-ens']*2; seasons = [['annual']*2+['winter']*2]; wrftypes = ['']*len(explist); case = 'gt-ens'
+#   exptitles = ['WRF G Ensemble, {S:s}','WRF T Ensemble, {S:s}',]*2
+# #   wrftypes = ['G']*3+['T']*3; seasons = [['summer']*6]; case = '{:s}-ens_res'.format('gt')
+# #   wrftypes = ['G']*6; seasons = [['summer']*3+['winter']*3]; case = '{:s}-ens_res'.format(wrftypes[0].lower())
+# #   explist = [ wt.lower()+exp for wt,exp in zip(wrftypes,['3-ens','-ens','-ens',]*2) ]
+# #   reflist = [ 'g'+exp for exp in ['3-ens','-ens','-ens',]*2 ]; wrftype = 'T/G'; case = 't_over_g'
+# #   domain = [1,1,2]*2; grid = ['glb1-90km_d01','glb1_d01','glb1_d02']*2 
+# #   res = ['90km','30km','10km']*2; exptitles = ['WRF {TYPE:s} Ens. ({RES:s}), {S:s}',]*6
+# #   seasons = [['summer']*3+['annual']*3]
+#   exptitles = [ t.format(RES=r,S=s.title(),TYPE=wt.upper()) for t,s,r,wt in zip(exptitles,seasons[0],res,wrftypes) ]
+# #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['winter']*2]
+# #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+# #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
+# #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+# #   exptitles = ['G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
+# #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
+# #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
+# #   if res is None: res = '30km' if domain == 1 else '10km' if domain == 2 else ''
+# #   case = case.format(EXP0=explist[0],EXP1=explist[1],RES=res)
+# #   exptitles = [ t.format(RES=res,S=s.title(),TYPE=wrftype) for t,s in zip(exptitles,seasons[0]) ]
+# #   variables = ['SWDNB']; cbn = 5; lfrac = True; WRFfiletypes = ['rad']
+# #   variables = ['LWDNB']; cbn = 5; lfrac = False; WRFfiletypes = ['rad']
+# #   variables = ['ps']; cbn = 5; ldiff = True; WRFfiletypes = ['srfc']; laddContour = False
+# #   variables = ['PBLH']; cbn = 5; lfrac = True; WRFfiletypes = ['plev3d']
+# #   variables = ['Z']; cbn = 5; ldiff = True; WRFfiletypes = ['plev3d']; level_agg['i_p'] = 2; laddContour = True
+# #   variables = ['RH']; cbn = 5; ldiff = True; WRFfiletypes = ['plev3d']; level_agg['p'] = 85000
+# #   variables = ['T']; cbn = 5; ldiff = True; WRFfiletypes = ['plev3d']; variable_settings = ['T_prj']; level_agg['p'] = 85000
+# #   variables = ['T2']; cbn = 5 # T2 without diffs
+# #   variables = ['precip']; cbn = 6 # precip without diffs
+# #   variables = ['runoff']; cbn = 7; WRFfiletypes = ['lsm','hydro'] 
+# #   variable_settings = 'runoff_fraction'; refvars = ['precip']
+# #   lfrac = True; reflist = explist; period = H15; refprd = H15; case += '_frac'
+# #   variables = ['preccu']; cbn = 6
+# #   variables = ['precnc']; cbn = 6
+# #   variables = ['preccu',]; cbn = 6; lfrac = True; variable_settings = ['precip_prj'] # precip
+# #   variables = ['T2']; cbn = 6; ldiff = True; variable_settings = ['T2_prj'] # T2
+# #   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+#   variables = ['snow']; cbn = 7; lfrac = True; # variable_settings = ['precip_prj'] # snow
+# #   variables = ['evap']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+# #   variables = ['preccu']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+# #   variables = ['precnc']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+# #   variables = ['zs']; seasons = [['hidef']*6]; WRFfiletypes += ['const']; lcontour = True
+# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
+# #   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
+#   period = B15; refprd = H15; reflist = reflist or explist; case += '_prj' # projection 
+# #   period = H15; refprd = H15; case += '_val'; variable_settings = None; reflist = reflist or 'Unity' # validation
+# #   period = H15; refprd = NRC70; variable_settings = None; reflist = 'NRCan' # validation  
+# #   case = tag+'val_narr'; reflist = 'NARR'
+# #   period = H15; ldiff = lfrac = False; variable_settings = None
+# #   lfrac = False; ldiff = True
 
 # ## comparison of NRCan and GPCC/CRU
 #   case = 'nrcan_val'; maptype = 'lcc-can'; grid = 'glb1_d01'; 
@@ -276,21 +276,24 @@ if __name__ == '__main__':
 # #   reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
 # #   reflist = None; ldiff = False; lfrac = False; variable_settings = None; cbn = 6
 
-# ## GRW maps
-#   case = 'GRW'; maptype = 'lcc-grw'; cbo = 'vertical'; lcontour = True
+## GRW maps
+  case = 'GRW'; maptype = 'lcc-grw'; cbo = 'vertical'; lcontour = False
 #   seasons = [['November','December','January','February','March','April']]; exptitles = [s.title() for s in seasons[0]]
-# #   explist = ['NRCan']*len(exptitles); period = NRC70
-#   reflist = ['NRCan']*len(exptitles); refprd = NRC70; grid = 'glb1_d01'; domain = 1
-# #   explist = ['erai-t']*len(exptitles); period = H30
-#   explist = ['t3-ensemble']*len(exptitles); period = H15
+  explist = ['NRCan']; period = NRC70
+  seasons = ['annual',]
+#   explist = ['g-ens']*2+['t-ens']*2; period = H15
+#   reflist = ['NRCan']*len(explist); refprd = NRC70; ldiff = True
+  WRFfiletypes = ['aabc']; grid = 'grw2'; domain = 2
+  variables = ['liqwatflx']; #cbn = 11 
+#   variables = ['pet_wrf']; refvars = ['pet'] #cbn = 11 
 #   variables = ['T2']; isoline = 273.5; cbn = 11; ldiff = True
-# #   variables = ['Tslb']; variable_settings = 'T_freeze'; level_agg = dict(i_s=0); isoline = 273.5; cbn = 11
-# #   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
-# #   variables = ['snwmlt']; isoline = 1.; cbn = 11
-# #   variables = ['ratio']; isoline = 1.; cbn = 11 
-# #   case = 'ephemeral'
-# #   case = 'maritime'
-# #   case = 'prairies'
+#   variables = ['Tslb']; variable_settings = 'T_freeze'; level_agg = dict(i_s=0); isoline = 273.5; cbn = 11
+#   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
+#   variables = ['snwmlt']; isoline = 1.; cbn = 11
+#   variables = ['ratio']; isoline = 1.; cbn = 11 
+#   case = 'ephemeral'
+#   case = 'maritime'
+#   case = 'prairies'
  
 #   ## PET check
 # #   explist = ['NRCan','CRU']; variables = ['pet']; period = [NRC70,H30]
@@ -775,7 +778,7 @@ if __name__ == '__main__':
       f = plt.figure(facecolor='white', figsize=fs if figsize is None else figsize)
       ax = []
       for n in xrange(nax):
-        ax.append(f.add_subplot(subplot[0],subplot[1],n+1, axisbg='blue'))
+        ax.append(f.add_subplot(subplot[0],subplot[1],n+1, facecolor='blue'))
       f.subplots_adjust(**margins) # hspace, wspace
       if not maps:
         print(' - setting up map projection\n') 
@@ -844,8 +847,8 @@ if __name__ == '__main__':
           # add black contour lines (outlines) 
           if laddContour:
             cd.append(maps[n].contour(x[n][m],y[n][m],data[n][m],clevs,ax=ax[n],
-                                      colors='k', linewidths=0.5))
-          if isoline is not None:
+                                      ))
+          if isoline is not None:colors='k', linewidths=0.5
             cd.append(maps[n].contour(x[n][m],y[n][m],data[n][m],[isoline],ax=ax[n],
                                       colors='w', linewidths=1.))
       # add colorbar

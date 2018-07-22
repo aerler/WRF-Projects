@@ -281,13 +281,15 @@ plot_labels_rc['et_can']          = 'Canopy ET'
 plot_labels_rc['precip_tot']      = 'Water Flx.'
 plot_labels_rc['discharge']       = 'Discharge'
 plot_labels_rc['outflow']         = 'Outflow'
-plot_labels_rc['sfroff']          = 'Sfc. R\'off'
-plot_labels_rc['totroff']         = 'Runoff'
+plot_labels_rc['sfroff']          = 'Surface Runoff'
+plot_labels_rc['totroff']         = 'Total Runoff'
 plot_labels_rc['baseflow']        = 'Baseflow'
 plot_labels_rc['recharge']        = 'Recharge'
+plot_labels_rc['recharge_gwt']    = 'Recharge (GWT-based)'
+plot_labels_rc['recharge_et']     = 'Recharge (ET-based)'
 plot_labels_rc['d_tot']           = 'Total Storage'
 plot_labels_rc['d_olf']           = 'Surface'
-plot_labels_rc['d_pm']           = 'Subsurface'
+plot_labels_rc['d_pm']            = 'Subsurface'
 
 
 ## plot styles for climatology plots
@@ -314,6 +316,8 @@ variable_plotargs_rc = default.variable_plotargs_rc.copy()
 # variable_plotargs_rc['outflow']        = AttrDict(color = '#62A1C6')
 variable_plotargs_rc['baseflow']       = AttrDict(color = 'red')
 variable_plotargs_rc['recharge']       = AttrDict(color = 'green')
+variable_plotargs_rc['recharge_gwt']   = AttrDict(color = 'green')
+variable_plotargs_rc['recharge_et']    = AttrDict(color = 'green')
 variable_plotargs_rc['infil']          = AttrDict(color = 'green')
 variable_plotargs_rc['exfil']          = AttrDict(color = 'purple')
 variable_plotargs_rc['outflow']        = AttrDict(color = 'red')

@@ -55,9 +55,9 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(-1,1,41); clbl = '%02.1f' # mm/day            
     elif var == 'ps':
       clevs = np.linspace(-5,5,41); clbl = '%02.1f' # mm/day            
-    elif var in ('evap','pet','precip','precipc','precipnc','wetprec','dryprec','MaxPrecip_1d'):
+    elif var in ('evap','pet','pet_wrf','precip','precipc','precipnc','wetprec','dryprec','MaxPrecip_1d'):
       clevs = np.linspace(-4,4,41); clbl = '%3.1f' # mm/day
-    elif var in ('snwmlt', 'runoff', 'ugroff', 'sfroff','p-et','waterflx'): # moisture fluxes (kg /(m^2 s))
+    elif var in ('snwmlt', 'runoff', 'ugroff', 'sfroff','p-et','waterflx','liqwatflx'): # moisture fluxes (kg /(m^2 s))
       clevs = np.linspace(-1.2,1.2,41); clbl = '%3.2f' # mm/day  
     elif var in ('pet_obs','precip_obs'): # moisture fluxes (kg /(m^2 s))
       clevs = np.linspace(-1.2,1.2,25); clbl = '%2.1f' # mm/day

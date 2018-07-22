@@ -72,6 +72,7 @@ hgs_plotargs['WSC']          = dict(color='#959595') # gray
 # NRCan forcing, different model versions
 hgs_plotargs['HGS (V1)']     = dict(color='green') #, linewidth=3)
 hgs_plotargs['NRCan']        = dict(color='green')
+hgs_plotargs['NRCan, L21']   = dict(color='green')
 hgs_plotargs['NRCan (V1)']   = dict(color='gray', linestyle='--')
 hgs_plotargs['NRCan (V2)']   = dict(color='gray')
 hgs_plotargs['NRCan (V2k)']  = dict(color='#AAA2D8') # purple
@@ -109,18 +110,18 @@ hgs_plotargs['WRF 30km']     = dict(color='#E24B34') # red
 hgs_plotargs['WRF 90km']     = dict(color='#AAA2D8') # purple
 hgs_plotargs['WRF (AABC)']   = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['WRF (Delta)']  = dict(color='#E24B34') # red
-hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['WRF G 30km']   = dict(color='#E24B34') # red                                      
-hgs_plotargs['WRF G 90km']   = dict(color='#AAA2D8') # purple                                   
-hgs_plotargs['WRF T 10km']   = dict(color='#62A1C6') # blue    
-hgs_plotargs['WRF T 30km']   = dict(color='#E24B34') # red     
-hgs_plotargs['WRF T 90km']   = dict(color='#AAA2D8') # purple  
-# hgs_plotargs['WRF T 10km']   = dict(color='#E24B34') # red
 # hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
-# hgs_plotargs['WRF T 30km']   = dict(color='#E24B34') # red
-# hgs_plotargs['WRF G 30km']   = dict(color='#62A1C6') # blue                                     
-# hgs_plotargs['WRF T 90km']   = dict(color='#E24B34') # red
-# hgs_plotargs['WRF G 90km']   = dict(color='#62A1C6') # blue                                     
+# hgs_plotargs['WRF G 30km']   = dict(color='#E24B34') # red                                      
+# hgs_plotargs['WRF G 90km']   = dict(color='#AAA2D8') # purple                                   
+# hgs_plotargs['WRF T 10km']   = dict(color='#62A1C6') # blue    
+# hgs_plotargs['WRF T 30km']   = dict(color='#E24B34') # red     
+# hgs_plotargs['WRF T 90km']   = dict(color='#AAA2D8') # purple  
+hgs_plotargs['WRF T 10km']   = dict(color='#E24B34') # red
+hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['WRF T 30km']   = dict(color='#E24B34') # red
+hgs_plotargs['WRF G 30km']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs['WRF T 90km']   = dict(color='#E24B34') # red
+hgs_plotargs['WRF G 90km']   = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['WRF T']        = dict(color='#E24B34') # red
 hgs_plotargs['WRF G']        = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['T Ensemble']   = dict(color='#E24B34') # red
@@ -140,6 +141,12 @@ hgs_plotargs['2045-2060']    = dict(color='#AAA2D8') # purple
 hgs_plotargs['2050-2060']    = dict(color='#AAA2D8') # purple
 hgs_plotargs['2085-2100']    = dict(color='#E24B34') # red
 hgs_plotargs['2090-2100']    = dict(color='#E24B34') # red
+hgs_plotargs['1979-1994, L21'] = dict(color='#62A1C6') # blue
+hgs_plotargs['1984-1994, L21'] = dict(color='#62A1C6') # blue
+hgs_plotargs['2045-2060, L21'] = dict(color='#AAA2D8') # purple
+hgs_plotargs['2050-2060, L21'] = dict(color='#AAA2D8') # purple
+hgs_plotargs['2085-2100, L21'] = dict(color='#E24B34') # red
+hgs_plotargs['2090-2100, L21'] = dict(color='#E24B34') # red
 # adjust line thickness
 for plotargs in hgs_plotargs.values(): 
   if 'linewidth' not in plotargs: plotargs['linewidth'] = 1.
@@ -362,12 +369,12 @@ def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name
 
 ## function to interpolate HGS binary output to regular grid
 def gridDataset(dataset, griddef=binary_grid, basin=main_basin, subbasin=None, shape_file=None,  
-                basin_list=None, grid_folder=None):
+                basin_list=None, grid_folder=None, **kwargs):
     ''' interpolate nodal/elemental datasets to a regular grid, add GDAL, and mask to basin outlines,
         using values for the GRW and the grw1 grid'''
     if basin_list is None: basin_list = wsc.basin_list # default basin list
     return hgs.gridDataset(dataset, griddef=griddef, basin=basin, subbasin=subbasin, shape_file=shape_file,  
-                           basin_list=basin_list, grid_folder=grid_folder)
+                           basin_list=basin_list, grid_folder=grid_folder, **kwargs)
     
   
 ## function to load HGS binary data

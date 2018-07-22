@@ -62,7 +62,7 @@ variables_rc['wetdays']         = VL(vars=['wetfrq'+ext for ext in wetday_extens
 variables_rc['CWD']             = VL(vars=['CWD'+ext for ext in wetday_extensions]+['CNWD'], files=('hydro',), label='Continuous Wet-days')
 variables_rc['CDD']             = VL(vars=['CDD'+ext for ext in wetday_extensions[:-1]]+['CNDD'], files=('hydro',), label='Continuous Dry-days')
 variables_rc['sfcflx']          = VL(vars=('p-et','snwmlt','waterflx',), files=('hydro',), label='Surface Flux')
-variables_rc['runoff']          = VL(vars=('sfroff','runoff'), files=('lsm',), label='Runoff')
+variables_rc['runoff']          = VL(vars=('runoff','sfroff',), files=('lsm',), label='Runoff')
 variables_rc['runoff_wflx']     = VL(vars=('waterflx','sfroff','runoff'), files=('lsm','hydro'), label='Runoff')
 variables_rc['runoff_flux']     = VL(vars=('runoff','snwmlt','p-et'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['runoff_snow']     = VL(vars=('runoff','snwmlt','waterflx'), files=('lsm','hydro'), label='Water Flux')
@@ -198,12 +198,18 @@ plot_labels_rc['can_et']          = 'Canopy ET'
 plot_labels_rc['tot_precip']      = 'Water Flx.'
 plot_labels_rc['discharge']       = 'Discharge'
 plot_labels_rc['outflow']         = 'Outflow'
-plot_labels_rc['sfroff']          = 'Sfc. R\'off'
-plot_labels_rc['totroff']         = 'Runoff'
+plot_labels_rc['sfroff']          = 'Surface Runoff'
+plot_labels_rc['totroff']         = 'Total Runoff'
 plot_labels_rc['baseflow']        = 'Baseflow'
+plot_labels_rc['recharge']        = 'Recharge'
+plot_labels_rc['recharge_gwt']    = 'Recharge (GWT-based)'
+plot_labels_rc['recharge_et']     = 'Recharge (ET-based)'
 plot_labels_rc['d_tot']           = 'Total Storage'
 plot_labels_rc['d_olf']           = 'Surface'
-plot_labels_rc['d_pm']           = 'Subsurface'
+plot_labels_rc['d_pm']            = 'Subsurface'
+plot_labels_rc['zs']              = 'Surface Elevation'
+plot_labels_rc['zs_elm']          = 'Elevation (Elemental)'
+plot_labels_rc['z_gw']            = 'Groundwater Table'
 
 
 ## plot styles for climatology plots
@@ -263,6 +269,9 @@ variable_plotargs_rc['SWDNB']          = AttrDict(color = 'orange')
 # variable_plotargs_rc['exfil']          = AttrDict(color = '#AAA2D8')
 # variable_plotargs_rc['outflow']        = AttrDict(color = '#62A1C6')
 variable_plotargs_rc['baseflow']       = AttrDict(color = 'red')
+variable_plotargs_rc['recharge']       = AttrDict(color = 'purple')
+variable_plotargs_rc['recharge_gwt']   = AttrDict(color = 'purple')
+variable_plotargs_rc['recharge_et']    = AttrDict(color = 'purple')
 variable_plotargs_rc['infil']          = AttrDict(color = 'green')
 variable_plotargs_rc['exfil']          = AttrDict(color = 'purple')
 variable_plotargs_rc['outflow']        = AttrDict(color = 'red')
