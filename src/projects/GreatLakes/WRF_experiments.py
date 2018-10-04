@@ -25,6 +25,12 @@ class Exp(WRF_Exp):
 # N.B.: This is the reference list, with unambiguous, unique keys and no aliases/duplicate entries  
 experiments = OrderedDict() # dictionary of experiments
 ## Great Lakes experiments
+# new experiments with V3.9 and lake model
+experiments['erai-t-nolake06']  = Exp(shortname='t-nolake', name='erai-t-nolake06', title='T (ERA-I, No Lake)', parent='ERAI', domains=1, begindate='2005-01-01')
+experiments['erai-t-lake06']    = Exp(shortname='t-lake06', name='erai-t-lake06', title='T (ERA-I, CLM Lake)', parent='ERAI', domains=1, begindate='2005-01-01')
+experiments['erai-g-lake06']    = Exp(shortname='g-lake06', name='erai-g-lake06', title='G (ERA-I, CLM Lake)', parent='ERAI', domains=1, begindate='2005-01-01')
+experiments['erai-t-lake']    = Exp(shortname='t-lake', name='erai-t-lake', title='T80 (ERA-I, CLM Lake)', parent='ERAI', domains=1,)
+experiments['erai-g-lake']    = Exp(shortname='g-lake', name='erai-g-lake', title='G80 (ERA-I, CLM Lake)', parent='ERAI', domains=1,)
 # new experiments with V3.6 and new physics: V-Ensemble
 experiments['erai-v36'] = Exp(shortname='erai-v36', name='erai-v36', title='V3.6 (ERA-I)', parent='ERAI', domains=1)
 # lake sensitivity experiments
