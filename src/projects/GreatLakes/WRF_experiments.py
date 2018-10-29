@@ -26,6 +26,7 @@ class Exp(WRF_Exp):
 experiments = OrderedDict() # dictionary of experiments
 ## Great Lakes experiments
 # new experiments with V3.9 and lake model
+experiments['erai-c-glerl25']    = Exp(shortname='c-glerl25', name='erai-c-glerl25', title='Conus (GLERL 25l)', parent='ERAI', domains=1, begindate='2005-01-01', grid='glb2')
 experiments['erai-t-glerl25']    = Exp(shortname='t-glerl25', name='erai-t-glerl25', title='T (ERA-I, GLERL 25l)', parent='ERAI', domains=1, begindate='2005-01-01')
 experiments['erai-t-glerl']    = Exp(shortname='t-glerl', name='erai-t-glerl', title='T (ERA-I, GLERL Lake)', parent='ERAI', domains=1, begindate='2005-01-01')
 experiments['erai-t-nolake06']  = Exp(shortname='t-nolake', name='erai-t-nolake06', title='T (ERA-I, No Lake)', parent='ERAI', domains=1, begindate='2005-01-01')
