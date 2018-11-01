@@ -96,7 +96,7 @@ if __name__ == '__main__':
   WRFfiletypes = [] # WRF data source
 #   WRFfiletypes += ['aux']
 #   WRFfiletypes += ['rad']
-  WRFfiletypes += ['hydro']
+#   WRFfiletypes += ['hydro']
 #   WRFfiletypes += ['lsm']
   WRFfiletypes += ['srfc']
 #   WRFfiletypes += ['xtrm']
@@ -167,8 +167,8 @@ if __name__ == '__main__':
   folder = figure_folder; lsamesize = False
   lpickle = True # load projection from file or recompute
   lprint = True # write plots to disk using case as a name tag
-  maptype = 'lcc-grw'; lstations = False; lbasins = True; domain = 2
-#   maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = 2
+#   maptype = 'lcc-grw'; lstations = False; lbasins = True; domain = 2
+  maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = 2
 #   maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = None
 #   maptype = 'lcc-NA'; lstations = False; domain = 1
 #   lbasins = True; basinlist = ('ARB','FRB','CRB','NRB','PSB'); lprovinces = False; provlist = ['BC','AB','ON']
@@ -176,14 +176,6 @@ if __name__ == '__main__':
   lbasins = True; basinlist = ('GLB','GRW'); lprovinces = False; provlist = ['ON']
 #   lbasins = True; basinlist = ('GLB',); lprovinces = False; provlist = ['ON']
   isoline = None
-
-
-## PET validation for GRW
-#   lprint = True; lpickle = False
-#   explist = ['g-ens']*3+['GPCC']*3
-#   seasons = [['annual','summer','winter']*2]
-#   period  = [H15]*3+[H15]*3; grid = 'grw2'; case = 'grw'
-#   variables = [['dryprec_010']*3+['precip']*3, 'precip']
 
 
 # # validation and projection for the Great Lakes region
@@ -276,48 +268,40 @@ if __name__ == '__main__':
 # #   reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
 # #   reflist = None; ldiff = False; lfrac = False; variable_settings = None; cbn = 6
 
-## GRW maps
-  case = 'GRW'; maptype = 'lcc-grw'; cbo = 'vertical'; lcontour = False
-#   seasons = [['November','December','January','February','March','April']]; exptitles = [s.title() for s in seasons[0]]
-  explist = ['NRCan']; period = NRC70
-  seasons = ['annual',]
-#   explist = ['g-ens']*2+['t-ens']*2; period = H15
-#   reflist = ['NRCan']*len(explist); refprd = NRC70; ldiff = True
-  WRFfiletypes = ['aabc']; grid = 'grw2'; domain = 2
-  variables = ['liqwatflx']; #cbn = 11 
-#   variables = ['pet_wrf']; refvars = ['pet'] #cbn = 11 
-#   variables = ['T2']; isoline = 273.5; cbn = 11; ldiff = True
-#   variables = ['Tslb']; variable_settings = 'T_freeze'; level_agg = dict(i_s=0); isoline = 273.5; cbn = 11
-#   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
-#   variables = ['snwmlt']; isoline = 1.; cbn = 11
-#   variables = ['ratio']; isoline = 1.; cbn = 11 
-#   case = 'ephemeral'
-#   case = 'maritime'
-#   case = 'prairies'
- 
-#   ## PET check
-# #   explist = ['NRCan','CRU']; variables = ['pet']; period = [NRC70,H30]
-#   explist = ['erai-g','erai-t','g-ens','t-ens',]; variables = ['pet_wrf']; period = H15
-#   seasons = ['annual']; grid = 'can1'
-#   maptype = 'lcc-can'; lstations = False; domain = 1; case = 'pet'
+# ## GRW maps
+#   case = 'GRW'; maptype = 'lcc-grw'; cbo = 'vertical'; lcontour = False
+# #   seasons = [['November','December','January','February','March','April']]; exptitles = [s.title() for s in seasons[0]]
+#   explist = ['NRCan']; period = NRC70
+#   seasons = ['annual',]
+# #   explist = ['g-ens']*2+['t-ens']*2; period = H15
+# #   reflist = ['NRCan']*len(explist); refprd = NRC70; ldiff = True
+#   WRFfiletypes = ['aabc']; grid = 'grw2'; domain = 2
+#   variables = ['liqwatflx']; #cbn = 11 
+# #   variables = ['pet_wrf']; refvars = ['pet'] #cbn = 11 
+# #   variables = ['T2']; isoline = 273.5; cbn = 11; ldiff = True
+# #   variables = ['Tslb']; variable_settings = 'T_freeze'; level_agg = dict(i_s=0); isoline = 273.5; cbn = 11
+# #   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
+# #   variables = ['snwmlt']; isoline = 1.; cbn = 11
+# #   variables = ['ratio']; isoline = 1.; cbn = 11 
+# #   case = 'ephemeral'
+# #   case = 'maritime'
+# #   case = 'prairies'
 
-
-# # ERA-Interim validation
-#   explist = ['erai-v36','erai-g','erai-t',]*2; seasons = [['summer']*3+['winter']*3]
-# #   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
-#   domain = 1; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag
-# #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
-# #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
-#   exptitles = ['ERA-I V3.6','ERA-I G', 'ERA-I T']*2; res = '30km' if domain == 1 else '10km'
-# #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
-# #   exptitles = ['WRF Ensemble (30km)','WRF Ensemble (90km)']*2; grid = ['glb1_d01','glb1-90km_d01']*2
+# lake validation
+  explist = ['erai-g','erai-g-lake06','NARR','erai-t','erai-t-lake06','erai-t-nolake06',]; seasons = ['annual']
+  seasons = ['summer','winter','fall','spring']; les = len(seasons)
+#   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
+  domain = 1; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; basinlist = ('GLB',)
+#   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
+#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+  exptitles = ['WRF G (FLake, V3.4)', 'WRF G (lake model)', 'NARR', 'WRF T (FLake, V3.4)', 'WRF T (lake model)', 'WRF T (no lake)']; res = '30km' if domain == 1 else '10km'
+#   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
 #   exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
-# #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
-# #   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-# #   variables = ['MaxPrecip_1d']; aggregation = 'max'; cbn = 7; lfrac = True; variable_settings = ['MaxPrecip_prj']
-# #   variables = ['aSM']; aggregation = 'mean'; cbn = 7; lfrac = True
-#   period = H10; refprd = H15; case = tag+'val_new'; variable_settings = None; reflist = 'Unity' # validation 
-# #   case = tag+'val_narr'; reflist = 'NARR'
+#   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_wide']
+  variables = ['precip']; cbn = 7; lfrac = True
+  period = ['1980-1995','2006-2016','2006-2016']*2; case = 'lake';
+  refprd = '1980-2010'; reflist = 'NRCan' # validation 
+#   case = tag+'val_narr'; reflist = 'NARR'
 
 # # snow observations
 #   explist = ['NRCan']*2; maptype = 'lcc-can'; period = '1980-2010'
@@ -370,13 +354,6 @@ if __name__ == '__main__':
 # #   seasons = ['summer','fall','winter','spring','annual']; figtitles = [figtitle.format(season.title()) for season in seasons]
 #   seasons = ['annual']; figtitles = [figtitle.format(season.title()) for season in seasons]
   
-# # validation over Great Lakes region
-#   explist = ['g-ctrl','g-ens','g-ens-A','g-ens-B','NARR','g-ens-C']
-#   seasons = ['annual','summer','winter']; variables = ['precip']
-#   period  = H15; domain = 1; case = 'ens_d0{:d}'.format(domain); grid = 'glb1_d01'
-# #   variables = ['precip'];  reflist = 'Unity'; lfrac = True
-#   variables = ['T2']; reflist = 'Unity'; refprd = H15; ldiff = True
-
 # # validation over Great Lakes region
 #   explist = ['Ens','GPCC','g-ens','NARR']; seasons = ['annual','summer','winter']
 #   exptitles = [None, None, 'WRF Ensemble Mean (30km)', None]
@@ -624,17 +601,17 @@ if __name__ == '__main__':
   N = len(variables)*len(seasons) # number of figures
   comments = checkItemList(comments, N, basestring, default=None)
   figtitles = checkItemList(figtitles, N, basestring, default=None)
-  variable_settings = checkItemList(variable_settings, N, basestring, default=None)
-  season_settings = checkItemList(season_settings, N, basestring, default=None)
+  variable_settings = checkItemList(variable_settings, len(variables), basestring, default=None)
+  season_settings = checkItemList(season_settings, len(seasons), basestring, default=None)
   
 #   if figtitles is not None:
 #     if not isinstance(figtitles,(tuple,list)): figtitles = (figtitles,)*N
 #     elif len(figtitles) != N: raise ValueError
 
   # start loop
-  for varlist,ravlist in zip(variables,refvars):
+  for vi,varlist,ravlist in zip(range(len(variables)),variables,refvars):
     
-    for sealist in seasons:
+    for si,sealist in enumerate(seasons):
       
       # increment counter
       fn += 1
@@ -658,8 +635,8 @@ if __name__ == '__main__':
       sealist = checkItemList(sealist, M, basestring)
       
       # get smart defaults for variables and seasons
-      varlist_settings = variable_settings[fn] or varlist[0] # default: first variable
-      if season_settings[fn]: sealist_settings = season_settings[fn]
+      varlist_settings = variable_settings[vi] or varlist[0] # default: first variable
+      if season_settings[si]: sealist_settings = season_settings[si]
       elif all([sea==sealist[0] for sea in sealist]): sealist_settings = sealist[0]
       else: sealist_settings = ''      
       # get variable properties and additional settings
@@ -829,7 +806,8 @@ if __name__ == '__main__':
       for n in xrange(nax): 
         for m in xrange(nexps[n]):
           vmean = toString(np.nanmean(data[n][m])) 
-          vmin = toString(np.nanmin(data[n][m]))
+          try: vmin = toString(np.nanmin(data[n][m]))
+          except: pass
           vmax = toString(np.nanmax(data[n][m]))
           if ldiff or lfrac: 
             vrms = toString(np.sqrt(np.nanmean(data[n][m]**2)))
@@ -847,8 +825,8 @@ if __name__ == '__main__':
           # add black contour lines (outlines) 
           if laddContour:
             cd.append(maps[n].contour(x[n][m],y[n][m],data[n][m],clevs,ax=ax[n],
-                                      ))
-          if isoline is not None:colors='k', linewidths=0.5
+                                      colors='k', linewidths=0.5))
+          if isoline is not None:
             cd.append(maps[n].contour(x[n][m],y[n][m],data[n][m],[isoline],ax=ax[n],
                                       colors='w', linewidths=1.))
       # add colorbar

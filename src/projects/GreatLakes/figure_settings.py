@@ -47,6 +47,8 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(-1.5,1.5,31); clbl = '%2.1f'; cmap = mpl.cm.PuOr # mm/day    
     elif var in ('T2','Ts','Tmin','Tmax','Tmean'):
       clevs = np.linspace(-5,5,41); clbl = '%3.1f' # K
+    elif var in ('T2_wide',):
+      clevs = np.linspace(-8,8,41); clbl = '%3.1f' # K
     elif var in ('T2_obs',):
       clevs = np.linspace(-2.5,2.5,26); clbl = '%3.1f' # K
     elif var == 'Q2':
