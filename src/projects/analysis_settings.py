@@ -54,6 +54,7 @@ variables_rc['precip_types']    = VL(vars=('precip','preccu','precnc'), files=('
 variables_rc['precip_conv']     = VL(vars=('precip','preccu','precnc'), files=('hydro',), label='Water Flux')
 variables_rc['precip_net']      = VL(vars=('precip','solprec','p-et'), files=('srfc',), label='Water Flux')
 variables_rc['precip_snow']     = VL(vars=('precip','snwmlt','solprec'), files=('hydro',), label='Water Flux')
+variables_rc['snow']            = VL(vars=('snow',), files=('hydro',), label='Water Equivalent')
 variables_rc['flux_snow']       = VL(vars=('precip','snwmlt','solprec'), files=('hydro',), label='Water Flux')
 variables_rc['flux_days']       = VL(vars=('wetfrq_010','snwmlt','p-et'), files=('hydro',), label='Water Flux')
 variables_rc['wetprec']         = VL(vars=['wetprec'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Precip.')
@@ -62,7 +63,7 @@ variables_rc['wetdays']         = VL(vars=['wetfrq'+ext for ext in wetday_extens
 variables_rc['CWD']             = VL(vars=['CWD'+ext for ext in wetday_extensions]+['CNWD'], files=('hydro',), label='Continuous Wet-days')
 variables_rc['CDD']             = VL(vars=['CDD'+ext for ext in wetday_extensions[:-1]]+['CNDD'], files=('hydro',), label='Continuous Dry-days')
 variables_rc['sfcflx']          = VL(vars=('p-et','snwmlt','waterflx',), files=('hydro',), label='Surface Flux')
-variables_rc['runoff']          = VL(vars=('runoff','sfroff',), files=('lsm',), label='Runoff')
+variables_rc['runoff']          = VL(vars=('runoff','sfroff','ugroff'), files=('lsm',), label='Runoff')
 variables_rc['runoff_wflx']     = VL(vars=('waterflx','sfroff','runoff'), files=('lsm','hydro'), label='Runoff')
 variables_rc['runoff_flux']     = VL(vars=('runoff','snwmlt','p-et'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['runoff_snow']     = VL(vars=('runoff','snwmlt','waterflx'), files=('lsm','hydro'), label='Water Flux')
@@ -188,6 +189,7 @@ plot_labels_rc['lhfx']            = 'Latent Heat'
 plot_labels_rc['Q2']              = 'Q (2m)'      
 plot_labels_rc['aSM']             = 'aSM'     
 plot_labels_rc['rSM']             = 'Soil Moist.'
+plot_labels_rc['snow']             = 'SWE'
 # HGS variables
 plot_labels_rc['infil']           = 'Infiltration'
 plot_labels_rc['exfil']           = 'Exfiltration'
@@ -264,6 +266,7 @@ variable_plotargs_rc['petwnd']         = AttrDict(color = 'dodgerblue')
 variable_plotargs_rc['vapdef']         = AttrDict(color = 'magenta')
 variable_plotargs_rc['netrad']         = AttrDict(color = 'crimson')
 variable_plotargs_rc['SWDNB']          = AttrDict(color = 'orange')
+variable_plotargs_rc['snow']           = AttrDict(color = 'blue')
 # HGS variables
 # variable_plotargs_rc['baseflow']       = AttrDict(color = '#E24B34')
 # variable_plotargs_rc['exfil']          = AttrDict(color = '#AAA2D8')

@@ -42,7 +42,7 @@ station_constraints['min_len'] = 15 # for valid climatology
 station_constraints['lat'] = (40,55)
 station_constraints['end_after'] = 1980
 #station_constraints['max_zerr'] = 100 # can't use this, because we are loading EC data separately from WRF
-station_constraints['prov'] = ('ON')
+station_constraints['prov'] = None # set to provlist by default
 
 if __name__ == '__main__':
 
@@ -287,21 +287,21 @@ if __name__ == '__main__':
 # #   case = 'maritime'
 # #   case = 'prairies'
 
-# lake validation
-  explist = ['erai-g','erai-g-lake06','NARR','erai-t','erai-t-lake06','erai-t-nolake06',]; seasons = ['annual']
-  seasons = ['summer','winter','fall','spring']; les = len(seasons)
-#   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
-  domain = 1; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; basinlist = ('GLB',)
-#   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
-#   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
-  exptitles = ['WRF G (FLake, V3.4)', 'WRF G (lake model)', 'NARR', 'WRF T (FLake, V3.4)', 'WRF T (lake model)', 'WRF T (no lake)']; res = '30km' if domain == 1 else '10km'
-#   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
-#   exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
-#   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_wide']
-  variables = ['precip']; cbn = 7; lfrac = True
-  period = ['1980-1995','2006-2016','2006-2016']*2; case = 'lake';
-  refprd = '1980-2010'; reflist = 'NRCan' # validation 
-#   case = tag+'val_narr'; reflist = 'NARR'
+# # lake validation
+#   explist = ['erai-g','erai-g-lake06','NARR','erai-t','erai-t-lake06','erai-t-nolake06',]; seasons = ['annual']
+#   seasons = ['summer','winter','fall','spring']; les = len(seasons)
+# #   exptitles = ['CFSR','WRF G (30km, ERA-I)','WRF T (30km, ERA-I)',]*2; grid = 'glb1_d{:02d}'.format(domain)
+#   domain = 1; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; basinlist = ('GLB',)
+# #   explist = ['g-ens','t-ens','g-ens','t-ens']; seasons = [['summer']*2+['annual']*2]
+# #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 'glb1_'+tag; 
+#   exptitles = ['WRF G (FLake, V3.4)', 'WRF G (lake model)', 'NARR', 'WRF T (FLake, V3.4)', 'WRF T (lake model)', 'WRF T (no lake)']; res = '30km' if domain == 1 else '10km'
+# #   explist = ['g-ens','g3-ens','g-ens','g3-ens']; seasons = [['summer']*2+['winter']*2]; tag = 'g3'
+# #   exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
+# #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_wide']
+#   variables = ['precip']; cbn = 7; lfrac = True
+#   period = ['1980-1995','2006-2016','2006-2016']*2; case = 'lake';
+#   refprd = '1980-2010'; reflist = 'NRCan' # validation 
+# #   case = tag+'val_narr'; reflist = 'NARR'
 
 # # snow observations
 #   explist = ['NRCan']*2; maptype = 'lcc-can'; period = '1980-2010'
@@ -361,25 +361,25 @@ if __name__ == '__main__':
 #   variables = ['precip']; WRFfiletypes = ['srfc']; domain = 1
 # #   variables = ['T2']; explist[1] = 'CRU'
 
-# # (topographic) map with river basins (single panel)
-# #   lpickle = False; lprint = False
-# #   maptype = 'lcc-glb'; case = 'glb'; lcontour = True; loutline = False
+# (topographic) map with river basins (single panel)
+#   lpickle = False; lprint = False
+  maptype = 'lcc-glb'; case = 'glb'; lcontour = True; loutline = False
 #   maptype = 'lcc-grw'; case = 'grw'; lcontour = True; loutline = False
-#   lstations = False; lprovinces = True; provlist = ['ON'] 
-#   lbasins = True; basinlist = ['GLB','GRW','SNW']; subbasin_args = dict(linewidth = 2., color='k')  
-# #   variables = ['precip']; seasons = ['annual']; figtitles = 'Precipitation [mm/day]'
-# #   variables = ['pet']; seasons = ['annual']; figtitles = 'Potential Evapotranspiration [mm/day]'
+  lstations = False; lprovinces = True; provlist = ['MB','ON','QC'] 
+  lbasins = True; basinlist = ['GLB',]; basin_args = dict(linewidth = 1.5, color='k')  
+  variables = ['precip']; seasons = ['annual']; figtitles = ' Annual Average Precipitation [mm/day]'
+#   variables = ['pet']; seasons = ['annual']; figtitles = 'Potential Evapotranspiration [mm/day]'
 #   variables = ['snwmlt']; seasons = ['annual']; figtitles = 'Snowmelt [mm/day]'
-# #   variables = ['stations']; seasons = ['annual']; figtitles = 'Station Density'
-# #   explist = ['g-ens']; period = H15; domain = (1,2); lframe = True; lWRFnative = True 
-#   explist = ['NRCan']; period = NRC70
-# #   explist = ['GPCC']; period = None
-#   case = explist[0].lower(); exptitles = ' '; lsamesize = True
-# #   variables = ['zs']; seasons = ['hidef']; figtitles = 'Topography [km]'
-# #   lsamesize = True; seasons = ['topo']
-# #   basinlist = ['GLB','GRW',]; case = 'grw'
-# #   basinlist = ['GLB','GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_white'
-# #   maptype = 'lcc-grw'; basinlist = ['GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_local_white'
+#   variables = ['stations']; seasons = ['annual']; figtitles = 'Station Density'
+#   explist = ['g-ens']; period = H15; domain = (1,2); lframe = True; lWRFnative = True 
+  explist = ['NRCan']; period = NRC80
+#   explist = ['GPCC']; period = None
+  case = explist[0].lower(); exptitles = explist[0]+' Observations ({})'.format(period); lsamesize = True
+#   variables = ['zs']; seasons = ['hidef']; figtitles = 'Topography [km]'
+#   lsamesize = True; seasons = ['topo']
+#   basinlist = ['GLB','GRW',]; case = 'grw'
+#   basinlist = ['GLB','GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_white'
+#   maptype = 'lcc-grw'; basinlist = ['GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_local_white'
   
 # # larger map with river basins
 # #   lpickle = False; lprint = False
@@ -541,6 +541,16 @@ if __name__ == '__main__':
 #   variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True
 #   figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else '']
     
+#   # smaller map for GLB
+#   maptype = 'lcc-glb'; loutline = False; lframe = False
+#   lbasins = True; lprovinces = True; basinlist = ('GLB',); provlist = ('MB','ON','QC')
+#   explist = ['g-ctrl']; domain = (1,2); lWRFnative = True; period = H15 
+#   lsamesize = True; basin_args = dict(linewidth = 1.5, color='k')
+# #   lstations = False; case = 'glb'; exptitles = ''
+#   lstations = True; case = 'glb_gauges'; exptitles = 'Environment and Climate Change Canada Rain Gauges'
+#   variables = ['zs']; seasons = ['topo']; WRFfiletypes += ['const']; lcontour = True
+#   figtitles = ['Topographic Height [km]' + ' and Domain Outlines' if lframe else 'Topographic Height [km]']
+
     
   if not case: raise ValueError, 'Need to define a \'case\' name!'
 
@@ -881,21 +891,24 @@ if __name__ == '__main__':
             if stations == 'EC':
               # import station data
               from datasets.EC import loadEC_StnTS, selectStations
-              from datasets.WRF import loadWRF_StnTS
-              varlist = stn_params + [cluster_name]; station_type = 'ecprecip'
+              from projects.GreatLakes import loadWRF_StnTS
+              if station_constraints['prov'] is None:
+                  station_constraints['prov'] = provlist # good default
+              varlist = stn_params; station_type = 'ecprecip'
               ecstns = loadEC_StnTS(station=station_type, varlist=varlist)
-              wrfstns = loadWRF_StnTS(experiment='max-ctrl', varlist=varlist, station=station_type, 
-                                      filetypes='hydro', domains=2)
+              wrfstns = loadWRF_StnTS(experiment='g-ctrl', varlist=varlist, station=station_type, 
+                                      filetypes='hydro', domains=1)
 
               ecstns,wrfstns = selectStations([ecstns, wrfstns] , stnaxis='station', linplace=False, lall=True, 
                                               **station_constraints)
               # loop over points
-              for lon,lat,zerr,cln in zip(ecstns.stn_lon, ecstns.stn_lat, wrfstns.zs_err, ecstns[cluster_name]):
-                if cln in cluster_symbols: # and zerr <= 300
-                  tmp = cluster_symbols[cln].copy()
-                  xx,yy = bmap(lon, lat)
-                  marker = tmp.pop('marker')
-                  bmap.plot(xx,yy,marker,**tmp)
+              for lon,lat,zerr in zip(ecstns.stn_lon, ecstns.stn_lat, wrfstns.zs_err, ):
+#                 if cln in cluster_symbols: # and zerr <= 300
+#                 tmp = cluster_symbols[cln].copy()
+                clu = dict(marker='o', markersize=4, mfc='r', mec='k')
+                xx,yy = bmap(lon, lat)
+                marker = clu.pop('marker')
+                bmap.plot(xx,yy,marker,**clu)
             else: mapSetup.markPoints(ax[n], bmap, pointset=stations)     
           # add basin outlines          
           if lbasins:
