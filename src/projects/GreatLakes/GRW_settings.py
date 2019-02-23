@@ -404,8 +404,8 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, lstrip=True, l
 # abuse for testing
 if __name__ == '__main__':
     
-  test_mode = 'gage_station'
-#   test_mode = 'create_grid'
+#   test_mode = 'gage_station'
+  test_mode = 'create_grid'
 #   test_mode = 'dataset_regrid'
 #   test_mode = 'binary_dataset'
 #   test_mode = 'dataset'
@@ -425,9 +425,9 @@ if __name__ == '__main__':
     
     convention='Proj4'
     ## parameters for UTM 17 Great Lakes grids
-    name = 'glb1' # 5km resolution
-    geotransform = [ -709489.58091004, 5.e3, 0, 4148523.7226861, 0, 5.e3]; size = (405,371)
-    projection = "+proj=utm +zone=17 +north +ellps=NAD83 +datum=NAD83 +units=m +no_defs"
+#     name = 'glb1' # 5km resolution
+#     geotransform = [ -709489.58091004, 5.e3, 0, 4148523.7226861, 0, 5.e3]; size = (405,371)
+#     projection = "+proj=utm +zone=17 +north +ellps=NAD83 +datum=NAD83 +units=m +no_defs"
     ## grid for Elisha
 #     name = 'uph1' # 5km resolution
 #     geotransform = [ 443000, 5.e3, 0, 4774000, 0, 5.e3]; size = (3,6)
@@ -460,6 +460,9 @@ if __name__ == '__main__':
 #     name = 'asb1' # 5km resolution 
 #     geotransform = (-159.e3, 5.e3, 0., 5202.e3, 0., 5.e3); size = (191,135)
 #     projection = "+proj=utm +zone=14 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+    name = 'asb2' # 1km resolution 
+    geotransform = (-159.e3, 1.e3, 0., 5202.e3, 0., 1.e3); size = (955,675)
+    projection = "+proj=utm +zone=14 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
     ## parameters for Canada-wide Lambert Azimuthal Equal-area
 #     name = 'can1' # 5km resolution
 #     llx = -3500000; lly = -425000; urx = 3000000; ury = 4000000; dx = dy = 5.e3

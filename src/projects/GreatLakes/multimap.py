@@ -165,7 +165,7 @@ if __name__ == '__main__':
   ## case settings
     
   folder = figure_folder; lsamesize = False
-  lpickle = True # load projection from file or recompute
+  lpickle = False # load projection from file or recompute
   lprint = True # write plots to disk using case as a name tag
 #   maptype = 'lcc-grw'; lstations = False; lbasins = True; domain = 2
   maptype = 'lcc-glb'; lstations = False; lbasins = True; domain = 2
@@ -247,26 +247,43 @@ if __name__ == '__main__':
 # #   period = H15; ldiff = lfrac = False; variable_settings = None
 # #   lfrac = False; ldiff = True
 
+## comparison of NRCan and GPCC/CRU
+  case = 'nrcan_can'; maptype = 'lcc-can'; grid = None;
+#   case = 'nrcan_ongl'; maptype = 'lcc-ongl'; grid = None;
+#   case = 'nrcan_glb'; maptype = 'lcc-glb'; grid = 'glb1'; 
+  basinlist = []; lprovinces = True; provlist = ['AB','SK','MB','ON']
+#   seasons = [['summer','winter','spring','fall']]; exptitles = [s.title() for s in seasons[0]]
+#   explist = ['NRCan']*len(exptitles); reflist = ['Unity']; period = H30
+  explist = ['NRCan']; period = NRC80; seasons = ['annual']
+  variables = ['snow_NRCan',]; variable_settings = 'snow_CMC'; cbn = 6
+  lfrac = True; refvars = ['snow_CMC']; reflist = explist
+  figtitles = ['SWE Bias: NRCan/CMC']
+  exptitles = [' ']
+
 # ## comparison of NRCan and GPCC/CRU
-#   case = 'nrcan_val'; maptype = 'lcc-can'; grid = 'glb1_d01'; 
+# #   case = 'nrcan_can'; maptype = 'lcc-can'; grid = None;
+#   case = 'nrcan_glb'; maptype = 'lcc-glb'; grid = None; 
 #   basinlist = []; lprovinces = True; provlist = ['AB','SK','MB','ON']
 # #   seasons = [['summer','winter','spring','fall']]; exptitles = [s.title() for s in seasons[0]]
 # #   explist = ['NRCan']*len(exptitles); reflist = ['Unity']; period = H30
-# #   explist = ['NRCan']*2; period = H30; seasons = ['annual']
-# #   variables = [('precip','pet')]; variable_settings = 'precip'; cbn = 9
-# #   figtitles = ['Annual Averages from {} [mm/day]'.format(explist[0])]
-# #   exptitles = ['Precipitation','PET']
+#   explist = ['NRCan']*2; period = NRC80; seasons = ['annual']
+#   variables = [('snow_NRCan','snow_CMC')]; variable_settings = 'snow'; cbn = 9
+#   figtitles = ['Average Snow Water Equivalent [kg/m^2]'.format(explist[0])]
+#   exptitles = ['NRCan','CMC']
+#   variables = [('precip','pet')]; variable_settings = 'precip'; cbn = 9
+#   figtitles = ['Annual Averages from {} [mm/day]'.format(explist[0])]
+#   exptitles = ['Precipitation','PET']
 #   explist = ['CRU']; figtitles = ['{} Precipitation - PET [mm/day]'.format(explist[0])]; case = explist[0].lower() 
 #   exptitles = ['']; lsamesize = True; variable_settings = 'precip'; cbn = 9; lfrac = True
 #   period = H30; seasons = ['annual']; reflist = explist; variables = ['precip',]; refvars = ['pet'] 
-# #   reflist = ['CRU','GPCC']; exptitles = reflist
-# #   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 9; lfrac = True
-# #   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 7; ldiff = True
-# #   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; lfrac = True
-# #   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; ldiff = True
-# #   variables = ['T2']; variable_settings = 'T2_obs'; cbn = 11; ldiff = True
-# #   reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
-# #   reflist = None; ldiff = False; lfrac = False; variable_settings = None; cbn = 6
+#   reflist = ['CRU','GPCC']; exptitles = reflist
+#   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 9; lfrac = True
+#   variables = ['precip']; variable_settings = 'precip_obs'; cbn = 7; ldiff = True
+#   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; lfrac = True
+#   variables = ['pet']; variable_settings = 'pet_obs'; cbn = 7; ldiff = True
+#   variables = ['T2']; variable_settings = 'T2_obs'; cbn = 11; ldiff = True
+#   reflist = ['CRU']; case += '_cru'; figtitles = ['Relative Differences of Total Perecipitation w.r.t. CRU [%]']
+#   reflist = None; ldiff = False; lfrac = False; variable_settings = None; cbn = 6
 
 # ## GRW maps
 #   case = 'GRW'; maptype = 'lcc-grw'; cbo = 'vertical'; lcontour = False
@@ -361,25 +378,25 @@ if __name__ == '__main__':
 #   variables = ['precip']; WRFfiletypes = ['srfc']; domain = 1
 # #   variables = ['T2']; explist[1] = 'CRU'
 
-# (topographic) map with river basins (single panel)
-#   lpickle = False; lprint = False
-  maptype = 'lcc-glb'; case = 'glb'; lcontour = True; loutline = False
-#   maptype = 'lcc-grw'; case = 'grw'; lcontour = True; loutline = False
-  lstations = False; lprovinces = True; provlist = ['MB','ON','QC'] 
-  lbasins = True; basinlist = ['GLB',]; basin_args = dict(linewidth = 1.5, color='k')  
-  variables = ['precip']; seasons = ['annual']; figtitles = ' Annual Average Precipitation [mm/day]'
-#   variables = ['pet']; seasons = ['annual']; figtitles = 'Potential Evapotranspiration [mm/day]'
-#   variables = ['snwmlt']; seasons = ['annual']; figtitles = 'Snowmelt [mm/day]'
-#   variables = ['stations']; seasons = ['annual']; figtitles = 'Station Density'
-#   explist = ['g-ens']; period = H15; domain = (1,2); lframe = True; lWRFnative = True 
-  explist = ['NRCan']; period = NRC80
-#   explist = ['GPCC']; period = None
-  case = explist[0].lower(); exptitles = explist[0]+' Observations ({})'.format(period); lsamesize = True
-#   variables = ['zs']; seasons = ['hidef']; figtitles = 'Topography [km]'
-#   lsamesize = True; seasons = ['topo']
-#   basinlist = ['GLB','GRW',]; case = 'grw'
-#   basinlist = ['GLB','GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_white'
-#   maptype = 'lcc-grw'; basinlist = ['GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_local_white'
+# # (topographic) map with river basins (single panel)
+# #   lpickle = False; lprint = False
+#   maptype = 'lcc-glb'; case = 'glb'; lcontour = True; loutline = False
+# #   maptype = 'lcc-grw'; case = 'grw'; lcontour = True; loutline = False
+#   lstations = False; lprovinces = True; provlist = ['MB','ON','QC'] 
+#   lbasins = True; basinlist = ['GLB',]; basin_args = dict(linewidth = 1.5, color='k')  
+#   variables = ['precip']; seasons = ['annual']; figtitles = ' Annual Average Precipitation [mm/day]'
+# #   variables = ['pet']; seasons = ['annual']; figtitles = 'Potential Evapotranspiration [mm/day]'
+# #   variables = ['snwmlt']; seasons = ['annual']; figtitles = 'Snowmelt [mm/day]'
+# #   variables = ['stations']; seasons = ['annual']; figtitles = 'Station Density'
+# #   explist = ['g-ens']; period = H15; domain = (1,2); lframe = True; lWRFnative = True 
+#   explist = ['NRCan']; period = NRC80
+# #   explist = ['GPCC']; period = None
+#   case = explist[0].lower(); exptitles = explist[0]+' Observations ({})'.format(period); lsamesize = True
+# #   variables = ['zs']; seasons = ['hidef']; figtitles = 'Topography [km]'
+# #   lsamesize = True; seasons = ['topo']
+# #   basinlist = ['GLB','GRW',]; case = 'grw'
+# #   basinlist = ['GLB','GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_white'
+# #   maptype = 'lcc-grw'; basinlist = ['GRW',]; subbasin_args = dict(linewidth = 1.5, color='w'); case = 'grw_local_white'
   
 # # larger map with river basins
 # #   lpickle = False; lprint = False

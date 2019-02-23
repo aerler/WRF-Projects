@@ -90,6 +90,8 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(-3,3,21); clbl = '%2.1f'
     elif var in ('Z',):
       clevs = np.linspace(-15,15,31); clbl = '%2.1f'  
+    elif var in ('snow_CMC',):
+      clevs = np.linspace(-50,300,36); clbl = '%2.1f'; cmap = cm.coolavhrrmap
 #     elif var in ('evap','pet','p-et','precip','precipc','precipnc','waterflx',):
 # #       clevs = np.linspace(-100,100,41); clbl = '%2.0f'  
 #       clevs = np.linspace(-90,90,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr
