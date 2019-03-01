@@ -55,14 +55,14 @@ def generateStatistics(varname, ens, fit, scl=None, reference=None, mode='Ratio'
   # figure out fillValue
   if np.issubdtype(varlist[0].dtype, np.float): fillValue = np.NaN
   elif np.issubdtype(varlist[0].dtype, np.integer): fillValue = 0
-  else: raise TypeError, varlist[0].dtype
+  else: raise TypeError(varlist[0].dtype)
   # define reference
   if isinstance(reference,(list,tuple)): 
     reflist0 = list(reference); reference = reference[0]
   else: reflist0 = [] # dummy list
   if reference is None: iref0 = 0
   elif isinstance(reference,(int,np.integer)): iref0 = reference 
-  elif isinstance(reference,basestring): iref0 = varlist.idkeys.index(reference)
+  elif isinstance(reference,str): iref0 = varlist.idkeys.index(reference)
   else: raise ArgumentError  
   # goodness of fit, reported on plot panels
   if fit:
@@ -74,7 +74,7 @@ def generateStatistics(varname, ens, fit, scl=None, reference=None, mode='Ratio'
 #       for var in fitlist: 
 #         print [ax.name for ax in var.axes], var.shape
 #       assert  np.all(fitlist[0][1,:] == fitlist[0][2,:])
-    assert not isinstance(reference,basestring) or iref0 == fitlist.idkeys.index(reference), reference
+    assert not isinstance(reference,str) or iref0 == fitlist.idkeys.index(reference), reference
     if any([isinstance(dist,VarRV) for dist in fitlist]) or not scl:
       names = [plot_labels.get(getattr(dist,idkey),getattr(dist,idkey)) for dist in fitlist]  
       lnames = max([len(name) for name in names]) # allocate line space
@@ -83,7 +83,7 @@ def generateStatistics(varname, ens, fit, scl=None, reference=None, mode='Ratio'
       string = '{:s}  Fit  {:s}\n'.format(headline,mode.title())
       namestr = '{{:>{:d}s}}  {{:s}}  '.format(max(lhead,lnames))
       iref = iref0; reflist = reflist0[:] # copy list
-      for i,dist,var,name,mvar in zip(xrange(len(fitlist)),fitlist,varlist,names,mvars):
+      for i,dist,var,name,mvar in zip(range(len(fitlist)),fitlist,varlist,names,mvars):
         if isinstance(dist,VarRV) or not scl:
           if isinstance(dist,VarRV):
             pval = dist.fittest(var, nsamples=nsamples, asVar=False, lcrossval=lcrossval) #lflatten=lflatten, axis_idx=var.axisIndex(sample_axis, lcheck=False))
@@ -108,8 +108,8 @@ def generateStatistics(varname, ens, fit, scl=None, reference=None, mode='Ratio'
     if not all(scllist[0].ndim==ndim for ndim in scllist.ndim):
       new_axes = scllist[np.argmax(scllist.ndim)].axes
       scllist = scllist.insertAxes(new_axes=new_axes, lcheckAxis=False) 
-    assert not isinstance(reference,basestring) or iref0 == scllist.idkeys.index(reference), reference
-    if len(scllist) != len(varlist): raise AxisError, scllist
+    assert not isinstance(reference,str) or iref0 == scllist.idkeys.index(reference), reference
+    if len(scllist) != len(varlist): raise AxisError(scllist)
     # compute means
     mvars = []
     for svr,var in zip(scllist,varlist):
@@ -127,21 +127,21 @@ def generateStatistics(varname, ens, fit, scl=None, reference=None, mode='Ratio'
       # prepare first reference sample for K-S test
       scale,shape = scllist[iref0].atts.get('scale_factor', 1),scllist[iref0].atts.get('shape_factor', 1)
       if not (scale is None or scale == 1) and not (shape is None or shape == 1): 
-        raise NotImplementedError, "Cannot rescale scale/variance and shape parameters of reference sample!"
+        raise NotImplementedError("Cannot rescale scale/variance and shape parameters of reference sample!")
       refsmpl = varlist[iref0].getArray(unmask=True, fillValue=fillValue) # only once
       loc0 = scllist[iref0].atts.get('loc_factor', 1)     
       refsmpl = _rescaleSample(refsmpl, loc0, bs_axis=bs_axes[iref0]) # apply rescaling (varies, dependign on loc-type)
   #     print varlist[iref0].dataset_name, [ax.name for ax in varlist[iref0].axes], refsmpl.shape, 
       # start loop
       iref = iref0; reflist = reflist0[:] # copy list
-      for i,dist,varsmpl,mvar,bs_axis in zip(xrange(len(varlist)),scllist,varlist,mvars,bs_axes):
+      for i,dist,varsmpl,mvar,bs_axis in zip(range(len(varlist)),scllist,varlist,mvars,bs_axes):
         name = getattr(dist,idkey)
         if len(reflist) > 0 and name == reflist[0]: # assign new reference 
           iref = i; del reflist[0] # pop element       
           # prepare subsequent reference sample for K-S test
           scale,shape = dist.atts.get('scale_factor', 1),dist.atts.get('shape_factor', 1)
           if not (scale is None or scale == 1) and not (shape is None or shape == 1): 
-            raise NotImplementedError, "Cannot rescale scale/variance and shape parameters of reference sample!"
+            raise NotImplementedError("Cannot rescale scale/variance and shape parameters of reference sample!")
           refsmpl = varsmpl.getArray(unmask=True, fillValue=fillValue) # only once
           if not varsmpl.atts.get('rescaled',False):
             refsmpl = _rescaleSample(refsmpl, dist.atts.get('loc_factor', 1), bs_axis=bs_axis) # apply rescaling (varies, dependign on loc-type)
@@ -219,14 +219,14 @@ def distPlot(axes=None, varname=None, datasets=None, ens=None, fit=None, kde=Non
     if stnset_name is not None and xfactor is None and (lrescale is False or not scl): 
       xfactor = 2./3. # empirical value...
   if xlim is None: 
-    raise ArgumentError, "Variable '{:s}' not found in station/shape settings '{:s}'.".format(varname,stnset_name or shape_name)
+    raise ArgumentError("Variable '{:s}' not found in station/shape settings '{:s}'.".format(varname,stnset_name or shape_name))
   # rescaling, after we found a good setting
   if xfactor is not None and xfactor is not False and xfactor != 1:
     xlim = [np.round(xl*xfactor,int(1-np.round(np.log10(xlim[1])))) for xl in xlim]
   
   # select datasets
   if datasets is not None:
-    if not isinstance(datasets,(tuple,list)): raise TypeError, datasets
+    if not isinstance(datasets,(tuple,list)): raise TypeError(datasets)
     ens = selectDataset(ens, datasets)  
     fit = selectDataset(fit, datasets)
     kde = selectDataset(kde, datasets)
@@ -373,7 +373,7 @@ def quantPlot(axes=None, varname=None, datasets=None, fit=None, scl=None, legend
     else: xlim = axes.get_xlim()
   # select datasets
   if datasets is not None:
-    if not isinstance(datasets,(tuple,list)): raise TypeError, datasets
+    if not isinstance(datasets,(tuple,list)): raise TypeError(datasets)
     fit = selectDataset(fit, datasets)
     scl = selectDataset(scl, datasets)
     
@@ -400,7 +400,7 @@ def quantPlot(axes=None, varname=None, datasets=None, fit=None, scl=None, legend
                        flipxy=True, llabel=True, legend=legend, **kwargs)
   # add percentile lines
   if quantiles is not None:    
-    iref = fit.idkeys.index(reference) if isinstance(reference,basestring) else reference
+    iref = fit.idkeys.index(reference) if isinstance(reference,str) else reference
     if lsample: 
       quants = checkVarlist(fit[iref], varname=varname, ndim=2, support=quantiles, method='ppf')[0].mean(asVar=True)      
     else: quants = checkVarlist(fit[iref], varname=varname, ndim=1, support=quantiles, method='ppf')[0]
@@ -431,7 +431,7 @@ def quantPlot(axes=None, varname=None, datasets=None, fit=None, scl=None, legend
                          flipxy=True, llabel=False, legend=None, **kwargs)
     # add percentile lines for scaled distributions
     if quantiles is not None:
-      iref = scl.idkeys.index(reference) if isinstance(reference,basestring) else reference    
+      iref = scl.idkeys.index(reference) if isinstance(reference,str) else reference    
       if lsample: 
         quants = checkVarlist(scl[iref], varname=varname, ndim=2, support=quantiles, method='ppf')[0].mean(asVar=True)
       else: quants = checkVarlist(scl[iref], varname=varname, ndim=1, support=quantiles, method='ppf')[0]
@@ -465,14 +465,14 @@ def quantPeriod(varname=None, datasets=None, fit=None, quantiles=None, name=None
       and distribution percentiles; quantiles are converted to return periods (years, by default). '''
   
   # input requirements
-  if not isinstance(fit, Ensemble): raise TypeError, fit
-  if not all([isinstance(ds, Dataset) for ds in fit]): raise TypeError, fit
+  if not isinstance(fit, Ensemble): raise TypeError(fit)
+  if not all([isinstance(ds, Dataset) for ds in fit]): raise TypeError(fit)
   # cast quantiles as array
   quantiles = np.asarray(quantiles)
   
   # select datasets
   if datasets is not None:
-    if not isinstance(datasets,(tuple,list)): raise TypeError, datasets
+    if not isinstance(datasets,(tuple,list)): raise TypeError(datasets)
     fit = selectDataset(fit, datasets)
     assert datasets == fit.name
   else: 
@@ -483,7 +483,7 @@ def quantPeriod(varname=None, datasets=None, fit=None, quantiles=None, name=None
   
   # compute references quantiles
   if isinstance(reference,(int,np.integer)): reference = fit[reference].name
-  if not isinstance(reference,basestring): raise TypeError, reference  
+  if not isinstance(reference,str): raise TypeError(reference)  
   if lsample: 
     refvals = checkVarlist(fit[reference], varname=varname, ndim=2, support=quantiles, method='ppf')[0]
     refvals = refvals.mean(axis=sample_axis, asVar=False)      
@@ -575,8 +575,8 @@ if __name__ == '__main__':
                        reference='max-ens', percentiles=(0.025,0.975), lmedian=None, lmean=None, 
                        sample_axis=sample_axis, stnset_name=prov, lbootstrap=lbootstrap, lsample=lsample,)
     var = qvar(percentile=-1, lidx=False, )
-    print var
-    print var.data_array
+    print(var)
+    print(var.data_array)
 
   # test annotated distribution plots
   elif test == 'annotated_plot':
@@ -611,7 +611,7 @@ if __name__ == '__main__':
                                           filetypes=filetypes, domain=1, lflatten=lflatten, lfit=lfit,
 #                                           ensemble_list=['obsslices','name_tags'], name_tags=name_tags,
                                           lbootstrap=lbootstrap, nbs=3, load_list=load_list,)
-    print fitens[0][1]
+    print(fitens[0][1])
     # set up plot    
     if len(seasons) == 1: subplot = len(clusters or prov)
     elif len(clusters or prov) == 1: subplot = len(seasons)
@@ -619,7 +619,7 @@ if __name__ == '__main__':
     fig,ax = evaFigAx(subplot, title=stnens[0][-1][varlist[0]].plot.title, sharex=True, sharey=False, 
                       stylesheet='myggplot', lpresentation=False, lreduce=False)
     # make plots
-    for n in xrange(len(stnens)):
+    for n in range(len(stnens)):
       distPlot(axes=ax.ravel()[n], varname=varlist[0], ens=stnens[n], fit=fitens[n], master=exps[1],
                sample_axis= None if lflatten else ('ensemble','station'), band_vars=None,
                scl=sclens[n] if lrescale else None, lrescale=lrescale, lsample=not lflatten, lanno=True,

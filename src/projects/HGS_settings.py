@@ -6,14 +6,17 @@ This module contains a meta data for HGS simulations for the GRW and a wrapper t
 @author: Andre R. Erler, GPL v3
 '''
 import numpy as np
-import hgs.HGS as hgs # need to prevent name collisions here
 import projects.WSC_basins as wsc
 from collections import namedtuple
 from datasets.common import BatchLoad
 from geodata.misc import ArgumentError, DatasetError
 
 # project folders
-project_folder_pattern = hgs.root_folder+'/{PROJECT:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s}/{TASK:s}/'
+try:
+    import hgs.HGS as hgs # need to prevent name collisions here
+    project_folder_pattern = hgs.root_folder+'/{PROJECT:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s}/{TASK:s}/'
+except ImportError:
+    hgs = project_folder_pattern = None
 station_file = '{PREFIX:s}o.hydrograph.{WSC_ID0:s}.dat' # general HGS naming convention
 
 # mapping of WSC station names to HGS hydrograph names
@@ -74,13 +77,13 @@ hgs_plotargs['2085-2100']    = dict(color='#E24B34') # red
 hgs_plotargs['2090-2100']    = dict(color='#E24B34') # red
 
 # adjust line thickness
-for plotargs in hgs_plotargs.values(): 
+for plotargs in list(hgs_plotargs.values()): 
   if 'linewidth' not in plotargs: plotargs['linewidth'] = 1.
 # extended color scheme for ensemble
 color_args = {'Ctrl':'blue', 'Ens-A':'purple', 'Ens-B':'green','Ens-C':'coral','90km':'purple','30km':'red','10km':'blue'}
-for key,value in color_args.items(): hgs_plotargs[key] = dict(color=value, linewidth=.75)
+for key,value in list(color_args.items()): hgs_plotargs[key] = dict(color=value, linewidth=.75)
 # add "old" versions
-for expname,plotarg in hgs_plotargs.items():
+for expname,plotarg in list(hgs_plotargs.items()):
     if expname[-1] != ')' and expname+' (old)' not in hgs_plotargs:
         oldarg = plotarg.copy(); 
         oldarg['linestyle'] = '--' 
@@ -97,7 +100,7 @@ gage_datasets = ('wsc','obs','observations')
 # ensemble definitions for GRW project 
 ensemble_list = {'g-mean':('g-ctrl','g-ens-A','g-ens-B','g-ens-C'),
                  't-mean':('t-ctrl','t-ens-A','t-ens-B','t-ens-C')}
-for name,members in ensemble_list.items():
+for name,members in list(ensemble_list.items()):
     for prd in ('-2050','-2100'):
         ensemble_list[name+prd] = tuple(member+prd for member in members)
     
@@ -236,7 +239,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
           if WSC_station is None: WSC_station = station_list[station].WSC
           station = station_list[station].HGS if hasattr(station_list[station], 'HGS') else '{WSC_ID0:s}'
       if WSC_station is None:
-          raise NotImplementedError, station
+          raise NotImplementedError(station)
   elif well:
       if Obs_well is None:
           raise NotImplementedError
@@ -265,7 +268,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
     dataset = dataset(years=(start_year,end_year))
   # add WRF attributes to dataset
   if lWRF:
-    for key,value in exp.__dict__.items():
+    for key,value in list(exp.__dict__.items()):
       dataset.atts['WRF_'+key] = value
     dataset.atts['WRF_resolution'] = kwargs['resolution']
   return dataset
@@ -341,7 +344,7 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, period=None, l
    
   # add WRF attributes to dataset
   if lWRF:
-    for key,value in exp.__dict__.items():
+    for key,value in list(exp.__dict__.items()):
       dataset.atts['WRF_'+key] = value
     dataset.atts['WRF_resolution'] = kwargs['resolution']
   return dataset
@@ -358,7 +361,13 @@ if __name__ == '__main__':
     import os
     from geodata.gdal import GridDefinition, pickleGridDef, loadPickledGridDef, grid_folder
     
-    convention='Proj4'
+    ## parameters for Athabasca River Basin project (COSIA)
+    convention = 'Wkt'
+    projection = 'PROJCS["US_National_Atlas_Equal_Area",GEOGCS["GCS_Unspecified datum based upon the Clarke 1866 Authalic Sphere",DATUM["D_Sphere_Clarke_1866_Authalic",SPHEROID["Clarke_1866_Authalic_Sphere",6370997,0]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_origin",45],PARAMETER["central_meridian",-100],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["Meter",1]]'
+#     name = 'arb1' # 1km
+#     geotransform = [-1460500,1e3,0,810500,0,1e3]; size = (1420,1290)
+    name = 'arb2' # 5km
+    geotransform = [-1460500,5e3,0,810500,0,5e3]; size = (284,258)
     ## parameters for UTM 17 Assiniboine River Basin grids
 # #     # Bird River, a subbasin of the Assiniboine River Basin
 # #     name = 'brd1' # 5km resolution 
@@ -367,6 +376,7 @@ if __name__ == '__main__':
 #     size = tuple(int(i) for i in size)
 #     print size
 # #     geotransform = (245.e3, 5.e3, 0., 5524.e3, 0., 5.e3); size = (39,32)
+#     convention='Proj4'
 # #      projection = "+proj=utm +zone=14 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
     ## Assiniboine River Basin
 #     name = 'asb1' # 5km resolution 
@@ -375,20 +385,24 @@ if __name__ == '__main__':
 # #     size = tuple(int(i) for i in size)
 # #     print size
 #     geotransform = (-159.e3, 5.e3, 0., 5202.e3, 0., 5.e3); size = (191,135)
+#     convention='Proj4'
 #     projection = "+proj=utm +zone=14 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
     ## parameters for Canada-wide Lambert Azimuthal Equal-area
 #     name = 'can1' # 5km resolution
 #     llx = -3500000; lly = -425000; urx = 3000000; ury = 4000000; dx = dy = 5.e3
 #     geotransform = [llx, dx, 0., lly, 0., dy]; size = ((urx-llx)/dx,(ury-lly)/dy)
 #     size = tuple(int(i) for i in size)
+#     convention='Proj4'
 #     projection = "+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs"
+    
     # N.B.: (x_0, dx, 0, y_0, 0, dy); (xl,yl)
     #       GT(0),GT(3) are the coordinates of the bottom left corner
     #       GT(1) & GT(5) are pixel width and height
     #       GT(2) & GT(4) are usually zero for North-up, non-rotated maps
+    
     # create grid
     griddef = GridDefinition(name=name, projection=projection, geotransform=geotransform, size=size, 
-                             xlon=None, ylat=None, lwrap360=False, geolocator=True, convention='Proj4')
+                             xlon=None, ylat=None, lwrap360=False, geolocator=True, convention=convention)
 
     # save pickle to standard location
     filepath = pickleGridDef(griddef, folder=grid_folder, filename=None, lfeedback=True)

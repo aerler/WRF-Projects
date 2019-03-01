@@ -29,12 +29,12 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   if axes is None: raise ArgumentError
   # define some meta data
   if varlist is None and expens.basetype is Dataset: raise TypeError
-  if isinstance(varlist,basestring):
+  if isinstance(varlist,str):
     varlist_name = varlist; varlist = variable_list[varlist_name].vars # look up variable set
   elif isinstance(varlist,(tuple,list)):
     varlist_name = varlist[0] # use first entry as name
   else: raise TypeError
-  assert isinstance(varlist_name,basestring)
+  assert isinstance(varlist_name,str)
   if expens is None: expens = []
   if obsens is None: obsens = []
   # reference dataset (for meta data)
@@ -85,9 +85,9 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   
   # separate fractional variables ("percentages")
   if scalevars:
-    if isinstance(scalevars,basestring) and scalevars == 'auto': lauto = True
+    if isinstance(scalevars,str) and scalevars == 'auto': lauto = True
     elif isinstance(scalevars,(tuple,list)): lauto = False 
-    else: raise TypeError, scalevars
+    else: raise TypeError(scalevars)
     tmp_varlist = []; tmp_scalevars = []
     for var in varlist:
         if lauto:
@@ -105,7 +105,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   def makePlots(ens, err, varlist=None, scalevars=None, lleg=False, lerrbar=False, lerrbnd=False, **plotargs):
     # not that some arguments are not passed explicitly but are used from the contianing scope (e.g. kwargs)
     if scalevars:
-      if varlist: raise ArgumentError, varlist
+      if varlist: raise ArgumentError(varlist)
       else: varlist = scalevars; lrescale = True
     else: lrescale = False
     plts = [] # meant to be added to list 
@@ -119,10 +119,10 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
       # loop over datasets
       if len(ens) > len(err) and isinstance(err,(list,tuple)): 
         err = list(err) + [None]*(len(ens)-len(err)) # extend error fields, so that 
-      for n,vards,plotarg in zip(xrange(len(ens)),ens,plotargs):
+      for n,vards,plotarg in zip(range(len(ens)),ens,plotargs):
         # if master dataset is defined, only show error bands for master dataset
         if isinstance(master, (int,np.int)): lmaster = n == master
-        elif isinstance(master, basestring): lmaster = vards.name == master
+        elif isinstance(master, str): lmaster = vards.name == master
         else: lmaster = True # i.e. always show error bands
         plotarg.pop('label',None) # that was just a dummy to get the length right
         if isinstance(err, Ensemble):
@@ -158,7 +158,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
     # general positioning
     if dataset_legend is True: dataset_legend = dict(loc=0) # legend at default/optimal location
     elif isinstance(dataset_legend,(int,np.integer,float,np.inexact)): dataset_legend = dict(loc=dataset_legend)
-    elif not isinstance(dataset_legend,dict): raise TypeError, dataset_legend
+    elif not isinstance(dataset_legend,dict): raise TypeError(dataset_legend)
     # dataset label list
     if dataset_labels is None:
       dataset_labels = []
@@ -211,8 +211,8 @@ if __name__ == '__main__':
     obsens = loadShapeObservations(obs='Unity', basins=basin, varlist=varlist, aggregation='mean')
     obserr = loadShapeObservations(obs='Unity', basins=basin, varlist=varlist, aggregation='std')
     # print diagnostics
-    print expens[-1] if expens else obsens[-1]; print ''
-    print experr[-1] if experr else obserr[-1]; print ''
+    print(expens[-1] if expens else obsens[-1]); print('')
+    print(experr[-1] if experr else obserr[-1]); print('')
         
     # set up plot    
     fig,ax = climFigAx((1,1), title=test, sharex=True, sharey=False, stylesheet='myggplot', lpresentation=False)    
@@ -244,14 +244,14 @@ if __name__ == '__main__':
 #     obsenses = loadShapeObservations(obs=obs, aggregation='mean', period=None, **kwargs)
 #     obserres = loadShapeObservations(obs=obs, aggregation='SEM', period=None, **kwargs)
     # print diagnostics
-    print expenses[0] if expenses else obsenses[0]; print ''
+    print(expenses[0] if expenses else obsenses[0]); print('')
     
     # set up plot    
     fig,axes = climFigAx((len(varlists),len(basins)), title=test, sharex=True, sharey=False, stylesheet='default', lpresentation=False)    
     
     # make plots
     axes = axes.ravel()
-    for n,ax,expens,experr,obsens,obserr,varlist in zip(xrange(len(axes)),axes,expenses,experres,obsenses,obserres,varlists*len(basins)):
+    for n,ax,expens,experr,obsens,obserr,varlist in zip(range(len(axes)),axes,expenses,experres,obsenses,obserres,varlists*len(basins)):
       climPlot(axes=ax, expens=expens, obsens=obsens, experr=experr, obserr=obserr, varlist=varlist, 
                 master=exps.master, variable_list=variables_rc, 
                 annotation=clim_annotation, defaults=clim_defaults,

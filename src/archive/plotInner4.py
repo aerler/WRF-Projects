@@ -65,7 +65,7 @@ if __name__ == '__main__':
   ## Projection RCP 8.5
   dom = (1,2)
   ctrl1 = openWRFclim(exp='ctrl-1',filetypes=['wrfsrfc_d%02i_clim_1979-1985.nc'], domains=dom)
-  rcp85 = openWRFclim(exp='ctrl-1-rcp85', domains=dom); print rcp85[-1]
+  rcp85 = openWRFclim(exp='ctrl-1-rcp85', domains=dom); print(rcp85[-1])
 #  CFSR = openCFSRclim(filename='CFSRclimFineRes1979-1986_6.nc'); print CFSR
 #  NARR = openNARRclim(); print NARR
   exps = [ctrl1, rcp85]; case = '2045_d%02i'%dom[-1]
@@ -114,7 +114,7 @@ if __name__ == '__main__':
   
   ## make tuples (or lists actually)
   nexps = []
-  for n in xrange(len(exps)):
+  for n in range(len(exps)):
     if not isinstance(exps[n],(tuple,list)):
       exps[n] = (exps[n],)
     nexps.append(len(exps[n]))    
@@ -186,7 +186,7 @@ if __name__ == '__main__':
         cbl = np.linspace(0,clim[-1],6)
       # time frame / season
       if season == 'annual':  # all month
-        month = range(1,13); plottype = 'Annual Average'
+        month = list(range(1,13)); plottype = 'Annual Average'
       elif season == 'winter':# DJF
         month = [12, 1, 2]; plottype = 'Winter Average'
       elif season == 'spring': # MAM
@@ -201,7 +201,7 @@ if __name__ == '__main__':
       figtitle = '%s %s [%s]'%(plottype,plat['plottitle'],plat['plotunits']) # Annual Average
       
       # feedback
-      print('\n\n   ***  %s %s (%s)   ***   \n'%(plottype,plat['plottitle'],var))
+      print(('\n\n   ***  %s %s (%s)   ***   \n'%(plottype,plat['plottitle'],var)))
       
       ## compute data
       data = []; lons = []; lats=[]  # list of data and coordinate fields to be plotted 
@@ -233,17 +233,17 @@ if __name__ == '__main__':
             vardata = expvar.get().squeeze()
           vardata = vardata * expvar.plotatts.get('scalefactor',1) # apply unit conversion          
           if lmskocn: 
-            if exp.vardict.has_key('lnd'): # CESM and CFSR 
+            if 'lnd' in exp.vardict: # CESM and CFSR 
               vardata[exp.lnd.get()<0.5] = -2. # use land fraction
-            elif exp.vardict.has_key('lndidx'): 
+            elif 'lndidx' in exp.vardict: 
               mask = exp.lndidx.get()
               vardata[mask==16] = -2. # use land use index (ocean)  
               vardata[mask==24] = -2. # use land use index (lake)
             else : vardata = maskoceans(lon,lat,vardata,resolution=res,grid=grid)
           if lmsklnd: 
-            if exp.vardict.has_key('lnd'): # CESM and CFSR 
+            if 'lnd' in exp.vardict: # CESM and CFSR 
               vardata[exp.lnd.get()>0.5] = 0 # use land fraction
-            elif exp.vardict.has_key('lndidx'): # use land use index (ocean and lake)
+            elif 'lndidx' in exp.vardict: # use land use index (ocean and lake)
               mask = exp.lndidx.get(); tmp = vardata.copy(); vardata[:] = 0.
               vardata[mask==16] = tmp[mask==16]; vardata[mask==24] = tmp[mask==24]
           datatpl.append(vardata) # append to data list
@@ -262,7 +262,7 @@ if __name__ == '__main__':
       # make figure and axes
       f = pyl.figure(facecolor='white', figsize=figsize)
       ax = []
-      for n in xrange(nax):
+      for n in range(nax):
         ax.append(f.add_subplot(subplot[0],subplot[1],n+1))
       f.subplots_adjust(**margins) # hspace, wspace
         # lat_1 is first standard parallel.
@@ -273,13 +273,13 @@ if __name__ == '__main__':
       # than 1000 km^2 in area.
       # map projection boundaries for inner WRF domain
       maps = [] 
-      for n in xrange(nax):
+      for n in range(nax):
         maps.append(Basemap(ax=ax[n],**projection)) # one map for each panel!!  
       # transform coordinates (on per-map basis)
       x = []; y = []
-      for n in xrange(nax):
+      for n in range(nax):
         xtpl = []; ytpl = []
-        for m in xrange(nexps[n]):
+        for m in range(nexps[n]):
           xx, yy = maps[n](lons[n][m],lats[n][m]) # convert to map-native coordinates
           xtpl.append(xx); ytpl.append(yy)
         x.append(xtpl); y.append(ytpl) 
@@ -287,16 +287,16 @@ if __name__ == '__main__':
       ## Plot data
       # draw boundaries of inner domain
       if lframe:
-        for n in xrange(nax):
-          for m in xrange(nexps[n]):   
+        for n in range(nax):
+          for m in range(nexps[n]):   
             bdy = np.ones_like(x[n][m]); bdy[0,:]=0; bdy[-1,:]=0; bdy[:,0]=0; bdy[:,-1]=0
             maps[n].contour(x[n][m],y[n][m],bdy,[0],ax=ax[n], colors='k') # draw boundary of inner domain
       # draw data
       norm = mpl.colors.Normalize(vmin=min(clevs),vmax=max(clevs),clip=True) # for colormap
       cd = []  
-      for n in xrange(nax): 
-        for m in xrange(nexps[n]):
-          print 'panel %i: min %f / max %f / mean %f'%(n,data[n][m].min(),data[n][m].max(),data[n][m].mean())
+      for n in range(nax): 
+        for m in range(nexps[n]):
+          print('panel %i: min %f / max %f / mean %f'%(n,data[n][m].min(),data[n][m].max(),data[n][m].mean()))
           cd.append(maps[n].contourf(x[n][m],y[n][m],data[n][m],clevs,ax=ax[n],cmap=cmap, norm=norm,extend='both'))  
       # add colorbar
       cax = f.add_axes(caxpos)
@@ -316,8 +316,8 @@ if __name__ == '__main__':
       elif projtype == 'lcc-large':
         maps[0].drawmapscale(-171, 21, -137, 57, 2000, barstyle='fancy', yoffset=0.01*(maps[n].ymax-maps[n].ymin))
       n = -1 # axes counter
-      for i in xrange(subplot[0]):
-        for j in xrange(subplot[1]):
+      for i in range(subplot[0]):
+        for j in range(subplot[1]):
           n += 1 # count up
           ax[n].set_title(axtitles[n],fontsize=11) # axes title
           if j == 0 : Left = True
@@ -327,7 +327,7 @@ if __name__ == '__main__':
           # land/sea mask
           maps[n].drawlsmask(ocean_color='blue', land_color='green',resolution=res,grid=grid)
           # black-out continents, if we have no proper land mask 
-          if lmsklnd and not (exps[n][0].vardict.has_key('lnd') or exps[n][0].vardict.has_key('lndidx')): 
+          if lmsklnd and not ('lnd' in exps[n][0].vardict or 'lndidx' in exps[n][0].vardict): 
             maps[n].fillcontinents(color='black',lake_color='black') 
           # add maps stuff
           maps[n].drawcoastlines(linewidth=0.5)
@@ -340,18 +340,18 @@ if __name__ == '__main__':
             maps[n].drawmeridians([-180,-160,-140,-120,-100],linewidth=1, labels=[False,False,False,Bottom])
             maps[n].drawmeridians([-170,-150,-130,-110],linewidth=0.5, labels=[False,False,False,Bottom])
           elif projtype == 'lcc-large':
-            maps[n].drawparallels(range(0,90,30),linewidth=1, labels=[Left,False,False,False])
-            maps[n].drawparallels(range(15,90,30),linewidth=0.5, labels=[Left,False,False,False])
-            maps[n].drawmeridians(range(-180,180,30),linewidth=1, labels=[False,False,False,Bottom])
-            maps[n].drawmeridians(range(-165,180,30),linewidth=0.5, labels=[False,False,False,Bottom])
+            maps[n].drawparallels(list(range(0,90,30)),linewidth=1, labels=[Left,False,False,False])
+            maps[n].drawparallels(list(range(15,90,30)),linewidth=0.5, labels=[Left,False,False,False])
+            maps[n].drawmeridians(list(range(-180,180,30)),linewidth=1, labels=[False,False,False,Bottom])
+            maps[n].drawmeridians(list(range(-165,180,30)),linewidth=0.5, labels=[False,False,False,Bottom])
           elif projtype == 'ortho':
-            maps[n].drawparallels(range(-90,90,30),linewidth=1)
-            maps[n].drawmeridians(range(-180,180,30),linewidth=1)
+            maps[n].drawparallels(list(range(-90,90,30)),linewidth=1)
+            maps[n].drawmeridians(list(range(-180,180,30)),linewidth=1)
         
       # save figure to disk
       if lprint:
         f.savefig(folder+filename, **sf) # save figure to pdf
-        print('\nSaved figure in '+filename)
+        print(('\nSaved figure in '+filename))
         print(folder)
   
   ## show plots after all iterations

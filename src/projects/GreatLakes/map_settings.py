@@ -8,7 +8,7 @@ Meta data related to the Athabasca River Basin downscaling project; primarily ma
 import numpy as np
 from plotting.mapsetup import getMapSetup
 from projects.WSC_basins import basin_list
-from figure_settings import figure_folder
+from .figure_settings import figure_folder
 
 map_folder = figure_folder + '.mapsetup/'
 # actual Athabasca River Basin (shape file from Aquanty)
@@ -39,8 +39,8 @@ station_dict['default'] = [] #station_dict['cities'] # default point markers
 # parallels and meridians
 annotation_dict = dict()
 ## Lambert Conic Conformal - Grand River Watershed (small)
-annotation_dict['lcc-grw'] = dict(scale=(-79.7, 44.3, -80.25, 43.5, 40), lat_full=range(40,45), lat_half=np.arange(40.5,45), 
-                             lon_full=range(-75,-85,-1), lon_half=np.arange(-75.5,-85,-1))
+annotation_dict['lcc-grw'] = dict(scale=(-79.7, 44.3, -80.25, 43.5, 40), lat_full=list(range(40,45)), lat_half=np.arange(40.5,45), 
+                             lon_full=list(range(-75,-85,-1)), lon_half=np.arange(-75.5,-85,-1))
 ## Lambert Conic Conformal - Great Lakes Basin
 annotation_dict['lcc-glb'] = dict(scale=(-90.5, 39.5, -82.5, 46, 400), lat_full=[30,40,50,60], lat_half=[45,55,65], 
                              lon_full=[-70,-80,-90,-100], lon_half=[-75,-85,-95])
@@ -56,10 +56,10 @@ annotation_dict['lcc-NA'] = dict(scale=(-125, 17.5, -82.5, 46, 2000),
                                   lat_full=[10,20,30,40,50,60,70,80], lat_half=[5,15,25,35,45,55,65,75], 
                                   lon_full=[-180,-160,-140,-120,-100,-80,-60,-40,-20,0], lon_half=[-170,-150,-130,-110,-90,-70,-50,-30,-10])
 ## Orthographic Projection
-annotation_dict['ortho-can'] = dict(scale=None, lat_full=range(-90,90,30), lat_half=None, lon_full=range(-180,180,30), lon_half=None)
+annotation_dict['ortho-can'] = dict(scale=None, lat_full=list(range(-90,90,30)), lat_half=None, lon_full=list(range(-180,180,30)), lon_half=None)
 ## Global Robinson Projection
-annotation_dict['robinson'] = dict(scale=None, lat_full=range(-60,100,60), lon_full=range(-180,200,120),
-                                               lat_half=range(-90,100,60), lon_half=range(-120,160,120))
+annotation_dict['robinson'] = dict(scale=None, lat_full=list(range(-60,100,60)), lon_full=list(range(-180,200,120)),
+                                               lat_half=list(range(-90,100,60)), lon_half=list(range(-120,160,120)))
  
 
 
@@ -108,7 +108,7 @@ def getSetup(projection, annotation=None, stations=None, lpickle=False, folder=N
   if stations is None:
     stations = station_dict
   else:
-    if not isinstance(stations,basestring): raise TypeError
+    if not isinstance(stations,str): raise TypeError
     stations = station_dict[stations]
   mapSetup = getMapSetup(lpickle=lpickle, folder=folder, lrm=lrm, # pickle arguments; the rest is passed on to MapSetup 
                          name=projection, projection=proj, grid=10, point_markers=stations, **anno)
@@ -123,14 +123,14 @@ if __name__ == '__main__':
   proj_list = None
 #   proj_list = ['lcc-glb']
 
-  if proj_list is None: proj_list = projection_dict.keys()    
+  if proj_list is None: proj_list = list(projection_dict.keys())    
   # loop over projections
   for name in proj_list:
     proj = projection_dict[name]
     
     # test retrieval function
     test = getSetup(name, lpickle=True, stations=None, folder=map_folder, lrm=True)
-    print test.name
-    print test
-    print test.point_markers
+    print(test.name)
+    print(test)
+    print(test.point_markers)
       

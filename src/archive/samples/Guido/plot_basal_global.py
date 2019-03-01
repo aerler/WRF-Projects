@@ -34,7 +34,7 @@ shf = nchf.variables["sdevbheatflx"][:,:]
 #hf=np.transpose(thf)
 #shf=np.transpose(tshf)
 #hf=data
-print hf.shape
+print(hf.shape)
 #print shf.shape
 #print lon.shape
 #print lat.shape

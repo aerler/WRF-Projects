@@ -44,8 +44,8 @@ station_list['Speed River at Guelph']     = Station(HGS='Station_Speed_River_nea
 station_list['Whiteman\'s Cr. at Mt. Vernon'] = Station(HGS='Station_Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=12)
 station_list['Fairchild River at Brantford']    = Station(HGS='Station_Fairchild_Creek_near_Brantford',WSC='Fairchild Creek_Brantford',ylim=12 )
 # look-up tables for WSC/HGS station name conversion                           
-WSC_station_list = {stn.WSC:stn.HGS for stn in station_list.values()}
-HGS_station_list = {stn.HGS:stn.WSC for stn in station_list.values()}
+WSC_station_list = {stn.WSC:stn.HGS for stn in list(station_list.values())}
+HGS_station_list = {stn.HGS:stn.WSC for stn in list(station_list.values())}
 # short names for gages in this basin and their HGS/WSC names
 station_list_etal = dict(**station_list) # not ordered
 station_list_etal['Brantford']  = station_list['Grand River at Brantford'] # alias
@@ -148,13 +148,13 @@ hgs_plotargs['2050-2060, L21'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['2085-2100, L21'] = dict(color='#E24B34') # red
 hgs_plotargs['2090-2100, L21'] = dict(color='#E24B34') # red
 # adjust line thickness
-for plotargs in hgs_plotargs.values(): 
+for plotargs in list(hgs_plotargs.values()): 
   if 'linewidth' not in plotargs: plotargs['linewidth'] = 1.
 # extended color scheme for ensemble
 color_args = {'Ctrl':'blue', 'Ens-A':'purple', 'Ens-B':'green','Ens-C':'coral','90km':'purple','30km':'red','10km':'blue'}
-for key,value in color_args.items(): hgs_plotargs[key] = dict(color=value, linewidth=.75)
+for key,value in list(color_args.items()): hgs_plotargs[key] = dict(color=value, linewidth=.75)
 # add "old" versions
-for expname,plotarg in hgs_plotargs.items():
+for expname,plotarg in list(hgs_plotargs.items()):
     if expname[-1] != ')' and expname+' (old)' not in hgs_plotargs:
         oldarg = plotarg.copy(); 
         oldarg['linestyle'] = '--' 
@@ -171,7 +171,7 @@ gage_datasets = ('wsc','obs','observations')
 # ensemble definitions for GRW project 
 ensemble_list = {'g-mean':('g-ctrl','g-ens-A','g-ens-B','g-ens-C'),
                  't-mean':('t-ctrl','t-ens-A','t-ens-B','t-ens-C')}
-for name,members in ensemble_list.items():
+for name,members in list(ensemble_list.items()):
     for prd in ('-2050','-2100'):
         ensemble_list[name+prd] = tuple(member+prd for member in members)
   
@@ -509,8 +509,8 @@ if __name__ == '__main__':
     print(ds)
     if 'model_time' in ds:
         print('\n')
-        print(ds.model_time)
-        print(ds.model_time[:])
+        print((ds.model_time))
+        print((ds.model_time[:]))
     
   elif test_mode == 'dataset':
 
@@ -523,18 +523,18 @@ if __name__ == '__main__':
     print(ds)
     if 'discharge' in ds:
         print('\n')
-        print(ds.discharge)
-        print(ds.discharge.mean(), ds.discharge.max(), ds.discharge.min(),)
-        print(ds.discharge.plot.units)
+        print((ds.discharge))
+        print((ds.discharge.mean(), ds.discharge.max(), ds.discharge.min(),))
+        print((ds.discharge.plot.units))
     if 'head' in ds:
         print('\n')
-        print(ds.head)
-        print(ds.head.mean(), ds.head.max(), ds.head.min(),)
-        print(ds.head.plot.units)
+        print((ds.head))
+        print((ds.head.mean(), ds.head.max(), ds.head.min(),))
+        print((ds.head.plot.units))
     if ds.hasAxis('z'):
         print('\n')
-        print(ds.z)
-        print(ds.z[:])
+        print((ds.z))
+        print((ds.z[:]))
     
   elif test_mode == 'ensemble':
     
@@ -552,4 +552,4 @@ if __name__ == '__main__':
     # N.B.: all need to have unique names... whihc is a problem with obs...
     print(ens)
     print('\n')
-    print(ens[0])
+    print((ens[0]))

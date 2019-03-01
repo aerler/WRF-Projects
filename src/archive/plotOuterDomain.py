@@ -32,7 +32,7 @@ if __name__ == '__main__':
   
   ## read data
   data1, data2 = openWRF('ctrl-1',[1981],[1,2,12])
-  print data1
+  print(data1)
   ## compute data
 #  precip1 = data1.rain(time=) 
 #  precip2 = 
@@ -58,8 +58,8 @@ if __name__ == '__main__':
   # coordinates
   lat1 = data1.lat.get(); lat2 = data2.lat.get() 
   lon1 = data1.lon.get(); lon2 = data2.lon.get()
-  x1, y1 = map(lon1,lat1) # convert to map-native coordinates
-  x2, y2 = map(lon2,lat2) # convert second domain to first domain map coordinates
+  x1, y1 = list(map(lon1,lat1)) # convert to map-native coordinates
+  x2, y2 = list(map(lon2,lat2)) # convert second domain to first domain map coordinates
   # draw boundaries of inner and outer domains
   bdy1 = np.ones_like(lat1); bdy1[0,:]=0; bdy1[-1,:]=0; bdy1[:,0]=0; bdy1[:,-1]=0
   bdy2 = np.ones_like(lat2); bdy2[0,:]=0; bdy2[-1,:]=0; bdy2[:,0]=0; bdy2[:,-1]=0
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     
   # save figure to disk
   f.savefig(folder+'Topography.pdf', **sf) # save figure to pdf
-  print('\nSaved figure in '+folder+'Topography.pdf')
+  print(('\nSaved figure in '+folder+'Topography.pdf'))
   # show plots
   pyl.show()
 

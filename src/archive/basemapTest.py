@@ -22,7 +22,7 @@ lons = (delta*np.indices((nlats,nlons))[1,:,:])
 wave = 0.75*(np.sin(2.*lats)**8*np.cos(4.*lons))
 mean = 0.5*np.cos(2.*lats)*((np.sin(2.*lats))**2 + 2.)
 # compute native map projection coordinates of lat/lon grid.
-x, y = map(lons*180./np.pi, lats*180./np.pi)
+x, y = list(map(lons*180./np.pi, lats*180./np.pi))
 # contour data over the map.
 cs = map.contourf(x,y,wave+mean,15,linewidths=1.5,latlon=True)
 plt.title('contour lines over filled continent background')

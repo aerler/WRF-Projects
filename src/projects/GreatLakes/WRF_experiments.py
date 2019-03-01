@@ -134,7 +134,7 @@ experiments['physics-ensemble-2100'] = Exp(shortname='phys-ens-2100', name='phys
 ## an alternate dictionary using short names and aliases for referencing
 exps = OrderedDict()
 # use short names where available, normal names otherwise
-for key,item in experiments.iteritems():
+for key,item in experiments.items():
   exps[key] = item # this prevents name collisions between regions
   if item.shortname is not None: 
     exps[item.shortname] = item
@@ -162,16 +162,16 @@ ensembles['t3-ens'] = ('t3-ctrl', 't3-ens-A', 't3-ens-B', 't3-ens-C')
 # N.B.: static & meta data for the ensemble is copied from the first-listed member;
 #       this includes station attributes, such as the elevation error 
 # add future versions
-for ensname,enslist in ensembles.items():
+for ensname,enslist in list(ensembles.items()):
   for suffix in '2050','2100':
     suffix = '-'+suffix
     ensembles[ensname+suffix] = tuple(expname[:-2]+suffix if expname[-2:] == '-1' else expname+suffix for expname in enslist)
 # replace names with experiment instances
-for ensname,enslist in ensembles.iteritems():
+for ensname,enslist in ensembles.items():
   ensembles[ensname] = tuple(experiments[expname] for expname in enslist)
 # make sorted copy
 WRF_ens = OrderedDict()
-name_list = ensembles.keys(); name_list.sort()
+name_list = list(ensembles.keys()); name_list.sort()
 for key in name_list:
   WRF_ens[key] = ensembles[key]
 ensembles = enss = WRF_ens
@@ -185,7 +185,7 @@ addLoadFcts(locals(), locals(), exps=WRF_exps, enses=WRF_ens)
 if __name__ == '__main__':
     
   ## view/test ensembles
-  for name,members in WRF_ens.iteritems():
+  for name,members in WRF_ens.items():
     s = '  {:s}: '.format(name)
     for member in members: s += ' {:s},'.format(member.name)
     print(s)

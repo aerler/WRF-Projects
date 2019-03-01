@@ -7,12 +7,12 @@ A package that contains settings for the GreatLakes region projects for use with
 '''
 
 # import figure settings
-from figure_settings import getVariableSettings, getFigureSettings, figure_folder
+from .figure_settings import getVariableSettings, getFigureSettings, figure_folder
 from warnings import warn
 
 # import map projection settings (basemap)
 try: 
-    from map_settings import getSetup, map_folder
+    from .map_settings import getSetup, map_folder
 except IOError:
     warn("Error importing map settings - possibly due to missing shape data.")
 except ImportError:
@@ -23,9 +23,9 @@ except ImportError:
 
 try:
     # import relevant WRF experiments
-    from WRF_experiments import WRF_exps, WRF_ens
+    from .WRF_experiments import WRF_exps, WRF_ens
     # import WRF load functions
-    from WRF_experiments import loadWRF, loadWRF_Shp, loadWRF_Stn, loadWRF_TS, loadWRF_ShpTS, loadWRF_StnTS, loadWRF_Ensemble, loadWRF_ShpEns, loadWRF_StnEns
+    from .WRF_experiments import loadWRF, loadWRF_Shp, loadWRF_Stn, loadWRF_TS, loadWRF_ShpTS, loadWRF_StnTS, loadWRF_Ensemble, loadWRF_ShpEns, loadWRF_StnEns
 except (ImportError,IOError):
     WRF_exps = None; WRF_ens = None
     warn("Error importing WRF experiments.")
@@ -59,7 +59,7 @@ except (ImportError,IOError):
     warn("Error importing shape files and/or WSC module.")
 
 # import figure with hydro settings
-from analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations  # load datasets 
-from analysis_settings import loadStationFit, loadShapeFit
-from analysis_settings import exps_rc, variables_rc, constraints_rc
-from analysis_settings import climFigAx, climPlot, evaFigAx, distPlot, quantPlot # plotting
+from .analysis_settings import loadStationEnsemble, loadShapeEnsemble, loadShapeObservations  # load datasets 
+from .analysis_settings import loadStationFit, loadShapeFit
+from .analysis_settings import exps_rc, variables_rc, constraints_rc
+from .analysis_settings import climFigAx, climPlot, evaFigAx, distPlot, quantPlot # plotting

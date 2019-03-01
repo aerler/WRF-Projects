@@ -28,7 +28,7 @@ def extractLocation(*datasets, **kwargs):
         newsets = [None]*2+list(datasets)
     else:
         # interpret arguments
-        var,val = kwargs.items()[0] 
+        var,val = list(kwargs.items())[0] 
         # select coordinate
         ds0 = getattr(datasets[0],var)
         if isinstance(ds0,Ensemble): ds0 = ds0[0]
@@ -52,7 +52,7 @@ def _rescaleSample(smpl, loc, bs_axis=None):
         smpl = smpl*loc
       elif loc.ndim < smpl.ndim:
         smpl = smpl*loc.reshape(loc.shape+(1,)*(smpl.ndim-loc.ndim)) # broadcast
-      else: raise ValueError, loc.shape
+      else: raise ValueError(loc.shape)
   elif loc is not None and loc != 1: smpl = smpl*loc
   return smpl
 
@@ -62,40 +62,40 @@ def rescaleDistributions(fits, samples=None, reference=None, target=None, lscale
   ''' Rescale fits (datasets), so that the mean of each variable matches the corresponding variable in the
       reference dataset; if a target is specified, the target scale factors are applied to all
       datasets, if target is None, each dataset is rescaled individually. '''
-  if not isinstance(fits, (list,tuple,Ensemble)): raise TypeError, fits
+  if not isinstance(fits, (list,tuple,Ensemble)): raise TypeError(fits)
   if lsourceScale: 
     if samples is None: raise ArgumentError('Need source samples for source rescaling!')
-    elif not isinstance(samples, (list,tuple,Ensemble)): raise TypeError, samples
+    elif not isinstance(samples, (list,tuple,Ensemble)): raise TypeError(samples)
   elif samples is None: samples = [None]*len(fits) # avoid errors
-  if isinstance(fits,Ensemble) and isinstance(reference,basestring):
+  if isinstance(fits,Ensemble) and isinstance(reference,str):
     reference = fits[reference]
   elif not isinstance(reference,Dataset): raise TypeError
   if target is None or target == 'auto': pass # every dataset is scaled individually or based on suffixes
-  elif isinstance(fits,Ensemble) and isinstance(target,basestring):
+  elif isinstance(fits,Ensemble) and isinstance(target,str):
     target = fits[target]
-  elif not isinstance(target,Dataset): raise TypeError, target
+  elif not isinstance(target,Dataset): raise TypeError(target)
   if suffixes is None: suffixes = ('-2050','2100') # suffixes for scaling heuristic
   # determine scale factor
   def scaleFactor(reference, target, lscale=False, lglobal=False):
     ''' internal function to compute rescaling factors for common variables '''
     scalefactors = dict() # return dict with scalefactors for all applicable variables 
-    for varname,refvar in reference.variables.iteritems():
+    for varname,refvar in reference.variables.items():
       if varname in target and isinstance(refvar,VarRV): # only varaibles that appear in both sets
         tgtvar = target.variables[varname]
         iloc = 1 if refvar.shape[-1] == 3 else 0
         # insert dummy ensemble axis, if necessary
         refvar = refvar.insertAxes(new_axes=tgtvar.axes, lcopy=True, asVar=True, linplace=False)  
         if refvar.axes[-1].name.startswith('params'): refdata = refvar.data_array.take(iloc, axis=-1)
-        else: raise AxisError, refvar.axes[-1]
+        else: raise AxisError(refvar.axes[-1])
         if refvar.ndim < tgtvar.ndim:
           # N.B.: this is necessary, because WRF (target) can have an extra ensemble dimension that obs
           #       typically don't have; then we just replicate the obs for each ensemble element
           from warnings import warn
           if lglobal: warn("Scalefactors are being averaged over extra target dimensions (e.g. 'ensemble' axis)")
           dimdiff = tgtvar.ndim-refvar.ndim
-          if refvar.shape != tgtvar.shape[dimdiff:]: raise AxisError, "{:s} != {:s}".format(tgtvar, refvar)
+          if refvar.shape != tgtvar.shape[dimdiff:]: raise AxisError("{:s} != {:s}".format(tgtvar, refvar))
           refdata = refdata.reshape((1,)*dimdiff+refvar.shape[:-1])
-        elif refvar.shape != tgtvar.shape: raise AxisError, "{:s} != {:s}".format(tgtvar, refvar)
+        elif refvar.shape != tgtvar.shape: raise AxisError("{:s} != {:s}".format(tgtvar, refvar))
         tgtdata = tgtvar.data_array.take(iloc, axis=-1)
         if lglobal: loc = np.mean(refdata) / np.mean(tgtdata)
         else: loc = refdata / tgtdata
@@ -117,10 +117,10 @@ def rescaleDistributions(fits, samples=None, reference=None, target=None, lscale
   for dataset,sample in zip(fits,samples):
     if dataset == reference:
       # determine variables that can be scaled (VarRV's)
-      varlist = [varname for varname,var in dataset.variables.iteritems() if isinstance(var,VarRV)]
+      varlist = [varname for varname,var in dataset.variables.items() if isinstance(var,VarRV)]
       rescaled_dataset = dataset.copy(varlist=varlist)
       # add mock scale factors for consistency
-      for var in rescaled_dataset.variables.itervalues():
+      for var in rescaled_dataset.variables.values():
         var.atts['loc_factor'] = 1
         var.atts['scale_factor'] = 1
         var.atts['shape_factor'] = 1
@@ -143,7 +143,7 @@ def rescaleDistributions(fits, samples=None, reference=None, target=None, lscale
           scalefactors = scaleFactor(reference, dataset, lscale=lscale, lglobal=lglobal)
           if target == 'auto': scalefactor_collection[dataset.name] = scalefactors # for later use 
       # loop over variables
-      for varname,scalefactor in scalefactors.iteritems():
+      for varname,scalefactor in scalefactors.items():
         if varname in dataset:
           # rescale and add variable to new dataset
           var = dataset.variables[varname]
@@ -175,24 +175,24 @@ def addDistFit(ensemble=None, lfit=True, lflatten=None, lrescale=False, referenc
   
   # find appropriate sample axis
   if lflatten: 
-    if sample_axis is not None: raise ArgumentError, sample_axis
+    if sample_axis is not None: raise ArgumentError(sample_axis)
   elif sample_axis is None: # auto-detect
     for saxis in ('time','year'):
       if all([all(ens.hasAxis(saxis)) for ens in ensemble]): 
         sample_axis = saxis; break
-    if sample_axis is None: raise AxisError, "No sample axis detected" 
+    if sample_axis is None: raise AxisError("No sample axis detected") 
   else:
-    if isinstance(sample_axis,basestring):
-      if not all([all(ens.hasAxis(sample_axis)) for ens in ensemble]): raise AxisError, sample_axis 
+    if isinstance(sample_axis,str):
+      if not all([all(ens.hasAxis(sample_axis)) for ens in ensemble]): raise AxisError(sample_axis) 
     elif isinstance(sample_axis,(tuple,list)):
       # check that axes are there
       for ax in sample_axis: 
-        if not all([all(ens.hasAxis(ax)) for ens in ensemble]): raise AxisError, ax
+        if not all([all(ens.hasAxis(ax)) for ens in ensemble]): raise AxisError(ax)
       # merge axes
       ensemble = [ens.mergeAxes(axes=sample_axis, new_axis='sample', asVar=True, linplace=False, \
                               lcheckAxis=False) for ens in ensemble]
       sample_axis = 'sample'
-    else: raise AxisError, sample_axis
+    else: raise AxisError(sample_axis)
   # perform fit or return dummy
   if dist_args is None: dist_args = dict()
   if lfit: fitens = [ens.fitDist(lflatten=lflatten, axis=sample_axis, lcrossval=lcrossval, ncv=ncv,
@@ -212,10 +212,10 @@ def addDistFit(ensemble=None, lfit=True, lflatten=None, lrescale=False, referenc
     else: targets = [target]*len(fitens)
     if isinstance(reference, (list,tuple)): raise NotImplementedError # don't expand reference list
     # use global reference, if necessary
-    if isinstance(reference,basestring) and not all(reference in fit for fit in fitens):
+    if isinstance(reference,str) and not all(reference in fit for fit in fitens):
       i = 0 
       while i < len(fitens) and reference not in fitens[i]: i += 1
-      if i >= len(fitens): raise ArgumentError, "Reference {:s} not found in any dataset!".format(reference)
+      if i >= len(fitens): raise ArgumentError("Reference {:s} not found in any dataset!".format(reference))
       reference = fitens[i][reference]
     sclens = [rescaleDistributions(fit, samples=ens, reference=reference, target=tgt, 
                                    lglobal=lglobalScale, lsourceScale=lsourceScale) for fit,ens,tgt in zip(fitens,ensemble,targets)]
@@ -316,8 +316,8 @@ if __name__ == '__main__':
 #                                        WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
                                        variable_list=variables_rc,)
     # print diagnostics
-    print bsnens[0]; print ''
-    print fitens[0][0]
+    print(bsnens[0]); print('')
+    print(fitens[0][0])
     #print fitens[0] if fitens is not None else fitens ; print ''
     assert len(bsnens) == len(basins)
     assert fitens[0][0].atts.shape_name == basins[0]
@@ -348,14 +348,14 @@ if __name__ == '__main__':
 #                                              WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
                                              load_list=['seasons','clusters'], lproduct='outer', lcrossval=None,)
     # print diagnostics
-    print stnens[0][0]; print ''
-    print fitens[0][0].MaxPrecip_1d.atts.sample_axis; print ''
-    print fitens[0][1] if fitens is not None else fitens ; print ''
-    print sclens[0] if sclens is not None else sclens ; print ''
+    print(stnens[0][0]); print('')
+    print(fitens[0][0].MaxPrecip_1d.atts.sample_axis); print('')
+    print(fitens[0][1] if fitens is not None else fitens) ; print('')
+    print(sclens[0] if sclens is not None else sclens) ; print('')
     assert len(stnens) == len(seasons) * (len(clusters) or len(provs))
-    print stnens[-1][1]
-    print stnens[-1][-1]
-    print stnens[0][-1].MaxPrecip_1d.mean()
+    print(stnens[-1][1])
+    print(stnens[-1][-1])
+    print(stnens[0][-1].MaxPrecip_1d.mean())
   
   elif test == 'rescaling':
     
@@ -377,6 +377,6 @@ if __name__ == '__main__':
     scalens = [rescaleDistributions(ens, reference=fitens[0]['Observations'], target='max-ens') for ens in fitens]
 
     # print diagnostics
-    print fitens[0]; print ''
-    print scalens[0]; print ''
-    print scalens[1][1]
+    print(fitens[0]); print('')
+    print(scalens[0]); print('')
+    print(scalens[1][1])

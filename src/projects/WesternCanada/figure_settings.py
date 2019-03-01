@@ -18,8 +18,8 @@ from plotting.colormaps import cm
 figure_subdir = 'WesternCanada'
 # read base figure folder from environment variable
 figure_root = os.getenv('FIGURE_ROOT')
-if not figure_root: raise ArgumentError, 'No FIGURE_ROOT environment variable set.'
-if not os.path.exists(figure_root): raise IOError, "The figure root '{:s}' directory set in the FIGURE_ROOT environment variable does not exist!".format(figure_root)
+if not figure_root: raise ArgumentError('No FIGURE_ROOT environment variable set.')
+if not os.path.exists(figure_root): raise IOError("The figure root '{:s}' directory set in the FIGURE_ROOT environment variable does not exist!".format(figure_root))
 # assemble figure folder
 figure_folder = '{:s}/{:s}/'.format(figure_root,figure_subdir)
 
@@ -36,7 +36,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
   cbl = None; clim = None       
   lmskocn = False; lmsklnd = False # mask ocean or land?
   # color maps and   scale (contour levels)
-  if ldiff and lfrac: raise ValueError, "'ldiff' and 'lfrac' can not be set simultaneously!"
+  if ldiff and lfrac: raise ValueError("'ldiff' and 'lfrac' can not be set simultaneously!")
   elif ldiff:
 #     cmap = mycmap; cmap.set_over('red'); cmap.set_under('blue')
     cmap = cm.redblue_light_r
@@ -70,7 +70,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       #cmap = cm.coolavhrrmap # cmap.set_over('white'); cmap.set_under('black')
       clevs = np.linspace(-120,120,41); clbl = '%3.0f'
     else: 
-      raise VariableError, 'No settings found for differencing variable \'{0:s}\' found!'.format(var)
+      raise VariableError('No settings found for differencing variable \'{0:s}\' found!'.format(var))
   elif lfrac:
     cmap = mycmap; cmap.set_over('red'); cmap.set_under('blue')
     if var in ('T2_prj','Ts_prj','Tmin_prj','Tmax_prj','Tmean_prj'):
@@ -209,7 +209,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
         clevs = np.hstack((np.array((-.5,)), np.linspace(0,2.5,29))); clbl = '%02.1f' # km
         cmap = mpl.cm.gist_ncar; cmap.set_over('white'); cmap.set_under('blue')
       else: 
-        raise ValueError, 'No map color scheme defined (use \'season\' to select color scheme).'
+        raise ValueError('No map color scheme defined (use \'season\' to select color scheme).')
       cbl = np.linspace(0,clim[-1],6)
     elif var in ('stns','stations'): # station density
       clevs = np.linspace(1,7,7); clbl = '%2i' # stations per grid points  
@@ -233,9 +233,9 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
 #       clevs = np.linspace(-0.7,0.7,41); clbl = '%3.2f'; cmap = bmcm.GMT_no_green
 #       clevs = np.linspace(-0.7,0.7,41); clbl = '%3.2f'; cmap = mpl.cm.coolwarm
     else:
-      raise VariableError, 'No settings for variable \'{0:s}\' found!'.format(var) 
+      raise VariableError('No settings for variable \'{0:s}\' found!'.format(var)) 
   # time frame / season
-  if isinstance(season,basestring):
+  if isinstance(season,str):
     if season == 'annual': plottype = 'Annual'
     elif season == 'cold': plottype = 'Cold Season' # ONDJFM    
     elif season == 'warm': plottype = 'Warm Season' # AMJJAS
@@ -281,7 +281,7 @@ def getFigureSettings(nexp, cbar=True, cbo=None, figuretype=None, sameSize=True,
       if cbar:
         cbo = cbo or 'horizontal'
         if cbo == 'vertical':
-          margins = dict(bottom=0.025, left=0.065, right=.885, top=.925, hspace=0.05, wspace=0.05) 
+          margins = dict(bottom=0.025, left=0.07, right=.88, top=.925, hspace=0.05, wspace=0.05) 
           caxpos = [0.91, 0.05, 0.03, 0.9]
         if cbo == 'horizontal': 
           margins = dict(bottom=0.125, left=0.1, right=0.95, top=0.925, hspace=0.0, wspace=0.0)

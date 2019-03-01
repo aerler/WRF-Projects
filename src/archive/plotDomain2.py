@@ -32,11 +32,11 @@ folder = '/home/me/Research/Dynamical Downscaling/figures/' # figure directory
 if __name__ == '__main__':
   
   ## read data
-  data = openWRF('ctrl-1',[1982],range(11,12))
-  print data[ndom-1]
+  data = openWRF('ctrl-1',[1982],list(range(11,12)))
+  print(data[ndom-1])
   ## compute data
   precip = []; ndays = []
-  for n in xrange(ndom):
+  for n in range(ndom):
     nrec = data[n].time.values[-1]+1
     ndays = data[n].xtime(time=nrec-1).get() /24/60 # xtime is in minutes, need days    
     dailyrain = data[n].rain(time=nrec-1).get() / ndays
@@ -47,7 +47,7 @@ if __name__ == '__main__':
   ## setup projection
   f = pyl.figure(facecolor='white', figsize = (6.25,4.25))
   ax = []
-  for n in xrange(nax):
+  for n in range(nax):
     ax.append(f.add_subplot(1,2,n+1))
   f.subplots_adjust(bottom=0.12, left=0.06, right=.97, top=.94, hspace=0.05, wspace=0.05) # hspace, wspace
   # setup lambert conformal basemap.
@@ -61,7 +61,7 @@ if __name__ == '__main__':
               width=310*10e3, height=315*10e3, area_thresh = 1000., resolution='l')
   # map projection boundaries for inner WRF domain
   map = [] 
-  for n in xrange(nax):
+  for n in range(nax):
     map.append(Basemap(ax=ax[n],**lcc)) # one map for each panel!!
   
   ## Plot data
@@ -72,26 +72,26 @@ if __name__ == '__main__':
   cmap.set_over('white'); cmap.set_under('blue')
   # coordinates
   lat = []; lon = []; x = []; y = []
-  for n in xrange(ndom):
+  for n in range(ndom):
     lat.append(data[n].lat.get()) 
     lon.append(data[n].lon.get())
     xx, yy = map[0](lon[n],lat[n]) # convert to map-native coordinates
     x.append(xx); y.append(yy)
   # draw boundaries of inner and outer domains
   bdy2 = np.ones_like(lat[1]); bdy2[0,:]=0; bdy2[-1,:]=0; bdy2[:,0]=0; bdy2[:,-1]=0
-  for n in xrange(nax):
+  for n in range(nax):
     # N.B.: bdy2 depends on inner domain coordinates x[1],y[1]
     map[n].contour(x[1],y[1],bdy2,[0],ax=ax[n], colors='k') # draw boundary of inner domain
 #  # terrain data: mask out ocean
   zs = []
-  for n in xrange(ndom):
+  for n in range(ndom):
     zs.append(maskoceans(lon[n],lat[n],data[n].zs.get(),resolution=res,grid=grid))
   # draw data
   cd = []  
-  for n in xrange(nax): # only plot first domain in first panel
-    for m in xrange(n+1): # but also plot first domain in second panel (as background) 
-      print 'panel %i / domain %i'%(n,m)
-      print 'precip: min %f / max %f / mean %f'%(precip[m].min(),precip[m].max(),precip[m].mean())
+  for n in range(nax): # only plot first domain in first panel
+    for m in range(n+1): # but also plot first domain in second panel (as background) 
+      print('panel %i / domain %i'%(n,m))
+      print('precip: min %f / max %f / mean %f'%(precip[m].min(),precip[m].max(),precip[m].mean()))
       cd.append(map[n].contourf(x[m],y[m],zs[m],clevs,ax=ax[n],cmap=cmap, norm=norm,extend='both'))
   
   # add colorbar
@@ -109,7 +109,7 @@ if __name__ == '__main__':
   ax[1].set_title('Inner Domain (10 km)',fontsize=11)
 #  ax.set_xlabel('Longitude'); ax.set_ylabel('Latitude')
   map[0].drawmapscale(-135, 49, -137, 57, 800, barstyle='fancy', yoffset=0.01*(map[n].ymax-map[n].ymin))
-  for n in xrange(nax):
+  for n in range(nax):
     if n == 0 or n == 1: Bottom = True
     else: Bottom = False 
     if n == 0: Left = True
@@ -130,7 +130,7 @@ if __name__ == '__main__':
     
   # save figure to disk
   f.savefig(folder+'Topography2.pdf', **sf) # save figure to pdf
-  print('\nSaved figure in '+folder+'Topography2.pdf')
+  print(('\nSaved figure in '+folder+'Topography2.pdf'))
   # show plots
   pyl.show()
 

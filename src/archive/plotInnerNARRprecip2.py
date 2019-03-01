@@ -44,7 +44,7 @@ if __name__ == '__main__':
   WRF = (ctrl1, ctrl2)
   # load NARR data 
   NARR = openNARR() # just load whole climatology
-  print NARR
+  print(NARR)
   
   ## compute data
   data = []; lon = []; lat=[]  # list of data and coordinate fields to be plotted 
@@ -59,13 +59,13 @@ if __name__ == '__main__':
   if len(data) < len(axtitles):
     months = [31.,28.25,31.,30.,31.,30.,31.,31.,30.,31.,30.,31.]; days = 0.
   #  rng = [0,1,2,9,10,11]
-    rng = range(12)
+    rng = list(range(12))
     months = [months[n] for n in rng] 
     for mon in months: days += mon  
     weight = [ tmp/days for tmp in months ] # weights
     dailyrain = np.zeros((len(NARR.y.values),len(NARR.x.values))) # allocate array
     # sum up contributions from each month
-    for n in xrange(len(rng)):
+    for n in range(len(rng)):
       time = NARR.time.values[rng[n]]
       dailyrain += NARR.precip(time=time).get().squeeze() * weight[n]
     data.append(dailyrain)
@@ -78,7 +78,7 @@ if __name__ == '__main__':
   # make figure and axes
   f = pyl.figure(facecolor='white', figsize=figsize)
   ax = []
-  for n in xrange(nax):
+  for n in range(nax):
     ax.append(f.add_subplot(ie,je,n+1))
   f.subplots_adjust(bottom=0.12, left=0.06, right=.97, top=.94, hspace=0.05, wspace=0.05) # hspace, wspace
   # setup lambert conformal basemap.
@@ -93,11 +93,11 @@ if __name__ == '__main__':
   grid = 10; res = lcc['resolution']
   # map projection boundaries for inner WRF domain
   map = [] 
-  for n in xrange(nax):
+  for n in range(nax):
     map.append(Basemap(ax=ax[n],**lcc)) # one map for each panel!!  
   # transform coordinates (on per-map basis)
   x = []; y = []
-  for n in xrange(nax):
+  for n in range(nax):
     xx, yy = map[0](lon[n],lat[n]) # convert to map-native coordinates
     x.append(xx); y.append(yy)
     
@@ -109,13 +109,13 @@ if __name__ == '__main__':
   cmap.set_over('purple'); cmap.set_under('blue')
   # draw boundaries of inner domain
   bdy2 = np.ones_like(x[1]); bdy2[0,:]=0; bdy2[-1,:]=0; bdy2[:,0]=0; bdy2[:,-1]=0
-  for n in xrange(nax):
+  for n in range(nax):
     # N.B.: bdy2 depends on inner domain coordinates x[1],y[1]
     map[n].contour(x[1],y[1],bdy2,[0],ax=ax[n], colors='k') # draw boundary of inner domain
   # draw data
   cd = []  
-  for n in xrange(nax): # only plot first domain in first panel 
-    print 'panel %i: min %f / max %f / mean %f'%(n,data[n].min(),data[n].max(),data[n].mean())
+  for n in range(nax): # only plot first domain in first panel 
+    print('panel %i: min %f / max %f / mean %f'%(n,data[n].min(),data[n].max(),data[n].mean()))
     cd.append(map[n].contourf(x[n],y[n],data[n],clevs,ax=ax[n],cmap=cmap, norm=norm,extend='both'))  
   # add colorbar
   cax = f.add_axes([0.1, 0.06, 0.8, 0.03])
@@ -131,8 +131,8 @@ if __name__ == '__main__':
 #  ax.set_xlabel('Longitude'); ax.set_ylabel('Latitude')
   map[0].drawmapscale(-135, 49, -137, 57, 800, barstyle='fancy', yoffset=0.01*(map[n].ymax-map[n].ymin))
   n = -1 # axes counter
-  for i in xrange(ie):
-    for j in xrange(je):
+  for i in range(ie):
+    for j in range(je):
       n += 1 # count up
       ax[n].set_title(axtitles[n],fontsize=11) # axes title
       if j == 0 : Left = True

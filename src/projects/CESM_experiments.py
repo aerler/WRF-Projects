@@ -51,7 +51,7 @@ experiments['hcbrcp85cn1x1d']  = Exp(shortname='Ctrl-C-2100', name='hcbrcp85cn1x
 ## an alternate dictionary using short names and aliases for referencing
 exps = OrderedDict()
 # use short names where available, normal names otherwise
-for key,item in experiments.iteritems():
+for key,item in experiments.items():
   exps[item.name] = item
   if item.shortname is not None: 
     exps[item.shortname] = item
@@ -63,17 +63,17 @@ CESM_experiments = experiments # alias for whole dict
 ## dict of ensembles
 ensembles = OrderedDict()
 # initial condition ensemble
-ensembles['ens20trcn1x1']    = [tag+'20trcn1x1'   for tag in  'tb', 'hab', 'hab', 'hab']
-ensembles['ensrcp85cn1x1']   = [tag+'rcp85cn1x1'  for tag in 'htb', 'hab', 'hab', 'hab']
-ensembles['ensrcp85cn1x1d']  = [tag+'rcp85cn1x1d' for tag in 'htb', 'hab', 'hab', 'hab']
-ensembles['mens20trcn1x1']   = [tag+'20trcn1x1'   for tag in 'hab', 'hab', 'hab']
-ensembles['mensrcp85cn1x1']  = [tag+'rcp85cn1x1'  for tag in 'hab', 'hab', 'hab']
-ensembles['mensrcp85cn1x1d'] = [tag+'rcp85cn1x1d' for tag in 'hab', 'hab', 'hab']
+ensembles['ens20trcn1x1']    = [tag+'20trcn1x1'   for tag in  ('tb', 'hab', 'hab', 'hab')]
+ensembles['ensrcp85cn1x1']   = [tag+'rcp85cn1x1'  for tag in ('htb', 'hab', 'hab', 'hab')]
+ensembles['ensrcp85cn1x1d']  = [tag+'rcp85cn1x1d' for tag in ('htb', 'hab', 'hab', 'hab')]
+ensembles['mens20trcn1x1']   = [tag+'20trcn1x1'   for tag in ('hab', 'hab', 'hab')]
+ensembles['mensrcp85cn1x1']  = [tag+'rcp85cn1x1'  for tag in ('hab', 'hab', 'hab')]
+ensembles['mensrcp85cn1x1d'] = [tag+'rcp85cn1x1d' for tag in ('hab', 'hab', 'hab')]
 
 # N.B.: static & meta data for the ensemble is copied from the first-listed member;
 #       this includes station attributes, such as the elevation error 
 # replace names with experiment instances
-for ensname,enslist in ensembles.items(): # don't use iter, because we chagne the dict!
+for ensname,enslist in list(ensembles.items()): # don't use iter, because we chagne the dict!
   members = tuple([experiments[expname] for expname in enslist])
   ensembles[ensname] = members
   ensembles[experiments[ensname].shortname] = members
@@ -89,7 +89,7 @@ addLoadFcts(locals(), locals(), exps=CESM_exps, enses=CESM_ens)
 if __name__ == '__main__':
     
   ## view/test ensembles
-  for name,members in CESM_ens.iteritems():
+  for name,members in CESM_ens.items():
     s = '  {:s}: '.format(name)
     for member in members: s += ' {:s},'.format(member.name)
     print(s)

@@ -30,7 +30,7 @@ default_stationtype = 'ecprecip'
 # method to add defaults to specifics
 def mergeAnnotation(specifics, defaults):
   annotation = AttrDict()
-  for name,specs in specifics.iteritems():
+  for name,specs in specifics.items():
     atts = defaults.copy()
     atts.update(specs)
     annotation[name] = atts 
@@ -97,7 +97,7 @@ variables_rc['precip_short'] = VL(vars=['MaxPreccu_1h', 'MaxPrecnc_1h', 'MaxPrec
                                   files=['xtrm','srfc'], label='MaxPrecip')
 variables_rc['precip_long']  = VL(vars=['MaxPrecip_1d', 'MaxPreccu_1d', 'MaxPrecip_5d',], 
                                   files=['hydro'], label='MaxPrecip')
-variables_rc['precip_CDD']   = VL(vars=['CNDD','CNWD']+[var+threshold for threshold in wetday_extensions for var in 'CDD','CWD'], 
+variables_rc['precip_CDD']   = VL(vars=['CNDD','CNWD']+[var+threshold for threshold in wetday_extensions for var in ('CDD','CWD')], 
                                   files=['hydro'], label='CDD')
 
 
@@ -328,7 +328,22 @@ def climPlot(annotation=None, defaults=None, variable_list=None, **kwargs):
 # dataset settings
 evads_plotargs_rc = dict()
 evads_plotargs_rc['EC']              = AttrDict(color='black')
-evads_plotargs_rc['EC (1935)']       = AttrDict(color='blue')evads_plotargs_rc['EC (1940)']       = AttrDict(color='blue')evads_plotargs_rc['EC (1965)']       = AttrDict(color='purple')evads_plotargs_rc['EC (1995)']       = AttrDict(color='red')evads_plotargs_rc['EC (1990)']       = AttrDict(color='red')evads_plotargs_rc['Unity']           = AttrDict(color='black', marker='.')evads_plotargs_rc['Observations']    = AttrDict(color='black')evads_plotargs_rc['WSC']             = AttrDict(color='green', marker='.')evads_plotargs_rc['CRU']             = AttrDict(color='green', marker='.')evads_plotargs_rc['GPCC']            = AttrDict(color='purple', marker='.')evads_plotargs_rc['Ens']             = AttrDict(color='crimson',)evads_plotargs_rc['Ens-2050']        = AttrDict(color='darkorchid',)evads_plotargs_rc['Ens-2100']        = AttrDict(color='royalblue',)evads_plotargs_rc['MEns']            = AttrDict(color='royalblue',)    evads_plotargs_rc['MEns-2050']       = AttrDict(color='darkorchid',)   evads_plotargs_rc['MEns-2100']       = AttrDict(color='crimson',)     
+evads_plotargs_rc['EC (1935)']       = AttrDict(color='blue')
+evads_plotargs_rc['EC (1940)']       = AttrDict(color='blue')
+evads_plotargs_rc['EC (1965)']       = AttrDict(color='purple')
+evads_plotargs_rc['EC (1995)']       = AttrDict(color='red')
+evads_plotargs_rc['EC (1990)']       = AttrDict(color='red')
+evads_plotargs_rc['Unity']           = AttrDict(color='black', marker='.')
+evads_plotargs_rc['Observations']    = AttrDict(color='black')
+evads_plotargs_rc['WSC']             = AttrDict(color='green', marker='.')
+evads_plotargs_rc['CRU']             = AttrDict(color='green', marker='.')
+evads_plotargs_rc['GPCC']            = AttrDict(color='purple', marker='.')
+evads_plotargs_rc['Ens']             = AttrDict(color='crimson',)
+evads_plotargs_rc['Ens-2050']        = AttrDict(color='darkorchid',)
+evads_plotargs_rc['Ens-2100']        = AttrDict(color='royalblue',)
+evads_plotargs_rc['MEns']            = AttrDict(color='royalblue',)
+evads_plotargs_rc['MEns-2050']       = AttrDict(color='darkorchid',)
+evads_plotargs_rc['MEns-2100']       = AttrDict(color='crimson',)     
 
 # wrapper with custom defaults to figure creator (plotargs and label positions)
 def evaFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels=None, **kwargs):
@@ -338,10 +353,13 @@ def evaFigAx(subplot, dataset_plotargs=None, variable_plotargs=None, plot_labels
   return figure.getFigAx(subplot, dataset_plotargs=dataset_plotargs, variable_plotargs=variable_plotargs, 
                          plot_labels=plot_labels, **kwargs)
 ## annotation for climatology plot
-# distribution plot defaultsdist_defaults = AttrDict(heat=(-30,120), Q2=(0,20), aSM=(0.15,0.35), waterflx=(-2,12), runoff=(-2,12),                         T2=(245,305), Tmax=(250,310), Tmin=(240,300), precip=(0,20), 
-                         MaxWaterflx_5d=(5,35), CWD=(0,30), CDD=(0,50), CNWD=(0,30), CNDD=(0,80),                          CWD_002=(0,30), CDD_002=(0,50), CWD_010=(0,30), CDD_010=(0,80), 
+# distribution plot defaults
+dist_defaults = AttrDict(heat=(-30,120), Q2=(0,20), aSM=(0.15,0.35), waterflx=(-2,12), runoff=(-2,12),
+                         T2=(245,305), Tmax=(250,310), Tmin=(240,300), precip=(0,20),
+                         MaxWaterflx_5d=(5,35), CWD=(0,30), CDD=(0,50), CNWD=(0,30), CNDD=(0,80),                          CWD_002=(0,30), CDD_002=(0,50), CWD_010=(0,30), CDD_010=(0,80),
                          CWD_100=(0,15), CDD_100=(0,100), CWD_200=(0,10), CDD_200=(0,100),
-                         MaxPrecip_1d=(0,120), MaxPreccu_1d=(0, 40), MaxPrecnc_1d=(0,120),                          MaxSolprec_1d=(0, 40), MaxPrecip_6h=(0,150), MaxPreccu_1h=(0,500), 
+                         MaxPrecip_1d=(0,120), MaxPreccu_1d=(0, 40), MaxPrecnc_1d=(0,120),
+                         MaxSolprec_1d=(0, 40), MaxPrecip_6h=(0,150), MaxPreccu_1h=(0,500),
                          MaxPrecnc_1h=(0,500), MaxPrecip_5d=(0,20),)
 # specific settings
 dist_specifics = dict() 

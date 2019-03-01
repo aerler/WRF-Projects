@@ -29,14 +29,14 @@ province_names['CAN'] = 'Canada'
 # generate province info objects
 province_list = OrderedDict() # just provinces
 provinces = OrderedDict() # include nation for shape averages
-for key,val in province_names.iteritems():
+for key,val in province_names.items():
   shapetype = 'NAT' if key == 'CAN' else 'PRV' 
   prov = Province(name=key, long_name=val, shapefile=val, data_source='?', shapetype=shapetype)
   province_list[key] = prov
   provinces[key] = prov
 # the whole nation
 provinces['CAN'] = Nation(name='CAN', long_name=province_names['CAN'], 
-                              provinces=province_list.values(), data_source='?')
+                              provinces=list(province_list.values()), data_source='?')
 
 
 # dictionary with basin meta data
@@ -96,12 +96,12 @@ basin_list['SSR'] = BasinSet(name='SSR', long_name='South Saskatchewan River', r
 basin_sets = basin_list.copy() # dict that only contains basin sets
 # dictionary of basins
 basins = OrderedDict() # just the basin, and every basin only once (for shape averaging)
-for name,basin in basin_list.items():
+for name,basin in list(basin_list.items()):
   # add plain Basin instance of main basin under proper name
   basins[name] = basin # main basin under basin_list key (i.e. no Whole*)
   basin_list[basin.long_name] = basin # also make available by long_name
   # add all subbasins (including main basin with 'Whole' prefix)
-  for subname,subbasin in basin.subbasins.iteritems():
+  for subname,subbasin in basin.subbasins.items():
     if subname != basin.outline: # don't list outline/main basin twice
       basins[subname] = subbasin # list with all Basin instances
       basin_list[subname] = subbasin # list with all basins, BasinSet and Basin instances
@@ -124,13 +124,13 @@ great_lakes['Superior']  = Lake(name='LakeSuperior', long_name='Lake Superior', 
 great_lakes['NorthernLakes'] = LakeSet(name='NorthernLakes', long_name='Northern Great Lakes', data_source='Natural Earth',
                                        lakes=['NorthernLakes']+[great_lakes[lake] for lake in ['Superior','Michigan','Huron']])
 great_lakes['GreatLakes'] = LakeSet(name='GreatLakes', long_name='Great Lakes', data_source='Natural Earth',
-                                    lakes=['GreatLakes',]+great_lakes.values())
+                                    lakes=['GreatLakes',]+list(great_lakes.values()))
 # N.B.: individual lakes have to be initialized seperately and added to the set post-hoc, 
 #       because they don't share a folder
 
 # add aliases
 lake_list = OrderedDict()
-for name,lake in great_lakes.items(): # do not iter, since dict is changes in for-loop
+for name,lake in list(great_lakes.items()): # do not iter, since dict is changes in for-loop
   lake_list[name] = lake
   lake_list[lake.name] = lake
   lake_list[lake.long_name] = lake
@@ -146,7 +146,7 @@ addLoadFcts(locals(), locals(), basins=basins, basin_list=basin_list)
 if __name__ == '__main__':
     
   ## print basins
-  for name,basin in basin_list.iteritems():
+  for name,basin in basin_list.items():
     s = '  {:3s} ({:s}): '.format(name,basin.shapetype)
     if hasattr(basin, 'subbasins'):
       for subbasin in basin.subbasins: s += ' {:9s}'.format('{:s},'.format(subbasin))

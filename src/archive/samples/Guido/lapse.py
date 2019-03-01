@@ -31,9 +31,9 @@ fig = plt.figure(facecolor='white', figsize = (11, 8.5)) #landscape
 
 ax = fig.add_subplot(111)
 
-print zt31.shape
-print zt85.shape
-print zv11.shape
+print(zt31.shape)
+print(zt85.shape)
+print(zv11.shape)
 
 
 #labels = ['T31 at 75 N','T85 at 75 N','FV1x1 at 75 N','T31 at 68 N','T85 at 68 N','FV1x1 at 68 N']

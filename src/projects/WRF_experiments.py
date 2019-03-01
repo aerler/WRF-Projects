@@ -16,19 +16,19 @@ project_list = OrderedDict(GreatLakes='GL',WesternCanada='WC')
 # N.B.: the key is the project name and the value is the list abbreviation
 
 ## import experiment and ensemble lists
-mod_list = [import_module('projects.{0:s}.WRF_experiments'.format(proj)) for proj in project_list.iterkeys()]
+mod_list = [import_module('projects.{0:s}.WRF_experiments'.format(proj)) for proj in project_list.keys()]
 
 ## merge experiment dictionaries
 experiments = OrderedDict()
 ensembles = OrderedDict()
 # loop over projects
-for abbr,mod in zip(project_list.values(),mod_list):
+for abbr,mod in zip(list(project_list.values()),mod_list):
   tag = abbr.lower() # only lower case names for WRF
   # loop over ensembles in project
-  for name,ens in mod.ensembles.iteritems():
+  for name,ens in mod.ensembles.items():
     ensembles['{:s}_{:s}'.format(name,tag)] = ens
   # loop over experiments in project
-  for name,exp in mod.experiments.iteritems():
+  for name,exp in mod.experiments.items():
     experiments['{:s}_{:s}'.format(name,tag)] = exp
 
 # add aliases here
@@ -47,9 +47,9 @@ if __name__ == '__main__':
   ## view/test ensembles
   print('\n')
   proj = ''; s = ''
-  for name,members in WRF_ens.iteritems():
+  for name,members in WRF_ens.items():
     if proj != members[0].project:
-      print('\n{:s}:'.format(members[0].project))
+      print(('\n{:s}:'.format(members[0].project)))
       proj = members[0].project
     s = '  {:s}: '.format(name)
     for member in members: s += ' {:s},'.format(member.name)
@@ -57,7 +57,7 @@ if __name__ == '__main__':
 
   ## view/test experiments
   proj = ''; s = ''
-  for name,exp in WRF_exps.iteritems():
+  for name,exp in WRF_exps.items():
     if proj != exp.project:
       print(s)
       s = '\n{:s}:\n  '.format(exp.project)

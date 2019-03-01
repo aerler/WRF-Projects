@@ -16,10 +16,10 @@ prect = ftopo.variables['PRECT'][:,:,:]
 
 monlen = [31,28,31,30,31,30,31,31,30,31,30,31]
 monstt = [np.sum(monlen[0:i]) for i in len(monlen)]
-print monstt
+print(monstt)
 
 precsum = np.sum(prect,axis=0)
-print precsum.shape
+print(precsum.shape)
 
 sys.exit(1)
 

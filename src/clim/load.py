@@ -54,7 +54,7 @@ def _configSlices(slices=None, basins=None, provs=None, shapes=None, stations=No
 
 def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=None, lforceList=True):
   # resolve variable list and filetype (no need to maintain order)
-  if isinstance(varlist,basestring): varlist = [varlist]
+  if isinstance(varlist,str): varlist = [varlist]
   variables = set(params) # set required parameters
   filetypes = set() if filetypes is None else set(filetypes)
   for name in varlist: 
@@ -81,7 +81,7 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
   # variables for which ensemble expansion is not supported
   not_supported = ('season','seasons','varlist','mode','dataset_mode','provs','basins','shapes',) 
   # resolve variable list (no need to maintain order)
-  if isinstance(varlist,basestring): varlist = [varlist]
+  if isinstance(varlist,str): varlist = [varlist]
   variables = set(shp_params)
   for name in varlist: 
       if name in variable_list: variables.update(variable_list[name].vars)
@@ -89,10 +89,10 @@ def loadShapeObservations(obs=None, seasons=None, basins=None, provs=None, shape
       else: variables.add(name)
   variables = list(variables)
   # determine if we need gage dataset
-  lWSC = isinstance(basins,basestring) and any([var in WSC_vars for var in variables]) and lWSC # doesn't work if multiple basins are loaded
+  lWSC = isinstance(basins,str) and any([var in WSC_vars for var in variables]) and lWSC # doesn't work if multiple basins are loaded
   # default obs list
   if obs is None: obs = ['Observations',]
-  elif isinstance(obs,basestring): obs = [obs]
+  elif isinstance(obs,str): obs = [obs]
   elif isinstance(obs,tuple): obs = list(obs)
   elif not isinstance(obs,list): raise TypeError(obs)
   # configure slicing (extract basin/province/shape and period)
@@ -287,13 +287,13 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
   if obs_list is None: obs_list = observational_datasets
   if load_list: load_list = load_list[:] # use a copy, since the list may be modified
   # figure out varlist  
-  if isinstance(varlist,basestring) and not stationtype:
+  if isinstance(varlist,str) and not stationtype:
       if varlist.lower().find('prec') >= 0: 
         stationtype = 'ecprecip'
       elif varlist.lower().find('temp') >= 0: 
         stationtype = 'ectemp'
-      else: raise ArgumentError, varlist
-  if not isinstance(stationtype,basestring): raise ArgumentError, stationtype # not inferred
+      else: raise ArgumentError(varlist)
+  if not isinstance(stationtype,str): raise ArgumentError(stationtype) # not inferred
   if clusters and not cluster_name: raise ArgumentError
   params = stn_params  + [cluster_name] if cluster_name else stn_params # need to load cluster_name!
   variables, filetypes =  _resolveVarlist(varlist=varlist, filetypes=filetypes, 
@@ -306,13 +306,13 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
     constraints = default_constraints.copy() if constraints is None else constraints.copy()
     constraint_list = []
     if load_list and 'provs' in load_list and 'clusters' in load_list: 
-      raise ArgumentError, "Cannot expand 'provs' and 'clusters' at the same time."
+      raise ArgumentError("Cannot expand 'provs' and 'clusters' at the same time.")
     # figure out proper handling of provinces
     if provs is not None:
       if not load_list or 'prov' not in load_list: 
         constraints['prov'] = provs; provs = None
       else:  
-        if len(constraint_list) > 0: raise ArgumentError, "Cannot expand multiple keyword-constraints at once."
+        if len(constraint_list) > 0: raise ArgumentError("Cannot expand multiple keyword-constraints at once.")
         for prov in provs:
           tmp = constraints.copy()
           tmp['prov'] = prov
@@ -325,7 +325,7 @@ def loadStationEnsemble(names=None, seasons=None, provs=None, clusters=None, var
         constraints['cluster'] = clusters; clusters = None
         if cluster_name: constraints['cluster_name'] = cluster_name
       else:  
-        if len(constraint_list) > 0: raise ArgumentError, "Cannot expand multiple keyword-constraints at once."
+        if len(constraint_list) > 0: raise ArgumentError("Cannot expand multiple keyword-constraints at once.")
         for cluster in clusters:
           tmp = constraints.copy()
           tmp['cluster'] = cluster
@@ -385,9 +385,9 @@ if __name__ == '__main__':
                                    aggregation='mean', load_list=['varlist','basins'],)
     assert len(shpens) == len(varlist)*len(basins)
     # print diagnostics
-    print(shpens[0]); print('')
-    print(shpens[0].name); print('')
-    print(shpens[0][0])
+    print((shpens[0])); print('')
+    print((shpens[0].name)); print('')
+    print((shpens[0][0]))
 #     for i,basin in enumerate(basins): 
       #for ds in shpens[i]: print ds.atts.shape_name
 #       for ds in shpens[i]: print ds.atts.shape_name
@@ -411,9 +411,9 @@ if __name__ == '__main__':
                                load_list=['basins','varlist'], lproduct='outer', domain=domain,)
     assert shpens[0].resolution == ( '10km' if domain == 2 else '30km' ), shpens.resolution
     # print diagnostics
-    print shpens[0]; print ''
+    print(shpens[0]); print('')
     assert len(shpens) == len(basins)*len(varlists)
-    print shpens[0][1]
+    print(shpens[0][1])
       
 
   # test load function for station ensemble
@@ -442,10 +442,10 @@ if __name__ == '__main__':
                                  variable_list=variables_rc, default_constraints=constraints_rc,
                                  load_list=['seasons','provs'], lproduct='outer', lforceList=False)
     # print diagnostics
-    print stnens[0]; print ''
+    print(stnens[0]); print('')
     assert len(stnens) == len(seasons)*len(provs)
-    print stnens[0][0]
-    print stnens[0][0].MaxPrecip_1d.mean()
+    print(stnens[0][0])
+    print(stnens[0][0].MaxPrecip_1d.mean())
 
       
   # test load function for province ensemble climatology
@@ -461,11 +461,11 @@ if __name__ == '__main__':
                                load_list=['provs',], lproduct='outer', filetypes=['srfc'],
                                variable_list=variables_rc)
     # print diagnostics
-    print shpens[0]; print ''
+    print(shpens[0]); print('')
     assert len(shpens) == len(provs)
     assert shpens[0][1].time.coord[0] == 1
     for i,basin in enumerate(provs):
       i0 = i*len(varlists); ie = len(varlists)*(i+1)
       assert all(all(ds.atts.shape_name == basin for ds in ens) for ens in shpens[i0:ie])    
-    print ''; print shpens[0][0]
+    print(''); print(shpens[0][0])
     
