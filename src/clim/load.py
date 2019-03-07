@@ -56,6 +56,7 @@ def _resolveVarlist(varlist=None, filetypes=None, params=None, variable_list=Non
   # resolve variable list and filetype (no need to maintain order)
   if isinstance(varlist,str): varlist = [varlist]
   variables = set(params) # set required parameters
+  if isinstance(filetypes,str): filetypes = [filetypes]
   filetypes = set() if filetypes is None else set(filetypes)
   for name in varlist: 
     if name in variable_list: 
@@ -359,10 +360,10 @@ if __name__ == '__main__':
   from projects.GreatLakes import loadShapeEnsemble, loadStationEnsemble
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
-  test = 'obs_timeseries'
+#   test = 'obs_timeseries'
 #   test = 'basin_timeseries'
 #   test = 'station_timeseries'
-#   test = 'province_climatology'
+  test = 'province_climatology'
   
   
   # test load function for basin ensemble time-series
@@ -398,8 +399,7 @@ if __name__ == '__main__':
   elif test == 'basin_timeseries':
     
     # some settings for tests
-    exp = 'ctrl-obs'; basins = ['SSR'] 
-#     exp = 'erai'; basins = ['GLB','GRW',] 
+    exp = 'erai'; basins = ['GLB','GRW',] 
     exps = exps_rc[exp].exps; #exps = ['Unity']
     aggregation = 'mean'; grid = None; period = None; bias_correction = None; dataset_mode = 'time-series'
 #     grid = 'grw2'; period = (1979,1994); bias_correction = 'AABC'; aggregation = None; dataset_mode = 'climatology'
@@ -429,9 +429,9 @@ if __name__ == '__main__':
   
     # some settings for tests
     provs = None; clusters = None; lensembleAxis = False; sample_axis = None; lflatten = False
-    exp = 'val'; exps = ['EC', 'erai-max', 'max-ctrl']; provs = ('BC','AB')
+#     exp = 'val'; exps = ['EC', 'erai-max', 'max-ctrl']; provs = ('BC','AB')
 #     exp = 'max-all'; exps = exps_rc[exp]; provs = ('BC','AB')
-#     exps = ['erai-g']; provs = ['ON']
+    exps = ['erai-g']; provs = ['ON']
     seasons = ['summer']; lfit = True; lrescale = True; lbootstrap = False
     lflatten = False; lensembleAxis = True
     varlist = ['MaxPrecip_1d', 'MaxPrecip_5d','MaxPreccu_1d']; filetypes = ['hydro']

@@ -53,7 +53,7 @@ def generateStatistics(varname, ens, fit, scl=None, reference=None, mode='Ratio'
   lshift = mode.lower() == 'shift'
   if plot_labels is None: plot_labels = dict()
   # figure out fillValue
-  if np.issubdtype(varlist[0].dtype, np.float): fillValue = np.NaN
+  if np.issubdtype(varlist[0].dtype, np.floating): fillValue = np.NaN
   elif np.issubdtype(varlist[0].dtype, np.integer): fillValue = 0
   else: raise TypeError(varlist[0].dtype)
   # define reference
@@ -634,7 +634,7 @@ if __name__ == '__main__':
 
     # some settings for tests
     exps = ['EC','max-ens','max-ens-2050','max-ens-2100',][:]
-    prov = 'AB'; season = 'winter'
+    prov = 'AB'; season = 'summer'
 #     varlist = ['MaxPreccu_1h']; filetypes = ['xtrm']
     varlist = ['MaxPrecip_1d']; filetypes = ['hydro']
 #     lflatten = True; lfit = True; lrescale = True; lbootstrap = True

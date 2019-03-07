@@ -156,7 +156,7 @@ def rescaleDistributions(fits, samples=None, reference=None, target=None, lscale
             if lscale: raise NotImplementedError
             svar = sample.variables[varname]
             bsi = var.axisIndex(var.bootstrap_axis) if var.bootstrap_axis else None # tie bootstraps
-            svar.load(_rescaleSample(svar.getArray(), scalefactor, bs_axis=bsi))
+            svar.load(_rescaleSample(svar.getArray(), scalefactor, bs_axis=bsi), lrecast=True)
 #             svar *= scalefactor # in-place scaling
             svar.atts['rescaled'] = True
     # add dataset to list
@@ -291,8 +291,8 @@ if __name__ == '__main__':
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #   test = 'shape_ensemble'
-  test = 'station_ensemble'
-#   test = 'rescaling'
+#   test = 'station_ensemble'
+  test = 'rescaling'
 
   # station selection criteria
   constraints_rc = dict()
@@ -345,7 +345,7 @@ if __name__ == '__main__':
                                              varlist=varlist, filetypes=filetypes, slices=slices,
                                              ensemble_list=['names','slices'] if slices else None,
                                              variable_list=variables_rc, default_constraints=constraints_rc,
-#                                              WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
+                                             #WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
                                              load_list=['seasons','clusters'], lproduct='outer', lcrossval=None,)
     # print diagnostics
     print(stnens[0][0]); print('')
@@ -365,18 +365,20 @@ if __name__ == '__main__':
     lflatten = True; lfit = True
 
     # rescale    
-    stnens,fitens,scalens = loadStationEnsemble(names=exps, provs=provs, seasons=seasons, varlist='precip', 
-                                                lrescale=True, reference='Observations', target='max-ens',
-                                                filetypes='hydro', domain=None, lfit=lfit, lflatten=lflatten,
-                                                lbootstrap=False, nbs=10,  
-                                                variable_list=variables_rc, default_constraints=constraints_rc,
-                                                WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
-                                                load_list=['names'], lproduct='outer')
+    stnens,fitens,scalens = loadStationFit(names=exps, provs=provs, seasons=seasons, varlist='precip', 
+                                           lrescale=True, reference='EC', target='max-ens',
+                                           filetypes='hydro', domain=2, lfit=lfit, lflatten=lflatten,
+                                           lbootstrap=False, nbs=10, name='test_ensemble',
+                                           variable_list=variables_rc, default_constraints=constraints_rc,
+                                           #WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
+                                           load_list=['names'], lproduct='outer')
+    # print diagnostics
+    print(stnens[0]); print('')
+    print(fitens[0]); print('')
     
     # special rescaling for projection plots
-    scalens = [rescaleDistributions(ens, reference=fitens[0]['Observations'], target='max-ens') for ens in fitens]
+    scalens = [rescaleDistributions(ens, reference=fitens[0]['EC'], target='max-ens') for ens in fitens]
 
     # print diagnostics
-    print(fitens[0]); print('')
     print(scalens[0]); print('')
     print(scalens[1][1])

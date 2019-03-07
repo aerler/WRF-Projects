@@ -258,6 +258,6 @@ if __name__ == '__main__':
                 legend=0 if n>1 else None, linestyles=('--','-.','-'), lparasiteMeans=True, axtitle=None)
     
     # adjust margins
-    fig.updateSubplots(left=0.01, right=-0.04, top=+0.06, bottom=-0.03)
+    fig.updateSubplots(left=0.0, right=-0.06, top=+0.06, bottom=-0.05)
   # show plots
   show()
