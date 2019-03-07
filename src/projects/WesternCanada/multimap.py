@@ -183,7 +183,9 @@ if __name__ == '__main__':
 #   explist = ['max-ens']*len(exptitles); period = H15; grid = 'arb2_d01'
 #   explist = ['new-ctrl']*len(exptitles); period = H15; grid = 'arb3_d01'
   case = 'forcing'
-  variables = ['snow']; aggregation = 'max'; seasons = ['annual']; cbn = 5
+#   variables = ['snow']; aggregation = 'max'; seasons = ['annual']; cbn = 5
+  variables = ['precip']; seasons = ['annual']; cbn = 5; variable_settings = 'pet'
+#   variables = ['pet']; seasons = ['annual']; cbn = 5
 #   variables = ['T2']; isoline = 273.5; cbn = 11; ldiff = True
 #   variables = ['Tslb']; variable_settings = 'T_freeze'; level_agg = dict(i_s=0); isoline = 273.5; cbn = 11
 #   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'

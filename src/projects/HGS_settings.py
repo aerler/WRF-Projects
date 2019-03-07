@@ -12,11 +12,7 @@ from datasets.common import BatchLoad
 from geodata.misc import ArgumentError, DatasetError
 
 # project folders
-try:
-    import hgs.HGS as hgs # need to prevent name collisions here
-    project_folder_pattern = hgs.root_folder+'/{PROJECT:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s}/{TASK:s}/'
-except ImportError:
-    hgs = project_folder_pattern = None
+subfolder_pattern = '/{PROJECT:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s}/{TASK:s}/'
 station_file = '{PREFIX:s}o.hydrograph.{WSC_ID0:s}.dat' # general HGS naming convention
 
 # mapping of WSC station names to HGS hydrograph names
@@ -218,11 +214,16 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
                   title=None, run_period=None, clim_mode=None, clim_period=None, 
                   station=None, well=None, bias_correction=None, project_folder=None, 
                   task=None, WSC_station=None, Obs_well=None, lpad=True, lWSCID=False,
-                  project=None, folder=project_folder_pattern, station_file=station_file,
+                  project=None, folder=None, station_file=station_file,
                   grid=None, conservation_authority=None, basin=None, basin_list=None, scalefactors=None, 
                   main_gage=None, station_list=None, experimentParameters=experimentParameters, **kwargs):
   ''' Get a properly formatted HGS dataset with a regular time-series at station locations; as in
       the hgsrun module, the capitalized kwargs can be used to construct folders and/or names '''
+
+  # reduce dependency on external packages
+  import hgs.HGS as hgs # need to prevent name collisions here
+  if folder is None: folder = hgs.root_folder + subfolder_pattern
+  
   if experiment is None or clim_mode is None: raise ArgumentError(experiment,clim_mode)
   # resolve folder arguments
   if project_folder is None and project is not None: 
@@ -289,11 +290,14 @@ def loadWSC_StnTS(station=None, name=None, title=None, basin=None, basin_list=No
 # wrapper to load HGS ensembles, otherwise the same
 def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name=None, title=None, 
                    period=None, domain=None, exp_aliases=exp_aliases, run_period=None, clim_mode=None,
-                   folder=project_folder_pattern, project_folder=None, obs_period=None, clim_period=None, 
+                   folder=None, project_folder=None, obs_period=None, clim_period=None, 
                    ensemble_list=ensemble_list, ensemble_args=None, observation_list=gage_datasets, # ensemble and obs lists for project
                    project=None, grid=None, task=None, bias_correction=None, conservation_authority=None,
                    WSC_station=None, basin=None, basin_list=None, scalefactors=None, **kwargs):
   ''' a wrapper for the regular HGS loader that can also load gage stations and assemble ensembles '''  
+  # reduce dependency on external packages
+  import hgs.HGS as hgs # need to prevent name collisions here
+  if folder is None: folder = hgs.root_folder + subfolder_pattern
   return hgs.loadHGS_StnEns(ensemble=ensemble, station=station, varlist=varlist, varatts=varatts, name=name, 
                             title=title, 
                             period=period, run_period=run_period, folder=folder, obs_period=obs_period, 
@@ -314,12 +318,16 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, period=None, l
             griddef=None, basin=None, subbasin=None, grid_folder=None, shape_file=None, season=None, 
             domain=None, clim_mode=None, clim_period=None, bias_correction=None, task='hgs_run', grid=None, 
             mode='climatology', file_mode='last_12', file_pattern='{PREFIX}o.head_olf.????', t_list=None, 
-            varatts=None, constatts=None, project_folder=None, project=None, folder=project_folder_pattern,
+            varatts=None, constatts=None, project_folder=None, project=None, folder=None,
             lxyt=True, basin_list=None, metadata=None, conservation_authority=None, WRF_exps=None, 
             lflipdgw=False, lstrip=True, lkgs=False, experimentParameters=experimentParameters, **kwargs):
   ''' Get a properly formatted WRF dataset with monthly time-series at station locations; as in
       the hgsrun module, the capitalized kwargs can be used to construct folders and/or names '''
   
+  # reduce dependency on external packages
+  import hgs.HGS as hgs # need to prevent name collisions here
+  if folder is None: folder = hgs.root_folder + subfolder_pattern
+
   if experiment is None or clim_mode is None: raise ArgumentError(experiment,clim_mode)
   # resolve folder arguments
   if project_folder is None and project is not None: 
