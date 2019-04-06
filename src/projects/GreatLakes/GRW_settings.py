@@ -104,6 +104,9 @@ hgs_plotargs['Periodic (V2)']     = dict(color='coral') # red
 hgs_plotargs['Transient']    = dict(color='#62A1C6') # blue
 hgs_plotargs['Steady-State'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic']     = dict(color='#E24B34') # red
+hgs_plotargs['Normals']      = dict(color='green') # 
+hgs_plotargs['Monthly']      = dict(color='#62A1C6') # blue
+hgs_plotargs['Daily']        = dict(color='#E24B34') # red
 # WRF forcing
 hgs_plotargs['WRF 10km']     = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['WRF 30km']     = dict(color='#E24B34') # red
@@ -179,8 +182,9 @@ for name,members in list(ensemble_list.items()):
 ## parameter definition function
 
 # helper function to determine experiment parameters
-def experimentParameters(experiment=None, domain=None, clim_mode=None, lold=None, task=None, 
-                         bias_correction=None, clim_period=None, run_period=None, period=None, **kwargs):
+def experimentParameters(experiment=None, domain=None, clim_mode=None, clim_dir=None, 
+                         lold=None, task=None, bias_correction=None, 
+                         clim_period=None, run_period=None, period=None, **kwargs):
     # figure out experiment name and domain
     lWRF = False # likely not a WRF experiment
     old_name = experiment # save for later
@@ -206,12 +210,19 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, lold=None
         domain = WRF_exps[experiment].domains # innermost domain
         experiment = '{:s}_d{:02d}'.format(experiment,domain) # used to determine aliases
     # resolve climate input mode (time aggregation; assuming period is just length, i.e. int;)
-    if 'clim_mode' not in kwargs: kwargs['clim_mode'] = clim_mode # for name expansion
     # translate climate mode into path convention, while retaining clim_mode
-    if clim_mode.lower() in ('ts','trans','timeseries','transient'): clim_dir = 'timeseries'; lts = True
-    elif clim_mode.lower() in ('mn','norm','clim','peri','normals','climatology','periodic'): clim_dir = 'clim'; lts = False
-    elif clim_mode.lower() in ('ss','const','mean','annual','steady-state'): clim_dir = 'annual'; lts = False
+    if isinstance(clim_dir,str): lts = True
+    elif clim_mode.lower() in ('ts','trans','timeseries','transient'):
+        clim_dir = 'timeseries'; lts = True
+    elif clim_mode.lower().startswith(('ts_','trans_','timeseries_','transient_')): 
+        clim_dir = clim_mode; lts = True; clim_mode = 'timeseries'
+    elif clim_mode.lower() in ('mn','norm','clim','peri','normals','climatology','periodic'): 
+        clim_dir = 'clim'; lts = False
+    elif clim_mode.lower() in ('ss','const','mean','annual','steady-state'): 
+        clim_dir = 'annual'; lts = False
     else: raise ArgumentError(clim_mode)
+    # update climate input mode for name expansion
+    kwargs['clim_mode'] = clim_mode
     # set some defaults based on version
     if lold:
         if run_period is None and not lts: run_period = 15 # in years

@@ -106,8 +106,8 @@ for name,members in list(ensemble_list.items()):
 
 # helper function to determine experiment parameters
 def experimentParameters(experiment=None, domain=None, clim_mode=None, bias_correction=None, 
-                         clim_period=None, run_period=None, period=None, exp_aliases=exp_aliases,
-                         task='hgs_run', WRF_exps=None, **kwargs):
+                         clim_period=None, run_period=None, period=None, clim_dir=None, 
+                         exp_aliases=exp_aliases, task='hgs_run', WRF_exps=None, **kwargs):
     # figure out experiment name and domain
     lWRF = False # default: not a WRF experiment
     old_name = experiment # save for later
@@ -133,12 +133,19 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, bias_corr
         domain = WRF_exps[experiment].domains # innermost domain
         experiment = '{:s}_d{:02d}'.format(experiment,domain) # used to determine aliases
     # resolve climate input mode (time aggregation; assuming period is just length, i.e. int;)
-    if 'clim_mode' not in kwargs: kwargs['clim_mode'] = clim_mode # for name expansion
     # translate climate mode into path convention, while retaining clim_mode
-    if clim_mode.lower() in ('ts','trans','timeseries','transient'): clim_dir = 'timeseries'; lts = True
-    elif clim_mode.lower() in ('mn','norm','clim','peri','normals','climatology','periodic'): clim_dir = 'clim'; lts = False
-    elif clim_mode.lower() in ('ss','const','mean','annual','steady-state'): clim_dir = 'annual'; lts = False
+    if isinstance(clim_dir,str): lts = True
+    elif clim_mode.lower() in ('ts','trans','timeseries','transient'):
+        clim_dir = 'timeseries'; lts = True
+    elif clim_mode.lower().startswith(('ts_','trans_','timeseries_','transient_')): 
+        clim_dir = clim_mode; lts = True; clim_mode = 'timeseries'
+    elif clim_mode.lower() in ('mn','norm','clim','peri','normals','climatology','periodic'): 
+        clim_dir = 'clim'; lts = False
+    elif clim_mode.lower() in ('ss','const','mean','annual','steady-state'): 
+        clim_dir = 'annual'; lts = False
     else: raise ArgumentError(clim_mode)
+    # update climate input mode for name expansion
+    kwargs['clim_mode'] = clim_mode
     # add period extensions of necessary/possible
     # N.B.: period is the period we want to show, run_period is the actual begin/end/length of the run
     if run_period is None: run_period = period
@@ -211,7 +218,7 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, bias_corr
 
 # simple dataset loader
 def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varatts=None, name=None, 
-                  title=None, run_period=None, clim_mode=None, clim_period=None, 
+                  title=None, run_period=None, clim_mode=None, clim_period=None, clim_dir=None,
                   station=None, well=None, bias_correction=None, project_folder=None, 
                   task=None, WSC_station=None, Obs_well=None, lpad=True, lWSCID=False,
                   project=None, folder=None, station_file=station_file,
@@ -248,7 +255,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   
   # determine various WRF/climatology related parameters
   params = experimentParameters(experiment=experiment, domain=domain, clim_mode=clim_mode, 
-                                bias_correction=bias_correction, task=task, 
+                                bias_correction=bias_correction, task=task, clim_dir=clim_dir,
                                 clim_period=clim_period, run_period=run_period, period=period, **kwargs)
   ( lWRF, task,experiment,exp, clim_dir, start_date,start_year,end_year, 
                                       clim_period,run_period,period, kwargs ) = params

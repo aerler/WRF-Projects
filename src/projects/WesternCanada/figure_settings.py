@@ -74,9 +74,11 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
   elif lfrac:
     cmap = mycmap; cmap.set_over('red'); cmap.set_under('blue')
     if var in ('T2_prj','Ts_prj','Tmin_prj','Tmax_prj','Tmean_prj'):
-      clevs = np.linspace(0,3,41); clbl = '%2.1f'; cmap = mpl.cm.Oranges # K
+      clevs = np.linspace(0,3,41); clbl = '%2.1f'; cmap = mpl.cm.Oranges 
+    elif var in ('snow','snow_prj','snow_val'):
+      clevs = np.linspace(-90.,90,31); clbl = '%2.0f'; cmap = cm.redblue_light
     elif var in ('evap_prj','pet_prj','precip_prj','precipc_prj','precipnc_prj'):
-      clevs = np.linspace(-90.,90,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr # mm/day    
+      clevs = np.linspace(-90.,90,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr
     elif var in ('T2','Ts','Tmin','Tmax','Tmean'):
       clevs = np.linspace(-3,3,21); clbl = '%2.1f'
     elif var in ('Z',):
