@@ -172,28 +172,29 @@ if __name__ == '__main__':
 #   lbasins = False; basinlist = ('ARB','FRB','GLB'); lprovinces = False; provlist = ['BC','AB','ON']
   lbasins = True; basinlist = ('ARB','FRB',); lprovinces = False; provlist = ['AB']; l60 = True
 
-## GRW maps
-  # map setup
-  maptype = 'lcc-arb'; basinlist = ('ARB',); lbasins = True
-  # figure settings
-  cbo = 'vertical'; lcontour = False; shading = 'flat'
-#   seasons = [['November','December','January','February','March','April']]; exptitles = [s.title() for s in seasons[0]]
-  explist = ['NRCan']; period = NRC70
-#   reflist = ['NRCan']*len(exptitles); refprd = NRC70; domain = 1
-#   explist = ['max-ens']*len(exptitles); period = H15; grid = 'arb2_d01'
-#   explist = ['new-ctrl']*len(exptitles); period = H15; grid = 'arb3_d01'
-  case = 'forcing'
-#   variables = ['snow']; aggregation = 'max'; seasons = ['annual']; cbn = 5
-  variables = ['precip']; seasons = ['annual']; cbn = 5; variable_settings = 'pet'
-#   variables = ['pet']; seasons = ['annual']; cbn = 5
-#   variables = ['T2']; isoline = 273.5; cbn = 11; ldiff = True
-#   variables = ['Tslb']; variable_settings = 'T_freeze'; level_agg = dict(i_s=0); isoline = 273.5; cbn = 11
-#   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
-#   variables = ['snwmlt']; isoline = 1.; cbn = 11
-#   variables = ['ratio']; isoline = 1.; cbn = 11
-#   if variables[0] == 'Tslb': case += '_{:d}'.format(level_agg['i_s'])
+# ## ARB maps
+#   # map setup
+#   maptype = 'lcc-arb'; basinlist = ('ARB',); lbasins = True
+#   # figure settings
+#   cbo = 'vertical'; lcontour = False; shading = 'flat'
+# #   seasons = [['November','December','January','February','March','April']]; exptitles = [s.title() for s in seasons[0]]
+#   explist = ['NRCan']; period = NRC70
+# #   reflist = ['NRCan']*len(exptitles); refprd = NRC70; domain = 1
+# #   explist = ['max-ens']*len(exptitles); period = H15; grid = 'arb2_d01'
+# #   explist = ['new-ctrl']*len(exptitles); period = H15; grid = 'arb3_d01'
+#   case = 'forcing'
+# #   variables = ['snow']; aggregation = 'max'; seasons = ['annual']; cbn = 5
+#   variables = ['precip']; seasons = ['annual']; cbn = 5; variable_settings = 'pet'
+# #   variables = ['pet']; seasons = ['annual']; cbn = 5
+# #   variables = ['T2']; isoline = 273.5; cbn = 11; ldiff = True
+# #   variables = ['Tslb']; variable_settings = 'T_freeze'; level_agg = dict(i_s=0); isoline = 273.5; cbn = 11
+# #   variables = ['snwmlt',]; refvars = ['liqwatflx',]; reflist = explist; lfrac = True; variable_settings = 'negative_fraction'
+# #   variables = ['snwmlt']; isoline = 1.; cbn = 11
+# #   variables = ['ratio']; isoline = 1.; cbn = 11
+# #   if variables[0] == 'Tslb': case += '_{:d}'.format(level_agg['i_s'])
 
 # ## validation and projection for the Paper
+#   maptype = 'lcc-arb'; basinlist = ('ARB',); lbasins = True
 #   explist = ['Ens','max-ens','ctrl-ens']*2; seasons = [['summer']*3+['winter']*3]
 #   domain = 2; tag = 'd{:02d}'.format(domain); grid = 2*( ['cesm1x1']+2*['arb2_'+tag] ) # 'arb2_'+tag; 
 #   grid = 'arb2_'+tag # for bias estimates across the inner domain
@@ -218,19 +219,27 @@ if __name__ == '__main__':
 # #   refprd = NRC70; reflist = 'NRCan'; case += '_nrcan' # validation using NRCan instead of Unity
 # ##   case = tag+'val_narr'; reflist = 'NARR'
 
-### 2x2-panel projection for the Paper
-#  explist = ['max-ens','ctrl-ens']*2; seasons = [['summer']*2+['winter']*2]
-#  domain = 2; tag = 'd{:02d}'.format(domain); grid = 'arb2_'+tag; 
-#  exptitles = ['G Ensemble','T Ensemble']*2; res = '30km' if domain == 1 else '10km'
-#  exptitles = [ '{} ({}), {}'.format(e,res,s.title()) for e,s in zip(exptitles,seasons[0]) ]
-##  variables = ['OI']; lfrac = True
-##  variables = ['U']; lfrac = True
-##  variables = ['COIP']; lfrac = True
-##  WRFfiletypes = ['plev3d']; level_agg = dict(p=0)
-#  variables = [['aSM']*2+['p-et']*2]; aggregation = 'mean'
-#  WRFfiletypes = ['lsm','hydro']; cbn = 7; lfrac = True
-#  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-##   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
+## 2x2-panel projection for the Paper
+  maptype = 'lcc-arb'; basinlist = ('ARB',); lbasins = True
+  domain = 2; tag = 'd{:02d}'.format(domain); res = '30km' if domain == 1 else '10km'
+  seasons = [['summer']*2+['winter']*2]
+  grid = 2*( ['cesm1x1']+['arb2_'+tag] ); explist = ['Ens','max-ens']*2
+  exptitles = ['CESM Ens.','WRF G Ens. ({})'.format(res)]*2
+#   grid = 'arb2_'+tag; explist = ['max-ens','ctrl-ens']*2
+#   exptitles = ['WRF G Ens. ({})'.format(res),'WRF T Ens. ({})'.format(res)]*2
+  exptitles = [ '{}, {}'.format(e,s.title()) for e,s in zip(exptitles,seasons[0]) ]
+#  variables = ['OI']; lfrac = True
+#  variables = ['U']; lfrac = True
+#  variables = ['COIP']; lfrac = True
+#  WRFfiletypes = ['plev3d']; level_agg = dict(p=0)
+#   variables = [['aSM']*2+['p-et']*2]; aggregation = 'mean'
+#   WRFfiletypes = ['lsm','hydro']; cbn = 7; lfrac = True
+#   variables = ['snow']; cbn = 5; lfrac = True; #variable_settings = ['T2_prj'] # T2
+  variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
+#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+#   period = H15; refprd = NRC70; reflist = 'NRCan'; case = tag+'_nrcan'; variable_settings = None # validation using NRCan instead of Unity
+#   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
 
 # ## 2x1-panel projection for the Paper
 #   explist = ['max-ens','ctrl-ens']; cbo = 'vertical'; lsamesize = False
@@ -800,7 +809,7 @@ if __name__ == '__main__':
         ## compute differences, if desired
         if ldiff or lfrac:
           assert len(datatpl)%2 == 0, 'needs to be divisible by 2'
-          ntpl = len(datatpl)/2 # assuming (exp1, exp2, ..., ref1, ref2, ...)
+          ntpl = len(datatpl)//2 # assuming (exp1, exp2, ..., ref1, ref2, ...)
           for i in range(ntpl):
             if ldiff: datatpl[i] = datatpl[i] - datatpl[i+ntpl] # compute differences in place
             elif lfrac: datatpl[i] = (datatpl[i]/datatpl[i+ntpl]-1)*100 # compute fractions in place

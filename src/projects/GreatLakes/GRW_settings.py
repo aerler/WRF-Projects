@@ -380,12 +380,12 @@ def loadHGS_StnEns(ensemble=None, station=None, varlist=None, varatts=None, name
 
 ## function to interpolate HGS binary output to regular grid
 def gridDataset(dataset, griddef=binary_grid, basin=main_basin, subbasin=None, shape_file=None,  
-                basin_list=None, grid_folder=None, **kwargs):
+                basin_list=None, grid_folder=None, laddMask=True, **kwargs):
     ''' interpolate nodal/elemental datasets to a regular grid, add GDAL, and mask to basin outlines,
         using values for the GRW and the grw1 grid'''
     if basin_list is None: basin_list = wsc.basin_list # default basin list
     return hgs.gridDataset(dataset, griddef=griddef, basin=basin, subbasin=subbasin, shape_file=shape_file,  
-                           basin_list=basin_list, grid_folder=grid_folder, **kwargs)
+                           basin_list=basin_list, grid_folder=grid_folder, laddMask=laddMask, **kwargs)
     
   
 ## function to load HGS binary data
@@ -456,7 +456,9 @@ if __name__ == '__main__':
 #     name = 'son1' # 5km resolution
 #     # X 320919.7943000002 Y 4624073.9199, C 5890 R 4062 x 100m
 #     geotransform = [320920.,5.e3,0,4624073.,0,5.e3]; size = (118,82)
-#     projection = "+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+    name = 'son2' # 1km resolution
+    geotransform = [320920.,1.e3,0,4624073.,0,1.e3]; size = (590,410)
+    projection = "+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
     ## UTM 14 parameters for South Nation grids
 #     name = 'snw1' # 9km resolution
 #     geotransform = [401826.125365249,9.e3,0,4851533.71730136,0,9.e3]; size = (22,29)
@@ -471,9 +473,9 @@ if __name__ == '__main__':
 #     name = 'asb1' # 5km resolution 
 #     geotransform = (-159.e3, 5.e3, 0., 5202.e3, 0., 5.e3); size = (191,135)
 #     projection = "+proj=utm +zone=14 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
-    name = 'asb2' # 1km resolution 
-    geotransform = (-159.e3, 1.e3, 0., 5202.e3, 0., 1.e3); size = (955,675)
-    projection = "+proj=utm +zone=14 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
+#     name = 'asb2' # 1km resolution 
+#     geotransform = (-159.e3, 1.e3, 0., 5202.e3, 0., 1.e3); size = (955,675)
+#     projection = "+proj=utm +zone=14 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
     ## parameters for Canada-wide Lambert Azimuthal Equal-area
 #     name = 'can1' # 5km resolution
 #     llx = -3500000; lly = -425000; urx = 3000000; ury = 4000000; dx = dy = 5.e3
