@@ -70,7 +70,7 @@ if __name__ == '__main__':
   l3pan = False # make a single column of a three-column figure
   lminor = True # draw minor tick mark labels
   locean = False # mask continent in white and omit country borders
-  lstations = False; stations = 'EC'; cluster_symbols = {2:'o',5:'^',8:'s'}; cluster_name = 'cluster_projection'
+  lstations = False; stations = 'EC'; cluster_symbols = {2:'d',5:'^',8:'s',-1:'o'}; cluster_name = 'cluster_projection'
   cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.items()}
   lbasins = False; primary_basins = ('ARB','FRB','GLB'); subbasins = ('WholeARB','UpperARB','LowerCentralARB',) #dict(ARB=('WholeARB','UpperARB','LowerCentralARB'))
   basin_args = dict(linewidth = 1.5, color='k'); subbasin_args = dict(linewidth = 0.75, color='k')
@@ -172,6 +172,19 @@ if __name__ == '__main__':
 #   lbasins = False; basinlist = ('ARB','FRB','GLB'); lprovinces = False; provlist = ['BC','AB','ON']
   lbasins = True; basinlist = ('ARB','FRB',); lprovinces = False; provlist = ['AB']; l60 = True
 
+  # station markers
+  lstations = False; stations = 'EC'; 
+  cluster_symbols = {2:'d',5:'^',8:'s',-1:'o'}; cluster_name = 'cluster_projection'
+  cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.items()}
+
+  ## Columbia Ice Field analysis
+  maptype = 'lcc-col_out'; lbasins = False; lprovinces = False
+  lcontour = False
+  variables = ['zs']; seasons = ['topo']; lstations = True; case = 'stations'
+  explist = ['erai-wc2']; period = '2010-2016'
+  domain = (1,2); lframe = True
+
+
 # ## ARB maps
 #   # map setup
 #   maptype = 'lcc-arb'; basinlist = ('ARB',); lbasins = True
@@ -219,27 +232,30 @@ if __name__ == '__main__':
 # #   refprd = NRC70; reflist = 'NRCan'; case += '_nrcan' # validation using NRCan instead of Unity
 # ##   case = tag+'val_narr'; reflist = 'NARR'
 
-## 2x2-panel projection for the Paper
-  maptype = 'lcc-arb'; basinlist = ('ARB',); lbasins = True
-  domain = 2; tag = 'd{:02d}'.format(domain); res = '30km' if domain == 1 else '10km'
-  seasons = [['summer']*2+['winter']*2]
-  grid = 2*( ['cesm1x1']+['arb2_'+tag] ); explist = ['Ens','max-ens']*2
-  exptitles = ['CESM Ens.','WRF G Ens. ({})'.format(res)]*2
+# ## 2x2-panel projection for the Paper
+#   maptype = 'lcc-arb'; basinlist = ('ARB',); lbasins = True
+#   domain = 2; tag = 'd{:02d}'.format(domain); res = '30km' if domain == 1 else '10km'
+# #   grid = 2*( ['cesm1x1']+['arb2_'+tag] ); explist = ['Ens','max-ens']*2
+# #   exptitles = ['CESM Ens.','WRF G Ens. ({})'.format(res)]*2
 #   grid = 'arb2_'+tag; explist = ['max-ens','ctrl-ens']*2
 #   exptitles = ['WRF G Ens. ({})'.format(res),'WRF T Ens. ({})'.format(res)]*2
-  exptitles = [ '{}, {}'.format(e,s.title()) for e,s in zip(exptitles,seasons[0]) ]
-#  variables = ['OI']; lfrac = True
-#  variables = ['U']; lfrac = True
-#  variables = ['COIP']; lfrac = True
-#  WRFfiletypes = ['plev3d']; level_agg = dict(p=0)
-#   variables = [['aSM']*2+['p-et']*2]; aggregation = 'mean'
-#   WRFfiletypes = ['lsm','hydro']; cbn = 7; lfrac = True
-#   variables = ['snow']; cbn = 5; lfrac = True; #variable_settings = ['T2_prj'] # T2
-  variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
-#   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
-  period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
-#   period = H15; refprd = NRC70; reflist = 'NRCan'; case = tag+'_nrcan'; variable_settings = None # validation using NRCan instead of Unity
-#   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
+#   seasons = [['summer']*2+['winter']*2]
+#   exptitles = [ '{}, {}'.format(e,s.title()) for e,s in zip(exptitles,seasons[0]) ]
+# #   variables = [('preccu','preccu','precip','precip')]; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+# #   seasons = ['annual']; subtitles = ['Cu Precip']*2+['Total Precip']*2
+# #   exptitles = [ '{}, {}'.format(e,s.title()) for e,s in zip(exptitles,subtitles) ]
+# #  variables = ['OI']; lfrac = True
+# #  variables = ['U']; lfrac = True
+# #  variables = ['COIP']; lfrac = True
+# #  WRFfiletypes = ['plev3d']; level_agg = dict(p=0)
+# #   variables = [['aSM']*2+['p-et']*2]; aggregation = 'mean'
+# #   WRFfiletypes = ['lsm','hydro']; cbn = 7; lfrac = True
+# #   variables = ['snow']; cbn = 5; lfrac = True; #variable_settings = ['T2_prj'] # T2
+# #   variables = ['T2']; cbn = 5; ldiff = True; variable_settings = ['T2_prj'] # T2
+# #   variables = ['precip']; cbn = 7; lfrac = True; variable_settings = ['precip_prj'] # precip
+#   period = B15; refprd = H15; reflist = explist; case = tag+'prj' # projection 
+# #   period = H15; refprd = NRC70; reflist = 'NRCan'; case = tag+'_nrcan'; variable_settings = None # validation using NRCan instead of Unity
+# #   period = H15; refprd = H15; case = tag+'val'; variable_settings = None; reflist = 'Unity' # validation 
 
 # ## 2x1-panel projection for the Paper
 #   explist = ['max-ens','ctrl-ens']; cbo = 'vertical'; lsamesize = False
@@ -955,7 +971,7 @@ if __name__ == '__main__':
             if stations == 'EC':
               # import station data
               from datasets.EC import loadEC_StnTS, selectStations
-              from datasets.WRF import loadWRF_StnTS
+              from projects.WesternCanada import loadWRF_StnTS
               varlist = stn_params + [cluster_name]; station_type = 'ecprecip'
               ecstns = loadEC_StnTS(station=station_type, varlist=varlist)
               wrfstns = loadWRF_StnTS(experiment='max-ctrl', varlist=varlist, station=station_type, 
@@ -964,8 +980,10 @@ if __name__ == '__main__':
               ecstns,wrfstns = selectStations([ecstns, wrfstns] , stnaxis='station', linplace=False, lall=True, 
                                               **station_constraints)
               # loop over points
-              for lon,lat,zerr,cln in zip(ecstns.stn_lon, ecstns.stn_lat, wrfstns.zs_err, ecstns[cluster_name]):
-                  tmp = cluster_symbols[cln].copy()
+              if cluster_name in ecstns: cluster_axis = ecstns[cluster_name]
+              else: cluster_axis = [-1]*len(ecstns.stn_lat)
+              for lon,lat,zerr,cln in zip(ecstns.stn_lon, ecstns.stn_lat, wrfstns.zs_err, cluster_axis):
+                  tmp = cluster_symbols.get(cln,cluster_symbols[-1]).copy()
                   xx,yy = bmap(lon, lat)
                   marker = tmp.pop('marker')
                   bmap.plot(xx,yy,marker,**tmp)

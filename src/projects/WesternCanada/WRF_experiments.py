@@ -26,6 +26,7 @@ class Exp(WRF_Exp):
 experiments = OrderedDict() # dictionary of experiments
 ## very high resolution experiments
 # Columbia Icefield domain (1km)
+experiments['erai-wc2'] = Exp(shortname='erai-wc2', name='erai-wc2', title='Columbia 1km (ERA-I)', begindate='2010-08-01', project='Columbia', grid='wc2', parent='ERA-I')
 experiments['erai-wc2-2010'] = Exp(shortname='wc2-2010', name='erai-wc2-2010', title='ERA-I 1km (2010)', begindate='2010-08-01', project='Columbia', grid='wc2', parent='ERA-I')
 experiments['erai-wc2-2011'] = Exp(shortname='wc2-2011', name='erai-wc2-2011', title='ERA-I 1km (2011)', begindate='2011-08-01', project='Columbia', grid='wc2', parent='ERA-I')
 experiments['erai-wc2-2012'] = Exp(shortname='wc2-2012', name='erai-wc2-2012', title='ERA-I 1km (2012)', begindate='2012-08-01', project='Columbia', grid='wc2', parent='ERA-I')
