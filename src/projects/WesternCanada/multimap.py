@@ -970,19 +970,20 @@ if __name__ == '__main__':
           if lstations: 
             if stations == 'EC':
               # import station data
-              from datasets.EC import loadEC_StnTS, selectStations
               from projects.WesternCanada import loadWRF_StnTS
               varlist = stn_params + [cluster_name]; station_type = 'ecprecip'
-              ecstns = loadEC_StnTS(station=station_type, varlist=varlist)
               wrfstns = loadWRF_StnTS(experiment='max-ctrl', varlist=varlist, station=station_type, 
                                       filetypes='hydro', domains=2)
 
-              ecstns,wrfstns = selectStations([ecstns, wrfstns] , stnaxis='station', linplace=False, lall=True, 
-                                              **station_constraints)
+#               from datasets.EC import loadEC_StnTS, selectStations
+#               ecstns = loadEC_StnTS(station=station_type, varlist=varlist)
+#               ecstns,wrfstns = selectStations([ecstns, wrfstns] , stnaxis='station', linplace=False, lall=True, 
+#                                               **station_constraints)
+              
               # loop over points
-              if cluster_name in ecstns: cluster_axis = ecstns[cluster_name]
-              else: cluster_axis = [-1]*len(ecstns.stn_lat)
-              for lon,lat,zerr,cln in zip(ecstns.stn_lon, ecstns.stn_lat, wrfstns.zs_err, cluster_axis):
+              if cluster_name in wrfstns: cluster_axis = wrfstns[cluster_name]
+              else: cluster_axis = [-1]*len(wrfstns.stn_lat)
+              for lon,lat,zerr,cln in zip(wrfstns.stn_lon, wrfstns.stn_lat, wrfstns.zs_err, cluster_axis[:]):
                   tmp = cluster_symbols.get(cln,cluster_symbols[-1]).copy()
                   xx,yy = bmap(lon, lat)
                   marker = tmp.pop('marker')
