@@ -39,7 +39,7 @@ from projects.WesternCanada import basins, provinces
 
 station_constraints = dict()
 station_constraints['min_len'] = 15 # for valid climatology
-station_constraints['lat'] = (40,55)
+station_constraints['lat'] = (40,65)
 station_constraints['end_after'] = 1980
 #station_constraints['max_zerr'] = 100 # can't use this, because we are loading EC data separately from WRF
 station_constraints['prov'] = ('BC','AB')
@@ -174,16 +174,43 @@ if __name__ == '__main__':
 
   # station markers
   lstations = False; stations = 'EC'; 
-  cluster_symbols = {2:'d',5:'^',8:'s',-1:'o'}; cluster_name = 'cluster_projection'
-  cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='w', mec='k') for clu,sym in cluster_symbols.items()}
+#   cluster_symbols = {2:'d',5:'^',8:'s',-1:'o'}; cluster_name = 'cluster_clim'
+  cluster_symbols = {-1:'o'}; cluster_name = 'cluster_clim' 
+  cluster_symbols = {clu:dict(marker=sym, markersize=4, mfc='r', mec='k') for clu,sym in cluster_symbols.items()}
 
   ## Columbia Ice Field analysis
-  maptype = 'lcc-col_out'; lbasins = False; lprovinces = False
-  lcontour = False
-  variables = ['zs']; seasons = ['topo']; lstations = True; case = 'stations'
-  explist = ['erai-wc2']; period = '2010-2016'
+#   maptype = 'lcc-col_out'; map_case = 'd01'
+  maptype = 'lcc-col_in'; map_case = 'd02'
+  period = '2010-2016'; lbasins = False; lprovinces = False
   domain = (1,2); lframe = True
-
+  lcontour = False
+  # single panel
+#   explist = ['erai-wc2']; exptitles = ['']; seasons = ['annual',]; case = 'val'
+#   variables = ['zs']; seasons = ['topo'] 
+  # 4 panels
+  explist = ['erai-wc2']*4; seasons = [('spring','summer','fall','winter')]; case = 'val' 
+  exptitles = [season.title() for season in seasons[0]]
+#   lstations = True; case = 'stns'
+#   variables = ['snow',]; lfrac = True; aggregation = 'mean'
+#   variables = ['snowh',]; lfrac = True; aggregation = 'mean'
+#   variables = ['snwmlt',]; lfrac = True; aggregation = 'mean'
+#   variables = ['solprec',]; lfrac = True
+  variables = ['precip',]; lfrac = True
+#   variables = ['precip',]; ldiff = True
+#   variables = ['T2',]; ldiff = True
+#   # differencing 
+  reflist = ['SnoDAS']*len(explist); refprd = '2010-2015'; ref_case = reflist[0].lower()
+#   reflist = ['NRCan']*len(explist); refprd = '1980-2010'; ref_case = reflist[0].lower()
+#   reflist = ['Unity']*len(explist); ref_case = reflist[0].lower(); refprd = '1979-2009'
+#   ldiff = True
+#   lfrac = True 
+  if ldiff or lfrac:
+      if map_case == 'd01': domain = 1; grid = 'wc2_d01'
+      elif map_case == 'd02': domain = 2; grid = 'wc2_d02'
+      case = map_case + '_' + ref_case + '_' + case
+      comments = ' w.r.t. '+reflist[0]
+  else:
+      case = map_case + '_' + case
 
 # ## ARB maps
 #   # map setup
@@ -975,10 +1002,10 @@ if __name__ == '__main__':
               wrfstns = loadWRF_StnTS(experiment='max-ctrl', varlist=varlist, station=station_type, 
                                       filetypes='hydro', domains=2)
 
-#               from datasets.EC import loadEC_StnTS, selectStations
-#               ecstns = loadEC_StnTS(station=station_type, varlist=varlist)
-#               ecstns,wrfstns = selectStations([ecstns, wrfstns] , stnaxis='station', linplace=False, lall=True, 
-#                                               **station_constraints)
+              from datasets.EC import loadEC_StnTS, selectStations
+              ecstns = loadEC_StnTS(station=station_type, varlist=varlist)
+              ecstns,wrfstns = selectStations([ecstns, wrfstns] , stnaxis='station', linplace=False, lall=True, 
+                                              **station_constraints)
               
               # loop over points
               if cluster_name in wrfstns: cluster_axis = wrfstns[cluster_name]
