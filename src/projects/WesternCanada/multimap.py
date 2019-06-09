@@ -186,20 +186,26 @@ if __name__ == '__main__':
   lcontour = False
   # single panel
 #   explist = ['erai-wc2']; exptitles = ['']; seasons = ['annual',]; case = 'val'
+  explist = ['erai-wc2']; exptitles = ['']; seasons = ['summer',]; case = 'val'
 #   variables = ['zs']; seasons = ['topo'] 
   # 4 panels
-  explist = ['erai-wc2']*4; seasons = [('spring','summer','fall','winter')]; case = 'val' 
-  exptitles = [season.title() for season in seasons[0]]
+#   explist = ['erai-wc2']*4; seasons = [('spring','summer','fall','winter')]; case = 'val' 
+#   exptitles = [season.title() for season in seasons[0]]
 #   lstations = True; case = 'stns'
 #   variables = ['snow',]; lfrac = True; aggregation = 'mean'
 #   variables = ['snowh',]; lfrac = True; aggregation = 'mean'
 #   variables = ['snwmlt',]; lfrac = True; aggregation = 'mean'
 #   variables = ['solprec',]; lfrac = True
-  variables = ['precip',]; lfrac = True
+#   variables = ['precip',]; lfrac = True
+#   variables = ['preccu',]; domain = 1; lfrac = False; ldiff = False
+#   variables = ['precip',]; lfrac = True; variable_settings = ['dryprec']
+  variables = ['wetfrq_002',]; lfrac = True; variable_settings = ['wetfrq']
+#   variables = ['dryprec_100',]; lfrac = True; variable_settings = ['dryprec'] 
+  reflist = explist[:]; refdom = 1; ref_case = 'addedV'
 #   variables = ['precip',]; ldiff = True
 #   variables = ['T2',]; ldiff = True
 #   # differencing 
-  reflist = ['SnoDAS']*len(explist); refprd = '2010-2015'; ref_case = reflist[0].lower()
+#   reflist = ['SnoDAS']*len(explist); refprd = '2010-2015'; ref_case = reflist[0].lower()
 #   reflist = ['NRCan']*len(explist); refprd = '1980-2010'; ref_case = reflist[0].lower()
 #   reflist = ['Unity']*len(explist); ref_case = reflist[0].lower(); refprd = '1979-2009'
 #   ldiff = True
@@ -208,7 +214,9 @@ if __name__ == '__main__':
       if map_case == 'd01': domain = 1; grid = 'wc2_d01'
       elif map_case == 'd02': domain = 2; grid = 'wc2_d02'
       case = map_case + '_' + ref_case + '_' + case
-      comments = ' w.r.t. '+reflist[0]
+      if not refdom: comments = ' w.r.t. '+reflist[0]
+#       domain = 1; case = case + '_outer'
+#       domain = 2; case = case + '_inner'
   else:
       case = map_case + '_' + case
 
