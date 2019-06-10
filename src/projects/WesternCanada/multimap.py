@@ -25,7 +25,14 @@ mpl.rc('lines', linewidth=1.)
 mpl.rc('font', size=10)
 # PyGeoDat stuff
 from mpl_toolkits.basemap import maskoceans # used for masking data
-  
+
+# set data folder
+import os
+os.environ['WRF_ROOT'] = os.environ['HOME']+'/Data/WRF/'
+os.environ['NRCan_ROOT'] = os.environ['HOME']+'/Data/NRCan/'
+os.environ['Unity_ROOT'] = os.environ['HOME']+'/Data/Unity/'
+os.environ['SnoDAS_ROOT'] = os.environ['HOME']+'/Data/SnoDAS/'
+
 from geodata.base import DatasetError
 from datasets.common import stn_params
 from legacy_plotting.legacy import loadDatasets, checkItemList
@@ -96,9 +103,9 @@ if __name__ == '__main__':
   WRFfiletypes = [] # WRF data source
 #   WRFfiletypes += ['aux']
   WRFfiletypes += ['hydro']
-  WRFfiletypes += ['lsm']
+#   WRFfiletypes += ['lsm']
   WRFfiletypes += ['srfc']
-  WRFfiletypes += ['xtrm']
+#   WRFfiletypes += ['xtrm']
 #   WRFfiletypes += ['plev3d']
   ## select variables and seasons
   variables = [] # variables
@@ -186,30 +193,37 @@ if __name__ == '__main__':
   lcontour = False
   # single panel
 #   explist = ['erai-wc2']; exptitles = ['']; seasons = ['annual',]; case = 'val'
-  explist = ['erai-wc2']; exptitles = ['']; seasons = ['summer',]; case = 'val'
-#   variables = ['zs']; seasons = ['topo'] 
+#   explist = ['erai-wc2']; exptitles = ['']; seasons = ['summer',]; case = 'val'  
+  explist = ['erai-wc2']; exptitles = ['']; seasons = ['winter',]; case = 'val'
+#   explist = ['NRCan']; exptitles = ['']; seasons = ['winter',]; period=NRC80; grid='wc2_d02'; case = 'nrcan'
+#   explist = ['SnoDAS']; exptitles = ['']; seasons = ['annual',]; period='2010-2015'; grid='wc2_d02'; case = 'snodas'
+#   outlinewidth = 2.; variables = ['zs']; seasons = ['topo']; domain = 1; case = 'd01'; lframe=True
+#   outlinewidth = 2.; variables = ['zs']; seasons = ['topo']; domain = (1,2); case = 'd02'
   # 4 panels
 #   explist = ['erai-wc2']*4; seasons = [('spring','summer','fall','winter')]; case = 'val' 
 #   exptitles = [season.title() for season in seasons[0]]
 #   lstations = True; case = 'stns'
-#   variables = ['snow',]; lfrac = True; aggregation = 'mean'
+  variables = ['snow',]; aggregation = 'mean'; domain = 2
 #   variables = ['snowh',]; lfrac = True; aggregation = 'mean'
 #   variables = ['snwmlt',]; lfrac = True; aggregation = 'mean'
 #   variables = ['solprec',]; lfrac = True
-#   variables = ['precip',]; lfrac = True
-#   variables = ['preccu',]; domain = 1; lfrac = False; ldiff = False
+  variables = ['precip',]; #domain = 1
+#   variables = ['preccu',]; domain = 1; grid = 'wc2_d02'; case = case + '_outer'
 #   variables = ['precip',]; lfrac = True; variable_settings = ['dryprec']
-  variables = ['wetfrq_002',]; lfrac = True; variable_settings = ['wetfrq']
+#   variables = ['wetfrq_002',]; lfrac = True; variable_settings = ['wetfrq']  
+#   variables = ['MaxPrecnc_1h',]; domain = 1; lfrac = False; ldiff = False
+#   variables = ['MaxPreccu_1h',]; domain = 1; grid = 'wc2_d02'; case = case + '_outer'
 #   variables = ['dryprec_100',]; lfrac = True; variable_settings = ['dryprec'] 
-  reflist = explist[:]; refdom = 1; ref_case = 'addedV'
-#   variables = ['precip',]; ldiff = True
-#   variables = ['T2',]; ldiff = True
+#   variables = ['precip',]
+#   variables = ['T2',]
+#   outlinewidth = 2.; #domain = 1; case = case + '_outer'
 #   # differencing 
+#   reflist = explist[:]; refdom = 1; ref_case = 'addedV'
 #   reflist = ['SnoDAS']*len(explist); refprd = '2010-2015'; ref_case = reflist[0].lower()
 #   reflist = ['NRCan']*len(explist); refprd = '1980-2010'; ref_case = reflist[0].lower()
 #   reflist = ['Unity']*len(explist); ref_case = reflist[0].lower(); refprd = '1979-2009'
 #   ldiff = True
-#   lfrac = True 
+  lfrac = True 
   if ldiff or lfrac:
       if map_case == 'd01': domain = 1; grid = 'wc2_d01'
       elif map_case == 'd02': domain = 2; grid = 'wc2_d02'

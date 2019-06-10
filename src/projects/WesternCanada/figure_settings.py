@@ -59,6 +59,8 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(-4,4,41); clbl = '%3.1f'      
     elif var in ('snwmlt', 'runoff', 'ugroff', 'sfroff','p-et','waterflx'): # moisture fluxes (kg /(m^2 s))
       clevs = np.linspace(-1.2,1.2,41); clbl = '%2.1f'; cmap = mpl.cm.PuOr # mm/day
+    elif var in ('snow'): # SWE (kg/m^2)
+      clevs = np.linspace(-100,100,41); clbl = '%2.1f'; cmap = mpl.cm.PuOr # mm/day
     elif var == 'zs':
       clevs = np.linspace(-0.5,0.5,21); clbl = '%3.1f' # mm/day
     elif var in ('Z',):
@@ -78,7 +80,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     if var in ('T2_prj','Ts_prj','Tmin_prj','Tmax_prj','Tmean_prj'):
       clevs = np.linspace(0,3,41); clbl = '%2.1f'; cmap = mpl.cm.Oranges 
     elif var in ('snow','snow_prj','snow_val'):
-      clevs = np.linspace(-90.,90,31); clbl = '%2.0f'; cmap = cm.redblue_light
+      clevs = np.linspace(-90.,90,31); clbl = '%2.0f'; cmap = mpl.cm.PuOr #cm.redblue_light
     elif var in ('evap_prj','pet_prj','precip_prj','precipc_prj','precipnc_prj'):
       clevs = np.linspace(-90.,90,46); clbl = '%2.0f'; cmap = mpl.cm.PuOr
     elif var in ('dryprec','wetprec','wetfrq'):
@@ -110,7 +112,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(0,1,26)
     elif var == 'snow': # snow (liquid water equivalent) 
       lmskocn = True; clbl = '%2.0f' # kg/m^2
-      clevs = np.linspace(0,200,41)
+      clevs = np.linspace(0,300,31)
     elif var == 'snowh': # snow (depth/height) 
       lmskocn = True; clbl = '%2.1f' # m
       clevs = np.linspace(0,2,41)
@@ -174,9 +176,11 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(0,16,33); clbl = '%2.0f' # mm/day
     elif var in ('precip_hist'): # total precipitation for north america
       clevs = np.linspace(0,8,25); clbl = '%2.0f' # mm/day
-    elif var in ('MaxPrecip_1d'): # max precipitation for north america
+    elif var in ('MaxPrecip_1d',): # max precipitation for north america
       clevs = np.linspace(0,80,21); clbl = '%2.0f' # mm/day
       if season in ('summer','spring'): clevs /= 2.
+    elif var in ('MaxPrecnc_1h','MaxPreccu_1h'): # max precipitation for north america
+      clevs = np.linspace(0,200,21); clbl = '%2.0f' # mm/day
     elif var in ('preccu',): # convective precipitation 
       clevs = np.linspace(0,5,26); clbl = '%02.1f' # mm/day
     elif var == 'Q2':
