@@ -63,12 +63,18 @@ annotation_dict['lcc-fine'] = dict(scale=(-132, 47, -137, 47, 500), lat_full=[45
 ## Lambert Conic Conformal - Small Domain
 annotation_dict['lcc-small'] = dict(scale=(-136, 45, -137, 57, 800), lat_full=[45,65], lat_half=[55,75], 
                               lon_full=[-180,-160,-140,-120,-100], lon_half=[-170,-150,-130,-110])
-## Lambert Conic Conformal - Coumbia Outer Domain
+## Lambert Conic Conformal - Columbia Outer Domain
 annotation_dict['lcc-col_out'] = dict(scale=(-134, 42, -123, 55, 800), lat_full=[45,65], lat_half=[55,75], 
                               lon_full=[-180,-160,-140,-120,-100], lon_half=[-170,-150,-130,-110])
-## Lambert Conic Conformal - Coumbia Inner Domain
+## Lambert Conic Conformal - Tighter Layout for Columbia Outer Domain
+annotation_dict['lcc-colt_out'] = dict(scale=(-132, 42, -123, 55, 800), lat_full=[45,65], lat_half=[55,75], 
+                                      lon_full=[-180,-160,-140,-120,-100], lon_half=[-170,-150,-130,-110])
+## Lambert Conic Conformal - Columbia Inner Domain
 annotation_dict['lcc-col_in'] = dict(scale=(-120.5, 48.5, -117.5, 51.5, 200), lat_full=[46,50,54,58], lat_half=[48,52,56,60], 
                                      lon_full=[-122,-118,-114,-110], lon_half=[-124,-120,-116,-112,])
+## Lambert Conic Conformal - Tighter Layout Columbia Inner Domain
+annotation_dict['lcc-colt_in'] = dict(scale=(-120.5, 49.4, -117.5, 51.5, 200), lat_full=[46,50,54,58], lat_half=[48,52,56,60], 
+                                      lon_full=[-122,-118,-114,-110], lon_half=[-124,-120,-116,-112,])
 ## Lambert Conic Conformal - ARB3 2nd Domain
 annotation_dict['lcc-arb3_d02'] = dict(scale=(-134, 44, -123, 55, 800), lat_full=[45,65], lat_half=[55,75], 
                               lon_full=[-180,-160,-140,-120,-100], lon_half=[-170,-150,-130,-110])
@@ -147,9 +153,15 @@ projection_dict['lcc-fine'] = dict(projection='lcc', lat_0=56, lon_0=-125, lat_1
 ## Lambert Conic Conformal - Columbia Outer Domain
 projection_dict['lcc-col_out'] = dict(projection='lcc', lat_0=51.25, lon_0=-123, lat_1=51.25, rsphere=rsphere,
                 width=2900e3, height=2600e3, area_thresh = 1000., resolution='l')
+## Lambert Conic Conformal - Tighter Layout forColumbia Outer Domain
+projection_dict['lcc-colt_out'] = dict(projection='lcc', lat_0=51.25, lon_0=-123, lat_1=51.25, rsphere=rsphere,
+                width=2500e3, height=2500e3, area_thresh = 1000., resolution='l')
 ## Lambert Conic Conformal - Columbia Inner Domain
 projection_dict['lcc-col_in'] = dict(projection='lcc', lat_0=51.5, lon_0=-117.5, lat_1=51.5, rsphere=rsphere,
                 width=770e3, height=750e3, area_thresh = 1000., resolution='l')
+## Lambert Conic Conformal - Tighter Layout forColumbia Inner Domain
+projection_dict['lcc-colt_in'] = dict(projection='lcc', lat_0=51.5, lon_0=-117.5, lat_1=51.5, rsphere=rsphere,
+                width=680e3, height=680e3, area_thresh = 1000., resolution='l')
 ## Lambert Conic Conformal - ARB3 2nd Domain
 projection_dict['lcc-arb3_d02'] = dict(projection='lcc', lat_0=55, lon_0=-123, lat_1=55, rsphere=rsphere,
                 width=2900e3, height=2700e3, area_thresh = 1000., resolution='l')

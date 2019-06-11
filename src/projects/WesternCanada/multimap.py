@@ -71,6 +71,7 @@ if __name__ == '__main__':
   framewidths = 1.; framecolor = 'k' # line width for domain outline
   loutline = True # draw boundaries around valid (non-masked) data
   outlinewidth = 1.; outlinecolor = 'k'
+  map_style_dict = dict()
   cbn = None # colorbar levels
   figuretype = None
   lsamesize = True
@@ -105,7 +106,7 @@ if __name__ == '__main__':
   WRFfiletypes += ['hydro']
 #   WRFfiletypes += ['lsm']
   WRFfiletypes += ['srfc']
-#   WRFfiletypes += ['xtrm']
+  WRFfiletypes += ['xtrm']
 #   WRFfiletypes += ['plev3d']
   ## select variables and seasons
   variables = [] # variables
@@ -188,13 +189,15 @@ if __name__ == '__main__':
   ## Columbia Ice Field analysis
 #   maptype = 'lcc-col_out'; map_case = 'd01'
   maptype = 'lcc-col_in'; map_case = 'd02'
+#   maptype = 'lcc-colt_out'; map_case = 'd01'
+#   maptype = 'lcc-colt_in'; map_case = 'd02'
   period = '2010-2016'; lbasins = False; lprovinces = False
   domain = (1,2); lframe = True
-  lcontour = False
+  lcontour = False; map_style_dict = dict(ocean_color='white', land_color='white')
   # single panel
 #   explist = ['erai-wc2']; exptitles = ['']; seasons = ['annual',]; case = 'val'
-#   explist = ['erai-wc2']; exptitles = ['']; seasons = ['summer',]; case = 'val'  
-  explist = ['erai-wc2']; exptitles = ['']; seasons = ['winter',]; case = 'val'
+  explist = ['erai-wc2']; exptitles = ['']; seasons = ['summer',]; case = 'val'  
+#   explist = ['erai-wc2']; exptitles = ['']; seasons = ['winter',]; case = 'val'
 #   explist = ['NRCan']; exptitles = ['']; seasons = ['winter',]; period=NRC80; grid='wc2_d02'; case = 'nrcan'
 #   explist = ['SnoDAS']; exptitles = ['']; seasons = ['annual',]; period='2010-2015'; grid='wc2_d02'; case = 'snodas'
 #   outlinewidth = 2.; variables = ['zs']; seasons = ['topo']; domain = 1; case = 'd01'; lframe=True
@@ -202,34 +205,38 @@ if __name__ == '__main__':
   # 4 panels
 #   explist = ['erai-wc2']*4; seasons = [('spring','summer','fall','winter')]; case = 'val' 
 #   exptitles = [season.title() for season in seasons[0]]
-#   lstations = True; case = 'stns'
-  variables = ['snow',]; aggregation = 'mean'; domain = 2
+#   lstations = True; case = 'stns'  
+#   variables = ['snow',]; aggregation = 'mean'; domain = 2
 #   variables = ['snowh',]; lfrac = True; aggregation = 'mean'
 #   variables = ['snwmlt',]; lfrac = True; aggregation = 'mean'
 #   variables = ['solprec',]; lfrac = True
-  variables = ['precip',]; #domain = 1
+#   variables = ['precip',]; outlinewidth = 2. #domain = 1
 #   variables = ['preccu',]; domain = 1; grid = 'wc2_d02'; case = case + '_outer'
 #   variables = ['precip',]; lfrac = True; variable_settings = ['dryprec']
 #   variables = ['wetfrq_002',]; lfrac = True; variable_settings = ['wetfrq']  
-#   variables = ['MaxPrecnc_1h',]; domain = 1; lfrac = False; ldiff = False
-#   variables = ['MaxPreccu_1h',]; domain = 1; grid = 'wc2_d02'; case = case + '_outer'
+#   variables = ['MaxPrecnc_1h',]; domain = 2; #case = 'val_upscale'
+  variables = ['MaxPreccu_1h',]; domain = 1; grid = 'wc2_d02'; case = case + '_outer_downscale'
 #   variables = ['dryprec_100',]; lfrac = True; variable_settings = ['dryprec'] 
-#   variables = ['precip',]
-#   variables = ['T2',]
+#   variables = ['precip',] 
+#   variables = ['T2',]; #figtitles = ['2m Temperature Bias [K]']
 #   outlinewidth = 2.; #domain = 1; case = case + '_outer'
 #   # differencing 
 #   reflist = explist[:]; refdom = 1; ref_case = 'addedV'
 #   reflist = ['SnoDAS']*len(explist); refprd = '2010-2015'; ref_case = reflist[0].lower()
 #   reflist = ['NRCan']*len(explist); refprd = '1980-2010'; ref_case = reflist[0].lower()
-#   reflist = ['Unity']*len(explist); ref_case = reflist[0].lower(); refprd = '1979-2009'
+  reflist = ['Unity']*len(explist); ref_case = reflist[0].lower(); refprd = '1979-2009'
 #   ldiff = True
-  lfrac = True 
+#   lfrac = True 
   if ldiff or lfrac:
       if map_case == 'd01': domain = 1; grid = 'wc2_d01'
       elif map_case == 'd02': domain = 2; grid = 'wc2_d02'
       case = map_case + '_' + ref_case + '_' + case
-      if not refdom: comments = ' w.r.t. '+reflist[0]
-#       domain = 1; case = case + '_outer'
+      if reflist[0] == 'Unity':
+          if len(reflist) == 1: refname = 'Merged Obs.' 
+          else: refname = 'Merged Observations'
+      else: refname = reflist[0] 
+      if not refdom: comments = ' w.r.t. ' + refname 
+      domain = 1; case = case + '_outer'
 #       domain = 2; case = case + '_inner'
   else:
       case = map_case + '_' + case
@@ -1004,7 +1011,7 @@ if __name__ == '__main__':
           else: bottom = False
           # begin annotation
           bmap = maps[n]
-          kwargs = dict()
+          kwargs = map_style_dict.copy()
           # white-out continents, if we have no proper land mask 
           if locean or ( lmsklnd and not ('lndmsk' in exps[n][0].variables ) 
                          or 'lndidx' in exps[n][0].variables): 
