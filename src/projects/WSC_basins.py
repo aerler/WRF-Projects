@@ -8,7 +8,7 @@ This module contains meta data for all available WSC river basins in Canada.
 
 from collections import OrderedDict
 from datasets.common import addLoadFcts
-from datasets.WSC import BasinSet, Basin, LakeSet, Lake, Nation, Province
+from datasets.WSC import BasinSet, Basin, LakeSet, Lake, Nation, Province, Catchment
 
 # expand province names
 province_names = OrderedDict() # make sure they are sorted alphabetically
@@ -51,6 +51,8 @@ basin_list['ARB'] = BasinSet(name='ARB', long_name='Athabasca River Basin', rive
                              subbasins=['WholeARB','UpperARB','LowerARB'])
 basin_list['CRB'] = BasinSet(name='CRB', long_name='Columbia River Basin', rivers=['Columbia'], data_source='WSC',
                              stations=dict(), subbasins=['WholeCRB'])
+basin_list['MW']  = BasinSet(name='MW', long_name='Mica Watershed', rivers=['Mica'], data_source='UNBC',
+                             stations=dict(), subbasins=['WholeMW'])
 basin_list['FRB'] = BasinSet(name='FRB', long_name='Fraser River Basin', rivers=['Fraser'], data_source='WSC',
                              stations=dict(Fraser=['PortMann','Mission']),
                              subbasins=['WholeFRB','UpperFRB','LowerFRB'])
@@ -135,6 +137,12 @@ for name,lake in list(great_lakes.items()): # do not iter, since dict is changes
   lake_list[lake.name] = lake
   lake_list[lake.long_name] = lake
 
+
+## a function to create a Catchment object for a WSC gauge stations based on WSC IDs
+def getCatchmentList(WSC_ID):
+    ''' create and return a Catchment object based on WSC gauge station ID '''
+    return Catchment(name=WSC_ID)
+gauges = getCatchmentList # alias for shpavg naming
   
 
 ## generate loadGageStation* versions with these basins

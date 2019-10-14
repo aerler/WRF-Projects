@@ -42,6 +42,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   elif len(obsens) > 0: refds = obsens[0]
   else: raise ArgumentError
   # x-axis
+  axes.xoverlap = True # don't hide first label to prevent overlap
   xticks = axes.xaxis.get_ticklabels() # determine if labels are appropriate
   if xlabel and len(xticks) > 0 and xticks[-1].get_visible(): xlabel = 'Seasonal Cycle [{UNITS:s}]' 
   else: xlabel = False
@@ -170,8 +171,9 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
     axes.addLegend(handles=plts, labels=dataset_labels, **dataset_legend) # handles fontsize and passes kwargs to legend()
   
   # use month as labels
-  axes.xaxis.set_ticklabels(['']+[name[:3] for name in name_of_month[1::2]])
-  axes.xaxis.set_minor_locator(mpl.ticker.AutoMinorLocator(2))
+  axes.set_xticks(range(2,13,2))
+  axes.xaxis.set_ticklabels([name[:3] for name in name_of_month[1::2]])
+  axes.xaxis.set_minor_locator(mpl.ticker.AutoMinorLocator(2)) # one between each major
   # only use integers for y-lables (saves space)
   if lyint:
     axes.parasite_axes.yaxis.set_major_locator(mpl.ticker.MaxNLocator(integer=True))

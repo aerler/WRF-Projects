@@ -91,6 +91,9 @@ hgs_plotargs['V3 (Ephemeral)'] = dict(color='#E24B34')
 hgs_plotargs['NRCan (Prairies)']  = dict(color='cyan')
 hgs_plotargs['NRCan (Ephemeral)'] = dict(color='coral')
 hgs_plotargs['NRCan (hires)']     = dict(color='magenta')
+# SnoDAS
+hgs_plotargs['SnoDAS']  = dict(color='#62A1C6') # blue
+hgs_plotargs['RF-BC']   = dict(color='#E24B34') # red
 # Landuse scenarios
 hgs_plotargs['GRCA']         = dict(color='green')
 hgs_plotargs['LU 2000']      = dict(color='#62A1C6')
@@ -100,7 +103,7 @@ hgs_plotargs['LU 2095']      = dict(color='#E24B34')
 hgs_plotargs['Steady-State (V1)'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic (V1)']     = dict(color='green') # 
 hgs_plotargs['Steady-State (V2)'] = dict(color='#E24B34') # red
-hgs_plotargs['Periodic (V2)']     = dict(color='coral') # red
+hgs_plotargs['Periodic (V2)']     = dict(color='coral')
 hgs_plotargs['Transient']    = dict(color='#62A1C6') # blue
 hgs_plotargs['Steady-State'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic']     = dict(color='#E24B34') # red
@@ -456,9 +459,13 @@ if __name__ == '__main__':
 #     name = 'son1' # 5km resolution
 #     # X 320919.7943000002 Y 4624073.9199, C 5890 R 4062 x 100m
 #     geotransform = [320920.,5.e3,0,4624073.,0,5.e3]; size = (118,82)
-    name = 'son2' # 1km resolution
-    geotransform = [320920.,1.e3,0,4624073.,0,1.e3]; size = (590,410)
-    projection = "+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+#     name = 'son2' # 1km resolution
+#     geotransform = [320920.,1.e3,0,4624073.,0,1.e3]; size = (590,410)
+#     projection = "+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+    ## Hugo's grid for Quebec
+    name = 'hd1' # 5km resolution
+    geotransform = [-479184.769227,5.e3,0,68508.4877898,0,5.e3]; size = (70,49)
+    projection = "+proj=lcc +ellps=NAD83 +datum=NAD83 +lat_0=44.0 +lat_1=46.0 +lat_2=60.0 +lon_0=-68.5  +x_0=0 +y_0=0 +units=m +no_defs"
     ## UTM 14 parameters for South Nation grids
 #     name = 'snw1' # 9km resolution
 #     geotransform = [401826.125365249,9.e3,0,4851533.71730136,0,9.e3]; size = (22,29)

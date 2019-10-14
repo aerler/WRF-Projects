@@ -54,7 +54,7 @@ addLoadFcts(locals(), locals(), unity_grid=unity_grid , WRF_exps=WRF_exps, WRF_e
 
 ## import shape dictionaries
 try:
-    from projects.WSC_basins import basins, provinces, great_lakes # import the dicts with unique entries
+    from projects.WSC_basins import basins, provinces, great_lakes, gauges # import the dicts with unique entries
 except (ImportError,IOError):
     warn("Error importing shape files and/or WSC module.")
 

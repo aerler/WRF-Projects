@@ -183,7 +183,7 @@ def loadStationFit(variable_list=variables_rc, default_constraints=constraints_r
 # plot labels: translate internal names to something more presentable
 plot_labels_rc = default.plot_labels_rc.copy()
 # datasets
-plot_labels_rc['Unity']           = 'Uni. Obs.'
+plot_labels_rc['Unity']           = 'Merged Obs.'
 plot_labels_rc['Observations']    = 'EC Obs.'
 plot_labels_rc['EC']              = 'EC Obs.'
 plot_labels_rc['EC_1935']         = 'EC (1935)'

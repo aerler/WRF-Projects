@@ -55,6 +55,8 @@ variables_rc['precip_conv']     = VL(vars=('precip','preccu','precnc'), files=('
 variables_rc['precip_net']      = VL(vars=('precip','solprec','p-et'), files=('srfc',), label='Water Flux')
 variables_rc['precip_snow']     = VL(vars=('precip','snwmlt','solprec'), files=('hydro',), label='Water Flux')
 variables_rc['snow']            = VL(vars=('snow',), files=('hydro',), label='Water Equivalent')
+variables_rc['precip_flux']     = VL(vars=('precip','snwmlt','pet'), files=('hydro',), label='Water Flux')
+variables_rc['flux_types']      = VL(vars=('precip','snwmlt','preccu'), files=('hydro',), label='Water Flux')
 variables_rc['flux_snow']       = VL(vars=('precip','snwmlt','solprec'), files=('hydro',), label='Water Flux')
 variables_rc['flux_days']       = VL(vars=('wetfrq_010','snwmlt','p-et'), files=('hydro',), label='Water Flux')
 variables_rc['wetprec']         = VL(vars=['wetprec'+ext for ext in wetday_extensions], files=('hydro',), label='Wet-day Precip.')
@@ -67,6 +69,7 @@ variables_rc['runoff']          = VL(vars=('runoff','sfroff','ugroff'), files=('
 variables_rc['runoff_wflx']     = VL(vars=('waterflx','sfroff','runoff'), files=('lsm','hydro'), label='Runoff')
 variables_rc['runoff_flux']     = VL(vars=('runoff','snwmlt','p-et'), files=('lsm','hydro'), label='Water Flux')
 variables_rc['runoff_snow']     = VL(vars=('runoff','snwmlt','waterflx'), files=('lsm','hydro'), label='Water Flux')
+variables_rc['hgs_flux']        = VL(vars=('liqwatflx','snwmlt','precip','pet'), files=('hydro',), label='Water Flux')
 variables_rc['hgs_forcing_wrf'] = VL(vars=('liqwatflx','pet_wrf',), files=('aux',), label='HGS Forcing')
 variables_rc['hgs_precip_wrf']  = VL(vars=('liqprec','snwmlt','pet_wrf'), files=('aux',), label='HGS Forcing')
 variables_rc['hgs_snow_wrf']    = VL(vars=('solprec','liqprec','pet_wrf'), files=('aux',), label='HGS Forcing')
@@ -178,7 +181,7 @@ plot_labels_rc['pet']             = 'PET'
 plot_labels_rc['pet_wrf']         = 'PET (WRF)' 
 plot_labels_rc['waterflx']        = 'Water Flux'
 plot_labels_rc['liqwatflx']       = 'Water Forcing'
-plot_labels_rc['snwmlt']          = 'Snow Melt' 
+plot_labels_rc['snwmlt']          = 'Melt' 
 plot_labels_rc['runoff']          = 'Total Runoff' 
 plot_labels_rc['ugroff']          = 'Undergr. R\'off' 
 plot_labels_rc['sfroff']          = 'Surface Runoff' 
@@ -223,6 +226,8 @@ climds_plotargs_rc['WSC']          =  obs_args
 climds_plotargs_rc['Unity']        =  obs_args
 climds_plotargs_rc['CRU']          =  obs_args
 climds_plotargs_rc['GPCC']         =  obs_args
+climds_plotargs_rc['NRCan']        =  obs_args
+climds_plotargs_rc['Merged Obs.']  =  obs_args
 # reanalysis datasets
 rea_args = AttrDict(marker='^', markersize=mpl.rcParams['lines.markersize'], linestyle=' ') # 'small'
 climds_plotargs_rc['CFSR']         =  rea_args
