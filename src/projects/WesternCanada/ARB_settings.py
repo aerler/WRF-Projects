@@ -12,54 +12,35 @@ from collections import namedtuple
 import hgs.HGS as hgs # need to prevent name collisions here
 from hgs.PGMN import getWellName
 import projects.WSC_basins as wsc
-from projects.GreatLakes.WRF_experiments import WRF_exps
+from projects.WesternCanada.WRF_experiments import WRF_exps
 from geodata.misc import ArgumentError, DatasetError
 # imports from HGS_settings
 import projects.HGS_settings as default
 
 
-project_name = 'GRW'
-project_prefix = 'grw_omafra'
-conservation_authority = 'GRCA'
+project_name = 'ARB'
+project_prefix = 'ARB_SSM_Jan2Dec_23Lyr'
+conservation_authority = 'COSIA'
 # some parameters
 gage_scalefactors = 1. # default scalefactor for discharge plots
-main_gage   = 'Brantford' # gage station(see station_list for proper HGS/WSC names)
-main_basin  = 'GRW' # main basin name
-main_grid   = 'grw2' # climate data grid
-binary_grid = 'grw3' # grid used to interpolated binary output
+main_gage   = 'McMurray' # gage station(see station_list for proper HGS/WSC names)
+main_basin  = 'ARB' # main basin name
+main_grid   = 'arb2' # climate data grid
+binary_grid = 'arb2' # grid used to interpolated binary output
 # project folders
 project_folder = '{:s}/{:s}/'.format(hgs.root_folder,project_name) # the dataset root folder
 project_folder_pattern = '{PROJECT_FOLDER:s}/{GRID:s}/{EXPERIMENT:s}/{CLIM_DIR:s}/{TASK:s}/'
-station_file_v1 = '{PREFIX:s}o.hydrograph.Station_{STATION:s}.dat' # general HGS naming convention
-station_file_v2 = '{PREFIX:s}o.hydrograph.{WSC_ID0:s}.dat' # general HGS naming convention
-
+station_file = '{PREFIX:s}o.hydrograph.Station_{STATION:s}.dat' # general HGS naming convention
+station_file_default = station_file # alias
 # mapping of WSC station names to HGS hydrograph names
 Station = namedtuple('Station', ('HGS','WSC','ylim'),)
 station_list = OrderedDict() # this is the main gage of the GRW
-station_list['Grand River at Brantford']  = Station(HGS='Station_GR_Brantford',WSC='Grand River_Brantford',ylim=150)
-station_list['Nith River at Canning']     = Station(HGS='Station_Nith_River_near_Canning_(moved_upstrea',WSC='Nith River_Canning',ylim=35 )
-station_list['Grand River at Marsville']  = Station(HGS='Station_GR_Marsville_(near_it)',WSC='Grand River_Marsville',ylim=30)
-station_list['Conestogo River at Glen Allan']   = Station(HGS='Station_Conestogo_River_at_Glen_Allan',WSC='Conestogo River_Glen Allan',ylim=20)
-station_list['Speed River at Guelph']     = Station(HGS='Station_Speed_River_near_Guelph(moved_North)',WSC='Speed River_Guelph',ylim=20)
-station_list['Whiteman\'s Cr. at Mt. Vernon'] = Station(HGS='Station_Station_Whitemans_Creek_near_Mt_Vernon',WSC='Whitemans Creek_Mount Vernon',ylim=12)
-station_list['Fairchild River at Brantford']    = Station(HGS='Station_Fairchild_Creek_near_Brantford',WSC='Fairchild Creek_Brantford',ylim=12 )
+station_list['Fort McMurray']  = Station(HGS='05_MCMURRAY', WSC='Athabasca_McMurray', ylim=None)
+station_list['Embarras Airport']  = Station(HGS='06_EMBARRAS', WSC='Athabasca_Embarras', ylim=None)
+station_list_default = station_list # just an alias...
 # look-up tables for WSC/HGS station name conversion                           
 WSC_station_list = {stn.WSC:stn.HGS for stn in list(station_list.values())}
 HGS_station_list = {stn.HGS:stn.WSC for stn in list(station_list.values())}
-# short names for gages in this basin and their HGS/WSC names
-station_list_etal = dict(**station_list) # not ordered
-station_list_etal['Brantford']  = station_list['Grand River at Brantford'] # alias
-
-# list of groundwater observation wells
-grca_wells = ['W0000023_1', 'W0000024_2', 'W0000024_4', 'W0000046_1',
-              'W0000065_4', 'W0000306_1', 'W0000307_1', 'W0000309_2', 'W0000309_3', 
-              'W0000347_2', 'W0000347_3', 'W0000421_1', 'W0000423_1', 'W0000424_1', 
-              'W0000425_1', 'W0000427_1', 'W0000428_1', 'W0000476_1', ]
-sorted_grca_wells = ['W0000347-2','W0000307-1','W0000306-1','W0000347-3','W0000421-1','W0000046-1',
-                     'W0000065-4','W0000427-1','W0000024-2','W0000023-1','W0000309-2','W0000024-4',
-                     'W0000423-1','W0000428-1','W0000476-1','W0000309-3','W0000425-1','W0000424-1',]
-# N.B.: 'W0000035_5' and 'W0000426_1' are missing in the GRCA dataset  
-other_wells = ['W0000003_1', 'W0000022_1', 'W0000178_1', 'W0000477_1', 'W0000478_1',]
 
 
 # plotting parameters for HGS simulations
@@ -69,36 +50,10 @@ hgs_plotargs['Observations'] = dict(color='#959595') # gray
 hgs_plotargs['Obs.']         = dict(color='#959595') # gray
 hgs_plotargs['WSC Obs.']     = dict(color='#959595') # gray
 hgs_plotargs['WSC']          = dict(color='#959595') # gray
-# NRCan forcing, different model versions
-hgs_plotargs['HGS (V1)']     = dict(color='green') #, linewidth=3)
-hgs_plotargs['NRCan']        = dict(color='green')
-hgs_plotargs['NRCan, L21']   = dict(color='green')
-hgs_plotargs['NRCan (V1)']   = dict(color='gray', linestyle='--')
-hgs_plotargs['NRCan (V2)']   = dict(color='gray')
-hgs_plotargs['NRCan (V2k)']  = dict(color='#AAA2D8') # purple
-hgs_plotargs['NRCan (V2f)']  = dict(color='red') # red
-hgs_plotargs['NRCan (V3f)']  = dict(color='magenta')
-hgs_plotargs['NRCan (V3s)']  = dict(color='black') 
-hgs_plotargs['NRCan (V3w)']  = dict(color='green')
-hgs_plotargs['NRCan (V3m2)'] = dict(color='blue')
-hgs_plotargs['NRCan (V3m3)'] = dict(color='purple')
-hgs_plotargs['NRCan (V3m4)'] = dict(color='red')
-hgs_plotargs['NRCan (V3m5)'] = dict(color='green')
-hgs_plotargs['NRCan (V3)']   = dict(color='green')
-hgs_plotargs['V3 (Prairies)']  = dict(color='#AAA2D8')
-hgs_plotargs['V3 (Maritime)']  = dict(color='#62A1C6')
-hgs_plotargs['V3 (Ephemeral)'] = dict(color='#E24B34')
-hgs_plotargs['NRCan (Prairies)']  = dict(color='cyan')
-hgs_plotargs['NRCan (Ephemeral)'] = dict(color='coral')
-hgs_plotargs['NRCan (hires)']     = dict(color='magenta')
-# SnoDAS
-hgs_plotargs['SnoDAS']  = dict(color='#62A1C6') # blue
-hgs_plotargs['RF-BC']   = dict(color='#E24B34') # red
-# Landuse scenarios
-hgs_plotargs['GRCA']         = dict(color='green')
-hgs_plotargs['LU 2000']      = dict(color='#62A1C6')
-hgs_plotargs['LU 2055']      = dict(color='#AAA2D8')
-hgs_plotargs['LU 2095']      = dict(color='#E24B34')
+# Observational forcing
+hgs_plotargs['CRU']          = dict(color='green') #, linewidth=3)
+hgs_plotargs['NRCan']        = dict(color='coral') # orange
+hgs_plotargs['SnoDAS']       = dict(color='#62A1C6') # blue
 # Temporal Aggregation
 hgs_plotargs['Steady-State (V1)'] = dict(color='#AAA2D8') # purple
 hgs_plotargs['Periodic (V1)']     = dict(color='green') # 
@@ -113,9 +68,9 @@ hgs_plotargs['Daily']        = dict(color='#E24B34') # red
 # WRF forcing
 hgs_plotargs['WRF 10km']     = dict(color='#62A1C6') # blue                                     
 hgs_plotargs['WRF 30km']     = dict(color='#E24B34') # red
-hgs_plotargs['WRF 90km']     = dict(color='#AAA2D8') # purple
+hgs_plotargs['WRF (MyBC)']   = dict(color='#E24B34') # red
 hgs_plotargs['WRF (AABC)']   = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['WRF (Delta)']  = dict(color='#E24B34') # red
+hgs_plotargs['WRF (Delta)']  = dict(color='#AAA2D8') # purple
 # hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
 # hgs_plotargs['WRF G 30km']   = dict(color='#E24B34') # red                                      
 # hgs_plotargs['WRF G 90km']   = dict(color='#AAA2D8') # purple                                   
@@ -147,12 +102,6 @@ hgs_plotargs['2045-2060']    = dict(color='#AAA2D8') # purple
 hgs_plotargs['2050-2060']    = dict(color='#AAA2D8') # purple
 hgs_plotargs['2085-2100']    = dict(color='#E24B34') # red
 hgs_plotargs['2090-2100']    = dict(color='#E24B34') # red
-hgs_plotargs['1979-1994, L21'] = dict(color='#62A1C6') # blue
-hgs_plotargs['1984-1994, L21'] = dict(color='#62A1C6') # blue
-hgs_plotargs['2045-2060, L21'] = dict(color='#AAA2D8') # purple
-hgs_plotargs['2050-2060, L21'] = dict(color='#AAA2D8') # purple
-hgs_plotargs['2085-2100, L21'] = dict(color='#E24B34') # red
-hgs_plotargs['2090-2100, L21'] = dict(color='#E24B34') # red
 # adjust line thickness
 for plotargs in list(hgs_plotargs.values()): 
   if 'linewidth' not in plotargs: plotargs['linewidth'] = 1.
@@ -168,11 +117,16 @@ for expname,plotarg in list(hgs_plotargs.items()):
 
 
 # experiment aliases (for more systematic access)
-exp_aliases = {'erai-g_d00':'erai-g3_d01','erai-t_d00':'erai-t3_d01',
-               'g-ensemble_d00':'g3-ensemble_d01','t-ensemble_d00':'t3-ensemble_d01',
-               'g-ensemble-2050_d00':'g3-ensemble-2050_d01','t-ensemble-2050_d00':'t3-ensemble-2050_d01',
-               'g-ensemble-2100_d00':'g3-ensemble-2100_d01','t-ensemble-2100_d00':'t3-ensemble-2100_d01'}
-obs_datasets = ('NRCan','CRU')
+exp_aliases = dict()
+for config,alias in dict(g='max', t='ctrl').items():
+    for ens in ('-ctrl','-ens-A','-ens-B','-ens-C','-ensemble'):
+        for prd in ('','-2050','-2100'):
+            exp_aliases[config+ens+prd] = alias+ens+prd
+exp_aliases['t-ctrl'] = 'ctrl-1'
+exp_aliases['t-ctrl-2050'] = 'ctrl-2050'
+exp_aliases['t-ctrl-2100'] = 'ctrl-2100'
+exp_aliases_default = exp_aliases # just an alias...
+obs_datasets = ('NRCan','CRU','PRISM')
 gage_datasets = ('wsc','obs','observations')
 # ensemble definitions for GRW project 
 ensemble_list = {'g-mean':('g-ctrl','g-ens-A','g-ens-B','g-ens-C'),
@@ -186,7 +140,7 @@ for name,members in list(ensemble_list.items()):
 
 # helper function to determine experiment parameters
 def experimentParameters(experiment=None, domain=None, clim_mode=None, clim_dir=None, 
-                         lold=None, task=None, bias_correction=None, 
+                         lold=None, task=None, bias_correction=None, exp_aliases=None,
                          clim_period=None, run_period=None, period=None, **kwargs):
     # figure out experiment name and domain
     lWRF = False # likely not a WRF experiment
@@ -202,10 +156,17 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, clim_dir=
         elif domain == 3: resolution = '3km'
         else: raise NotImplementedError("Unsupported domain number '{:d}'.".format(domain))
         if 'resolution' not in kwargs: kwargs['resolution'] = resolution # for name expansion (will be capitalized)
+    if exp_aliases is None: exp_aliases = exp_aliases_default
     if experiment in exp_aliases:
-        lWRF = True 
+        lWRF = True
         # resolve aliases (always return full string format)
         experiment = exp_aliases[experiment] # resolve alias
+        if domain is None and experiment[-4:-2] == '_d':
+            exp_name = experiment[:-4]; domain = int(experiment[-2:]) # always full string format
+    elif experiment[-4:-2] == '_d' and experiment[:-4] in exp_aliases:
+        lWRF = True 
+        # resolve aliases (always return full string format)
+        experiment = exp_aliases[experiment[:-4]]+experiment[-4:] # resolve alias
         exp_name = experiment[:-4]; domain = int(experiment[-2:]) # always full string format
     if experiment in WRF_exps: # i.e. if domain is None
         lWRF = True
@@ -255,11 +216,19 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, clim_dir=
     # append conventional period name to name, if it appears to be missing
     if start_year is not None:
         if start_year > 2080:
-          if exp_name[-5:] != '-2100': exp_name += '-2100'
-          if old_name[-5:] != '-2100': old_name += '-2100'
+          if exp_name[-5:] != '-2100': 
+              if exp_name[-2:] == '-1': exp_name = exp_name[:-2] # handle inconsistent naming... 
+              exp_name += '-2100'
+          if old_name[-5:] != '-2100': 
+              if old_name[-2:] == '-1': old_name = old_name[:-2] # handle inconsistent naming...
+              old_name += '-2100'
         elif start_year > 2040:
-          if exp_name[-5:] != '-2050': exp_name += '-2050'
-          if old_name[-5:] != '-2050': old_name += '-2050'
+          if exp_name[-5:] != '-2050': 
+              if exp_name[-2:] == '-1': exp_name = exp_name[:-2] # handle inconsistent naming...
+              exp_name += '-2050'
+          if old_name[-5:] != '-2050': 
+              if old_name[-2:] == '-1': old_name = old_name[:-2] # handle inconsistent naming...
+              old_name += '-2050'
     if 'exp_name' not in kwargs: kwargs['exp_name'] = old_name # save for later use in name
     if 'exp_title' not in kwargs: kwargs['exp_title'] = old_name.title() # save for later use in name
     if 'exp_upper' not in kwargs: kwargs['exp_upper'] = old_name.upper() # save for later use in name
@@ -307,7 +276,7 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
                   title=None, run_period=None, clim_mode=None, clim_period=None, lold=False,
                   station=None, well=None, bias_correction=None, Obs_well=None,  
                   task=None, WSC_station=None, lpad=True, ENSEMBLE=None, lWSCID=False,
-                  project_folder=project_folder, 
+                  project_folder=project_folder, station_file=station_file_default,
                   basin_list=None, project=project_name, folder=project_folder_pattern, 
                   conservation_authority=conservation_authority, basin=main_basin, main_gage=main_gage,
                   station_list=None, experimentParameters=experimentParameters, 
@@ -319,10 +288,10 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
     elif well and well.lower() in ('water_balance','newton_info'): pass
     elif well and station: raise ArgumentError(station,well)
     elif station:
-        if station_list is None: station_list = station_list_etal
-        if station in station_list_etal: 
-            if WSC_station is None: WSC_station = station_list_etal[station].WSC
-            station = station_list_etal[station].HGS if lold else '{WSC_ID0:s}'
+        if station_list is None: station_list = station_list_default
+        if station in station_list: 
+            if WSC_station is None: WSC_station = station_list[station].WSC
+            station = station_list[station].HGS if lold else '{WSC_ID0:s}'
         elif station in WSC_station_list:
             WSC_station = station; station = WSC_station_list[station]
         elif station in HGS_station_list: 
@@ -333,7 +302,6 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
         well = 'W{WELL_ID:07d}_{WELL_NO:1d}'.format(WELL_ID=well_id, WELL_NO=well_no)
         Obs_well = 'W{WELL_ID:07d}-{WELL_NO:1d}'.format(WELL_ID=well_id, WELL_NO=well_no)
     if basin_list is None: basin_list = wsc.basin_list # default basin list
-    station_file = station_file_v1 if lold else station_file_v2
         
     # now call primary function
     return default.loadHGS_StnTS(
@@ -419,10 +387,10 @@ def loadHGS(experiment=None, varlist=None, name=None, title=None, lstrip=True, l
 if __name__ == '__main__':
     
 #   test_mode = 'gage_station'
-  test_mode = 'create_grid'
+#   test_mode = 'create_grid'
 #   test_mode = 'dataset_regrid'
 #   test_mode = 'binary_dataset'
-#   test_mode = 'dataset'
+  test_mode = 'dataset'
 #   test_mode = 'ensemble'
 
   if test_mode == 'gage_station':
@@ -538,9 +506,10 @@ if __name__ == '__main__':
   elif test_mode == 'dataset':
 
     # load single dataset
-    ds = loadHGS_StnTS(experiment='erai-g', domain=2, period=(1984,1994), 
-                       well='W424', z_aggregation=None, z_layers=None,
-                       clim_mode='periodic', lpad=True, bias_correction='AABC')
+    ds = loadHGS_StnTS(experiment='g-ctrl', domain=2, period=(1979,1994),
+                       station='water_balance', task='hgs_run_COSIA_1',
+#                        well='W424', z_aggregation=None, z_layers=None,
+                       clim_mode='transient', lpad=True, bias_correction='MyBC_CRU')
 #     ds = loadHGS_StnTS(experiment='NRCan', task='hgs_run_v2', 
 #                        clim_mode='periodic', lpad=True)
     print(ds)

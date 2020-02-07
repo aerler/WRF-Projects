@@ -46,7 +46,7 @@ annotation_dict['lcc-coast'] = dict(scale=(-127, 49.25, -125, 51, 100), lat_full
 annotation_dict['lcc-col'] = dict(scale=(-114.5, 54.5, -117, 53, 200), lat_full=[40,50,60,70], lat_half=[45,55,65], 
                              lon_full=[-130,-120,-110,-100], lon_half=[-125,-115,-105])
 ## Lambert Conic Conformal - Athabasca River Basin
-annotation_dict['lcc-arb'] = dict(scale=(-111, 52, -120, 55, 400), lat_full=[50,60], lat_half=[45,55,65], 
+annotation_dict['lcc-arb'] = dict(scale=(-111, 51.5, -120, 55, 400), lat_full=[52,56,60], lat_half=[50,54,58], 
                              lon_full=[-130,-120,-110], lon_half=[-135,-125,-115,-105])
 ## Lambert Conic Conformal - BC & Alberta (below 55N)
 annotation_dict['lcc-bcab'] = dict(scale=(-112.5, 47, -120, 50, 300), lat_full=[50,60], lat_half=[45,55,65], 
@@ -125,7 +125,7 @@ projection_dict['lcc-col'] = dict(projection='lcc', lat_0=51.5, lon_0=-117.5, la
               width=75*10e3, height=75*10e3, area_thresh = 500., resolution='l')
 ## Lambert Conic Conformal - Athabasca River Basin
 projection_dict['lcc-arb'] = dict(projection='lcc', lat_0=55.5, lon_0=-114.5, lat_1=55, rsphere=rsphere,
-              width=110*10e3, height=110*10e3, area_thresh = 500., resolution='i')
+              width=110*10e3, height=110*10e3, area_thresh = 1000., resolution='l')
 ## Lambert Conic Conformal - BC & Alberta (below 55N)
 projection_dict['lcc-bcab'] = dict(projection='lcc', lat_0=52.5, lon_0=-119, lat_1=52.5, rsphere=rsphere,
               width=150*10e3, height=150*10e3, area_thresh = 500., resolution='l')

@@ -291,8 +291,8 @@ if __name__ == '__main__':
   # N.B.: importing Exp through WRF_experiments is necessary, otherwise some isinstance() calls fail
 
 #   test = 'shape_ensemble'
-#   test = 'station_ensemble'
-  test = 'rescaling'
+  test = 'station_ensemble'
+#   test = 'rescaling'
 
   # station selection criteria
   constraints_rc = dict()
@@ -326,36 +326,37 @@ if __name__ == '__main__':
   elif test == 'station_ensemble':
     
     # some settings for tests
-#     exp = 'val'; exps = ['EC', 'erai-max', 'max-ctrl'] # 
-#     exp = 'max-all'; exps = exps_rc[exp]; provs = ('BC','AB'); clusters = None
+    exp = 'val'; exps = ['EC', 'max-ctrl'] # 
+    exp = 'max-obs'; exps = exps_rc[exp]; slices = None; obsslice = dict(years=(1952,2012)) # 60 years 
 #     exp = 'marc-prj'; exps = exps_rc[exp]; provs = 'ON'; clusters = None
-#     provs = ('BC','AB'); clusters = None
-    provs = None; clusters = None; lensembleAxis = False; sample_axis = None; lflatten = False
-    exp = 'erai'; exps = exps_rc[exp]; provs = None; clusters = [1,8,]; slices = None
+    provs = ('AB',); clusters = None; cluster_name = None; load_list = ['seasons','provs']
+#     provs = None; clusters = None; lensembleAxis = False; sample_axis = None; lflatten = False
+#     exp = 'max-obs'; exps = exps_rc[exp]; slices = None; 
+#     provs = None; clusters = [1,8,]; cluster_name = 'cluster_projection2'; load_list = ['seasons','clusters']
     seasons = ['summer','winter']; lfit = True; lrescale = True; lbootstrap = False
-    lflatten = False; lensembleAxis = True; sample_axis = ('station','year')
+#     lflatten = False; lensembleAxis = True; sample_axis = ('station','year')
+    lflatten = True; lensembleAxis = False; sample_axis = None
     varlist = ['MaxPrecip_1d', 'MaxPrecip_5d','MaxPreccu_1d'][:1]; filetypes = ['hydro']
-    slices = [dict(years=(1979,1995))]*3+[None]
+#     slices = [dict(years=(1979,1995))]*3+[None]
     stnens, fitens, sclens  = loadStationFit(names=exps.exps, provs=provs, clusters=clusters, 
-                                             cluster_name='cluster_projection2', lforceList=False,
+                                             cluster_name=cluster_name, lforceList=False,
                                              seasons=seasons, lfit=lfit, master=None, stationtype='ecprecip',
                                              lrescale=lrescale, reference=exps.reference, target=exps.target,
                                              lflatten=lflatten, domain=None, lbootstrap=lbootstrap, nbs=10,
                                              lensembleAxis=lensembleAxis, sample_axis=sample_axis,
                                              varlist=varlist, filetypes=filetypes, slices=slices,
+                                             obsslices=obsslice, lminmax=True, aggregation='max',
                                              ensemble_list=['names','slices'] if slices else None,
                                              variable_list=variables_rc, default_constraints=constraints_rc,
                                              #WRF_exps=WRF_exps, CESM_exps=None, WRF_ens=ensembles, CESM_ens=None,
-                                             load_list=['seasons','clusters'], lproduct='outer', lcrossval=None,)
+                                             load_list=load_list, lproduct='outer', lcrossval=None,)
     # print diagnostics
     print(stnens[0][0]); print('')
-    print(fitens[0][0].MaxPrecip_1d.atts.sample_axis); print('')
-    print(fitens[0][1] if fitens is not None else fitens) ; print('')
-    print(sclens[0] if sclens is not None else sclens) ; print('')
-    assert len(stnens) == len(seasons) * (len(clusters) or len(provs))
-    print(stnens[-1][1])
-    print(stnens[-1][-1])
-    print(stnens[0][-1].MaxPrecip_1d.mean())
+#     print(fitens[0][0].MaxPrecip_1d.atts.sample_axis); print('')
+#     print(fitens[0][1] if fitens is not None else fitens) ; print('')
+#     print(sclens[0] if sclens is not None else sclens) ; print('')
+#     assert len(stnens) == len(seasons) * (len(clusters) if clusters else len(provs))
+    print(stnens[0][0].MaxPrecip_1d.max())
   
   elif test == 'rescaling':
     

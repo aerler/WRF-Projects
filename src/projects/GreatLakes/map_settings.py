@@ -47,6 +47,9 @@ annotation_dict['lcc-glb'] = dict(scale=(-90.5, 39.5, -82.5, 46, 400), lat_full=
 ## Lambert Conic Conformal - Larger Map with Great Lakes region
 annotation_dict['lcc-ongl'] = dict(scale=(-95, 38, -82.5, 46, 600), lat_full=[30,40,50,60], lat_half=[45,55,65], 
                              lon_full=[-70,-80,-90,-100], lon_half=[-75,-85,-95])
+## Lambert Conic Conformal - Ontario
+annotation_dict['lcc-on'] = dict(scale=(-85.25, 43, -80, 45, 200), lat_full=[38,42,46,50], lat_half=[40,44,48], 
+                             lon_full=[-72,-78,-84,-90], lon_half=[-75,-81,-87,-93])
 ## Lambert Conic Conformal - Continental-Scale Canada
 annotation_dict['lcc-can'] = dict(scale=(-131, 29, -82.5, 46, 2000), 
                                   lat_full=[20,40,60,80], lat_half=[30,50,70], 
@@ -83,6 +86,9 @@ projection_dict['lcc-glb'] = dict(projection='lcc', lat_0=46, lon_0=-83, lat_1=4
 ## Lambert Conic Conformal - Larger Map with Great Lakes region
 projection_dict['lcc-ongl'] = dict(projection='lcc', lat_0=48, lon_0=-85, lat_1=45, rsphere=rsphere,
               width=270*10e3, height=265*10e3, area_thresh = 1e3, resolution='l')
+## Lambert Conic Conformal - Ontario
+projection_dict['lcc-on'] = dict(projection='lcc', lat_0=45.75, lon_0=-80.75, lat_1=45.75, rsphere=rsphere,
+              width=130*10e3, height=120*10e3, area_thresh = 1e3, resolution='l')
 ## Lambert Conic Conformal - Continental-Scale Canada
 projection_dict['lcc-can'] = dict(projection='lcc', lat_0=53, lon_0=-106.5, lat_1=53, rsphere=rsphere,
               width=7.77e6, height=6.2e6, area_thresh = 1e8, resolution='l')

@@ -170,8 +170,9 @@ if __name__ == '__main__':
 #   maptype = 'lcc-can'; lstations = False; domain = 1
 #   lbasins = True; basinlist = ('ARB','FRB','CRB','NRB','PSB'); lprovinces = False; provlist = ['BC','AB','ON']
 #   lbasins = False; basinlist = ('ARB','FRB','GLB'); lprovinces = False; provlist = ['BC','AB','ON']
-  lbasins = True; basinlist = ('ARB','FRB',); lprovinces = False; provlist = ['AB']; l60 = True
-
+  lbasins = True; basinlist = ('ARB',); lprovinces = False; provlist = ['AB']; l60 = True
+  unity_grid = 'arb2_d02'
+  
   # station markers
   lstations = False; stations = 'EC'; 
   cluster_symbols = {2:'d',5:'^',8:'s',-1:'o'}; cluster_name = 'cluster_projection'
@@ -205,6 +206,20 @@ if __name__ == '__main__':
 # #   variables = ['snwmlt']; isoline = 1.; cbn = 11
 # #   variables = ['ratio']; isoline = 1.; cbn = 11
 # #   if variables[0] == 'Tslb': case += '_{:d}'.format(level_agg['i_s'])
+
+## comparison of different observations over ARB
+  maptype = 'lcc-arb'; lstations = False; lbasins = True; lprovinces = True; 
+  case = 'obsval'; figtitles = [None]; cbo = 'horizontal'; lcontour = False; loutline = False
+#  explist = ['PCIC']; figtitles = ['Precipitation Climatology (PRISM & GPCC)']; exptitles = ['']; period = None
+  explist = ['CRU','NRCan','GPCC','Unity']; period = [H30,NRC70,H30,H30]; unity_grid = 'arb2_d02'
+#   exptitles = ['WRF 3km (15yr, ERA-I)','PCIC PRISM','WRF 10km (15yr, ERA-I)','WRF 30km (15yr, ERA-I)']; case = 'valera'
+  variables = ['precip']; seasons = ['spring',]; variable_settings = 'preccu'
+#   explist = ['CRU','NRCan',]; period = [H30,NRC70,]; unity_grid = 'arb2_d02'
+#   variables = ['pet']; seasons = ['annual']; #variable_settings = 'preccu'  
+#   variables = ['T2']; WRFfiletypes = ['srfc']; seasons = ['annual']; lcontour = False; loutline = False
+#  #explist = ['max-3km']; domain = 3; figtitles = ['WRF 3km (1979-1992, CESM)']; exptitles = ['']; period = H12; case = 'valmax'
+#   seasons = ['annual','winter','summer','fall','spring']
+
 
 # ## validation and projection for the Paper
 #   maptype = 'lcc-arb'; basinlist = ('ARB',); lbasins = True
@@ -655,7 +670,7 @@ if __name__ == '__main__':
                                        domains=domain, grids=grid, resolutions=resolution, 
                                        filetypes=WRFfiletypes, lWRFnative=lWRFnative, ltuple=True, 
                                        lbackground=lbackground, lautoregrid=True,
-                                       WRF_exps=WRF_exps, CESM_exps=CESM_exps)
+                                       WRF_exps=WRF_exps, CESM_exps=CESM_exps, unity_grid=unity_grid)
   nlen = len(exps)
 #   print exps[-1][-1]
   # load reference list
@@ -905,8 +920,8 @@ if __name__ == '__main__':
           if lcontour: 
             cd.append(maps[n].contourf(x[n][m],y[n][m],data[n][m],clevs,ax=ax[n],cmap=cmap, 
                                        norm=norm,extend='both'))  
-          else: cd.append(maps[n].pcolormesh(x[n][m],y[n][m],data[n][m], cmap=cmap, 
-                                             shading=shading))
+          else: 
+              cd.append(maps[n].pcolormesh(x[n][m],y[n][m],data[n][m], cmap=cmap, shading=shading))
           # add black contour lines (outlines) 
           if laddContour:
             cd.append(maps[n].contour(x[n][m],y[n][m],data[n][m],clevs,ax=ax[n],

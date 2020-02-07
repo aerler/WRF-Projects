@@ -17,16 +17,17 @@ from plotting.figure import show # don't import getFigAx directly, to avoid recu
 from plotting.axes import checkVarlist
 from eva.load import _rescaleSample
 
-def stationInfo(stnds, varname, name, titlestr=None, alttitle=None, lflatten=False, lmon=False,):
+def stationInfo(stnds, varname, name, obs_name='obs', titlestr=None, alttitle=None, lflatten=False, lmon=False,):
   ''' helper to generate an axes title with station info '''
   if stnds.hasAxis('station'): nstn = len(stnds.axes['station']) # number of stations        
   else: nstn = 1 # single station
-  if stnds.name[:3].lower() == 'obs' and varname in stnds:
+  if obs_name.lower() in stnds.name.lower() and varname in stnds:
       ec = stnds[varname] # some variables are not present everywhere
       if ec.hasAxis('time') and ec.time.units[:3].lower() == 'mon': units = 'mon.'
       elif ec.hasAxis('year') and ec.year.units.lower() == 'year': units = 'yrs.'
       else: units = 'mon.' if lmon else 'yrs.'
-      mask = ec.data_array.mask if isinstance(ec.data_array,np.ma.MaskedArray) else np.isnan(ec.data_array) 
+      mask = ec.data_array.mask if isinstance(ec.data_array,np.ma.MaskedArray) else False
+      mask = np.logical_or(mask,np.isnan(ec.data_array))
       if lflatten: rec_len = (ec.data_array.size - mask.sum()) # valid years in obs/EC
       else: rec_len = int(np.round(ec.data_array.shape[-1] - mask.sum(axis=-1).mean())) # valid years in obs/EC
       if titlestr: axtitle = titlestr.format(name,nstn,rec_len) # axes label

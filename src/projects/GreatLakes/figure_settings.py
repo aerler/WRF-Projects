@@ -57,7 +57,7 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
       clevs = np.linspace(-1,1,41); clbl = '%02.1f' # mm/day            
     elif var == 'ps':
       clevs = np.linspace(-5,5,41); clbl = '%02.1f' # mm/day            
-    elif var in ('evap','pet','pet_wrf','precip','precipc','precipnc','wetprec','dryprec','MaxPrecip_1d'):
+    elif var in ('evap','pet','pet_wrf','precip','precipc','precipnc','solprec','liqprec','wetprec','dryprec','MaxPrecip_1d'):
       clevs = np.linspace(-4,4,41); clbl = '%3.1f' # mm/day
     elif var in ('snwmlt', 'runoff', 'ugroff', 'sfroff','p-et','waterflx','liqwatflx'): # moisture fluxes (kg /(m^2 s))
       clevs = np.linspace(-1.2,1.2,41); clbl = '%3.2f' # mm/day  
@@ -76,6 +76,8 @@ def getVariableSettings(var, season, ldiff=False, lfrac=False):
     elif var in ('WaterTransport_U','WaterTransport_V','cqwu','cqwv'):
       #cmap = cm.coolavhrrmap # cmap.set_over('white'); cmap.set_under('black')
       clevs = np.linspace(-120,120,41); clbl = '%3.0f'
+    elif var in ('seaice',):
+      clevs = np.linspace(-1,0,21); clbl = '%3.2f'; cmap = cm.coolavhrrmap      
     else: 
       raise VariableError('No settings found for differencing variable \'{0:s}\' found!'.format(var))
   elif lfrac:
