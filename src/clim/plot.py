@@ -36,7 +36,10 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   else: raise TypeError
   assert isinstance(varlist_name,str)
   if expens is None: expens = []
+  if experr is None: experr = []
   if obsens is None: obsens = []
+  if obserr is None: obserr = []
+  if defaults is None: defaults = dict()
   # reference dataset (for meta data)
   if len(expens) > 0: refds = expens[0]
   elif len(obsens) > 0: refds = obsens[0]
@@ -64,7 +67,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
       if ylabel is True: ylabel = '2m Temperature [{UNITS:s}]'
     elif varlist_name in shape_info: 
       if not ylim: ylim = shape_info[varlist_name]
-      if ylabel is True and varlist_name in variable_list: 
+      if ylabel is True and variable_list and varlist_name in variable_list: 
         ylabel = variable_list[varlist_name].label + ' [{UNITS:s}]'
 #       if varlist_name in ('precip',): axes.ypad += 3
 #       else: axes.ypad -= 2
@@ -74,7 +77,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
 #       axes.ypad -= 3 
   else: 
     if not ylim: ylim = defaults.get(varlist_name,None)
-    if ylabel is True and varlist_name in variable_list: 
+    if ylabel is True and variable_list and varlist_name in variable_list: 
       ylabel = variable_list[varlist_name].label + ' [{UNITS:s}]'
       
   # some default kwargs
@@ -92,7 +95,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
     tmp_varlist = []; tmp_scalevars = []
     for var in varlist:
         if lauto:
-          for exp in expens[:]+obsens[:]: # make sure to copy lists or convert ensembles to lists, otherwise the list grows!
+          for exp in list(expens)+list(obsens): # make sure to copy lists or convert ensembles to lists, otherwise the list grows!
             if var in exp:
               if exp[var].units: tmp_varlist.append(var)
               else: tmp_scalevars.append(var)
@@ -182,6 +185,8 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   if lzero: 
       if varlist_name.lower() == 'temp': axes.addHline(273.15, alpha=0.5) # freezing point 
       else: axes.addHline(0, alpha=0.5) # actual zero (flux direction)
+  # return list of plot handles
+  return plts
 
 
 if __name__ == '__main__':

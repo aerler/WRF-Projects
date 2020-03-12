@@ -211,9 +211,10 @@ if __name__ == '__main__':
   maptype = 'lcc-arb'; lstations = False; lbasins = True; lprovinces = True; 
   case = 'obsval'; figtitles = [None]; cbo = 'horizontal'; lcontour = False; loutline = False
 #  explist = ['PCIC']; figtitles = ['Precipitation Climatology (PRISM & GPCC)']; exptitles = ['']; period = None
-  explist = ['CRU','NRCan','GPCC','Unity']; period = [H30,NRC70,H30,H30]; unity_grid = 'arb2_d02'
+  explist = ['CRU','NRCan','max-ens','GPCC','Unity','ctrl-ens']; domain = 2 
+  period = [H30,NRC70,H15,H30,H30,H15]; unity_grid = 'arb2_d02'
 #   exptitles = ['WRF 3km (15yr, ERA-I)','PCIC PRISM','WRF 10km (15yr, ERA-I)','WRF 30km (15yr, ERA-I)']; case = 'valera'
-  variables = ['precip']; seasons = ['spring',]; variable_settings = 'preccu'
+  variables = ['precip']; seasons = ['annual',]; variable_settings = 'preccu'
 #   explist = ['CRU','NRCan',]; period = [H30,NRC70,]; unity_grid = 'arb2_d02'
 #   variables = ['pet']; seasons = ['annual']; #variable_settings = 'preccu'  
 #   variables = ['T2']; WRFfiletypes = ['srfc']; seasons = ['annual']; lcontour = False; loutline = False
