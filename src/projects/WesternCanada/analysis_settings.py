@@ -70,6 +70,10 @@ exps_rc['max-all']   = EX(name='max-all', exps=['EC', 'max-ens','max-ens_d01','e
                           master='max-ens', reference='EC', target='auto', title='Validation & Projection')
 exps_rc['max-ens']   = EX(name='max-ens', exps=['max-ctrl','max-ens-A','max-ens-B','max-ens-C'],
                           master='max-ens', reference='max-ctrl', target=None, title='Max Ensemble')
+exps_rc['max-ens-2050']   = EX(name='max-ens-2050', exps=['max-ctrl-2050','max-ens-A-2050','max-ens-B-2050','max-ens-C-2050'],
+                          master='max-ens-2050', reference='max-ctrl-2050', target=None, title='Max Ensemble 2050')
+exps_rc['max-ens-2100']   = EX(name='max-ens-2100', exps=['max-ctrl-2100','max-ens-A-2100','max-ens-B-2100','max-ens-C-2100'],
+                          master='max-ens-2100', reference='max-ctrl-2100', target=None, title='Max Ensemble 2100')
 exps_rc['max-obs']   = EX(name='max', exps=['EC','max-ens','max-ens-2050','max-ens-2100'], styles=['--',':','-'], 
                           master='max-ens', reference='EC', target='max-ens', title='WRF G Ensemble')
 exps_rc['min-obs']   = EX(name='max', exps=['EC','max-ens','max-ens-2100'], styles=['-','--',], 
