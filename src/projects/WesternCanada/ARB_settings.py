@@ -35,8 +35,12 @@ station_file_default = station_file # alias
 # mapping of WSC station names to HGS hydrograph names
 Station = namedtuple('Station', ('HGS','WSC','ylim'),)
 station_list = OrderedDict() # this is the main gage of the GRW
-station_list['Fort McMurray']  = Station(HGS='05_MCMURRAY', WSC='Athabasca_McMurray', ylim=None)
-station_list['Embarras Airport']  = Station(HGS='06_EMBARRAS', WSC='Athabasca_Embarras', ylim=None)
+station_list['Jasper'] = Station(HGS='01_JASPER', WSC='Athabasca_Jasper', ylim=None)
+station_list['Hinton'] = Station(HGS='02_HINTON', WSC='Athabasca_Hinton', ylim=None)
+station_list['Windfall']  = Station(HGS='03_WINDFALL',  WSC='Athabasca_Windfall', ylim=None)
+station_list['Athabasca'] = Station(HGS='04_ATHABASCA', WSC='Athabasca_Athabasca', ylim=None)
+station_list['Fort McMurray']    = Station(HGS='05_MCMURRAY', WSC='Athabasca_FortMcMurray', ylim=None)
+station_list['Embarras Airport'] = Station(HGS='06_EMBARRAS', WSC='Athabasca_EmbarrasAirport', ylim=None)
 station_list_default = station_list # just an alias...
 # look-up tables for WSC/HGS station name conversion                           
 WSC_station_list = {stn.WSC:stn.HGS for stn in list(station_list.values())}
