@@ -68,12 +68,18 @@ exps_rc['max-prj']   = EX(name='prj', exps=['max-ens','max-ens-2050','max-ens-21
                           master='max-ens', reference=None, target=None, title='WRF G Proj.')
 exps_rc['max-all']   = EX(name='max-all', exps=['EC', 'max-ens','max-ens_d01','erai-max','max-ens-2050','max-ens-2100'], # ,'erai-max','ctrl-1','max-1deg' 
                           master='max-ens', reference='EC', target='auto', title='Validation & Projection')
-exps_rc['max-ens']   = EX(name='max-ens', exps=['max-ctrl','max-ens-A','max-ens-B','max-ens-C'],
-                          master='max-ens', reference='max-ctrl', target=None, title='Max Ensemble')
-exps_rc['max-ens-2050']   = EX(name='max-ens-2050', exps=['max-ctrl-2050','max-ens-A-2050','max-ens-B-2050','max-ens-C-2050'],
-                          master='max-ens-2050', reference='max-ctrl-2050', target=None, title='Max Ensemble 2050')
-exps_rc['max-ens-2100']   = EX(name='max-ens-2100', exps=['max-ctrl-2100','max-ens-A-2100','max-ens-B-2100','max-ens-C-2100'],
-                          master='max-ens-2100', reference='max-ctrl-2100', target=None, title='Max Ensemble 2100')
+exps_rc['max-ens']       = EX(name='max-ens', exps=['max-ctrl','max-ens-A','max-ens-B','max-ens-C'],
+                              master='max-ens', reference='max-ctrl', target=None, title='Max Ensemble')
+exps_rc['max-ens-2050']  = EX(name='max-ens-2050', exps=['max-ctrl-2050','max-ens-A-2050','max-ens-B-2050','max-ens-C-2050'],
+                              master='max-ens-2050', reference='max-ctrl-2050', target=None, title='Max Ensemble 2050')
+exps_rc['max-ens-2100']  = EX(name='max-ens-2100', exps=['max-ctrl-2100','max-ens-A-2100','max-ens-B-2100','max-ens-C-2100'],
+                              master='max-ens-2100', reference='max-ctrl-2100', target=None, title='Max Ensemble 2100')
+exps_rc['ctrl-ens']      = EX(name='ctrl-ens', exps=['ctrl-1','ctrl-ens-A','ctrl-ens-B','ctrl-ens-C'],
+                              master='ctrl-ens', reference='ctrl-1', target=None, title='Ctrl Ensemble')
+exps_rc['ctrl-ens-2050'] = EX(name='ctrl-ens-2050', exps=['ctrl-2050','ctrl-ens-A-2050','ctrl-ens-B-2050','ctrl-ens-C-2050'],
+                              master='ctrl-ens-2050', reference='ctrl-2050', target=None, title='Ctrl Ensemble 2050')
+exps_rc['ctrl-ens-2100'] = EX(name='ctrl-ens-2100', exps=['ctrl-2100','ctrl-ens-A-2100','ctrl-ens-B-2100','ctrl-ens-C-2100'],
+                              master='ctrl-ens-2100', reference='ctrl-2100', target=None, title='Ctrl Ensemble 2100')
 exps_rc['max-obs']   = EX(name='max', exps=['EC','max-ens','max-ens-2050','max-ens-2100'], styles=['--',':','-'], 
                           master='max-ens', reference='EC', target='max-ens', title='WRF G Ensemble')
 exps_rc['min-obs']   = EX(name='max', exps=['EC','max-ens','max-ens-2100'], styles=['-','--',], 
@@ -264,10 +270,12 @@ plot_labels_rc['erai-t']          = 'ERA-I'
 # variables
 plot_labels_rc['MaxPrecip_1d']    = 'Max Precip. (1d)'
 plot_labels_rc['MaxPrecip_5d']    = 'Max Precip. (5d)'
+plot_labels_rc['MaxRunoff_5d']    = 'Max Runoff (5d)'
 plot_labels_rc['MaxPreccu_1d']    = 'Max Conv. (1d)'
 plot_labels_rc['MaxSolprec_1d']   = 'Max Snow (1d)'
 plot_labels_rc['MaxSolprec_5d']   = 'Max Snow (5d)'
-plot_labels_rc['MaxWaterFlx_1d']  = 'Max Flux (1d)'
+plot_labels_rc['MaxWaterFlx_1d']  = 'Max Net Flux (1d)'
+plot_labels_rc['MaxWaterflx_5d']  = 'Max Net Flux (5d)'
 plot_labels_rc['wetfrq_010']      = 'Wet-days'
 plot_labels_rc['wetprec_010']     = 'Precip. Intensity'
 plot_labels_rc['T2']              = 'T (2m)'   
