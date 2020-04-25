@@ -48,76 +48,76 @@ HGS_station_list = {stn.HGS:stn.WSC for stn in list(station_list.values())}
 
 
 # plotting parameters for HGS simulations
-hgs_plotargs = dict() 
+hgs_plotargs_rc = dict() 
 # stream observations
-hgs_plotargs['Observations'] = dict(color='#959595') # gray
-hgs_plotargs['Obs.']         = dict(color='#959595') # gray
-hgs_plotargs['WSC Obs.']     = dict(color='#959595') # gray
-hgs_plotargs['WSC']          = dict(color='#959595') # gray
+hgs_plotargs_rc['Observations'] = dict(color='#959595') # gray
+hgs_plotargs_rc['Obs.']         = dict(color='#959595') # gray
+hgs_plotargs_rc['WSC Obs.']     = dict(color='#959595') # gray
+hgs_plotargs_rc['WSC']          = dict(color='#959595') # gray
 # Observational forcing
-hgs_plotargs['CRU']          = dict(color='green') #, linewidth=3)
-hgs_plotargs['NRCan']        = dict(color='coral') # orange
-hgs_plotargs['SnoDAS']       = dict(color='#62A1C6') # blue
+hgs_plotargs_rc['CRU']          = dict(color='green') #, linewidth=3)
+hgs_plotargs_rc['NRCan']        = dict(color='coral') # orange
+hgs_plotargs_rc['SnoDAS']       = dict(color='#62A1C6') # blue
 # Temporal Aggregation
-hgs_plotargs['Steady-State (V1)'] = dict(color='#AAA2D8') # purple
-hgs_plotargs['Periodic (V1)']     = dict(color='green') # 
-hgs_plotargs['Steady-State (V2)'] = dict(color='#E24B34') # red
-hgs_plotargs['Periodic (V2)']     = dict(color='coral')
-hgs_plotargs['Transient']    = dict(color='#62A1C6') # blue
-hgs_plotargs['Steady-State'] = dict(color='#AAA2D8') # purple
-hgs_plotargs['Periodic']     = dict(color='#E24B34') # red
-hgs_plotargs['Normals']      = dict(color='green') # 
-hgs_plotargs['Monthly']      = dict(color='#62A1C6') # blue
-hgs_plotargs['Daily']        = dict(color='#E24B34') # red
+hgs_plotargs_rc['Steady-State (V1)'] = dict(color='#AAA2D8') # purple
+hgs_plotargs_rc['Periodic (V1)']     = dict(color='green') # 
+hgs_plotargs_rc['Steady-State (V2)'] = dict(color='#E24B34') # red
+hgs_plotargs_rc['Periodic (V2)']     = dict(color='coral')
+hgs_plotargs_rc['Transient']    = dict(color='#62A1C6') # blue
+hgs_plotargs_rc['Steady-State'] = dict(color='#AAA2D8') # purple
+hgs_plotargs_rc['Periodic']     = dict(color='#E24B34') # red
+hgs_plotargs_rc['Normals']      = dict(color='green') # 
+hgs_plotargs_rc['Monthly']      = dict(color='#62A1C6') # blue
+hgs_plotargs_rc['Daily']        = dict(color='#E24B34') # red
 # WRF forcing
-hgs_plotargs['WRF 10km']     = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['WRF 30km']     = dict(color='#E24B34') # red
-hgs_plotargs['WRF (MyBC)']   = dict(color='#E24B34') # red
-hgs_plotargs['WRF (AABC)']   = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['WRF (Delta)']  = dict(color='#AAA2D8') # purple
-# hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
-# hgs_plotargs['WRF G 30km']   = dict(color='#E24B34') # red                                      
-# hgs_plotargs['WRF G 90km']   = dict(color='#AAA2D8') # purple                                   
-# hgs_plotargs['WRF T 10km']   = dict(color='#62A1C6') # blue    
-# hgs_plotargs['WRF T 30km']   = dict(color='#E24B34') # red     
-# hgs_plotargs['WRF T 90km']   = dict(color='#AAA2D8') # purple  
-hgs_plotargs['WRF T 10km']   = dict(color='#E24B34') # red
-hgs_plotargs['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['WRF T 30km']   = dict(color='#E24B34') # red
-hgs_plotargs['WRF G 30km']   = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['WRF T 90km']   = dict(color='#E24B34') # red
-hgs_plotargs['WRF G 90km']   = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['WRF T']        = dict(color='#E24B34') # red
-hgs_plotargs['WRF G']        = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['T Ensemble']   = dict(color='#E24B34') # red
-hgs_plotargs['G Ensemble']   = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['ERAI-T']       = dict(color='#E24B34') # red
-hgs_plotargs['ERAI-G']       = dict(color='#62A1C6') # blue                                     
-hgs_plotargs['T Mean']       = dict(color='red') # red
-hgs_plotargs['G Mean']       = dict(color='black') # blue                                     
-hgs_plotargs['Ensemble']     = dict(color='red')
-hgs_plotargs['Mean']         = dict(color='black')
-hgs_plotargs['1980']         = dict(color='#62A1C6') # blue
-hgs_plotargs['2050']         = dict(color='#AAA2D8') # purple
-hgs_plotargs['2100']         = dict(color='#E24B34') # red
-hgs_plotargs['1979-1994']    = dict(color='#62A1C6') # blue
-hgs_plotargs['1984-1994']    = dict(color='#62A1C6') # blue
-hgs_plotargs['2045-2060']    = dict(color='#AAA2D8') # purple
-hgs_plotargs['2050-2060']    = dict(color='#AAA2D8') # purple
-hgs_plotargs['2085-2100']    = dict(color='#E24B34') # red
-hgs_plotargs['2090-2100']    = dict(color='#E24B34') # red
+hgs_plotargs_rc['WRF 10km']     = dict(color='#62A1C6') # blue                                     
+hgs_plotargs_rc['WRF 30km']     = dict(color='#E24B34') # red
+hgs_plotargs_rc['WRF (MyBC)']   = dict(color='#E24B34') # red
+hgs_plotargs_rc['WRF (AABC)']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs_rc['WRF (Delta)']  = dict(color='#AAA2D8') # purple
+# hgs_plotargs_rc['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
+# hgs_plotargs_rc['WRF G 30km']   = dict(color='#E24B34') # red                                      
+# hgs_plotargs_rc['WRF G 90km']   = dict(color='#AAA2D8') # purple                                   
+# hgs_plotargs_rc['WRF T 10km']   = dict(color='#62A1C6') # blue    
+# hgs_plotargs_rc['WRF T 30km']   = dict(color='#E24B34') # red     
+# hgs_plotargs_rc['WRF T 90km']   = dict(color='#AAA2D8') # purple  
+hgs_plotargs_rc['WRF T 10km']   = dict(color='#E24B34') # red
+hgs_plotargs_rc['WRF G 10km']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs_rc['WRF T 30km']   = dict(color='#E24B34') # red
+hgs_plotargs_rc['WRF G 30km']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs_rc['WRF T 90km']   = dict(color='#E24B34') # red
+hgs_plotargs_rc['WRF G 90km']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs_rc['WRF T']        = dict(color='#E24B34') # red
+hgs_plotargs_rc['WRF G']        = dict(color='#62A1C6') # blue                                     
+hgs_plotargs_rc['T Ensemble']   = dict(color='#E24B34') # red
+hgs_plotargs_rc['G Ensemble']   = dict(color='#62A1C6') # blue                                     
+hgs_plotargs_rc['ERAI-T']       = dict(color='#E24B34') # red
+hgs_plotargs_rc['ERAI-G']       = dict(color='#62A1C6') # blue                                     
+hgs_plotargs_rc['T Mean']       = dict(color='red') # red
+hgs_plotargs_rc['G Mean']       = dict(color='black') # blue                                     
+hgs_plotargs_rc['Ensemble']     = dict(color='red')
+hgs_plotargs_rc['Mean']         = dict(color='black')
+hgs_plotargs_rc['1980']         = dict(color='#62A1C6') # blue
+hgs_plotargs_rc['2050']         = dict(color='#AAA2D8') # purple
+hgs_plotargs_rc['2100']         = dict(color='#E24B34') # red
+hgs_plotargs_rc['1979-1994']    = dict(color='#62A1C6') # blue
+hgs_plotargs_rc['1984-1994']    = dict(color='#62A1C6') # blue
+hgs_plotargs_rc['2045-2060']    = dict(color='#AAA2D8') # purple
+hgs_plotargs_rc['2050-2060']    = dict(color='#AAA2D8') # purple
+hgs_plotargs_rc['2085-2100']    = dict(color='#E24B34') # red
+hgs_plotargs_rc['2090-2100']    = dict(color='#E24B34') # red
 # adjust line thickness
-for plotargs in list(hgs_plotargs.values()): 
+for plotargs in list(hgs_plotargs_rc.values()): 
   if 'linewidth' not in plotargs: plotargs['linewidth'] = 1.
 # extended color scheme for ensemble
 color_args = {'Ctrl':'blue', 'Ens-A':'purple', 'Ens-B':'green','Ens-C':'coral','90km':'purple','30km':'red','10km':'blue'}
-for key,value in list(color_args.items()): hgs_plotargs[key] = dict(color=value, linewidth=.75)
+for key,value in list(color_args.items()): hgs_plotargs_rc[key] = dict(color=value, linewidth=.75)
 # add "old" versions
-for expname,plotarg in list(hgs_plotargs.items()):
-    if expname[-1] != ')' and expname+' (old)' not in hgs_plotargs:
+for expname,plotarg in list(hgs_plotargs_rc.items()):
+    if expname[-1] != ')' and expname+' (old)' not in hgs_plotargs_rc:
         oldarg = plotarg.copy(); 
         oldarg['linestyle'] = '--' 
-        hgs_plotargs[expname+' (old)'] = oldarg
+        hgs_plotargs_rc[expname+' (old)'] = oldarg
 
 
 # experiment aliases (for more systematic access)
@@ -144,7 +144,7 @@ for name,members in list(ensemble_list.items()):
 
 # helper function to determine experiment parameters
 def experimentParameters(experiment=None, domain=None, clim_mode=None, clim_dir=None, 
-                         lold=None, task=None, bias_correction=None, exp_aliases=None,
+                         lold=True, task=None, bias_correction=None, exp_aliases=None,
                          clim_period=None, run_period=None, period=None, **kwargs):
     # figure out experiment name and domain
     lWRF = False # likely not a WRF experiment
@@ -168,7 +168,7 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, clim_dir=
         if domain is None and experiment[-4:-2] == '_d':
             exp_name = experiment[:-4]; domain = int(experiment[-2:]) # always full string format
     elif experiment[-4:-2] == '_d' and experiment[:-4] in exp_aliases:
-        lWRF = True 
+        lWRF = True
         # resolve aliases (always return full string format)
         experiment = exp_aliases[experiment[:-4]]+experiment[-4:] # resolve alias
         exp_name = experiment[:-4]; domain = int(experiment[-2:]) # always full string format
@@ -213,7 +213,11 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, clim_dir=
             end_year = period[1]
             start_year = end_year - run_period
         elif isinstance(period, (int,np.integer)):
-            start_year = 1979; end_year = start_year + run_period
+            # try to guess from naming convention
+            if '-2100' in old_name: start_year = 2085
+            elif '-2050' in old_name: start_year = 2045
+            else: start_year = 1979
+            end_year = start_year + run_period
             period = (end_year-period,end_year)
         else: raise ArgumentError(period,run_period)
     else: start_year = end_year = None # not used
@@ -328,7 +332,7 @@ def loadWSC_StnTS(station=main_gage, name=None, title=None, basin=main_basin, ba
   if station in station_list: station = station_list[station].WSC # get WSC name for gage station (different from HGS name...)
   if basin_list is None: basin_list = wsc.basin_list # default basin list
   return wsc.loadWSC_StnTS(basin=basin, station=station, varlist=varlist, varatts=varatts, filetype=filetype,
-                           name=name, basin_list=basin_list, period=period, scalefactors=scalefactors, 
+                           name=name, title=title, basin_list=basin_list, period=period, scalefactors=scalefactors, 
                            lkgs=lkgs, **kwargs)
   
 
