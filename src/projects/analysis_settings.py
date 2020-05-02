@@ -68,7 +68,7 @@ variables_rc['CWD']             = VL(vars=['CWD'+ext for ext in wetday_extension
 variables_rc['CDD']             = VL(vars=['CDD'+ext for ext in wetday_extensions[:-1]]+['CNDD'], files=('hydro',), label='Continuous Dry-days')
 variables_rc['sfcflx_xtrm1d']   = VL(vars=('MaxWaterFlx_1d', 'MaxSfroff', 'MaxPrecip_1d'), files=('hydro','lsm'), label='Water Flux')
 variables_rc['sfcflx_xtrm5d']   = VL(vars=('MaxWaterflx_5d', 'MaxRunoff_5d', 'MaxSfroff_5d', 'MaxPrecip_5d'), files=('hydro','lsm'), label='Water Flux')
-variables_rc['sfcflx_mean']     = VL(vars=('waterflx', 'runoff', 'sfroff',), files=('hydro','lsm'), label='Water Flux')
+variables_rc['sfcflx_mean']     = VL(vars=('precip', 'waterflx', 'runoff', 'sfroff',), files=('hydro','lsm'), label='Water Flux')
 variables_rc['sfcflx']          = VL(vars=('p-et','snwmlt','waterflx',), files=('hydro',), label='Surface Flux')
 variables_rc['runoff']          = VL(vars=('runoff','sfroff','ugroff'), files=('lsm',), label='Runoff')
 variables_rc['runoff_wflx']     = VL(vars=('waterflx','sfroff','runoff'), files=('lsm','hydro'), label='Runoff')
@@ -300,6 +300,9 @@ variable_plotargs_rc['totroff']        = AttrDict(color = 'blue')
 variable_plotargs_rc['d_tot']          = AttrDict(color = 'red')
 variable_plotargs_rc['d_olf']          = AttrDict(color = 'green')
 variable_plotargs_rc['d_pm']           = AttrDict(color = 'blue')
+variable_plotargs_rc['et_sum']         = AttrDict(color = 'red')
+variable_plotargs_rc['pet_sum']        = AttrDict(color = 'purple')
+variable_plotargs_rc['precip_sum']     = AttrDict(color = 'blue')
 
 
 # add wet-day threshold dependent variables    
