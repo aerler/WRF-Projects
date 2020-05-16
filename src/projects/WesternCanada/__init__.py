@@ -24,7 +24,8 @@ try:
     # import relevant WRF experiments
     from .WRF_experiments import WRF_exps, WRF_ens
     # import WRF load functions
-    from .WRF_experiments import loadWRF, loadWRF_Shp, loadWRF_Stn, loadWRF_TS, loadWRF_ShpTS, loadWRF_StnTS, loadWRF_Ensemble, loadWRF_ShpEns, loadWRF_StnEns
+    from .WRF_experiments import loadWRF, loadWRF_Shp, loadWRF_Stn, loadWRF_TS, loadWRF_ShpTS, loadWRF_StnTS, loadWRF_Daily
+    from .WRF_experiments import loadWRF_Ensemble, loadWRF_ShpEns, loadWRF_StnEns
 except (ImportError,IOError):
     WRF_exps = None; WRF_ens = None
     warn("Error importing WRF experiments.")

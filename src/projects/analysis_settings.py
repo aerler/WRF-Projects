@@ -69,6 +69,7 @@ variables_rc['CDD']             = VL(vars=['CDD'+ext for ext in wetday_extension
 variables_rc['sfcflx_xtrm1d']   = VL(vars=('MaxWaterFlx_1d', 'MaxSfroff', 'MaxPrecip_1d'), files=('hydro','lsm'), label='Water Flux')
 variables_rc['sfcflx_xtrm5d']   = VL(vars=('MaxWaterflx_5d', 'MaxRunoff_5d', 'MaxSfroff_5d', 'MaxPrecip_5d'), files=('hydro','lsm'), label='Water Flux')
 variables_rc['sfcflx_mean']     = VL(vars=('precip', 'waterflx', 'runoff', 'sfroff',), files=('hydro','lsm'), label='Water Flux')
+variables_rc['pet_mean']        = VL(vars=('pet_wrf',), files=('hydro',), label='Water Flux')
 variables_rc['sfcflx']          = VL(vars=('p-et','snwmlt','waterflx',), files=('hydro',), label='Surface Flux')
 variables_rc['runoff']          = VL(vars=('runoff','sfroff','ugroff'), files=('lsm',), label='Runoff')
 variables_rc['runoff_wflx']     = VL(vars=('waterflx','sfroff','runoff'), files=('lsm','hydro'), label='Runoff')

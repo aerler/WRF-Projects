@@ -180,6 +180,8 @@ def experimentParameters(experiment=None, domain=None, clim_mode=None, clim_dir=
     # resolve climate input mode (time aggregation; assuming period is just length, i.e. int;)
     # translate climate mode into path convention, while retaining clim_mode
     if isinstance(clim_dir,str): lts = True
+    elif clim_mode.lower() in ('daily_transient'):
+        clim_dir = 'transient_daily'; lts = True
     elif clim_mode.lower() in ('ts','trans','timeseries','transient'):
         clim_dir = 'timeseries'; lts = True
     elif clim_mode.lower().startswith(('ts_','trans_','timeseries_','transient_')): 
@@ -414,6 +416,15 @@ if __name__ == '__main__':
     from geodata.gdal import GridDefinition, pickleGridDef, loadPickledGridDef, grid_folder
     
     convention='Proj4'
+    ## parameters for Athabasca River Basin project (COSIA)
+    projection = '+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 +ellps=sphere +units=m +no_defs'
+    #projection = 'PROJCS["US_National_Atlas_Equal_Area",GEOGCS["GCS_Unspecified datum based upon the Clarke 1866 Authalic Sphere",DATUM["D_Sphere_Clarke_1866_Authalic",SPHEROID["Clarke_1866_Authalic_Sphere",6370997,0]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_origin",45],PARAMETER["central_meridian",-100],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["Meter",1]]'
+#     name = 'arb1' # 1km
+#     geotransform = [-1460500,1e3,0,810500,0,1e3]; size = (1420,1290)
+#     name = 'arb2' # 5km
+#     geotransform = [-1460500,5e3,0,810500,0,5e3]; size = (284,258)
+    name = 'arb3' # a cropped version of arb2
+    geotransform = [-1280e3,5e3,0,900e3,0,5e3]; size = (172,144)
     ## parameters for UTM 17 Great Lakes grids
 #     name = 'glb1' # 5km resolution
 #     geotransform = [ -709489.58091004, 5.e3, 0, 4148523.7226861, 0, 5.e3]; size = (405,371)
@@ -447,9 +458,9 @@ if __name__ == '__main__':
 #     geotransform = [401826.125365249,9.e3,0,4851533.71730136,0,9.e3]; size = (22,29)
 #     projection = "+proj=utm +zone=18 +north +ellps=NAD83 +datum=NAD83 +units=m +no_defs"
 #     convention='Wkt'; projection = 'PROJCS["NAD_1983_UTM_Zone_14N",GEOGCS["GCS_North_American_1983",DATUM["D_North_American_1983",SPHEROID["GRS_1980",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["false_easting",500000.0],PARAMETER["false_northing",0.0],PARAMETER["central_meridian",-99.0],PARAMETER["scale_factor",0.9996],PARAMETER["latitude_of_origin",0.0],UNIT["Meter",1.0]]'
-    name = 'snw2' # 2km resolution
-    geotransform = [438.e3,2.e3,0,4940.e3,0,2.e3]; size = (44,55)
-    projection = "+proj=utm +zone=18 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+#     name = 'snw2' # 2km resolution
+#     geotransform = [438.e3,2.e3,0,4940.e3,0,2.e3]; size = (44,55)
+#     projection = "+proj=utm +zone=18 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
     ## parameters for UTM 14 Assiniboine River Basin grids
     ## Bird River, a subbasin of the Assiniboine River Basin
 #     name = 'brd1' # 5km resolution 
@@ -474,8 +485,9 @@ if __name__ == '__main__':
     #       GT(2) & GT(4) are usually zero for North-up, non-rotated maps
     # create grid
     griddef = GridDefinition(name=name, projection=projection, geotransform=geotransform, size=size, 
-                             xlon=None, ylat=None, lwrap360=False, geolocator=True, convention='Proj4')
+                             xlon=None, ylat=None, lwrap360=False, geolocator=True, convention=convention)
 
+    #print(griddef.projection.exportToWkt())
     # save pickle to standard location
     filepath = pickleGridDef(griddef, folder=grid_folder, filename=None, lfeedback=True)
     assert os.path.exists(filepath)
@@ -514,10 +526,14 @@ if __name__ == '__main__':
   elif test_mode == 'dataset':
 
     # load single dataset
-    ds = loadHGS_StnTS(experiment='g-ctrl', domain=2, period=(1979,1994),
-                       station='water_balance', task='hgs_run_COSIA_1',
-#                        well='W424', z_aggregation=None, z_layers=None,
-                       clim_mode='transient', lpad=True, bias_correction='MyBC_CRU')
+    ds = loadHGS_StnTS(experiment='max-ctrl', domain=2, basin='ARB', lkgs=False, lold=True,
+                       station='Fort McMurray', period=(1979,1994), run_period=1, lskipNaN=False, 
+                       task='hgs_run_cosia_1', grid='arb3', clim_mode='daily_transient',
+                       lcheckComplete=False, bias_correction=None, resample='D', time_axis='datetime')
+#     ds = loadHGS_StnTS(experiment='g-ctrl', domain=2, period=(1979,1994),
+#                        station='water_balance', task='hgs_run_COSIA_1',
+# #                        well='W424', z_aggregation=None, z_layers=None,
+#                        clim_mode='transient', lpad=True, bias_correction='MyBC_CRU')
 #     ds = loadHGS_StnTS(experiment='NRCan', task='hgs_run_v2', 
 #                        clim_mode='periodic', lpad=True)
     print(ds)

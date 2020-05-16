@@ -273,7 +273,8 @@ def loadHGS_StnTS(experiment=None, domain=None, period=None, varlist=None, varat
   
   # slice time axis for period
   if start_year is not None and end_year is not None:
-    dataset = dataset(years=(start_year,end_year))
+      if kwargs.get('resample','M')=='M' and kwargs.get('time_axis','M').lower() == 'simple':
+          dataset = dataset(years=(start_year,end_year))
   # add WRF attributes to dataset
   if lWRF:
     for key,value in list(exp.__dict__.items()):
@@ -377,12 +378,12 @@ if __name__ == '__main__':
     from geodata.gdal import GridDefinition, pickleGridDef, loadPickledGridDef, grid_folder
     
     ## parameters for Athabasca River Basin project (COSIA)
-    convention = 'Wkt'
-    projection = 'PROJCS["US_National_Atlas_Equal_Area",GEOGCS["GCS_Unspecified datum based upon the Clarke 1866 Authalic Sphere",DATUM["D_Sphere_Clarke_1866_Authalic",SPHEROID["Clarke_1866_Authalic_Sphere",6370997,0]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_origin",45],PARAMETER["central_meridian",-100],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["Meter",1]]'
+#     convention = 'Wkt'
+#     projection = 'PROJCS["US_National_Atlas_Equal_Area",GEOGCS["GCS_Unspecified datum based upon the Clarke 1866 Authalic Sphere",DATUM["D_Sphere_Clarke_1866_Authalic",SPHEROID["Clarke_1866_Authalic_Sphere",6370997,0]],PRIMEM["Greenwich",0],UNIT["Degree",0.017453292519943295]],PROJECTION["Lambert_Azimuthal_Equal_Area"],PARAMETER["latitude_of_origin",45],PARAMETER["central_meridian",-100],PARAMETER["false_easting",0],PARAMETER["false_northing",0],UNIT["Meter",1]]'
 #     name = 'arb1' # 1km
 #     geotransform = [-1460500,1e3,0,810500,0,1e3]; size = (1420,1290)
-    name = 'arb2' # 5km
-    geotransform = [-1460500,5e3,0,810500,0,5e3]; size = (284,258)
+#     name = 'arb2' # 5km
+#     geotransform = [-1460500,5e3,0,810500,0,5e3]; size = (284,258)
     ## parameters for UTM 17 Assiniboine River Basin grids
 # #     # Bird River, a subbasin of the Assiniboine River Basin
 # #     name = 'brd1' # 5km resolution 
