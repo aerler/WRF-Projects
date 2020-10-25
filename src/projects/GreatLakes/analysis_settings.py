@@ -363,10 +363,10 @@ clim_annotation = default.mergeAnnotation(clim_specifics, clim_defaults)
   
 # wrapper with annotation defaults for climPlot
 def climPlot(annotation=None, defaults=None, variable_list=None, **kwargs):
-  if annotation is None: annotation = annotation
-  if defaults is None: defaults = defaults
+  if annotation is None: annotation = clim_annotation
+  if defaults is None: defaults = clim_defaults
   if variable_list is None: variable_list = variables_rc
-  return clim_plot.climPlot(annotation=clim_annotation, defaults=clim_defaults, 
+  return clim_plot.climPlot(annotation=annotation, defaults=defaults, 
                             variable_list=variable_list, **kwargs)
 
 ## plot styles for EVA plots

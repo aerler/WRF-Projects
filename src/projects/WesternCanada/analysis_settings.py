@@ -66,6 +66,10 @@ exps_rc['max-val']   = EX(name='max-val', exps=['EC','max-ens',], # ,'erai-max',
                           master='max-ens', reference='EC', target=None, title='WRF G Val.')
 exps_rc['max-prj']   = EX(name='prj', exps=['max-ens','max-ens-2050','max-ens-2100'], 
                           master='max-ens', reference=None, target=None, title='WRF G Proj.')
+exps_rc['max-pj']   = EX(name='max-pj', exps=['max-ens','max-ens-2100'], 
+                         master='max-ens', reference=None, target=None, title='WRF G Proj.')
+exps_rc['max-vp']   = EX(name='max-vp', exps=['EC', 'max-ens','max-ens-2100'], 
+                         master='max-ens', reference='EC', target='max-ens', title='WRF G')
 exps_rc['max-all']   = EX(name='max-all', exps=['EC', 'max-ens','max-ens_d01','erai-max','max-ens-2050','max-ens-2100'], # ,'erai-max','ctrl-1','max-1deg' 
                           master='max-ens', reference='EC', target='auto', title='Validation & Projection')
 exps_rc['max-ens']       = EX(name='max-ens', exps=['max-ctrl','max-ens-A','max-ens-B','max-ens-C'],
@@ -98,6 +102,10 @@ exps_rc['ctrl-sum']  = EX(name='ctrl-sum', exps=['EC','ctrl-ens','ctrl-ens-2100'
                           master='ctrl-ens', reference='EC', target='ctrl-ens', title='Alt. Ens.')
 exps_rc['ctrl-prj']  = EX(name='ctrl-prj', exps=['ctrl-ens','ctrl-ens-2050','ctrl-ens-2100'], 
                           master='ctrl-ens', reference=None, target=None, title='WRF T Proj.')
+exps_rc['ctrl-pj']  = EX(name='ctrl-pj', exps=['ctrl-ens','ctrl-ens-2100'], 
+                          master='ctrl-ens', reference=None, target=None, title='WRF T Proj.')
+exps_rc['ctrl-vp']  = EX(name='ctrl-vp', exps=['EC','ctrl-ens','ctrl-ens-2100'],
+                         master='ctrl-ens', reference='EC', target='ctrl-ens', title='WRF T')
 exps_rc['mex-prj']   = EX(name='mex',exps=['mex-ens','mex-ens-2050','mex-ens-2100'], master='mex-ens',
                           styles=['-','-.','--'], title='WRF Ext. Ens. (Hist., Mid-, End-Century)')
 exps_rc['phys-prj']  = EX(name='phys',exps=['phys-ens','phys-ens-2050','phys-ens-2100'], master='phys-ens',

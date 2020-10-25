@@ -48,7 +48,7 @@ basin_list['AO']  = BasinSet(name='AO', long_name='Arctic Ocean', rivers=[], dat
                              stations=dict(), subbasins=['WholeAO'])
 basin_list['ARB'] = BasinSet(name='ARB', long_name='Athabasca River Basin', rivers=['Athabasca'], data_source='WSC',
                              stations=dict(Athabasca=['EmbarrasAirport','FortMcMurray','Athabasca','Windfall','Hinton','Jasper']),
-                             subbasins=['WholeARB','UpperARB','LowerARB'])
+                             subbasins=['WholeARB','UpperARB','LowerARB','ARB_HTH'])
 basin_list['CRB'] = BasinSet(name='CRB', long_name='Columbia River Basin', rivers=['Columbia'], data_source='WSC',
                              stations=dict(), subbasins=['WholeCRB'])
 basin_list['MW']  = BasinSet(name='MW', long_name='Mica Watershed', rivers=['Mica'], data_source='UNBC',
