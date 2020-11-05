@@ -134,7 +134,8 @@ obs_datasets = ('NRCan','CRU','PRISM')
 gage_datasets = ('wsc','obs','observations')
 # ensemble definitions for GRW project 
 ensemble_list = {'g-mean':('g-ctrl','g-ens-A','g-ens-B','g-ens-C'),
-                 't-mean':('t-ctrl','t-ens-A','t-ens-B','t-ens-C')}
+                 't-mean':('t-ctrl','t-ens-A','t-ens-B','t-ens-C'),
+                 'daily-mean':('g-ens-A','g-ens-B')}
 for name,members in list(ensemble_list.items()):
     for prd in ('-2050','-2100'):
         ensemble_list[name+prd] = tuple(member+prd for member in members)

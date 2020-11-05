@@ -11,12 +11,13 @@ on a river basin scale.
 import matplotlib as mpl
 import numpy as np
 # internal imports
-from datasets.common import name_of_month, BatchLoad
-from geodata.base import Ensemble
+from datasets.common import name_of_month, days_per_month_365, BatchLoad
+from geodata.base import Ensemble, dailyUnitsList, monthlyUnitsList
 from geodata.misc import ArgumentError
 from plotting.figure import show # don't import getFigAx directly, to avoid recursion
 from geodata.base import Dataset
 
+cumulative_days_per_month = days_per_month_365.cumsum()
 
 ## custom plotting functions
 @BatchLoad
@@ -49,8 +50,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
   xticks = axes.xaxis.get_ticklabels() # determine if labels are appropriate
   if xlabel and len(xticks) > 0 and xticks[-1].get_visible(): xlabel = 'Seasonal Cycle [{UNITS:s}]' 
   else: xlabel = False
-  # len(xticks) > 0 is necessary to avoid errors with AxesGrid, which removes invisible tick labels      
-  xlim = 0.5,12.5
+  # len(xticks) > 0 is necessary to avoid errors with AxesGrid, which removes invisible tick labels
   # basin info
   if shape_name or stnset_name or 'shape_name' in refds.atts:
     if not (shape_name or stnset_name): shape_name = refds.atts.shape_name
@@ -140,7 +140,7 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
           plt = axes.linePlot(vards, varname=varlist, errorbar=bards, errorband=bndds, lrescale=lrescale, 
                               legend=legend if lmaster and lleg else None, 
                               lperi=lperi, lparasiteMeans=lparasiteMeans, title=axtitle, llabel=lmaster and lleg, 
-                              xlabel=xlabel, xlim=xlim, ylabel=ylabel, ylim=ylim, lprint=lprint, **plotarg)
+                              xlabel=xlabel, xlim=None, ylabel=ylabel, ylim=ylim, lprint=lprint, **plotarg)
           plts.append(plt[0]) # use first line object for each dataset
         else: plts.append(None)
     return plts
@@ -174,9 +174,16 @@ def climPlot(axes=None, expens=None, obsens=None, experr=None, obserr=None, varl
     axes.addLegend(handles=plts, labels=dataset_labels, **dataset_legend) # handles fontsize and passes kwargs to legend()
   
   # use month as labels
-  axes.set_xticks(range(2,13,2))
-  axes.xaxis.set_ticklabels([name[:3] for name in name_of_month[1::2]])
-  axes.xaxis.set_minor_locator(mpl.ticker.AutoMinorLocator(2)) # one between each major
+  if axes.xunits.lower() in monthlyUnitsList:
+      axes.set_xlim((0.5,12.5))
+      axes.set_xticks(range(2,13,2))
+      axes.xaxis.set_ticklabels([name[:3] for name in name_of_month[1::2]])
+      axes.xaxis.set_minor_locator(mpl.ticker.AutoMinorLocator(2)) # one between each major
+  elif axes.xunits.lower() in dailyUnitsList:
+      axes.set_xlim((0.5,365.5))
+      axes.set_xticks(cumulative_days_per_month[0::2]+15)
+      axes.xaxis.set_ticklabels([name[:3] for name in name_of_month[1::2]])
+      axes.xaxis.set_minor_locator(mpl.ticker.AutoMinorLocator(2)) # one between each major
   # only use integers for y-lables (saves space)
   if lyint:
     axes.parasite_axes.yaxis.set_major_locator(mpl.ticker.MaxNLocator(integer=True))
