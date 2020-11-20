@@ -35,6 +35,8 @@
 
 *.nc
 
+*client_data*
+
 data/
 figures/
 .settings/
