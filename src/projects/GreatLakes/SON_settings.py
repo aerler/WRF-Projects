@@ -6,18 +6,13 @@ This module contains some settings for southern Ontario basins
 @author: Andre R. Erler, GPL v3
 '''
 
-import numpy as np
 from collections import OrderedDict
 # internal imports
 from datasets.WSC import Basin, shape_root
 import hgs.HGS as hgs # need to prevent name collisions here
-from hgs.PGMN import getWellName
-import projects.WSC_basins as wsc
-from projects.GreatLakes.WRF_experiments import WRF_exps
-from geodata.misc import ArgumentError, DatasetError
 # imports from HGS_settings
-import projects.HGS_settings as default
-from projects.HGS_settings import Station, Station, subfolder_pattern
+# import projects.HGS_settings as default
+# from projects.HGS_settings import Station, subfolder_pattern
 
 project_name = 'SON'
 project_prefix = ''
@@ -91,9 +86,11 @@ for name,long_name in son_ws_names.items():
 
 # abuse for testing
 if __name__ == '__main__':
+  
+  from __init__ import basins
     
   test_mode = 'create_grid'
-  test_mode = 'watersheds'
+#   test_mode = 'watersheds'
 #   test_mode = 'gage_station'
 #   test_mode = 'dataset_regrid'
 #   test_mode = 'binary_dataset'
@@ -125,9 +122,9 @@ if __name__ == '__main__':
     ## Southern Ontario grids (also in Great Lakes, UTM 17)
 #     name = 'son1' # 5km resolution
 #     geotransform = [320920.,5.e3,0,4624073.,0,5.e3]; size = (118,82)
-    name = 'son2' # 1km resolution
-    geotransform = [320920.,1.e3,0,4624073.,0,1.e3]; size = (590,410)
-    projection = "+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+#     name = 'son2' # 1km resolution
+#     geotransform = [320920.,1.e3,0,4624073.,0,1.e3]; size = (590,410)
+#     projection = "+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
     ## Hugo's grid for Quebec
 #     name = 'hd1' # 5km resolution
 #     geotransform = [-479184.769227,5.e3,0,68508.4877898,0,5.e3]; size = (70,49)
@@ -137,9 +134,9 @@ if __name__ == '__main__':
 #     geotransform = [401826.125365249,9.e3,0,4851533.71730136,0,9.e3]; size = (22,29)
 #     projection = "+proj=utm +zone=18 +north +ellps=NAD83 +datum=NAD83 +units=m +no_defs"
 #     convention='Wkt'; projection = 'PROJCS["NAD_1983_UTM_Zone_14N",GEOGCS["GCS_North_American_1983",DATUM["D_North_American_1983",SPHEROID["GRS_1980",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["false_easting",500000.0],PARAMETER["false_northing",0.0],PARAMETER["central_meridian",-99.0],PARAMETER["scale_factor",0.9996],PARAMETER["latitude_of_origin",0.0],UNIT["Meter",1.0]]'
-#     name = 'snw2' # 2km resolution
-#     geotransform = [438.e3,2.e3,0,4940.e3,0,2.e3]; size = (44,55)
-#     projection = "+proj=utm +zone=18 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+    name = 'snw2' # 2km resolution
+    geotransform = [438.e3,2.e3,0,4940.e3,0,2.e3]; size = (44,55)
+    projection = "+proj=utm +zone=18 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
     # N.B.: (x_0, dx, 0, y_0, 0, dy); (xl,yl)
     #       GT(0),GT(3) are the coordinates of the bottom left corner
     #       GT(1) & GT(5) are pixel width and height
