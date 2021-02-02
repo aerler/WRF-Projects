@@ -17,7 +17,13 @@ except IOError:
     warn("Error importing map settings - possibly due to missing shape data.")
 except ImportError:
     warn("Error importing map settings - 'basemap' is likely not installed.")
-
+# N.B.: apparently Basemap is not maintained anymore and dedent does not exist in matplotlib anymore...
+#       but replacing dedent with cleandoc as shown below in mpl_toolkits/basemap/proj.py and
+#       mpl_toolkits/basemap/__init__.py seems to do the trick
+# try:
+#     from matplotlib.cbook import dedent
+# except ImportError:
+#     from inspect import cleandoc as dedent
 
 ## import load functions with GreatLakes experiments into local namespace
 
