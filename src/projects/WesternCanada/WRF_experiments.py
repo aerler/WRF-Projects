@@ -235,7 +235,7 @@ ensembles = enss = WRF_ens
 ## generate loadWRF* versions with these experiments
 # import datasets.WRF as dataset
 import inspect,functools
-from datasets.WRF import loadWRF, loadWRF_Shp, loadWRF_Stn, loadWRF_TS, loadWRF_ShpTS, loadWRF_StnTS, loadWRF_Daily 
+from datasets.WRF import loadWRF, loadWRF_Shp, loadWRF_Stn, loadWRF_TS, loadWRF_ShpTS, loadWRF_StnTS, loadWRF_Daily, loadWRF_XR
 from datasets.WRF import loadWRF_Ensemble, loadWRF_ShpEns, loadWRF_StnEns
 addLoadFcts(locals(), locals(), exps=WRF_exps, enses=WRF_ens)
 # loadWRF = functools.partial(loadWRF, exps=WRF_exps)

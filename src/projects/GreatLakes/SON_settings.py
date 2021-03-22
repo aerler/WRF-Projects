@@ -132,8 +132,10 @@ if __name__ == '__main__':
 #     geotransform = [401826.125365249,9.e3,0,4851533.71730136,0,9.e3]; size = (22,29)
 #     projection = "+proj=utm +zone=18 +north +ellps=NAD83 +datum=NAD83 +units=m +no_defs"
 #     convention='Wkt'; projection = 'PROJCS["NAD_1983_UTM_Zone_14N",GEOGCS["GCS_North_American_1983",DATUM["D_North_American_1983",SPHEROID["GRS_1980",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["false_easting",500000.0],PARAMETER["false_northing",0.0],PARAMETER["central_meridian",-99.0],PARAMETER["scale_factor",0.9996],PARAMETER["latitude_of_origin",0.0],UNIT["Meter",1.0]]'
-    name = 'snw2' # 2km resolution
-    geotransform = [438.e3,2.e3,0,4940.e3,0,2.e3]; size = (44,55)
+    # name = 'snw2' # 2km resolution
+    # geotransform = [438.e3,2.e3,0,4940.e3,0,2.e3]; size = (44,55)
+    name = 'snw3' # 0.2km resolution
+    geotransform = [438.e3,2.e2,0,4940.e3,0,2.e2]; size = (440,550)
     projection = "+proj=utm +zone=18 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
     # N.B.: (x_0, dx, 0, y_0, 0, dy); (xl,yl)
     #       GT(0),GT(3) are the coordinates of the bottom left corner
