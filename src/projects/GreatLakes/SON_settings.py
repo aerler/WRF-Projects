@@ -134,9 +134,13 @@ if __name__ == '__main__':
 #     convention='Wkt'; projection = 'PROJCS["NAD_1983_UTM_Zone_14N",GEOGCS["GCS_North_American_1983",DATUM["D_North_American_1983",SPHEROID["GRS_1980",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["false_easting",500000.0],PARAMETER["false_northing",0.0],PARAMETER["central_meridian",-99.0],PARAMETER["scale_factor",0.9996],PARAMETER["latitude_of_origin",0.0],UNIT["Meter",1.0]]'
     # name = 'snw2' # 2km resolution
     # geotransform = [438.e3,2.e3,0,4940.e3,0,2.e3]; size = (44,55)
-    name = 'snw3' # 0.2km resolution
-    geotransform = [438.e3,2.e2,0,4940.e3,0,2.e2]; size = (440,550)
-    projection = "+proj=utm +zone=18 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+    # name = 'snw3' # 0.2km resolution
+    # geotransform = [438.e3,2.e2,0,4940.e3,0,2.e2]; size = (440,550)
+    # projection = "+proj=utm +zone=18 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+    ## UTM 55S for Queensland Australia
+    name = 'qel1'
+    geotransform = (-26772., 10398.9, 0., 6902511, 0., 10968.7); size = (121,191) # 10 km grid, similar to ERA5
+    projection = "+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
     # N.B.: (x_0, dx, 0, y_0, 0, dy); (xl,yl)
     #       GT(0),GT(3) are the coordinates of the bottom left corner
     #       GT(1) & GT(5) are pixel width and height
