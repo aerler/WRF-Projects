@@ -108,7 +108,7 @@ if __name__ == '__main__':
     import os
     from geodata.gdal import GridDefinition, pickleGridDef, loadPickledGridDef, grid_folder
     
-    convention='Proj4'
+    convention = 'Proj4'
     ## parameters for UTM 17 Great Lakes grids
 #     name = 'glb1' # 5km resolution
 #     geotransform = [ -709489.58091004, 5.e3, 0, 4148523.7226861, 0, 5.e3]; size = (405,371)
@@ -137,10 +137,6 @@ if __name__ == '__main__':
     # name = 'snw3' # 0.2km resolution
     # geotransform = [438.e3,2.e2,0,4940.e3,0,2.e2]; size = (440,550)
     # projection = "+proj=utm +zone=18 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
-    ## UTM 55S for Queensland Australia
-    name = 'qel1'
-    geotransform = (-26772., 10398.9, 0., 6902511, 0., 10968.7); size = (121,191) # 10 km grid, similar to ERA5
-    projection = "+proj=utm +zone=55 +south +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
     # N.B.: (x_0, dx, 0, y_0, 0, dy); (xl,yl)
     #       GT(0),GT(3) are the coordinates of the bottom left corner
     #       GT(1) & GT(5) are pixel width and height
