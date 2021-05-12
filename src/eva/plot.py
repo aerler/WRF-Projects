@@ -12,7 +12,7 @@ import matplotlib as mpl
 import numpy as np
 from geodata.base import Ensemble, Dataset, Variable, Axis, concatVars
 from geodata.misc import ArgumentError, AxisError, DatasetError
-from geodata.stats import ks_2samp, VarRV
+from geodata.stats import ks_2samp, VarRV, DistVar
 from plotting.figure import show # don't import getFigAx directly, to avoid recursion
 from plotting.axes import checkVarlist
 from eva.load import _rescaleSample
@@ -76,7 +76,7 @@ def generateStatistics(varname, ens, fit, scl=None, reference=None, mode='Ratio'
 #         print [ax.name for ax in var.axes], var.shape
 #       assert  np.all(fitlist[0][1,:] == fitlist[0][2,:])
     assert not isinstance(reference,str) or iref0 == fitlist.idkeys.index(reference), reference
-    if any([isinstance(dist,VarRV) for dist in fitlist]) or not scl:
+    if any([isinstance(dist,DistVar) for dist in fitlist]) or not scl:
       names = [plot_labels.get(getattr(dist,idkey),getattr(dist,idkey)) for dist in fitlist]  
       lnames = max([len(name) for name in names]) # allocate line space
       headline = 'Sample'; lhead = len(headline) # sample/exp header
@@ -85,7 +85,7 @@ def generateStatistics(varname, ens, fit, scl=None, reference=None, mode='Ratio'
       namestr = '{{:>{:d}s}}  {{:s}}  '.format(max(lhead,lnames))
       iref = iref0; reflist = reflist0[:] # copy list
       for i,dist,var,name,mvar in zip(range(len(fitlist)),fitlist,varlist,names,mvars):
-        if isinstance(dist,VarRV) or not scl:
+        if isinstance(dist,DistVar) or not scl:
           if isinstance(dist,VarRV):
             pval = dist.fittest(var, nsamples=nsamples, asVar=False, lcrossval=lcrossval) #lflatten=lflatten, axis_idx=var.axisIndex(sample_axis, lcheck=False))
 #             print var.name, pval, pval.mean().__class__.__name__, '{:s}'.format(pval.mean())
@@ -169,10 +169,14 @@ def generateStatistics(varname, ens, fit, scl=None, reference=None, mode='Ratio'
             else: pval = '  - '
           # add column with ratio/difference of means after rescaling
           if name in plot_labels: name = plot_labels[name]  
-          if isinstance(mvar,np.ma.core.MaskedConstant) or isinstance(mvars[iref],np.ma.core.MaskedConstant):
-            string += namestr.format(name,' N/A\n') 
-          elif lratio: string += (namestr+'{:3.2f}\n').format(name,pval,(mvar/mvars[iref]).mean())
-          elif lshift: string += (namestr+'{:+2.1f}\n').format(name,pval,(mvar-mvars[iref]).mean())
+          try:
+              # if isinstance(mvar,np.ma.core.MaskedConstant) or isinstance(mvars[iref],np.ma.core.MaskedConstant):
+              #   string += namestr.format(name,' N/A\n')
+              # N.B: for some reason checking for MaskedConstant does not always catch the error - this is more robust
+              if lratio: string += (namestr+'{:3.2f}\n').format(name,pval,np.mean(mvar/mvars[iref]))
+              elif lshift: string += (namestr+'{:+2.1f}\n').format(name,pval,np.mean(mvar-mvars[iref]))
+          except AttributeError:
+              string += namestr.format(name,' N/A\n')
   # return formatted table in string
   return string        
 
@@ -215,7 +219,7 @@ def distPlot(axes=None, varname=None, datasets=None, ens=None, fit=None, kde=Non
   if xlim is None:
     if stnset_name is not None: xlim = annotation[stnset_name].get(varname,None)
     elif shape_name is not None: xlim = annotation[shape_name].get(varname,None)
-    elif varname in defaults: xlim = defaults.get(varname,None)  
+    elif defaults and varname in defaults: xlim = defaults.get(varname,None)  
     else: xlim = axes.get_xlim()
     if stnset_name is not None and xfactor is None and (lrescale is False or not scl): 
       xfactor = 2./3. # empirical value...
