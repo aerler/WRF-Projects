@@ -1,7 +1,7 @@
 '''
 Created on Jan 30, 2015
 
-Utility functions related to loading station data to support extreme value analysis.
+Utility functions related to loading station  data to support extreme value analysis.
 
 @author: Andre R. Erler, GPL v3
 '''

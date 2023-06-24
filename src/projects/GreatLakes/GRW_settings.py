@@ -448,13 +448,13 @@ if __name__ == '__main__':
 #     projection = "+proj=utm +zone=17 +north +ellps=NAD83 +datum=NAD83 +units=m +no_defs"
     ## GRW grids (also in Great Lakes, UTM 17)
 #     name = 'grw1' # 1km resolution
-#     geotransform = [500.e3,1.e3,0,4740.e3,0,1.e3]; size = (132,162)
-#     name = 'grw2' # 5km resolution
+    # geotransform = [500.e3,1.e3,0,4740.e3,0,1.e3]; size = (132,162)
+    # name = 'grw2' # 5km resolution
 #     geotransform = [500.e3,5.e3,0,4740.e3,0,5.e3]; size = (27,33)
 #     name = 'grw3' # 500m resolution
 #     d = 500
 #     geotransform = [500.e3-d/2,d,0,4740.e3-d/2,0,d]; size = (250+1,320+1)
-#     projection = "+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+    # projection = "+proj=utm +zone=17 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
     ## Southern Ontario grids (also in Great Lakes, UTM 17)
 #     name = 'son1' # 5km resolution
 #     # X 320919.7943000002 Y 4624073.9199, C 5890 R 4062 x 100m
@@ -471,8 +471,10 @@ if __name__ == '__main__':
 #     geotransform = [401826.125365249,9.e3,0,4851533.71730136,0,9.e3]; size = (22,29)
 #     projection = "+proj=utm +zone=18 +north +ellps=NAD83 +datum=NAD83 +units=m +no_defs"
 #     convention='Wkt'; projection = 'PROJCS["NAD_1983_UTM_Zone_14N",GEOGCS["GCS_North_American_1983",DATUM["D_North_American_1983",SPHEROID["GRS_1980",6378137.0,298.257222101]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],PROJECTION["Transverse_Mercator"],PARAMETER["false_easting",500000.0],PARAMETER["false_northing",0.0],PARAMETER["central_meridian",-99.0],PARAMETER["scale_factor",0.9996],PARAMETER["latitude_of_origin",0.0],UNIT["Meter",1.0]]'
-    name = 'snw2' # 2km resolution
-    geotransform = [438.e3,2.e3,0,4940.e3,0,2.e3]; size = (44,55)
+    name = 'snw1' # 5km resolution
+    geotransform = [438.e3,5.e3,0,4940.e3,0,5.e3]; size = (18,22)
+    # name = 'snw2' # 2km resolution
+    # geotransform = [438.e3,2.e3,0,4940.e3,0,2.e3]; size = (44,55)
     projection = "+proj=utm +zone=18 +north +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
     ## parameters for UTM 14 Assiniboine River Basin grids
     ## Bird River, a subbasin of the Assiniboine River Basin
